@@ -14,12 +14,22 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 final class CommandTest extends KernelTestCase
 {
+    protected function tearDown(): void
+    {
+        $filesystem = self::getContainer()->get('filesystem');
+        $filesystem->remove(sprintf('%s/samples', self::$kernel->getCacheDir()));
+
+        parent::tearDown();
+    }
+
     #[Test]
     public static function theCommandCanGenerateTheManifestAndIcons(): void
     {
         // Given
         $kernel = self::bootKernel();
         $application = new Application($kernel);
+        $filesystem = self::getContainer()->get('filesystem');
+        $filesystem->remove(sprintf('%s/samples', $kernel->getCacheDir()));
 
         $command = $application->find('pwa:build');
         $commandTester = new CommandTester($command);
@@ -36,5 +46,7 @@ final class CommandTest extends KernelTestCase
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
         static::assertStringContainsString('PWA Manifest Generator', $output);
+        static::assertFileExists(sprintf('%s/samples/my-pwa.json', $kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/data', $kernel->getCacheDir()));
     }
 }
