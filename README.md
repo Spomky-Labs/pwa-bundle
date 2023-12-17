@@ -145,13 +145,13 @@ phpwa:
           label: "View of the dashboard on Android"
 ```
 
-The bundle will automatically generate 2 screenshots from the source images and add additional information in the manifest
+The bundle will automatically generate screenshots from the source images and add additional information in the manifest
 such as the `sizes` and the `form_factor` (`wide` or `narrow`).
 The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
 
 ## Manifest Shortcuts
 
-The `shortcuts` member may contains a list of icons.
+The `shortcuts` member may contain a list of icons.
 The parameters are very similar to the `icons` member.
 
 ```yaml
