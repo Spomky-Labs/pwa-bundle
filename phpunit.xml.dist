@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        bootstrap="vendor/autoload.php"
+        colors="true"
+        xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+        cacheDirectory=".phpunit.cache"
+>
+  <coverage/>
+  <testsuites>
+    <testsuite name="Test Suite">
+      <directory>./tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <ini name="intl.default_locale" value="en"/>
+    <ini name="intl.error_level" value="0"/>
+    <ini name="memory_limit" value="-1"/>
+    <server name="KERNEL_CLASS" value="SpomkyLabs\PwaBundle\Tests\AppKernel"/>
+  </php>
+  <source>
+    <include>
+      <directory>./src</directory>
+    </include>
+    <exclude>
+      <directory>./vendor</directory>
+      <directory>./tests</directory>
+    </exclude>
+  </source>
+</phpunit>
