@@ -26,7 +26,10 @@ final class CommandTest extends KernelTestCase
 
         // When
         $commandTester->execute([
-            'public_folder' => sprintf('%s/samples', $kernel->getCacheDir()),
+            '--url_prefix' => '/foo/bar',
+            '--public_folder' => sprintf('%s/samples', $kernel->getCacheDir()),
+            '--asset_folder' => '/data',
+            '--output' => 'my-pwa.json',
         ]);
 
         // Then

@@ -10,8 +10,8 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -47,10 +47,16 @@ final class GenerateManifestCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('url_prefix', InputArgument::OPTIONAL, 'Public URL prefix', '');
-        $this->addArgument('public_folder', InputArgument::OPTIONAL, 'Public folder', $this->rootDir . '/public');
-        $this->addArgument('asset_folder', InputArgument::OPTIONAL, 'Asset folder', '/pwa');
-        $this->addArgument('output', InputArgument::OPTIONAL, 'Output file', 'pwa.json');
+        $this->addOption('url_prefix', 'u', InputOption::VALUE_OPTIONAL, 'Public URL prefix', '');
+        $this->addOption(
+            'public_folder',
+            'p',
+            InputOption::VALUE_OPTIONAL,
+            'Public folder',
+            $this->rootDir . '/public'
+        );
+        $this->addOption('asset_folder', 'a', InputOption::VALUE_OPTIONAL, 'Asset folder', '/pwa');
+        $this->addOption('output', 'o', InputOption::VALUE_OPTIONAL, 'Output file', 'pwa.json');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -60,10 +66,10 @@ final class GenerateManifestCommand extends Command
         $manifest = $this->config;
         $manifest = array_filter($manifest, static fn ($value) => ($value !== null && $value !== []));
 
-        $publicUrl = $input->getArgument('url_prefix');
-        $publicFolder = Path::canonicalize($input->getArgument('public_folder'));
-        $assetFolder = '/' . trim((string) $input->getArgument('asset_folder'), '/');
-        $outputFile = '/' . trim((string) $input->getArgument('output'), '/');
+        $publicUrl = $input->getOption('url_prefix');
+        $publicFolder = Path::canonicalize($input->getOption('public_folder'));
+        $assetFolder = '/' . trim((string) $input->getOption('asset_folder'), '/');
+        $outputFile = '/' . trim((string) $input->getOption('output'), '/');
 
         if (! $this->filesystem->exists($publicFolder)) {
             $this->filesystem->mkdir($publicFolder);
