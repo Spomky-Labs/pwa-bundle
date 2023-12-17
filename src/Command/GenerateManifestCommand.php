@@ -9,6 +9,7 @@ use RuntimeException;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,6 +19,8 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Mime\MimeTypes;
+use function count;
+use function is_int;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -44,10 +47,10 @@ final class GenerateManifestCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('public_url', InputArgument::OPTIONAL, 'Public URL', '/pwa');
+        $this->addArgument('url_prefix', InputArgument::OPTIONAL, 'Public URL prefix', '');
         $this->addArgument('public_folder', InputArgument::OPTIONAL, 'Public folder', $this->rootDir . '/public');
-        $this->addArgument('asset_folder', InputArgument::OPTIONAL, 'Asset folder', '/assets');
-        $this->addArgument('output', InputArgument::OPTIONAL, 'Output file', 'manifest.json');
+        $this->addArgument('asset_folder', InputArgument::OPTIONAL, 'Asset folder', '/pwa');
+        $this->addArgument('output', InputArgument::OPTIONAL, 'Output file', 'pwa.json');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -57,12 +60,14 @@ final class GenerateManifestCommand extends Command
         $manifest = $this->config;
         $manifest = array_filter($manifest, static fn ($value) => ($value !== null && $value !== []));
 
-        $publicUrl = $input->getArgument('public_url');
+        $publicUrl = $input->getArgument('url_prefix');
         $publicFolder = Path::canonicalize($input->getArgument('public_folder'));
         $assetFolder = '/' . trim((string) $input->getArgument('asset_folder'), '/');
         $outputFile = '/' . trim((string) $input->getArgument('output'), '/');
 
-        $this->createDirectory($publicFolder);
+        if (! $this->filesystem->exists($publicFolder)) {
+            $this->filesystem->mkdir($publicFolder);
+        }
 
         $manifest = $this->processIcons($io, $manifest, $publicUrl, $publicFolder, $assetFolder);
         if ($manifest === self::FAILURE) {
@@ -86,18 +91,11 @@ final class GenerateManifestCommand extends Command
                 )
             );
         } catch (JsonException $exception) {
-            echo 'An error occurred while creating your directory at ' . $exception->getPath();
+            $io->error(sprintf('Unable to generate the manifest file: %s', $exception->getMessage()));
+            return self::FAILURE;
         }
 
         return self::SUCCESS;
-    }
-
-    private function createDirectory(string $folderPath): void
-    {
-        if ($this->filesystem->exists($folderPath)) {
-            $this->filesystem->remove($folderPath);
-        }
-        $this->filesystem->mkdir($folderPath);
     }
 
     /**
@@ -169,6 +167,22 @@ final class GenerateManifestCommand extends Command
         ];
     }
 
+    private function handleSizeAndPurpose(?string $purpose, int $size, array $fileData): array
+    {
+        $sizes = $size === 0 ? 'any' : $size . 'x' . $size;
+        $fileData += [
+            'sizes' => $sizes,
+        ];
+
+        if ($purpose !== null) {
+            $fileData += [
+                'purpose' => $purpose,
+            ];
+        }
+
+        return $fileData;
+    }
+
     /**
      * @return array{src: string, sizes: string, type: string, purpose: ?string}
      */
@@ -177,7 +191,7 @@ final class GenerateManifestCommand extends Command
         string  $publicUrl,
         string  $publicFolder,
         string  $assetFolder,
-        string  $sizes,
+        int  $size,
         ?string $purpose
     ): array {
         $fileData = $this->storeFile(
@@ -186,17 +200,10 @@ final class GenerateManifestCommand extends Command
             $publicFolder,
             $assetFolder,
             'shortcut-icon',
-            ['shortcut-icon', $purpose]
+            ['shortcut-icon', $purpose, $size === 0 ? 'any' : $size . 'x' . $size]
         );
 
-        return ($purpose !== null)
-            ? $fileData + [
-                'sizes' => $sizes,
-                'purpose' => $purpose,
-            ]
-            : $fileData + [
-                'sizes' => $sizes,
-            ];
+        return $this->handleSizeAndPurpose($purpose, $size, $fileData);
     }
 
     /**
@@ -207,19 +214,19 @@ final class GenerateManifestCommand extends Command
         string  $publicUrl,
         string  $publicFolder,
         string  $assetFolder,
-        string  $sizes,
+        int  $size,
         ?string $purpose
     ): array {
-        $fileData = $this->storeFile($data, $publicUrl, $publicFolder, $assetFolder, 'icon', ['icon', $purpose]);
+        $fileData = $this->storeFile(
+            $data,
+            $publicUrl,
+            $publicFolder,
+            $assetFolder,
+            'icon',
+            ['icon', $purpose, $size === 0 ? 'any' : $size . 'x' . $size]
+        );
 
-        return ($purpose !== null)
-            ? $fileData + [
-                'sizes' => $sizes,
-                'purpose' => $purpose,
-            ]
-            : $fileData + [
-                'sizes' => $sizes,
-            ];
+        return $this->handleSizeAndPurpose($purpose, $size, $fileData);
     }
 
     private function processIcons(
@@ -232,47 +239,40 @@ final class GenerateManifestCommand extends Command
         if ($this->config['icons'] === []) {
             return $manifest;
         }
-
-        try {
-            $this->filesystem->mkdir(sprintf('%s%s', $publicFolder, $assetFolder));
-        } catch (IOExceptionInterface $exception) {
-            echo 'An error occurred while creating your directory at ' . $exception->getPath();
-        }
-        $manifest['icons'] = [];
-        $io->info('Processing icons');
-        if ($this->imageProcessor === null) {
-            $io->error('Image processor not found');
+        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
             return self::FAILURE;
         }
+        $manifest['icons'] = [];
+        $progressBar = $io->createProgressBar(count($this->config['icons']));
+        $progressBar->start();
+        $io->info('Processing icons');
+        $progressBar->start();
         foreach ($this->config['icons'] as $icon) {
-            $minSize = min($icon['sizes']);
-            $maxSize = max($icon['sizes']);
-            if ($minSize === 0 && $maxSize !== 0) {
-                $io->error('The icon size 0 ("any") must not be mixed with other sizes');
-                return self::FAILURE;
+            $this->processProgressBar($progressBar, 'icon', $icon['src']);
+            foreach ($icon['sizes'] as $size) {
+                if (! is_int($size) || $size < 0) {
+                    $io->error('The icon size must be a positive integer');
+                    return self::FAILURE;
+                }
+                $data = $this->loadFile($icon['src'], $size, $icon['format'] ?? null);
+                if ($data === null) {
+                    $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
+                    return self::FAILURE;
+                }
+
+                $iconManifest = $this->storeIcon(
+                    $data,
+                    $publicUrl,
+                    $publicFolder,
+                    $assetFolder,
+                    $size,
+                    $icon['purpose'] ?? null
+                );
+                $manifest['icons'][] = $iconManifest;
             }
-            $data = file_get_contents($icon['src']);
-            if ($data === false) {
-                $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
-                return self::FAILURE;
-            }
-            if ($maxSize !== 0) {
-                $data = $this->imageProcessor->process($data, $maxSize, $maxSize, $icon['format'] ?? null);
-            }
-            $sizes = $maxSize === 0 ? 'any' : implode(
-                ' ',
-                array_map(static fn (int $size): string => $size . 'x' . $size, $icon['sizes'])
-            );
-            $iconManifest = $this->storeIcon(
-                $data,
-                $publicUrl,
-                $publicFolder,
-                $assetFolder,
-                $sizes,
-                $icon['purpose'] ?? null
-            );
-            $manifest['icons'][] = $iconManifest;
         }
+        $progressBar->finish();
+        $io->info('Icons are built');
 
         return $manifest;
     }
@@ -287,21 +287,18 @@ final class GenerateManifestCommand extends Command
         if ($this->config['screenshots'] === []) {
             return $manifest;
         }
-        try {
-            $this->filesystem->mkdir(sprintf('%s%s', $publicFolder, $assetFolder));
-        } catch (IOExceptionInterface $exception) {
-            echo 'An error occurred while creating your directory at ' . $exception->getPath();
-        }
-        $manifest['screenshots'] = [];
-        $io->info('Processing screenshots');
-        if ($this->imageProcessor === null) {
-            $io->error('Image processor not found');
+        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
             return self::FAILURE;
         }
+        $manifest['screenshots'] = [];
+        $progressBar = $io->createProgressBar(count($this->config['screenshots']));
+        $progressBar->start();
+        $io->info('Processing screenshots');
         foreach ($this->config['screenshots'] as $screenshot) {
-            $data = file_get_contents($screenshot['src']);
-            if ($data === false) {
-                $io->error(sprintf('Unable to read the screenshot "%s"', $screenshot['src']));
+            $this->processProgressBar($progressBar, 'screenshot', $screenshot['src']);
+            $data = $this->loadFile($screenshot['src'], null, $screenshot['format'] ?? null);
+            if ($data === null) {
+                $io->error(sprintf('Unable to read the icon "%s"', $screenshot['src']));
                 return self::FAILURE;
             }
             $screenshotManifest = $this->storeScreenshot(
@@ -320,6 +317,7 @@ final class GenerateManifestCommand extends Command
             }
             $manifest['screenshots'][] = $screenshotManifest;
         }
+        $progressBar->finish();
 
         return $manifest;
     }
@@ -334,14 +332,15 @@ final class GenerateManifestCommand extends Command
         if ($this->config['shortcuts'] === []) {
             return $manifest;
         }
-        try {
-            $this->filesystem->mkdir(sprintf('%s%s', $publicFolder, $assetFolder));
-        } catch (IOExceptionInterface $exception) {
-            echo 'An error occurred while creating your directory at ' . $exception->getPath();
+        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
+            return self::FAILURE;
         }
         $manifest['shortcuts'] = [];
-        $io->info('Processing schortcuts');
+        $progressBar = $io->createProgressBar(count($this->config['shortcuts']));
+        $io->info('Processing shortcuts');
+        $progressBar->start();
         foreach ($this->config['shortcuts'] as $shortcutConfig) {
+            $this->processProgressBar($progressBar, 'shortcuts', $shortcutConfig['name']);
             $shortcut = $shortcutConfig;
             if (isset($shortcut['icons'])) {
                 unset($shortcut['icons']);
@@ -351,42 +350,49 @@ final class GenerateManifestCommand extends Command
                     return self::FAILURE;
                 }
                 foreach ($shortcutConfig['icons'] as $icon) {
-                    $minSize = min($icon['sizes']);
-                    $maxSize = max($icon['sizes']);
-                    if ($minSize === 0 && $maxSize !== 0) {
-                        $io->error('The icon size 0 ("any") must not be mixed with other sizes');
-                        return self::FAILURE;
-                    }
+                    foreach ($icon['sizes'] as $size) {
+                        if (! is_int($size) || $size < 0) {
+                            $io->error('The icon size must be a positive integer');
+                            return self::FAILURE;
+                        }
 
-                    $data = file_get_contents($icon['src']);
-                    if ($data === false) {
-                        $io->error(sprintf('Unable to read the screenshot "%s"', $icon['src']));
-                        return self::FAILURE;
-                    }
-                    if ($maxSize !== 0) {
-                        $data = $this->imageProcessor->process($data, $maxSize, $maxSize, $icon['format'] ?? null);
-                    }
-                    $sizes = $maxSize === 0 ? 'any' : implode(
-                        ' ',
-                        array_map(static fn (int $size): string => $size . 'x' . $size, $icon['sizes'])
-                    );
+                        $data = $this->loadFile($icon['src'], $size, $icon['format'] ?? null);
+                        if ($data === null) {
+                            $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
+                            return self::FAILURE;
+                        }
 
-                    $iconManifest = $this->storeShortcutIcon(
-                        $data,
-                        $publicUrl,
-                        $publicFolder,
-                        $assetFolder,
-                        $sizes,
-                        $icon['purpose'] ?? null
-                    );
-                    $shortcut['icons'][] = $iconManifest;
+                        $iconManifest = $this->storeShortcutIcon(
+                            $data,
+                            $publicUrl,
+                            $publicFolder,
+                            $assetFolder,
+                            $size,
+                            $icon['purpose'] ?? null
+                        );
+                        $shortcut['icons'][] = $iconManifest;
+                    }
                 }
             }
             $manifest['shortcuts'][] = $shortcut;
         }
+        $progressBar->finish();
         $manifest['shortcuts'] = array_values($manifest['shortcuts']);
 
         return $manifest;
+    }
+
+    private function loadFile(string $src, ?int $size, ?string $format): ?string
+    {
+        $data = file_get_contents($src);
+        if ($data === false) {
+            return null;
+        }
+        if ($size !== 0 && $size !== null) {
+            $data = $this->imageProcessor->process($data, $size, $size, $format);
+        }
+
+        return $data;
     }
 
     private function checkImageProcessor(SymfonyStyle $io): bool
@@ -397,5 +403,22 @@ final class GenerateManifestCommand extends Command
         }
 
         return true;
+    }
+
+    private function createDirectoryIfNotExists(string $publicFolder, string $assetFolder): bool
+    {
+        try {
+            $this->filesystem->mkdir(sprintf('%s%s', $publicFolder, $assetFolder));
+        } catch (IOExceptionInterface) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function processProgressBar(ProgressBar $progressBar, string $type, string $src): void
+    {
+        $progressBar->advance();
+        $progressBar->setMessage(sprintf('Processing %s %s', $type, $src));
     }
 }

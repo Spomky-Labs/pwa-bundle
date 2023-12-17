@@ -20,6 +20,9 @@ final readonly class GDImageProcessor implements ImageProcessor
         return ob_get_clean();
     }
 
+    /**
+     * @return array{width: int, height: int}
+     */
     public function getSizes(string $image): array
     {
         $image = imagecreatefromstring($image);

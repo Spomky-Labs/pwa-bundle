@@ -18,9 +18,15 @@ return static function (ContainerConfigurator $container): void {
     $container->set(GenerateManifestCommand::class);
 
     if (extension_loaded('imagick')) {
-        $container->set(ImagickImageProcessor::class);
+        $container
+            ->set(ImagickImageProcessor::class)
+            ->alias('pwa.image_processor.imagick', ImagickImageProcessor::class)
+        ;
     }
     if (extension_loaded('gd')) {
-        $container->set(GDImageProcessor::class);
+        $container
+            ->set(GDImageProcessor::class)
+            ->alias('pwa.image_processor.gd', GDImageProcessor::class)
+        ;
     }
 };

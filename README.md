@@ -1,51 +1,31 @@
-CBOR Encder/Decoder for Symfony
+Progressive Web App for Symfony
 ===============================
 
-![Build Status](https://github.com/spomky-labs/cbor-bundle/workflows/Coding%20Standards/badge.svg)
-![Build Status](https://github.com/spomky-labs/cbor-bundle/workflows/Static%20Analyze/badge.svg)
+![Build Status](https://github.com/spomky-labs/phpwa/workflows/Coding%20Standards/badge.svg)
+![Build Status](https://github.com/spomky-labs/phpwa/workflows/Static%20Analyze/badge.svg)
 
-![Build Status](https://github.com/spomky-labs/cbor-bundle/workflows/Unit%20and%20Functional%20Tests/badge.svg)
-![Build Status](https://github.com/spomky-labs/cbor-bundle/workflows/Rector%20Checkstyle/badge.svg)
+![Build Status](https://github.com/spomky-labs/phpwa/workflows/Unit%20and%20Functional%20Tests/badge.svg)
+![Build Status](https://github.com/spomky-labs/phpwa/workflows/Rector%20Checkstyle/badge.svg)
 
-[![Latest Stable Version](https://poser.pugx.org/spomky-labs/cbor-bundle/v/stable.png)](https://packagist.org/packages/spomky-labs/cbor-bundle)
-[![Total Downloads](https://poser.pugx.org/spomky-labs/cbor-bundle/downloads.png)](https://packagist.org/packages/spomky-labs/cbor-bundle)
-[![Latest Unstable Version](https://poser.pugx.org/spomky-labs/cbor-bundle/v/unstable.png)](https://packagist.org/packages/spomky-labs/cbor-bundle)
-[![License](https://poser.pugx.org/spomky-labs/cbor-bundle/license.png)](https://packagist.org/packages/spomky-labs/cbor-bundle)
+[![Latest Stable Version](https://poser.pugx.org/spomky-labs/phpwa/v/stable.png)](https://packagist.org/packages/spomky-labs/phpwa)
+[![Total Downloads](https://poser.pugx.org/spomky-labs/phpwa/downloads.png)](https://packagist.org/packages/spomky-labs/phpwa)
+[![Latest Unstable Version](https://poser.pugx.org/spomky-labs/phpwa/v/unstable.png)](https://packagist.org/packages/spomky-labs/phpwa)
+[![License](https://poser.pugx.org/spomky-labs/phpwa/license.png)](https://packagist.org/packages/spomky-labs/phpwa)
 
 # Scope
 
-This bundle wraps the [spomky-labs/cbor-php](https://github.com/spomky-labs/cbor-bundle) library and provides the decoder as a service
-This will help you to easily decode CBOR streams (Concise Binary Object Representation from [RFC8949](https://datatracker.ietf.org/doc/html/rfc8949)).
+This bundle provides the [spomky-labs/phpwa](https://github.com/spomky-labs/phpwa) bundle for Symfony.
+This will help you to generate Progressive Web Apps (PWA) Manifests and assets (icons or screenshots).
+
+Please have a look at the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) for more information about Progressive Web Apps.
 
 # Installation
 
-Install the bundle with Composer: `composer require spomky-labs/cbor-bundle`.
+Install the bundle with Composer: `composer require spomky-labs/phpwa`.
 
 This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
-
-## Object Creation
-
-For object creation, please refer to [the documentation of the library](https://github.com/Spomky-Labs/cbor-php#object-creation).
-
-## Object Loading
-
-If you want to load a CBOR encoded data, you just have to use de decoder available from the container.
-
-```php
-<?php
-
-use SpomkyLabs\CborBundle\CBORDecoder;
-
-// CBOR object (shall be a binary string; in hex for the example)
-$data = hex2bin('fb3fd5555555555555');
-
-// Load the data
-$object = $container->get(CBORDecoder::class)->decode($data); // Return a CBOR\OtherObject\DoublePrecisionFloatObject class with normalized value ~0.3333 (=1/3)
-```
-
-## Custom Tags / Other Objects
 
 *To be written*
 
@@ -64,9 +44,9 @@ Or
 # Contributing
 
 Requests for new features, bug fixed and all other ideas to make this project useful are welcome.
-The best contribution you could provide is by fixing the [opened issues where help is wanted](https://github.com/spomky-labs/cbor-bundle/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+The best contribution you could provide is by fixing the [opened issues where help is wanted](https://github.com/spomky-labs/phpwa/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
-Please report all issues in [the main repository](https://github.com/spomky-labs/cbor-bundle/issues).
+Please report all issues in [the main repository](https://github.com/spomky-labs/phpwa/issues).
 
 Please make sure to [follow these best practices](.github/CONTRIBUTING.md).
 
