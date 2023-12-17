@@ -29,7 +29,153 @@ This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
 
-*To be written*
+## Manifest Configuration
+
+The bundle is able to generate a manifest from a configuration file.
+The manifest members defined in the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) are supported
+without any change, with the exception of members `icons`, `screenshots` and `shortcuts` (see below).
+
+```yaml
+# config/packages/phpwa.yaml
+phpwa:
+    name: 'My App'
+    short_name: 'My App'
+    description: 'My App description'
+    start_url: '/index.html'
+    display: 'standalone'
+    background_color: '#ffffff'
+    theme_color: '#ffffff'
+    orientation: 'portrait'
+    dir: 'ltr'
+    lang: 'en'
+    scope: '/'
+    categories: ['productivity', 'utilities']
+    file_handlers:
+        - action: '/edit'
+          accept:
+            'text/*': ['.txt']
+            'application/json': ['.json']
+```
+
+## Manifest Generation
+
+When the configuration is set, you can generate the manifest with the following command:
+
+```bash
+symfony console pwa:build
+```
+
+The manifest will be generated in the `public` directory.
+The manifest file name is `pwa.json` and the assets will leave in the `/public/pwa` folder by default.
+You can change the output file name and the output folder with the following options:
+
+* `--output` or `-o` to change the output file name (default: `pwa.json`)
+* `--asset_folder` or `-a` to change the output folder (default: `/pwa`)
+* `--public_folder` or `-p` to change the public folder (default: `%kernel.project_dir%/public`)
+* `--url_prefix` or `-u` to change the URL prefix (default: ``)
+
+```bash
+symfony console pwa:build --output=manifest.json
+```
+
+The URL prefix is used to generate the relative URLs in the manifest.
+For instance, if your application root URL is https://example.com/foo/bar, set the URL prefix to `/foo/bar` and the manifest will be generated with relative URLs.
+
+```json
+{
+    "icons": [
+        {
+            "src": "/foo/bar/pwa/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/foo/bar/pwa/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
+```
+
+## Manifest Icons
+
+The bundle is able to generate icons from a source image.
+The icons must be square and the source image should be at best quality as possible.
+
+To process the icons, you should set an icon processor. The bundle provides a GD processor and an Imagick processor.
+Depending on your system, you may have to install one extension or the other.
+
+```yaml
+# config/packages/phpwa.yaml
+phpwa:
+    icon_processor: 'pwa.icon_processor.gd' # or 'pwa.icon_processor.imagick'
+    icons:
+        - src: "%kernel.project_dir%/assets/images/logo.png"
+          sizes: [48, 57, 60, 72, 76, 96, 114, 128, 144, 152, 180, 192, 256, 384, 512, 1024]
+          format: 'webp'
+        - src: "%kernel.project_dir%/assets/images/mask.png"
+          sizes: [48, 57, 60, 72, 76, 96, 114, 128, 144, 152, 180, 192, 256, 384, 512, 1024]
+          purpose: 'maskable'
+        - src: "%kernel.project_dir%/assets/images/logo.svg"
+          sizes: [0] # 0 means `any` size and is suitable for vector images
+```
+
+With the configuration above, the bundle will generate
+* 16 icons from the `logo.png` image. The icons will be converted from `png` to `webp`.
+* 16 icons from the `mask.png` image. The format will be `png` and the purpose will be `maskable`.
+* And 1 icon from the `logo.svg` image. The format will be `svg` and the size will be `any`.
+
+## Manifest Screenshots
+
+The bundle is able to generate screenshots from a source image.
+Similar to icons, the source image should be at best quality as possible.
+
+```yaml
+# config/packages/phpwa.yaml
+phpwa:
+    screenshots:
+        - src: "%kernel.project_dir%/assets/screenshots/narrow.png"
+          label: "View of the application home page"
+        - src: "%kernel.project_dir%/assets/screenshots/wide.png"
+          label: "View of the application home page"
+        - src: "%kernel.project_dir%/assets/screenshots/android_dashboard.png"
+          platform: 'android'
+          format: 'webp'
+          label: "View of the dashboard on Android"
+```
+
+The bundle will automatically generate 2 screenshots from the source images and add additional information in the manifest
+such as the `sizes` and the `form_factor` (`wide` or `narrow`).
+The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
+
+## Manifest Shortcuts
+
+The `shortcuts` member may contains a list of icons.
+The parameters are very similar to the `icons` member.
+
+```yaml
+# config/packages/phpwa.yaml
+phpwa:
+    shortcuts:
+        - name: "Shortcut 1"
+          short_name: "shortcut-1"
+          url: "/shortcut1"
+          description: "Shortcut 1 description"
+          icons:
+              - src: "%kernel.project_dir%/assets/images/shortcut1.png"
+                sizes: [48, 72, 96, 128, 144, 192, 256, 384, 512]
+                format: 'webp'
+        - name: "Shortcut 2"
+          short_name: "shortcut-2"
+          url: "/shortcut2"
+          description: "Shortcut 2 description"
+          icons:
+              - src: "%kernel.project_dir%/assets/images/shortcut2.png"
+                sizes: [48, 72, 96, 128, 144, 192, 256, 384, 512]
+                format: 'webp'
+```
+
 
 # Support
 
