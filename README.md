@@ -12,6 +12,8 @@ Progressive Web App for Symfony
 [![Latest Unstable Version](https://poser.pugx.org/spomky-labs/phpwa/v/unstable.png)](https://packagist.org/packages/spomky-labs/phpwa)
 [![License](https://poser.pugx.org/spomky-labs/phpwa/license.png)](https://packagist.org/packages/spomky-labs/phpwa)
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/spomky-labs/phpwa/badge)](https://api.securityscorecards.dev/projects/github.com/spomky-labs/phpwa)
+
 # Scope
 
 This bundle provides the [spomky-labs/phpwa](https://github.com/spomky-labs/phpwa) bundle for Symfony.
