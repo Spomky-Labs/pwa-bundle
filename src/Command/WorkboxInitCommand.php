@@ -14,11 +14,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\Config\FileLocator;
+use function count;
 
-#[AsCommand(
-    name: 'pwa:sw',
-    description: 'Initializes the Workbox-based Service Worker.',
-)]
+#[AsCommand(name: 'pwa:sw', description: 'Initializes the Workbox-based Service Worker.',)]
 class WorkboxInitCommand extends Command
 {
     public function __construct(
@@ -63,7 +61,6 @@ class WorkboxInitCommand extends Command
         }
         $resourcePath = $resourcePath[0];
         $this->filesystem->copy($resourcePath, $publicFolder . $outputFile);
-
 
         $io->success('Workbox is ready to use!');
 
