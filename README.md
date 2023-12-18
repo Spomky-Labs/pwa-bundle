@@ -29,7 +29,14 @@ This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
 
-## Manifest Configuration
+A Progressive Web Application (PWA) is a web application that has a manifest and can be installed on a device.
+The manifest is a JSON file that describes the application and its assets (icons, screenshots, etc.).
+
+A Service Worker can be used to provide offline capabilities to the application or to provide push notifications.
+
+## Manifest
+
+### Manifest Configuration
 
 The bundle is able to generate a manifest from a configuration file.
 The manifest members defined in the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) are supported
@@ -57,7 +64,7 @@ phpwa:
             'application/json': ['.json']
 ```
 
-## Manifest Generation
+### Manifest Generation
 
 When the configuration is set, you can generate the manifest with the following command:
 
@@ -98,7 +105,7 @@ For instance, if your application root URL is https://example.com/foo/bar, set t
 }
 ```
 
-## Manifest Icons
+### Manifest Icons
 
 The bundle is able to generate icons from a source image.
 The icons must be square and the source image should be at best quality as possible.
@@ -109,7 +116,7 @@ Depending on your system, you may have to install one extension or the other.
 ```yaml
 # config/packages/phpwa.yaml
 phpwa:
-    icon_processor: 'pwa.icon_processor.gd' # or 'pwa.icon_processor.imagick'
+    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     icons:
         - src: "%kernel.project_dir%/assets/images/logo.png"
           sizes: [48, 57, 60, 72, 76, 96, 114, 128, 144, 152, 180, 192, 256, 384, 512, 1024]
@@ -126,7 +133,7 @@ With the configuration above, the bundle will generate
 * 16 icons from the `mask.png` image. The format will be `png` and the purpose will be `maskable`.
 * And 1 icon from the `logo.svg` image. The format will be `svg` and the size will be `any`.
 
-## Manifest Screenshots
+### Manifest Screenshots
 
 The bundle is able to generate screenshots from a source image.
 Similar to icons, the source image should be at best quality as possible.
@@ -134,6 +141,7 @@ Similar to icons, the source image should be at best quality as possible.
 ```yaml
 # config/packages/phpwa.yaml
 phpwa:
+    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     screenshots:
         - src: "%kernel.project_dir%/assets/screenshots/narrow.png"
           label: "View of the application home page"
@@ -149,7 +157,7 @@ The bundle will automatically generate screenshots from the source images and ad
 such as the `sizes` and the `form_factor` (`wide` or `narrow`).
 The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
 
-## Manifest Shortcuts
+### Manifest Shortcuts
 
 The `shortcuts` member may contain a list of icons.
 The parameters are very similar to the `icons` member.
@@ -157,6 +165,7 @@ The parameters are very similar to the `icons` member.
 ```yaml
 # config/packages/phpwa.yaml
 phpwa:
+    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     shortcuts:
         - name: "Shortcut 1"
           short_name: "shortcut-1"
@@ -176,6 +185,47 @@ phpwa:
                 format: 'webp'
 ```
 
+### Using the Manifest
+
+The manifest can be used in your HTML pages with the following code in the `<head>` section.
+In you customized the output filename or the public folder, please replace `pwa.json` with the path to your manifest file.
+
+```html
+<link rel="manifest" href="{{ asset('pwa.json') }}">
+```
+
+## Service Worker
+
+The following command will generate a Service Worker in the `public` directory.
+
+```bash
+symfony console pwa:sw
+```
+
+You can change the output file name and the output folder with the following options:
+
+* `--output` or `-o` to change the output file name (default: `sw.js`)
+* `--public_folder` or `-p` to change the public folder (default: `%kernel.project_dir%/public`)
+
+Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
+It can also be done in a JavaScript file such as `app.js`.
+In you customized the output filename or the public folder, please replace `sw.js` with the path to your Service Worker file.
+
+```html
+<script>
+    if (navigator.serviceWorker) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js", {scope: '/'});
+        })
+    }
+</script>
+```
+
+### Service Worker Configuration
+
+The Service Worker uses Workbox and comes with predefined configuration and recipes.
+You are free to change the configuration and the recipes to fit your needs.
+In particular, you can change the cache strategy, the cache expiration, the cache name, etc.
 
 # Support
 

@@ -31,17 +31,15 @@ final class GenerateManifestCommand extends Command
 {
     private readonly MimeTypes $mime;
 
-    private readonly Filesystem $filesystem;
-
     public function __construct(
         private readonly null|ImageProcessor $imageProcessor,
         #[Autowire('%spomky_labs_pwa.config%')]
         private readonly array $config,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $rootDir,
+        private readonly Filesystem $filesystem,
     ) {
         $this->mime = MimeTypes::getDefault();
-        $this->filesystem = new Filesystem();
         parent::__construct();
     }
 
