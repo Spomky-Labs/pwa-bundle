@@ -33,6 +33,7 @@ final readonly class Configuration implements ConfigurationInterface
         $this->setupRelatedApplications($rootNode);
         $this->setupShortcuts($rootNode);
         $this->setupSharedTarget($rootNode);
+        $this->setupServiceWorker($rootNode);
 
         return $treeBuilder;
     }
@@ -271,6 +272,38 @@ final readonly class Configuration implements ConfigurationInterface
                 ->info('The image processor to use to generate the icons of different sizes.')
                 ->example(GDImageProcessor::class)
             ->end()
+            ->scalarNode('icon_folder')
+                ->defaultValue('%kernel.project_dir%/public/pwa')
+                ->info('The folder where the icons will be generated.')
+            ->end()
+            ->scalarNode('icon_prefix_url')
+                ->defaultValue('/pwa')
+                ->info('The URL prefix to use to generate the icons.')
+            ->end()
+            ->scalarNode('shortcut_icon_folder')
+                ->defaultValue('%kernel.project_dir%/public/pwa')
+                ->info('The folder where the shortcut icons will be generated.')
+            ->end()
+            ->scalarNode('shortcut_icon_prefix_url')
+                ->defaultValue('/pwa')
+                ->info('The URL prefix to use to generate the icons.')
+            ->end()
+            ->scalarNode('screenshot_folder')
+                ->defaultValue('%kernel.project_dir%/public/pwa')
+                ->info('The folder where the screenshots will be generated.')
+            ->end()
+            ->scalarNode('screenshot_prefix_url')
+                ->defaultValue('/pwa')
+                ->info('The URL prefix to use to generate the icons.')
+            ->end()
+            ->scalarNode('manifest_filepath')
+                ->defaultValue('%kernel.project_dir%/public/pwa.json')
+                ->info('The filename where the manifest will be generated.')
+            ->end()
+            ->scalarNode('serviceworker_filepath')
+                ->defaultValue('%kernel.project_dir%/public/sw.js')
+                ->info('The filename where the service worker will be generated.')
+            ->end()
             ->scalarNode('background_color')
                 ->info(
                     'The background color of the application. It  should match the background-color CSS property in the sites stylesheet for a smooth transition between launching the web application and loading the site\'s content.'
@@ -341,7 +374,6 @@ final readonly class Configuration implements ConfigurationInterface
         $node = $treeBuilder->getRootNode();
         assert($node instanceof ArrayNodeDefinition);
         $node
-            ->info('The icons of the application.')
             ->arrayPrototype()
                 ->children()
                     ->scalarNode('src')
@@ -369,5 +401,29 @@ final readonly class Configuration implements ConfigurationInterface
         ;
 
         return $node;
+    }
+
+    private function setupServiceWorker(ArrayNodeDefinition $node): void
+    {
+        $node->children()
+            ->arrayNode('serviceworker')
+                ->info(
+                    'EXPERIMENTAL. Specifies a serviceworker that is Just-In-Time (JIT)-installed and registered to run a web-based payment app providing a payment mechanism for a specified payment method in a merchant website.'
+                )
+                ->children()
+                    ->scalarNode('src')
+                        ->info('The path to the service worker.')
+                        ->example('sw.js')
+                    ->end()
+                    ->scalarNode('scope')
+                        ->info('The scope of the service worker.')
+                        ->example('/app/')
+                    ->end()
+                    ->booleanNode('use_cache')
+                        ->info('Whether the service worker should use the cache.')
+                    ->end()
+                ->end()
+            ->end()
+        ->end();
     }
 }

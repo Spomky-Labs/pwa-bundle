@@ -32,6 +32,21 @@ final class SpomkyLabsPwaExtension extends Extension
             $container->setAlias(ImageProcessor::class, $config['image_processor']);
         }
         unset($config['image_processor']);
+        $params = [
+            'icon_folder',
+            'icon_prefix_url',
+            'shortcut_icon_folder',
+            'shortcut_icon_prefix_url',
+            'screenshot_folder',
+            'screenshot_prefix_url',
+            'manifest_filepath',
+            'serviceworker_filepath',
+        ];
+        $container->setParameter('spomky_labs_pwa.dest', array_intersect_key($config, array_flip($params)));
+        foreach ($params as $param) {
+            unset($config[$param]);
+        }
+
         $container->setParameter('spomky_labs_pwa.config', $config);
     }
 

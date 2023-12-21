@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
+use SpomkyLabs\PwaBundle\Tests\DummyImageProcessor;
 
 return static function (ContainerConfigurator $container) {
+    $container->services()
+        ->set(DummyImageProcessor::class);
     $container->extension('framework', [
         'test' => true,
         'secret' => 'test',
@@ -16,7 +18,15 @@ return static function (ContainerConfigurator $container) {
         ],
     ]);
     $container->extension('pwa', [
-        'image_processor' => ImagickImageProcessor::class,
+        'image_processor' => DummyImageProcessor::class,
+        'icon_folder' => '%kernel.cache_dir%/samples/icons',
+        'icon_prefix_url' => '/icons',
+        'shortcut_icon_folder' => '%kernel.cache_dir%/samples/shortcut_icons',
+        'shortcut_icon_prefix_url' => '/shortcut_icons',
+        'screenshot_folder' => '%kernel.cache_dir%/samples/screenshots',
+        'screenshot_prefix_url' => '/screenshots',
+        'manifest_filepath' => '%kernel.cache_dir%/samples/manifest/my-pwa.json',
+        'serviceworker_filepath' => '%kernel.cache_dir%/samples/sw/my-sw.js',
         'background_color' => 'red',
         'categories' => ['books', 'education', 'medical'],
         'description' => 'Awesome application that will help you achieve your dreams.',
