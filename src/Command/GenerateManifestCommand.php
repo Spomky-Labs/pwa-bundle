@@ -11,15 +11,16 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Routing\RouterInterface;
 use function count;
+use function dirname;
+use function is_array;
 use function is_int;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
@@ -34,27 +35,14 @@ final class GenerateManifestCommand extends Command
     public function __construct(
         private readonly null|ImageProcessor $imageProcessor,
         #[Autowire('%spomky_labs_pwa.config%')]
-        private readonly array $config,
-        #[Autowire('%kernel.project_dir%')]
-        private readonly string $rootDir,
-        private readonly Filesystem $filesystem,
+        private readonly array               $config,
+        #[Autowire('%spomky_labs_pwa.dest%')]
+        private readonly array               $dest,
+        private readonly Filesystem          $filesystem,
+        private readonly ?RouterInterface          $router = null,
     ) {
         $this->mime = MimeTypes::getDefault();
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->addOption('url_prefix', 'u', InputOption::VALUE_OPTIONAL, 'Public URL prefix', '');
-        $this->addOption(
-            'public_folder',
-            'p',
-            InputOption::VALUE_OPTIONAL,
-            'Public folder',
-            $this->rootDir . '/public'
-        );
-        $this->addOption('asset_folder', 'a', InputOption::VALUE_OPTIONAL, 'Asset folder', '/pwa');
-        $this->addOption('output', 'o', InputOption::VALUE_OPTIONAL, 'Output file', 'pwa.json');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -64,31 +52,30 @@ final class GenerateManifestCommand extends Command
         $manifest = $this->config;
         $manifest = array_filter($manifest, static fn ($value) => ($value !== null && $value !== []));
 
-        $publicUrl = $input->getOption('url_prefix');
-        $publicFolder = Path::canonicalize($input->getOption('public_folder'));
-        $assetFolder = '/' . trim((string) $input->getOption('asset_folder'), '/');
-        $outputFile = '/' . trim((string) $input->getOption('output'), '/');
-
-        if (! $this->filesystem->exists($publicFolder)) {
-            $this->filesystem->mkdir($publicFolder);
-        }
-
-        $manifest = $this->processIcons($io, $manifest, $publicUrl, $publicFolder, $assetFolder);
-        if ($manifest === self::FAILURE) {
+        $manifest = $this->processIcons($io, $manifest);
+        if (! is_array($manifest)) {
             return self::FAILURE;
         }
-        $manifest = $this->processScreenshots($io, $manifest, $publicUrl, $publicFolder, $assetFolder);
-        if ($manifest === self::FAILURE) {
+        $manifest = $this->processScreenshots($io, $manifest);
+        if (! is_array($manifest)) {
             return self::FAILURE;
         }
-        $manifest = $this->processShortcutIcons($io, $manifest, $publicUrl, $publicFolder, $assetFolder);
-        if ($manifest === self::FAILURE) {
+        $manifest = $this->processShortcutIcons($io, $manifest);
+        if (! is_array($manifest)) {
+            return self::FAILURE;
+        }
+        $manifest = $this->processActions($io, $manifest);
+        if (! is_array($manifest)) {
             return self::FAILURE;
         }
 
         try {
+            $this->createDirectoryIfNotExists(dirname((string) $this->dest['manifest_filepath']));
+            if (! $this->filesystem->exists($this->dest['manifest_filepath'])) {
+                $this->filesystem->remove($this->dest['manifest_filepath']);
+            }
             file_put_contents(
-                sprintf('%s%s', $publicFolder, $outputFile),
+                (string) $this->dest['manifest_filepath'],
                 json_encode(
                     $manifest,
                     JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
@@ -106,15 +93,9 @@ final class GenerateManifestCommand extends Command
      * @param array<string|null> $components
      * @return array{src: string, type: string}
      */
-    private function storeFile(
-        string $data,
-        string $publicUrl,
-        string $publicFolder,
-        string $assetFolder,
-        string $type,
-        array  $components
-    ): array {
-        $tempFilename = $this->filesystem->tempnam($publicFolder, $type . '-');
+    private function storeFile(string $data, string $prefixUrl, string $storageFolder, array $components): array
+    {
+        $tempFilename = $this->filesystem->tempnam($storageFolder, 'pwa-');
         $hash = mb_substr(hash('sha256', $data), 0, 8);
         file_put_contents($tempFilename, $data);
         $mime = $this->mime->guessMimeType($tempFilename);
@@ -125,14 +106,14 @@ final class GenerateManifestCommand extends Command
         }
 
         $components[] = $hash;
-        $filename = sprintf('%s/%s.%s', $assetFolder, implode('-', $components), $extension[0]);
-        $localFilename = sprintf('%s%s', $publicFolder, $filename);
+        $filename = sprintf('%s.%s', implode('-', $components), $extension[0]);
+        $localFilename = sprintf('%s/%s', rtrim($storageFolder, '/'), $filename);
 
         file_put_contents($localFilename, $data);
         $this->filesystem->remove($tempFilename);
 
         return [
-            'src' => sprintf('%s%s', $publicUrl, $filename),
+            'src' => sprintf('%s%s', $prefixUrl, $filename),
             'type' => $mime,
         ];
     }
@@ -140,34 +121,29 @@ final class GenerateManifestCommand extends Command
     /**
      * @return array{src: string, type: string, sizes: string, form_factor: ?string}
      */
-    private function storeScreenshot(
-        string  $data,
-        string  $publicUrl,
-        string  $publicFolder,
-        string  $assetFolder,
-        ?string $format,
-        ?string $formFactor
-    ): array {
+    private function storeScreenshot(string $data, ?string $format, ?string $formFactor): array
+    {
         if ($format !== null) {
             $data = $this->imageProcessor->process($data, null, null, $format);
         }
 
         ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($data);
         $size = sprintf('%sx%s', $width, $height);
-        $formFactor ??= $width > $height ? 'wide' : 'narrow';
 
         $fileData = $this->storeFile(
             $data,
-            $publicUrl,
-            $publicFolder,
-            $assetFolder,
-            'screenshot',
+            $this->dest['screenshot_prefix_url'],
+            $this->dest['screenshot_folder'],
             ['screenshot', $formFactor, $size]
         );
+        if ($formFactor !== null) {
+            $fileData += [
+                'form_factor' => $formFactor,
+            ];
+        }
 
         return $fileData + [
             'sizes' => $size,
-            'form_factor' => $formFactor,
         ];
     }
 
@@ -190,20 +166,12 @@ final class GenerateManifestCommand extends Command
     /**
      * @return array{src: string, sizes: string, type: string, purpose: ?string}
      */
-    private function storeShortcutIcon(
-        string  $data,
-        string  $publicUrl,
-        string  $publicFolder,
-        string  $assetFolder,
-        int  $size,
-        ?string $purpose
-    ): array {
+    private function storeShortcutIcon(string $data, int $size, ?string $purpose): array
+    {
         $fileData = $this->storeFile(
             $data,
-            $publicUrl,
-            $publicFolder,
-            $assetFolder,
-            'shortcut-icon',
+            $this->dest['shortcut_icon_prefix_url'],
+            $this->dest['shortcut_icon_folder'],
             ['shortcut-icon', $purpose, $size === 0 ? 'any' : $size . 'x' . $size]
         );
 
@@ -213,37 +181,24 @@ final class GenerateManifestCommand extends Command
     /**
      * @return array{src: string, sizes: string, type: string, purpose: ?string}
      */
-    private function storeIcon(
-        string  $data,
-        string  $publicUrl,
-        string  $publicFolder,
-        string  $assetFolder,
-        int  $size,
-        ?string $purpose
-    ): array {
+    private function storeIcon(string $data, int $size, ?string $purpose): array
+    {
         $fileData = $this->storeFile(
             $data,
-            $publicUrl,
-            $publicFolder,
-            $assetFolder,
-            'icon',
+            $this->dest['icon_prefix_url'],
+            $this->dest['icon_folder'],
             ['icon', $purpose, $size === 0 ? 'any' : $size . 'x' . $size]
         );
 
         return $this->handleSizeAndPurpose($purpose, $size, $fileData);
     }
 
-    private function processIcons(
-        SymfonyStyle $io,
-        array $manifest,
-        mixed $publicUrl,
-        string $publicFolder,
-        string $assetFolder
-    ): array|int {
+    private function processIcons(SymfonyStyle $io, array $manifest): array|int
+    {
         if ($this->config['icons'] === []) {
             return $manifest;
         }
-        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
+        if (! $this->createDirectoryIfNotExists($this->dest['icon_folder']) || ! $this->checkImageProcessor($io)) {
             return self::FAILURE;
         }
         $manifest['icons'] = [];
@@ -258,20 +213,13 @@ final class GenerateManifestCommand extends Command
                     $io->error('The icon size must be a positive integer');
                     return self::FAILURE;
                 }
-                $data = $this->loadFile($icon['src'], $size, $icon['format'] ?? null);
+                $data = $this->loadFileAndConvert($icon['src'], $size, $icon['format'] ?? null);
                 if ($data === null) {
                     $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
                     return self::FAILURE;
                 }
 
-                $iconManifest = $this->storeIcon(
-                    $data,
-                    $publicUrl,
-                    $publicFolder,
-                    $assetFolder,
-                    $size,
-                    $icon['purpose'] ?? null
-                );
+                $iconManifest = $this->storeIcon($data, $size, $icon['purpose'] ?? null);
                 $manifest['icons'][] = $iconManifest;
             }
         }
@@ -281,17 +229,14 @@ final class GenerateManifestCommand extends Command
         return $manifest;
     }
 
-    private function processScreenshots(
-        SymfonyStyle $io,
-        array $manifest,
-        mixed $publicUrl,
-        string $publicFolder,
-        string $assetFolder
-    ): array|int {
+    private function processScreenshots(SymfonyStyle $io, array $manifest): array|int
+    {
         if ($this->config['screenshots'] === []) {
             return $manifest;
         }
-        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
+        if (! $this->createDirectoryIfNotExists($this->dest['screenshot_folder']) || ! $this->checkImageProcessor(
+            $io
+        )) {
             return self::FAILURE;
         }
         $manifest['screenshots'] = [];
@@ -300,16 +245,13 @@ final class GenerateManifestCommand extends Command
         $io->info('Processing screenshots');
         foreach ($this->config['screenshots'] as $screenshot) {
             $this->processProgressBar($progressBar, 'screenshot', $screenshot['src']);
-            $data = $this->loadFile($screenshot['src'], null, $screenshot['format'] ?? null);
+            $data = $this->loadFileAndConvert($screenshot['src'], null, $screenshot['format'] ?? null);
             if ($data === null) {
                 $io->error(sprintf('Unable to read the icon "%s"', $screenshot['src']));
                 return self::FAILURE;
             }
             $screenshotManifest = $this->storeScreenshot(
                 $data,
-                $publicUrl,
-                $publicFolder,
-                $assetFolder,
                 $screenshot['format'] ?? null,
                 $screenshot['form_factor'] ?? null
             );
@@ -326,17 +268,14 @@ final class GenerateManifestCommand extends Command
         return $manifest;
     }
 
-    private function processShortcutIcons(
-        SymfonyStyle $io,
-        array|int $manifest,
-        mixed $publicUrl,
-        string $publicFolder,
-        string $assetFolder
-    ): array|int {
+    private function processShortcutIcons(SymfonyStyle $io, array|int $manifest): array|int
+    {
         if ($this->config['shortcuts'] === []) {
             return $manifest;
         }
-        if (! $this->createDirectoryIfNotExists($publicFolder, $assetFolder) || ! $this->checkImageProcessor($io)) {
+        if (! $this->createDirectoryIfNotExists($this->dest['shortcut_icon_folder']) || ! $this->checkImageProcessor(
+            $io
+        )) {
             return self::FAILURE;
         }
         $manifest['shortcuts'] = [];
@@ -349,6 +288,14 @@ final class GenerateManifestCommand extends Command
             if (isset($shortcut['icons'])) {
                 unset($shortcut['icons']);
             }
+            if (! str_starts_with((string) $shortcut['url'], '/')) {
+                if ($this->router === null) {
+                    $io->error('The router is not available');
+                    return self::FAILURE;
+                }
+                $shortcut['url'] = $this->router->generate($shortcut['url'], [], RouterInterface::RELATIVE_PATH);
+            }
+
             if (isset($shortcutConfig['icons'])) {
                 if (! $this->checkImageProcessor($io)) {
                     return self::FAILURE;
@@ -360,20 +307,13 @@ final class GenerateManifestCommand extends Command
                             return self::FAILURE;
                         }
 
-                        $data = $this->loadFile($icon['src'], $size, $icon['format'] ?? null);
+                        $data = $this->loadFileAndConvert($icon['src'], $size, $icon['format'] ?? null);
                         if ($data === null) {
                             $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
                             return self::FAILURE;
                         }
 
-                        $iconManifest = $this->storeShortcutIcon(
-                            $data,
-                            $publicUrl,
-                            $publicFolder,
-                            $assetFolder,
-                            $size,
-                            $icon['purpose'] ?? null
-                        );
+                        $iconManifest = $this->storeShortcutIcon($data, $size, $icon['purpose'] ?? null);
                         $shortcut['icons'][] = $iconManifest;
                     }
                 }
@@ -386,7 +326,7 @@ final class GenerateManifestCommand extends Command
         return $manifest;
     }
 
-    private function loadFile(string $src, ?int $size, ?string $format): ?string
+    private function loadFileAndConvert(string $src, ?int $size, ?string $format): ?string
     {
         $data = file_get_contents($src);
         if ($data === false) {
@@ -409,10 +349,12 @@ final class GenerateManifestCommand extends Command
         return true;
     }
 
-    private function createDirectoryIfNotExists(string $publicFolder, string $assetFolder): bool
+    private function createDirectoryIfNotExists(string $folder): bool
     {
         try {
-            $this->filesystem->mkdir(sprintf('%s%s', $publicFolder, $assetFolder));
+            if (! $this->filesystem->exists($folder)) {
+                $this->filesystem->mkdir($folder);
+            }
         } catch (IOExceptionInterface) {
             return false;
         }
@@ -424,5 +366,26 @@ final class GenerateManifestCommand extends Command
     {
         $progressBar->advance();
         $progressBar->setMessage(sprintf('Processing %s %s', $type, $src));
+    }
+
+    private function processActions(SymfonyStyle $io, array $manifest): array|int
+    {
+        $io->info('Processing file handlers');
+        foreach ($manifest['file_handlers'] as $id => $handler) {
+            if (str_starts_with((string) $handler['action'], '/')) {
+                continue;
+            }
+            if ($this->router === null) {
+                $io->error('The router is not available');
+                return self::FAILURE;
+            }
+            $manifest['file_handlers'][$id]['action'] = $this->router->generate(
+                $handler['action'],
+                [],
+                RouterInterface::RELATIVE_PATH
+            );
+        }
+
+        return $manifest;
     }
 }

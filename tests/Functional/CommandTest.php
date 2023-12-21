@@ -35,18 +35,37 @@ final class CommandTest extends KernelTestCase
         $commandTester = new CommandTester($command);
 
         // When
-        $commandTester->execute([
-            '--url_prefix' => '/foo/bar',
-            '--public_folder' => sprintf('%s/samples', $kernel->getCacheDir()),
-            '--asset_folder' => '/data',
-            '--output' => 'my-pwa.json',
-        ]);
+        $commandTester->execute([]);
 
         // Then
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
         static::assertStringContainsString('PWA Manifest Generator', $output);
-        static::assertFileExists(sprintf('%s/samples/my-pwa.json', $kernel->getCacheDir()));
-        static::assertDirectoryExists(sprintf('%s/samples/data', $kernel->getCacheDir()));
+        static::assertFileExists(sprintf('%s/samples/manifest/my-pwa.json', $kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/icons', $kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/screenshots', $kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/shortcut_icons', $kernel->getCacheDir()));
+    }
+
+    #[Test]
+    public static function theCommandCanCreateTheServiceWorker(): void
+    {
+        // Given
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+        $filesystem = self::getContainer()->get('filesystem');
+        $filesystem->remove(sprintf('%s/samples', $kernel->getCacheDir()));
+
+        $command = $application->find('pwa:sw');
+        $commandTester = new CommandTester($command);
+
+        // When
+        $commandTester->execute([]);
+
+        // Then
+        $commandTester->assertCommandIsSuccessful();
+        $output = $commandTester->getDisplay();
+        static::assertStringContainsString('Workbox Service Worker', $output);
+        static::assertFileExists(sprintf('%s/samples/sw/my-sw.js', $kernel->getCacheDir()));
     }
 }
