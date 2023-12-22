@@ -8,17 +8,25 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @internal
  */
 final class CommandTest extends KernelTestCase
 {
+    private static Application $application;
+
+    protected function setUp(): void
+    {
+        self::cleanupFolder();
+        self::$application = new Application(self::$kernel);
+        parent::setUp();
+    }
+
     protected function tearDown(): void
     {
-        $filesystem = self::getContainer()->get('filesystem');
-        $filesystem->remove(sprintf('%s/samples', self::$kernel->getCacheDir()));
-
+        self::cleanupFolder();
         parent::tearDown();
     }
 
@@ -26,12 +34,7 @@ final class CommandTest extends KernelTestCase
     public static function theCommandCanGenerateTheManifestAndIcons(): void
     {
         // Given
-        $kernel = self::bootKernel();
-        $application = new Application($kernel);
-        $filesystem = self::getContainer()->get('filesystem');
-        $filesystem->remove(sprintf('%s/samples', $kernel->getCacheDir()));
-
-        $command = $application->find('pwa:build');
+        $command = self::$application->find('pwa:build');
         $commandTester = new CommandTester($command);
 
         // When
@@ -39,24 +42,18 @@ final class CommandTest extends KernelTestCase
 
         // Then
         $commandTester->assertCommandIsSuccessful();
-        $output = $commandTester->getDisplay();
-        static::assertStringContainsString('PWA Manifest Generator', $output);
-        static::assertFileExists(sprintf('%s/samples/manifest/my-pwa.json', $kernel->getCacheDir()));
-        static::assertDirectoryExists(sprintf('%s/samples/icons', $kernel->getCacheDir()));
-        static::assertDirectoryExists(sprintf('%s/samples/screenshots', $kernel->getCacheDir()));
-        static::assertDirectoryExists(sprintf('%s/samples/shortcut_icons', $kernel->getCacheDir()));
+        static::assertStringContainsString('PWA Manifest Generator', $commandTester->getDisplay());
+        static::assertFileExists(sprintf('%s/samples/manifest/my-pwa.json', self::$kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/icons', self::$kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/screenshots', self::$kernel->getCacheDir()));
+        static::assertDirectoryExists(sprintf('%s/samples/shortcut_icons', self::$kernel->getCacheDir()));
     }
 
     #[Test]
     public static function theCommandCanCreateTheServiceWorker(): void
     {
         // Given
-        $kernel = self::bootKernel();
-        $application = new Application($kernel);
-        $filesystem = self::getContainer()->get('filesystem');
-        $filesystem->remove(sprintf('%s/samples', $kernel->getCacheDir()));
-
-        $command = $application->find('pwa:sw');
+        $command = self::$application->find('pwa:sw');
         $commandTester = new CommandTester($command);
 
         // When
@@ -64,8 +61,13 @@ final class CommandTest extends KernelTestCase
 
         // Then
         $commandTester->assertCommandIsSuccessful();
-        $output = $commandTester->getDisplay();
-        static::assertStringContainsString('Workbox Service Worker', $output);
-        static::assertFileExists(sprintf('%s/samples/sw/my-sw.js', $kernel->getCacheDir()));
+        static::assertStringContainsString('Workbox Service Worker', $commandTester->getDisplay());
+        static::assertFileExists(sprintf('%s/samples/sw/my-sw.js', self::$kernel->getCacheDir()));
+    }
+
+    private static function cleanupFolder(): void
+    {
+        $filesystem = self::getContainer()->get(Filesystem::class);
+        $filesystem->remove(sprintf('%s/samples', self::$kernel->getCacheDir()));
     }
 }

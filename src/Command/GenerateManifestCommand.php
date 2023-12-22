@@ -113,7 +113,7 @@ final class GenerateManifestCommand extends Command
         $this->filesystem->remove($tempFilename);
 
         return [
-            'src' => sprintf('%s%s', $prefixUrl, $filename),
+            'src' => sprintf('%s/%s', $prefixUrl, $filename),
             'type' => $mime,
         ];
     }
@@ -370,6 +370,9 @@ final class GenerateManifestCommand extends Command
 
     private function processActions(SymfonyStyle $io, array $manifest): array|int
     {
+        if ($this->config['file_handlers'] === []) {
+            return $manifest;
+        }
         $io->info('Processing file handlers');
         foreach ($manifest['file_handlers'] as $id => $handler) {
             if (str_starts_with((string) $handler['action'], '/')) {
