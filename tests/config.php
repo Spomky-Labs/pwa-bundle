@@ -106,30 +106,9 @@ return static function (ContainerConfigurator $container) {
         'theme_color' => 'red',
         'screenshots' => [
             [
-                'src' => sprintf('%s/images/360x800.svg', __DIR__),
-                'label' => 'Homescreen of Awesome App',
+                'src' => sprintf('%s/images/screenshots', __DIR__),
                 'platform' => 'android',
                 'format' => 'png',
-            ],
-            [
-                'src' => sprintf('%s/images/390x844.svg', __DIR__),
-                'label' => 'List of Awesome Resources available in Awesome App',
-                'platform' => 'windows',
-                'format' => 'jpeg',
-            ],
-            [
-                'src' => sprintf('%s/images/600x400.svg', __DIR__),
-                'label' => 'Awesome App in action (1)',
-                'format' => 'webp',
-            ],
-            [
-                'src' => sprintf('%s/images/780x360.svg', __DIR__),
-                'label' => 'Awesome App in action (2)',
-                'format' => 'webp',
-            ],
-            [
-                'src' => sprintf('%s/images/915x412.svg', __DIR__),
-                'label' => 'Awesome App in action (3)',
             ],
         ],
         'share_target' => [

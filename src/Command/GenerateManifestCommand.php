@@ -16,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\RouterInterface;
 use function count;
@@ -243,7 +244,20 @@ final class GenerateManifestCommand extends Command
         $progressBar = $io->createProgressBar(count($this->config['screenshots']));
         $progressBar->start();
         $io->info('Processing screenshots');
+        $config = [];
         foreach ($this->config['screenshots'] as $screenshot) {
+            $src = $screenshot['src'];
+            if (! $this->filesystem->exists($src)) {
+                continue;
+            }
+            foreach ($this->findImages($src) as $image) {
+                $data = $screenshot;
+                $data['src'] = $image;
+                $config[] = $data;
+            }
+        }
+
+        foreach ($config as $screenshot) {
             $this->processProgressBar($progressBar, 'screenshot', $screenshot['src']);
             $data = $this->loadFileAndConvert($screenshot['src'], null, $screenshot['format'] ?? null);
             if ($data === null) {
@@ -390,5 +404,27 @@ final class GenerateManifestCommand extends Command
         }
 
         return $manifest;
+    }
+
+    /**
+     * @return iterable<string}>
+     */
+    private function findImages(string $src): iterable
+    {
+        $finder = new Finder();
+        if (is_file($src)) {
+            yield $src;
+            return;
+        }
+        $files = $finder->in($src)
+            ->files()
+            ->name('/\.(png|jpg|jpeg|gif|webp|svg)$/i');
+        foreach ($files as $file) {
+            if ($file->isFile()) {
+                yield $file->getRealPath();
+            } else {
+                yield from $this->findImages($file->getRealPath());
+            }
+        }
     }
 }
