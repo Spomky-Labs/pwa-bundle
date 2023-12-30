@@ -9,7 +9,6 @@ use RuntimeException;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -17,6 +16,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\RouterInterface;
 use function count;
@@ -40,6 +40,7 @@ final class GenerateManifestCommand extends Command
         #[Autowire('%spomky_labs_pwa.dest%')]
         private readonly array               $dest,
         private readonly Filesystem          $filesystem,
+        private readonly FileLocator $fileLocator,
         private readonly ?RouterInterface          $router = null,
     ) {
         $this->mime = MimeTypes::getDefault();
@@ -66,6 +67,10 @@ final class GenerateManifestCommand extends Command
             return self::FAILURE;
         }
         $manifest = $this->processActions($io, $manifest);
+        if (! is_array($manifest)) {
+            return self::FAILURE;
+        }
+        $manifest = $this->processServiceWorker($io, $manifest);
         if (! is_array($manifest)) {
             return self::FAILURE;
         }
@@ -203,12 +208,7 @@ final class GenerateManifestCommand extends Command
             return self::FAILURE;
         }
         $manifest['icons'] = [];
-        $progressBar = $io->createProgressBar(count($this->config['icons']));
-        $progressBar->start();
-        $io->info('Processing icons');
-        $progressBar->start();
         foreach ($this->config['icons'] as $icon) {
-            $this->processProgressBar($progressBar, 'icon', $icon['src']);
             foreach ($icon['sizes'] as $size) {
                 if (! is_int($size) || $size < 0) {
                     $io->error('The icon size must be a positive integer');
@@ -224,7 +224,6 @@ final class GenerateManifestCommand extends Command
                 $manifest['icons'][] = $iconManifest;
             }
         }
-        $progressBar->finish();
         $io->info('Icons are built');
 
         return $manifest;
@@ -241,9 +240,6 @@ final class GenerateManifestCommand extends Command
             return self::FAILURE;
         }
         $manifest['screenshots'] = [];
-        $progressBar = $io->createProgressBar(count($this->config['screenshots']));
-        $progressBar->start();
-        $io->info('Processing screenshots');
         $config = [];
         foreach ($this->config['screenshots'] as $screenshot) {
             $src = $screenshot['src'];
@@ -258,7 +254,6 @@ final class GenerateManifestCommand extends Command
         }
 
         foreach ($config as $screenshot) {
-            $this->processProgressBar($progressBar, 'screenshot', $screenshot['src']);
             $data = $this->loadFileAndConvert($screenshot['src'], null, $screenshot['format'] ?? null);
             if ($data === null) {
                 $io->error(sprintf('Unable to read the icon "%s"', $screenshot['src']));
@@ -277,7 +272,6 @@ final class GenerateManifestCommand extends Command
             }
             $manifest['screenshots'][] = $screenshotManifest;
         }
-        $progressBar->finish();
 
         return $manifest;
     }
@@ -293,11 +287,7 @@ final class GenerateManifestCommand extends Command
             return self::FAILURE;
         }
         $manifest['shortcuts'] = [];
-        $progressBar = $io->createProgressBar(count($this->config['shortcuts']));
-        $io->info('Processing shortcuts');
-        $progressBar->start();
         foreach ($this->config['shortcuts'] as $shortcutConfig) {
-            $this->processProgressBar($progressBar, 'shortcuts', $shortcutConfig['name']);
             $shortcut = $shortcutConfig;
             if (isset($shortcut['icons'])) {
                 unset($shortcut['icons']);
@@ -334,7 +324,6 @@ final class GenerateManifestCommand extends Command
             }
             $manifest['shortcuts'][] = $shortcut;
         }
-        $progressBar->finish();
         $manifest['shortcuts'] = array_values($manifest['shortcuts']);
 
         return $manifest;
@@ -376,24 +365,17 @@ final class GenerateManifestCommand extends Command
         return true;
     }
 
-    private function processProgressBar(ProgressBar $progressBar, string $type, string $src): void
-    {
-        $progressBar->advance();
-        $progressBar->setMessage(sprintf('Processing %s %s', $type, $src));
-    }
-
     private function processActions(SymfonyStyle $io, array $manifest): array|int
     {
         if ($this->config['file_handlers'] === []) {
             return $manifest;
         }
-        $io->info('Processing file handlers');
         foreach ($manifest['file_handlers'] as $id => $handler) {
             if (str_starts_with((string) $handler['action'], '/')) {
                 continue;
             }
             if ($this->router === null) {
-                $io->error('The router is not available');
+                $io->error('The router is not available. Unable to generate the file handler action URL.');
                 return self::FAILURE;
             }
             $manifest['file_handlers'][$id]['action'] = $this->router->generate(
@@ -426,5 +408,56 @@ final class GenerateManifestCommand extends Command
                 yield from $this->findImages($file->getRealPath());
             }
         }
+    }
+
+    private function processServiceWorker(SymfonyStyle $io, array $manifest): int|array
+    {
+        if (! isset($manifest['serviceworker'])) {
+            $io->error('Service worker generation is disabled. Skipping.');
+            return $manifest;
+        }
+        $generate = $manifest['serviceworker']['generate'];
+        unset($manifest['serviceworker']['generate']);
+
+        if ($generate !== true) {
+            $io->info('Service worker generation is disabled. Skipping.');
+            return $manifest;
+        }
+
+        $dest = $manifest['serviceworker']['filepath'];
+        $scope = $manifest['serviceworker']['scope'];
+        $src = $manifest['serviceworker']['src'];
+        unset($manifest['serviceworker']['filepath']);
+
+        if (! $this->filesystem->exists(dirname((string) $dest))) {
+            $this->filesystem->mkdir(dirname((string) $dest));
+        }
+        if ($this->filesystem->exists($dest)) {
+            $io->info('Service worker already exists. Skipping.');
+            return $manifest;
+        }
+
+        $resourcePath = $this->fileLocator->locate('@SpomkyLabsPwaBundle/Resources/workbox.js', null, false);
+        if (count($resourcePath) !== 1) {
+            $io->error('Unable to find the Workbox resource.');
+            return self::FAILURE;
+        }
+        $resourcePath = $resourcePath[0];
+        $this->filesystem->copy($resourcePath, $dest);
+        $io->info('Service worker generated.');
+        $io->comment('You can now configure your web server to serve the service worker file.');
+        $io->section('# assets/app.js (or any other entrypoint)');
+        $jsTemplate = <<<JS
+            if (navigator.serviceWorker) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker.register("{$src}", {scope: '{$scope}'});
+                })
+            }
+        JS;
+
+        $io->writeln($jsTemplate);
+        $io->section('# End of file');
+
+        return $manifest;
     }
 }

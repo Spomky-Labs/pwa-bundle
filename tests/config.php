@@ -26,7 +26,6 @@ return static function (ContainerConfigurator $container) {
         'screenshot_folder' => '%kernel.cache_dir%/samples/screenshots',
         'screenshot_prefix_url' => '/screenshots',
         'manifest_filepath' => '%kernel.cache_dir%/samples/manifest/my-pwa.json',
-        'serviceworker_filepath' => '%kernel.cache_dir%/samples/sw/my-sw.js',
         'background_color' => 'red',
         'categories' => ['books', 'education', 'medical'],
         'description' => 'Awesome application that will help you achieve your dreams.',
@@ -151,6 +150,13 @@ return static function (ContainerConfigurator $container) {
                     ],
                 ],
             ],
+        ],
+        'serviceworker' => [
+            'generate' => true,
+            'src' => '/my-sw.js',
+            'filepath' => '%kernel.cache_dir%/samples/sw/my-sw.js',
+            'scope' => '/',
+            'use_cache' => true,
         ],
     ]);
 };
