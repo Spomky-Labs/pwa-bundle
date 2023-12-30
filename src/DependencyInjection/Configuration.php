@@ -42,6 +42,9 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('shortcuts')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The shortcuts of the application.')
                 ->arrayPrototype()
                     ->children()
@@ -75,6 +78,9 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('screenshots')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The screenshots of the application.')
                 ->arrayPrototype()
                     ->children()
@@ -113,6 +119,9 @@ final readonly class Configuration implements ConfigurationInterface
                 ->info(
                     'It specifies an array of objects representing the types of files an installed progressive web app (PWA) can handle.'
                 )
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->arrayPrototype()
                     ->children()
                         ->scalarNode('action')
@@ -140,6 +149,9 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('share_target')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The share target of the application.')
                 ->children()
                     ->scalarNode('action')
@@ -195,6 +207,9 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('protocol_handlers')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The protocol handlers of the application.')
                 ->arrayPrototype()
                     ->children()
@@ -218,6 +233,9 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('launch_handler')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The launch handler of the application.')
                 ->children()
                     ->arrayNode('client_mode')
@@ -237,9 +255,12 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->booleanNode('prefer_related_applications')
-            ->info('The prefer related native applications of the application.')
+                ->info('The prefer related native applications of the application.')
             ->end()
             ->arrayNode('related_applications')
+                ->treatFalseLike([])
+                ->treatTrueLike([])
+                ->treatNullLike([])
                 ->info('The related applications of the application.')
                 ->arrayPrototype()
                     ->children()
@@ -297,12 +318,8 @@ final readonly class Configuration implements ConfigurationInterface
                 ->info('The URL prefix to use to generate the icons.')
             ->end()
             ->scalarNode('manifest_filepath')
-                ->defaultValue('%kernel.project_dir%/public/pwa.json')
+                ->defaultValue('%kernel.project_dir%/public/site.webmanifest')
                 ->info('The filename where the manifest will be generated.')
-            ->end()
-            ->scalarNode('serviceworker_filepath')
-                ->defaultValue('%kernel.project_dir%/public/sw.js')
-                ->info('The filename where the service worker will be generated.')
             ->end()
             ->scalarNode('background_color')
                 ->info(
@@ -374,6 +391,9 @@ final readonly class Configuration implements ConfigurationInterface
         $node = $treeBuilder->getRootNode();
         assert($node instanceof ArrayNodeDefinition);
         $node
+            ->treatFalseLike([])
+            ->treatTrueLike([])
+            ->treatNullLike([])
             ->arrayPrototype()
                 ->children()
                     ->scalarNode('src')
@@ -407,19 +427,41 @@ final readonly class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->arrayNode('serviceworker')
-                ->info(
-                    'EXPERIMENTAL. Specifies a serviceworker that is Just-In-Time (JIT)-installed and registered to run a web-based payment app providing a payment mechanism for a specified payment method in a merchant website.'
-                )
+                ->info('EXPERIMENTAL. Specifies a serviceworker that is registered.')
+                ->treatFalseLike([])
+                ->treatTrueLike([
+                    'generate' => true,
+                ])
+                ->treatNullLike([])
+                ->validate()
+                    ->ifTrue(
+                        static fn (array $v): bool => basename((string) $v['filepath']) !== basename((string) $v['src'])
+                    )
+                    ->thenInvalid('The filename from the "filepath" and the "src" must be the same.')
+                ->end()
                 ->children()
+                    ->booleanNode('generate')
+                        ->defaultFalse()
+                        ->info('Whether the service worker should be generated.')
+                    ->end()
+                    ->scalarNode('filepath')
+                        ->defaultValue('%kernel.project_dir%/public/sw.js')
+                        ->info('The filename where the service worker will be generated.')
+                    ->end()
                     ->scalarNode('src')
+                        ->cannotBeEmpty()
+                        ->defaultValue('/sw.js')
                         ->info('The path to the service worker.')
-                        ->example('sw.js')
+                        ->example('/sw.js')
                     ->end()
                     ->scalarNode('scope')
+                        ->cannotBeEmpty()
+                        ->defaultValue('/')
                         ->info('The scope of the service worker.')
                         ->example('/app/')
                     ->end()
                     ->booleanNode('use_cache')
+                        ->defaultTrue()
                         ->info('Whether the service worker should use the cache.')
                     ->end()
                 ->end()
