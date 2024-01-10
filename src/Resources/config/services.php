@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use SpomkyLabs\PwaBundle\Command\GenerateManifestCommand;
+use SpomkyLabs\PwaBundle\Command\GenerateServiceWorkerCommand;
 use SpomkyLabs\PwaBundle\Command\SectionProcessor\ActionsSectionProcessor;
 use SpomkyLabs\PwaBundle\Command\SectionProcessor\ApplicationIconsSectionProcessor;
 use SpomkyLabs\PwaBundle\Command\SectionProcessor\ApplicationScreenshotsSectionProcessor;
@@ -35,6 +36,7 @@ return static function (ContainerConfigurator $container): void {
         ->tag('pwa.section-processor');
 
     $container->set(GenerateManifestCommand::class);
+    $container->set(GenerateServiceWorkerCommand::class);
 
     if (extension_loaded('imagick')) {
         $container

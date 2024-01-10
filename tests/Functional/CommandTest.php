@@ -31,7 +31,7 @@ final class CommandTest extends KernelTestCase
     }
 
     #[Test]
-    public static function theCommandCanGenerateTheManifestAndIcons(): void
+    public static function theCommandCanGenerateTheManifestAndAssets(): void
     {
         // Given
         $command = self::$application->find('pwa:build');
@@ -51,6 +51,24 @@ final class CommandTest extends KernelTestCase
         }
     }
 
+    #[Test]
+    public static function theCommandCanGenerateTheServiceWorker(): void
+    {
+        // Given
+        $command = self::$application->find('pwa:sw');
+        $commandTester = new CommandTester($command);
+
+        // When
+        $commandTester->execute([]);
+
+        // Then
+        $commandTester->assertCommandIsSuccessful();
+
+        static::assertStringContainsString('PWA Service Worker Generator', $commandTester->getDisplay());
+        static::assertDirectoryExists(sprintf('%s/samples/sw', self::$kernel->getCacheDir()));
+        static::assertFileExists(sprintf('%s/samples/sw/my-sw.js', self::$kernel->getCacheDir()));
+    }
+
     private static function cleanupFolder(): void
     {
         $filesystem = self::getContainer()->get(Filesystem::class);
@@ -62,7 +80,6 @@ final class CommandTest extends KernelTestCase
      */
     private static function expectedFiles(): iterable
     {
-        yield 'sw' => sprintf('%s/samples/sw/my-sw.js', self::$kernel->getCacheDir());
         yield 'manifest' => sprintf('%s/samples/manifest/my-pwa.json', self::$kernel->getCacheDir());
         yield 'icon 48' => sprintf('%s/samples/icons/icon--48x48-1dc988f5.json', self::$kernel->getCacheDir());
         yield 'icon 72' => sprintf('%s/samples/icons/icon--72x72-5446402b.json', self::$kernel->getCacheDir());
