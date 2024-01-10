@@ -200,6 +200,12 @@ The following command will generate a Service Worker in the `public` directory w
 symfony console pwa:sw
 ```
 
+If you want override the existing Service Worker, you can use the `--force` option:
+
+```bash
+symfony console pwa:sw --force
+```
+
 Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
 It can also be done in a JavaScript file such as `app.js`.
 In you customized the output filename or the public folder, please replace `sw.js` with the path to your Service Worker file.
