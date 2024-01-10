@@ -192,8 +192,7 @@ return static function (ContainerConfigurator $container) {
         ],
         'handle_links' => 'auto',
         'serviceworker' => [
-            'generate' => true,
-            'src' => '/my-sw.js',
+            'src' => '/sw/my-sw.js',
             'filepath' => '%kernel.cache_dir%/samples/sw/my-sw.js',
             'scope' => '/',
             'use_cache' => true,
