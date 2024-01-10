@@ -30,7 +30,7 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-#[AsCommand(name: 'pwa:build', description: 'Generate the Progressive Web App Manifest',)]
+#[AsCommand(name: 'pwa:build', description: 'Generate the Progressive Web App Manifest')]
 final class GenerateManifestCommand extends Command
 {
     private readonly MimeTypes $mime;
@@ -77,6 +77,10 @@ final class GenerateManifestCommand extends Command
             return self::FAILURE;
         }
         $manifest = $this->processActions($io, $manifest);
+        if (! is_array($manifest)) {
+            return self::FAILURE;
+        }
+        $manifest = $this->processWidgets($io, $manifest);
         if (! is_array($manifest)) {
             return self::FAILURE;
         }
@@ -182,21 +186,6 @@ final class GenerateManifestCommand extends Command
     /**
      * @return array{src: string, sizes: string, type: string, purpose: ?string}
      */
-    private function storeShortcutIcon(string $data, int $size, ?string $purpose): array
-    {
-        $fileData = $this->storeFile(
-            $data,
-            $this->dest['shortcut_icon_prefix_url'],
-            $this->dest['shortcut_icon_folder'],
-            ['shortcut-icon', $purpose, $size === 0 ? 'any' : $size . 'x' . $size]
-        );
-
-        return $this->handleSizeAndPurpose($purpose, $size, $fileData);
-    }
-
-    /**
-     * @return array{src: string, sizes: string, type: string, purpose: ?string}
-     */
     private function storeIcon(string $data, int $size, ?string $purpose): array
     {
         $fileData = $this->storeFile(
@@ -209,16 +198,13 @@ final class GenerateManifestCommand extends Command
         return $this->handleSizeAndPurpose($purpose, $size, $fileData);
     }
 
-    private function processIcons(SymfonyStyle $io, array $manifest): array|int
+    /**
+     * @param array{src: string, sizes: array<int>, format: ?string, purpose: ?string} $icons
+     */
+    private function processIcon(SymfonyStyle $io, array $icons): array|int
     {
-        if ($this->config['icons'] === []) {
-            return $manifest;
-        }
-        if (! $this->createDirectoryIfNotExists($this->dest['icon_folder']) || ! $this->checkImageProcessor($io)) {
-            return self::FAILURE;
-        }
-        $manifest['icons'] = [];
-        foreach ($this->config['icons'] as $icon) {
+        $result = [];
+        foreach ($icons as $icon) {
             foreach ($icon['sizes'] as $size) {
                 if (! is_int($size) || $size < 0) {
                     $io->error('The icon size must be a positive integer');
@@ -231,27 +217,31 @@ final class GenerateManifestCommand extends Command
                 }
 
                 $iconManifest = $this->storeIcon($data, $size, $icon['purpose'] ?? null);
-                $manifest['icons'][] = $iconManifest;
+                $result[] = $iconManifest;
             }
         }
+
+        return $result;
+    }
+
+    private function processIcons(SymfonyStyle $io, array $manifest): array|int
+    {
+        if ($this->config['icons'] === []) {
+            return $manifest;
+        }
+        if (! $this->createDirectoryIfNotExists($this->dest['icon_folder']) || ! $this->checkImageProcessor($io)) {
+            return self::FAILURE;
+        }
+        $manifest['icons'] = $this->processIcon($io, $this->config['icons']);
         $io->info('Icons are built');
 
         return $manifest;
     }
 
-    private function processScreenshots(SymfonyStyle $io, array $manifest): array|int
+    private function processScreenshot(SymfonyStyle $io, array $screenshots): array|int
     {
-        if ($this->config['screenshots'] === []) {
-            return $manifest;
-        }
-        if (! $this->createDirectoryIfNotExists($this->dest['screenshot_folder']) || ! $this->checkImageProcessor(
-            $io
-        )) {
-            return self::FAILURE;
-        }
-        $manifest['screenshots'] = [];
         $config = [];
-        foreach ($this->config['screenshots'] as $screenshot) {
+        foreach ($screenshots as $screenshot) {
             if (isset($screenshot['src'])) {
                 $src = $screenshot['src'];
                 if (! $this->filesystem->exists($src)) {
@@ -264,6 +254,12 @@ final class GenerateManifestCommand extends Command
                 }
             }
             if (isset($screenshot['path'])) {
+                if ($this->webClient === null) {
+                    $io->error(
+                        'The web client is not available. Unable to take a screenshot. Please install "symfony/panther" and a web driver.'
+                    );
+                    return self::FAILURE;
+                }
                 $path = $screenshot['path'];
                 $height = $screenshot['height'];
                 $width = $screenshot['width'];
@@ -286,6 +282,7 @@ final class GenerateManifestCommand extends Command
             }
         }
 
+        $result = [];
         foreach ($config as $screenshot) {
             $data = $this->loadFileAndConvert($screenshot['src'], null, $screenshot['format'] ?? null);
             if ($data === null) {
@@ -305,11 +302,26 @@ final class GenerateManifestCommand extends Command
             if (isset($screenshot['platform'])) {
                 $screenshotManifest['platform'] = $screenshot['platform'];
             }
-            $manifest['screenshots'][] = $screenshotManifest;
+            $result[] = $screenshotManifest;
             if ($delete) {
                 $this->filesystem->remove($screenshot['src']);
             }
         }
+
+        return $result;
+    }
+
+    private function processScreenshots(SymfonyStyle $io, array $manifest): array|int
+    {
+        if ($this->config['screenshots'] === []) {
+            return $manifest;
+        }
+        if (! $this->createDirectoryIfNotExists($this->dest['screenshot_folder']) || ! $this->checkImageProcessor(
+            $io
+        )) {
+            return self::FAILURE;
+        }
+        $manifest['screenshots'] = $this->processScreenshot($io, $this->config['screenshots']);
 
         return $manifest;
     }
@@ -319,9 +331,7 @@ final class GenerateManifestCommand extends Command
         if ($this->config['shortcuts'] === []) {
             return $manifest;
         }
-        if (! $this->createDirectoryIfNotExists($this->dest['shortcut_icon_folder']) || ! $this->checkImageProcessor(
-            $io
-        )) {
+        if (! $this->createDirectoryIfNotExists($this->dest['icon_folder']) || ! $this->checkImageProcessor($io)) {
             return self::FAILURE;
         }
         $manifest['shortcuts'] = [];
@@ -339,26 +349,7 @@ final class GenerateManifestCommand extends Command
             }
 
             if (isset($shortcutConfig['icons'])) {
-                if (! $this->checkImageProcessor($io)) {
-                    return self::FAILURE;
-                }
-                foreach ($shortcutConfig['icons'] as $icon) {
-                    foreach ($icon['sizes'] as $size) {
-                        if (! is_int($size) || $size < 0) {
-                            $io->error('The icon size must be a positive integer');
-                            return self::FAILURE;
-                        }
-
-                        $data = $this->loadFileAndConvert($icon['src'], $size, $icon['format'] ?? null);
-                        if ($data === null) {
-                            $io->error(sprintf('Unable to read the icon "%s"', $icon['src']));
-                            return self::FAILURE;
-                        }
-
-                        $iconManifest = $this->storeShortcutIcon($data, $size, $icon['purpose'] ?? null);
-                        $shortcut['icons'][] = $iconManifest;
-                    }
-                }
+                $shortcut['icons'] = $this->processIcon($io, $shortcutConfig['icons']);
             }
             $manifest['shortcuts'][] = $shortcut;
         }
@@ -495,6 +486,25 @@ final class GenerateManifestCommand extends Command
 
         $io->writeln($jsTemplate);
         $io->section('# End of file');
+
+        return $manifest;
+    }
+
+    private function processWidgets(SymfonyStyle $io, array $manifest): int|array
+    {
+        if ($this->config['widgets'] === []) {
+            return $manifest;
+        }
+        $manifest['widgets'] = [];
+        foreach ($this->config['widgets'] as $widget) {
+            if (isset($widget['icons'])) {
+                $widget['icons'] = $this->processIcon($io, $widget['icons']);
+            }
+            if (isset($widget['screenshots'])) {
+                $widget['screenshots'] = $this->processScreenshot($io, $widget['screenshots']);
+            }
+            $manifest['widgets'][] = $widget;
+        }
 
         return $manifest;
     }

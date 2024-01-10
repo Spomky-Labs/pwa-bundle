@@ -21,8 +21,6 @@ return static function (ContainerConfigurator $container) {
         'image_processor' => DummyImageProcessor::class,
         'icon_folder' => '%kernel.cache_dir%/samples/icons',
         'icon_prefix_url' => '/icons',
-        'shortcut_icon_folder' => '%kernel.cache_dir%/samples/shortcut_icons',
-        'shortcut_icon_prefix_url' => '/shortcut_icons',
         'screenshot_folder' => '%kernel.cache_dir%/samples/screenshots',
         'screenshot_prefix_url' => '/screenshots',
         'manifest_filepath' => '%kernel.cache_dir%/samples/manifest/my-pwa.json',
@@ -151,6 +149,48 @@ return static function (ContainerConfigurator $container) {
                 ],
             ],
         ],
+        'edge_side_panel' => [
+            'preferred_width' => 480,
+        ],
+        'iarc_rating_id' => '123456',
+        'scope_extensions' => [
+            [
+                'origin' => '*.foo.com',
+            ],
+            [
+                'origin' => 'https://*.bar.com',
+            ],
+            [
+                'origin' => 'https://*.baz.com',
+            ],
+        ],
+        'widgets' => [
+            [
+                'name' => 'PWAmp mini player',
+                'description' => 'widget to control the PWAmp music player',
+                'tag' => 'pwamp',
+                'template' => 'pwamp-template',
+                'ms_ac_template' => 'widgets/mini-player-template.json',
+                'data' => 'widgets/mini-player-data.json',
+                'type' => 'application/json',
+                'screenshots' => [
+                    [
+                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'label' => 'The PWAmp mini-player widget',
+                    ],
+                ],
+                'icons' => [
+                    [
+                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'sizes' => [16, 48],
+                        'format' => 'webp',
+                    ],
+                ],
+                'auth' => false,
+                'update' => 86400,
+            ],
+        ],
+        'handle_links' => 'auto',
         'serviceworker' => [
             'generate' => true,
             'src' => '/my-sw.js',
