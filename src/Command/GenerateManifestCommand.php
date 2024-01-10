@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use Facebook\WebDriver\WebDriverDimension;
 use JsonException;
 use RuntimeException;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
@@ -18,6 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Panther\Client;
 use Symfony\Component\Routing\RouterInterface;
 use function count;
 use function dirname;
@@ -33,16 +35,24 @@ final class GenerateManifestCommand extends Command
 {
     private readonly MimeTypes $mime;
 
+    private readonly null|Client $webClient;
+
     public function __construct(
         private readonly null|ImageProcessor $imageProcessor,
+        #[Autowire('@pwa.web_client')]
+        null|Client $webClient,
         #[Autowire('%spomky_labs_pwa.config%')]
-        private readonly array               $config,
+        private readonly array $config,
         #[Autowire('%spomky_labs_pwa.dest%')]
-        private readonly array               $dest,
-        private readonly Filesystem          $filesystem,
+        private readonly array $dest,
+        private readonly Filesystem $filesystem,
         private readonly FileLocator $fileLocator,
-        private readonly ?RouterInterface          $router = null,
+        private readonly ?RouterInterface $router = null,
     ) {
+        if ($webClient === null && class_exists(Client::class)) {
+            $webClient = Client::createChromeClient();
+        }
+        $this->webClient = $webClient;
         $this->mime = MimeTypes::getDefault();
         parent::__construct();
     }
@@ -242,13 +252,36 @@ final class GenerateManifestCommand extends Command
         $manifest['screenshots'] = [];
         $config = [];
         foreach ($this->config['screenshots'] as $screenshot) {
-            $src = $screenshot['src'];
-            if (! $this->filesystem->exists($src)) {
-                continue;
+            if (isset($screenshot['src'])) {
+                $src = $screenshot['src'];
+                if (! $this->filesystem->exists($src)) {
+                    continue;
+                }
+                foreach ($this->findImages($src) as $image) {
+                    $data = $screenshot;
+                    $data['src'] = $image;
+                    $config[] = $data;
+                }
             }
-            foreach ($this->findImages($src) as $image) {
+            if (isset($screenshot['path'])) {
+                $path = $screenshot['path'];
+                $height = $screenshot['height'];
+                $width = $screenshot['width'];
+                unset($screenshot['path'], $screenshot['height'], $screenshot['width']);
+
+                $client = clone $this->webClient;
+                $client->request('GET', $path);
+                $tmpName = $this->filesystem->tempnam('', 'pwa-');
+                $client->manage()
+                    ->window()
+                    ->setSize(new WebDriverDimension($width, $height));
+                $client->manage()
+                    ->window()
+                    ->fullscreen();
+                $client->takeScreenshot($tmpName);
                 $data = $screenshot;
-                $data['src'] = $image;
+                $data['src'] = $tmpName;
+                $data['delete'] = true;
                 $config[] = $data;
             }
         }
@@ -259,6 +292,8 @@ final class GenerateManifestCommand extends Command
                 $io->error(sprintf('Unable to read the icon "%s"', $screenshot['src']));
                 return self::FAILURE;
             }
+            $delete = $screenshot['delete'] ?? false;
+            unset($screenshot['delete']);
             $screenshotManifest = $this->storeScreenshot(
                 $data,
                 $screenshot['format'] ?? null,
@@ -271,6 +306,9 @@ final class GenerateManifestCommand extends Command
                 $screenshotManifest['platform'] = $screenshot['platform'];
             }
             $manifest['screenshots'][] = $screenshotManifest;
+            if ($delete) {
+                $this->filesystem->remove($screenshot['src']);
+            }
         }
 
         return $manifest;

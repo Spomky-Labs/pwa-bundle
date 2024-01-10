@@ -31,7 +31,10 @@ final class SpomkyLabsPwaExtension extends Extension
         if ($config['image_processor'] !== null) {
             $container->setAlias(ImageProcessor::class, $config['image_processor']);
         }
-        unset($config['image_processor']);
+        if ($config['web_client'] !== null) {
+            $container->setAlias('pwa.web_client', $config['web_client']);
+        }
+        unset($config['image_processor'], $config['web_client']);
         $params = [
             'icon_folder',
             'icon_prefix_url',

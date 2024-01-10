@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use SpomkyLabs\PwaBundle\Command\GenerateManifestCommand;
-use SpomkyLabs\PwaBundle\Command\WorkboxInitCommand;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -17,7 +16,6 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(GenerateManifestCommand::class);
-    $container->set(WorkboxInitCommand::class);
 
     if (extension_loaded('imagick')) {
         $container
