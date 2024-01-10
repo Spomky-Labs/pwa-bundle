@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command\SectionProcessor;
 
-use SpomkyLabs\PwaBundle\Command\Client;
+use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Panther\Client;
 use function is_int;
 
 final class ApplicationScreenshotsSectionProcessor implements SectionProcessor
@@ -22,10 +23,10 @@ final class ApplicationScreenshotsSectionProcessor implements SectionProcessor
         #[Autowire('%spomky_labs_pwa.dest%')]
         private readonly array $dest,
         #[Autowire('@pwa.web_client')]
-        null|Client $webClient,
+        null|Client $webClient = null,
         private readonly null|ImageProcessor $imageProcessor = null,
     ) {
-        if ($webClient === null && class_exists(Client::class)) {
+        if ($webClient === null && class_exists(Client::class) && class_exists(WebDriverDimension::class)) {
             $webClient = Client::createChromeClient();
         }
         $this->webClient = $webClient;

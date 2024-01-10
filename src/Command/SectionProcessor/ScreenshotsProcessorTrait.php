@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command\SectionProcessor;
 
-use SpomkyLabs\PwaBundle\Command\Client;
-use SpomkyLabs\PwaBundle\Command\WebDriverDimension;
+use Facebook\WebDriver\WebDriverDimension;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Panther\Client;
 
 trait ScreenshotsProcessorTrait
 {
