@@ -23,7 +23,12 @@ Please have a look at the [Web app manifests](https://developer.mozilla.org/en-U
 
 # Installation
 
-Install the bundle with Composer: `composer require --dev spomky-labs/phpwa`.
+Install the bundle with Composer: 
+
+```bash
+composer config minimum-stability dev
+composer require --dev spomky-labs/phpwa
+```
 
 This project follows the [semantic versioning](http://semver.org/) strictly.
 
