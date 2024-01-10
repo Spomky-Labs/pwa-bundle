@@ -18,6 +18,7 @@ Progressive Web App for Symfony
 
 This bundle provides the [spomky-labs/phpwa](https://github.com/spomky-labs/phpwa) bundle for Symfony.
 This will help you to generate Progressive Web Apps (PWA) Manifests and assets (icons or screenshots).
+Also, it will help you to generate Service Workers based on [Workbox](https://developers.google.com/web/tools/workbox).
 
 Please have a look at the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) for more information about Progressive Web Apps.
 
@@ -44,11 +45,11 @@ A Service Worker can be used to provide offline capabilities to the application 
 
 The bundle is able to generate a manifest from a configuration file.
 The manifest members defined in the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) are supported
-without any change, with the exception of members `icons`, `screenshots` and `shortcuts` (see below).
+without any change, with the exception of some members described in the following sections.
 
 ```yaml
 # config/packages/phpwa.yaml
-phpwa:
+pwa:
     name: 'My App'
     short_name: 'My App'
     description: 'My App description'
@@ -76,50 +77,37 @@ When the configuration is set, you can generate the manifest with the following 
 symfony console pwa:build
 ```
 
-The manifest will be generated in the `public` directory.
-The manifest file name is `pwa.json` and the assets will leave in the `/public/pwa` folder by default.
-You can change the output file name and the output folder with the following options:
+By default, the manifest will be generated in the `public` directory with the name `/site.webmanifest`.
+You can change the output file name and the output folder with the following configuration option:
 
-* `--output` or `-o` to change the output file name (default: `pwa.json`)
-* `--asset_folder` or `-a` to change the output folder (default: `/pwa`)
-* `--public_folder` or `-p` to change the public folder (default: `%kernel.project_dir%/public`)
-* `--url_prefix` or `-u` to change the URL prefix (default: ``)
-
-```bash
-symfony console pwa:build --output=manifest.json
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    manifest_filepath: '%kernel.project_dir%/public/sub-folder/pwa.json'
 ```
+### Using the Manifest
 
-The URL prefix is used to generate the relative URLs in the manifest.
-For instance, if your application root URL is https://example.com/foo/bar, set the URL prefix to `/foo/bar` and the manifest will be generated with relative URLs.
+The manifest can be used in your HTML pages with the following code in the `<head>` section.
+In you customized the output filename or the public folder, please replace `/site.webmanifest` with the path to your manifest file.
 
-```json
-{
-    "icons": [
-        {
-            "src": "/foo/bar/pwa/icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/foo/bar/pwa/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
-}
+```html
+<link rel="manifest" href="/site.webmanifest">
 ```
 
 ### Manifest Icons
 
 The bundle is able to generate icons from a source image.
+This is applicable to the application icons, shortcut icons or Windows 10 widget icons members of the manifest.
 The icons must be square and the source image should be at best quality as possible.
 
 To process the icons, you should set an icon processor. The bundle provides a GD processor and an Imagick processor.
 Depending on your system, you may have to install one extension or the other.
 
+Please note that the icons of a size greater than 1024px may be ignored by the browser.
+
 ```yaml
 # config/packages/phpwa.yaml
-phpwa:
+pwa:
     image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     icons:
         - src: "%kernel.project_dir%/assets/images/logo.png"
@@ -130,46 +118,6 @@ phpwa:
           purpose: 'maskable'
         - src: "%kernel.project_dir%/assets/images/logo.svg"
           sizes: [0] # 0 means `any` size and is suitable for vector images
-```
-
-With the configuration above, the bundle will generate
-* 16 icons from the `logo.png` image. The icons will be converted from `png` to `webp`.
-* 16 icons from the `mask.png` image. The format will be `png` and the purpose will be `maskable`.
-* And 1 icon from the `logo.svg` image. The format will be `svg` and the size will be `any`.
-
-### Manifest Screenshots
-
-The bundle is able to generate screenshots from a source image.
-Similar to icons, the source image should be at best quality as possible.
-
-```yaml
-# config/packages/phpwa.yaml
-phpwa:
-    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
-    screenshots:
-        - src: "%kernel.project_dir%/assets/screenshots/narrow.png"
-          label: "View of the application home page"
-        - src: "%kernel.project_dir%/assets/screenshots/wide.png"
-          label: "View of the application home page"
-        - src: "%kernel.project_dir%/assets/screenshots/android_dashboard.png"
-          platform: 'android'
-          format: 'webp'
-          label: "View of the dashboard on Android"
-```
-
-The bundle will automatically generate screenshots from the source images and add additional information in the manifest
-such as the `sizes` and the `form_factor` (`wide` or `narrow`).
-The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
-
-### Manifest Shortcuts
-
-The `shortcuts` member may contain a list of icons.
-The parameters are very similar to the `icons` member.
-
-```yaml
-# config/packages/phpwa.yaml
-phpwa:
-    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     shortcuts:
         - name: "Shortcut 1"
           short_name: "shortcut-1"
@@ -189,27 +137,68 @@ phpwa:
                 format: 'webp'
 ```
 
-### Using the Manifest
+With the configuration above, the bundle will generate
+* 16 icons from the `logo.png` image. The icons will be converted from `png` to `webp`.
+* 16 icons from the `mask.png` image. The format will be `png` and the purpose will be `maskable`.
+* And 1 icon from the `logo.svg` image. The format will be `svg` and the size will be `any`.
 
-The manifest can be used in your HTML pages with the following code in the `<head>` section.
-In you customized the output filename or the public folder, please replace `pwa.json` with the path to your manifest file.
+If the `format` member is present, the bundle will convert the image to the specified format.
+In the example above, the `logo.png` image will be converted to `webp`, but the `mask.png` image will not be converted.
 
-```html
-<link rel="manifest" href="{{ asset('pwa.json') }}">
+### Manifest Screenshots
+
+The bundle is able to generate screenshots from a source image.
+This is applicable to the application screenshots or Windows 10 widget screenshot members of the manifest.
+Similar to icons, the source image should be at best quality as possible.
+
+You can select a folder where the source images are stored.
+The bundle will automatically generate screenshots from all the images in the folder. 
+
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
+    screenshots:
+        - src: "%kernel.project_dir%/assets/screenshots/narrow/"
+          form_factor: "narrow"
+        - src: "%kernel.project_dir%/assets/screenshots/wide/"
+          form_factor: "wide"
+        - src: "%kernel.project_dir%/assets/screenshots/android_dashboard.png"
+          platform: 'android'
+          format: 'webp'
+          label: "View of the dashboard on Android"
+```
+
+The bundle will automatically generate screenshots from the source images and add additional information in the manifest
+such as the `sizes` and the `form_factor` (`wide` or `narrow`).
+The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
+
+### Manifest Shortcuts
+
+The `shortcuts` member may contain a list of action shortcuts that point to specific URLs in your application.
+You can define URLs as relative paths or by using the route name.
+
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    shortcuts:
+        - name: "Action 1"
+          short_name: "action-1"
+          url: "/action1"
+          description: "Action 1 description"
+        - name: "Action 2"
+          short_name: "action-2"
+          url: "app_action2"
+          description: "Use this route to generate the URL"
 ```
 
 ## Service Worker
 
-The following command will generate a Service Worker in the `public` directory.
+The following command will generate a Service Worker in the `public` directory with the name `/sw.js`:
 
 ```bash
 symfony console pwa:sw
 ```
-
-You can change the output file name and the output folder with the following options:
-
-* `--output` or `-o` to change the output file name (default: `sw.js`)
-* `--public_folder` or `-p` to change the public folder (default: `%kernel.project_dir%/public`)
 
 Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
 It can also be done in a JavaScript file such as `app.js`.
@@ -225,11 +214,26 @@ In you customized the output filename or the public folder, please replace `sw.j
 </script>
 ```
 
+The location of the Service Worker is important. It must be at the root of your application.
+In addition, the `serviceworker.src` member of the manifest must be set to the same location.
+The `serviceworker.scope` member may be set to the same location or to a sub-folder.
+Do not forget to update the `scope` member in the JS configuration.
+
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    serviceworker:
+        filepath: '%kernel.project_dir%/public/sub-folder/service-worker.js'
+        src: '/sub-folder/service-worker.js'
+        scope: '/'
+```
+
 ### Service Worker Configuration
 
 The Service Worker uses Workbox and comes with predefined configuration and recipes.
 You are free to change the configuration and the recipes to fit your needs.
 In particular, you can change the cache strategy, the cache expiration, the cache name, etc.
+Please refer to the [Workbox documentation](https://developers.google.com/web/tools/workbox).
 
 # Support
 
