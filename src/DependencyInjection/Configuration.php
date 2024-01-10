@@ -77,38 +77,8 @@ final readonly class Configuration implements ConfigurationInterface
     private function setupScreenshots(ArrayNodeDefinition $node): void
     {
         $node->children()
-            ->arrayNode('screenshots')
-                ->treatFalseLike([])
-                ->treatTrueLike([])
-                ->treatNullLike([])
-                ->info('The screenshots of the application.')
-                ->arrayPrototype()
-                    ->children()
-                        ->scalarNode('src')
-                            ->isRequired()
-                            ->info('The path to the screenshot.')
-                            ->example('screenshot/lowres.webp')
-                        ->end()
-                        ->scalarNode('form_factor')
-                            ->info('The form factor of the screenshot. Will guess the form factor if not set.')
-                            ->example(['wide', 'narrow'])
-                        ->end()
-                        ->scalarNode('label')
-                            ->info('The label of the screenshot.')
-                            ->example('Homescreen of Awesome App')
-                        ->end()
-                        ->scalarNode('platform')
-                            ->info('The platform of the screenshot.')
-                            ->example(
-                                ['android', 'windows', 'chromeos', 'ipados', 'ios', 'kaios', 'macos', 'windows', 'xbox']
-                            )
-                        ->end()
-                        ->scalarNode('format')
-                            ->info('The format of the screenshot. Will convert the file if set.')
-                            ->example(['jpg', 'png', 'webp'])
-                        ->end()
-                    ->end()
-                ->end()
+                ->append($this->getScreenshotsNode())
+            ->end()
         ;
     }
 
@@ -293,6 +263,10 @@ final readonly class Configuration implements ConfigurationInterface
                 ->info('The image processor to use to generate the icons of different sizes.')
                 ->example(GDImageProcessor::class)
             ->end()
+            ->scalarNode('web_client')
+                ->defaultNull()
+                ->info('The Panther Client for generating screenshots. If not set, the default client will be used.')
+            ->end()
             ->scalarNode('icon_folder')
                 ->defaultValue('%kernel.project_dir%/public/pwa')
                 ->info('The folder where the icons will be generated.')
@@ -467,5 +441,76 @@ final readonly class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ->end();
+    }
+
+    private function getScreenshotsNode(): ArrayNodeDefinition
+    {
+        $treeBuilder = new TreeBuilder('screenshots');
+        $node = $treeBuilder->getRootNode();
+        assert($node instanceof ArrayNodeDefinition);
+        $node
+            ->treatFalseLike([])
+            ->treatTrueLike([])
+            ->treatNullLike([])
+            ->arrayPrototype()
+                ->validate()
+                    ->ifTrue(static fn (array $v): bool => ! (isset($v['src']) xor isset($v['path'])))
+                    ->thenInvalid('Either "src", "route" or "path" must be set.')
+                ->end()
+                ->validate()
+                    ->ifTrue(static function (array $v): bool {
+                        if (isset($v['src'])) {
+                            return false;
+                        }
+
+                        if (! isset($v['height']) || ! isset($v['width'])) {
+                            return true;
+                        }
+
+                        return false;
+                    })
+                    ->thenInvalid('When using "path", "height" and "width" must be set.')
+                ->end()
+                ->children()
+                    ->scalarNode('src')
+                        ->info('The path to the screenshot.')
+                        ->example('screenshot/lowres.webp')
+                    ->end()
+                    ->scalarNode('path')
+                        ->info('The path to an application page. The screenshot will be generated.')
+                        ->example('https://example.com')
+                    ->end()
+                    ->scalarNode('height')
+                        ->defaultNull()
+                        ->info('When using "route" or "path", the height of the screenshot.')
+                        ->example('1080')
+                    ->end()
+                    ->scalarNode('width')
+                        ->defaultNull()
+                        ->info('When using "route" or "path", the height of the screenshot.')
+                        ->example('1080')
+                    ->end()
+                    ->scalarNode('form_factor')
+                        ->info('The form factor of the screenshot. Will guess the form factor if not set.')
+                        ->example(['wide', 'narrow'])
+                    ->end()
+                    ->scalarNode('label')
+                        ->info('The label of the screenshot.')
+                        ->example('Homescreen of Awesome App')
+                    ->end()
+                    ->scalarNode('platform')
+                        ->info('The platform of the screenshot.')
+                        ->example(
+                            ['android', 'windows', 'chromeos', 'ipados', 'ios', 'kaios', 'macos', 'windows', 'xbox']
+                        )
+                    ->end()
+                    ->scalarNode('format')
+                        ->info('The format of the screenshot. Will convert the file if set.')
+                        ->example(['jpg', 'png', 'webp'])
+                    ->end()
+                ->end()
+            ->end();
+
+        return $node;
     }
 }
