@@ -26,7 +26,6 @@ Please have a look at the [Web app manifests](https://developer.mozilla.org/en-U
 Install the bundle with Composer: 
 
 ```bash
-composer config minimum-stability dev
 composer require --dev spomky-labs/phpwa
 ```
 
