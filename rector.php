@@ -28,6 +28,9 @@ return static function (RectorConfig $config): void {
     ]);
     $config->phpVersion(PhpVersion::PHP_82);
     $config->paths([__DIR__ . '/src', __DIR__ . '/tests']);
+    $config->skip([
+        __DIR__ . '/tests/Controller/DummyController.php',
+    ]);
     $config->parallel();
     $config->importNames();
     $config->importShortClasses();

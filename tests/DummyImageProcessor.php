@@ -6,6 +6,9 @@ namespace SpomkyLabs\PwaBundle\Tests;
 
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 
+/**
+ * @internal
+ */
 class DummyImageProcessor implements ImageProcessor
 {
     public function process(string $image, ?int $width, ?int $height, ?string $format): string

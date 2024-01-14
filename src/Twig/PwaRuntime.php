@@ -19,7 +19,7 @@ final readonly class PwaRuntime
         $url = $this
             ->assetMapper
             ->getAsset($filename)
-            ->publicPath
+            ?->publicPath
         ;
         if ($url === null) {
             throw new RuntimeException(sprintf('The asset "%s" is missing.', $filename));
