@@ -54,8 +54,8 @@ final class GenerateManifestCommand extends Command
         }
 
         try {
-            if (! $this->filesystem->exists($this->dest['manifest_filepath'])) {
-                $this->filesystem->mkdir($this->dest['manifest_filepath']);
+            if (! $this->filesystem->exists(dirname($this->dest['manifest_filepath']))) {
+                $this->filesystem->mkdir(dirname($this->dest['manifest_filepath']));
             }
             file_put_contents(
                 (string) $this->dest['manifest_filepath'],
