@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-use SpomkyLabs\PwaBundle\Command\GenerateManifestCommand;
-use SpomkyLabs\PwaBundle\Command\GenerateServiceWorkerCommand;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\ActionsSectionProcessor;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\ApplicationIconsSectionProcessor;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\ApplicationScreenshotsSectionProcessor;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\ServiceWorkerSectionProcessor;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\ShortcutsSectionProcessor;
-use SpomkyLabs\PwaBundle\Command\SectionProcessor\Windows10WidgetsSectionProcessor;
+use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
+use SpomkyLabs\PwaBundle\Service\Builder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container): void {
     $container = $container->services()
@@ -22,21 +17,22 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
     ;
 
-    $container->set(ApplicationIconsSectionProcessor::class)
-        ->tag('pwa.section-processor');
-    $container->set(ApplicationScreenshotsSectionProcessor::class)
-        ->tag('pwa.section-processor');
-    $container->set(ShortcutsSectionProcessor::class)
-        ->tag('pwa.section-processor');
-    $container->set(ActionsSectionProcessor::class)
-        ->tag('pwa.section-processor');
-    $container->set(Windows10WidgetsSectionProcessor::class)
-        ->tag('pwa.section-processor');
-    $container->set(ServiceWorkerSectionProcessor::class)
-        ->tag('pwa.section-processor');
+    $container->set(Builder::class)
+        ->args([
+            '$config' => '%spomky_labs_pwa.config%',
+        ])
+    ;
+    $container->set(Manifest::class)
+        ->factory([service(Builder::class), 'createManifest'])
+    ;
 
-    $container->set(GenerateManifestCommand::class);
-    $container->set(GenerateServiceWorkerCommand::class);
+    $container->load('SpomkyLabs\\PwaBundle\\Command\\', '../../Command/*');
+
+    $container->load('SpomkyLabs\\PwaBundle\\Normalizer\\', '../../Normalizer/*')
+        ->tag('serializer.normalizer', [
+            'priority' => 1024,
+        ])
+    ;
 
     if (extension_loaded('imagick')) {
         $container

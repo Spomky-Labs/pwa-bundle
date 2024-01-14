@@ -10,8 +10,6 @@ final class Screenshot
 {
     public null|string $src = null;
 
-    public null|string $path = null;
-
     public null|int $height = null;
 
     public null|int $width = null;

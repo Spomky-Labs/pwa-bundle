@@ -8,8 +8,6 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class ServiceWorker
 {
-    public null|string $filepath = null;
-
     public null|string $src = null;
 
     public null|string $scope = null;

@@ -8,6 +8,7 @@ use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use function assert;
 
 final readonly class Configuration implements ConfigurationInterface
@@ -67,6 +68,13 @@ final readonly class Configuration implements ConfigurationInterface
                             ->info('The URL of the shortcut.')
                             ->example('https://example.com')
                         ->end()
+                        ->arrayNode('url_params')
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
+                            ->treatNullLike([])
+                            ->prototype('variable')->end()
+                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
+                        ->end()
                         ->append($this->getIconsNode('The icons of the shortcut.'))
                     ->end()
                 ->end()
@@ -100,6 +108,13 @@ final readonly class Configuration implements ConfigurationInterface
                             ->info('The action to take.')
                             ->example('/handle-audio-file')
                         ->end()
+                        ->arrayNode('action_params')
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
+                            ->treatNullLike([])
+                            ->prototype('variable')->end()
+                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
+                        ->end()
                         ->arrayNode('accept')
                             ->requiresAtLeastOneElement()
                             ->useAttributeAsKey('name')
@@ -129,6 +144,13 @@ final readonly class Configuration implements ConfigurationInterface
                         ->isRequired()
                         ->info('The action of the share target.')
                         ->example('/shared-content-receiver/')
+                    ->end()
+                    ->arrayNode('action_params')
+                        ->treatFalseLike([])
+                        ->treatTrueLike([])
+                        ->treatNullLike([])
+                        ->prototype('variable')->end()
+                        ->info('The parameters of the action. Only used if the action is a route to a controller.')
                     ->end()
                     ->scalarNode('method')
                         ->info('The method of the share target.')
@@ -193,6 +215,13 @@ final readonly class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->info('The URL of the handler.')
                             ->example('/lookup?type=%s')
+                        ->end()
+                        ->arrayNode('url_params')
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
+                            ->treatNullLike([])
+                            ->prototype('variable')->end()
+                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
                         ->end()
                     ->end()
                 ->end()
@@ -259,6 +288,31 @@ final readonly class Configuration implements ConfigurationInterface
     private function setupSimpleOptions(ArrayNodeDefinition $node): void
     {
         $node->children()
+            ->integerNode('path_type_reference')
+                ->defaultValue(UrlGeneratorInterface::ABSOLUTE_PATH)
+                ->info(
+                    'The path type reference to generate paths/URLs. See https://symfony.com/doc/current/routing.html#generating-urls-in-controllers for more information.'
+                )
+                ->example(
+                    [
+                        UrlGeneratorInterface::ABSOLUTE_PATH,
+                        UrlGeneratorInterface::ABSOLUTE_URL,
+                        UrlGeneratorInterface::NETWORK_PATH,
+                        UrlGeneratorInterface::RELATIVE_PATH,
+                    ]
+                )
+                ->validate()
+                    ->ifNotInArray(
+                        [
+                            UrlGeneratorInterface::ABSOLUTE_PATH,
+                            UrlGeneratorInterface::ABSOLUTE_URL,
+                            UrlGeneratorInterface::NETWORK_PATH,
+                            UrlGeneratorInterface::RELATIVE_PATH,
+                        ]
+                    )
+                    ->thenInvalid('Invalid path type reference "%s".')
+                ->end()
+            ->end()
             ->scalarNode('image_processor')
                 ->defaultNull()
                 ->info('The image processor to use to generate the icons of different sizes.')
@@ -267,28 +321,6 @@ final readonly class Configuration implements ConfigurationInterface
             ->scalarNode('web_client')
                 ->defaultNull()
                 ->info('The Panther Client for generating screenshots. If not set, the default client will be used.')
-            ->end()
-            ->scalarNode('icon_folder')
-                ->defaultValue('%kernel.project_dir%/public/pwa')
-                ->cannotBeEmpty()
-                ->info('The folder where the icons will be generated.')
-            ->end()
-            ->scalarNode('icon_prefix_url')
-                ->defaultValue('/pwa')
-                ->info('The URL prefix to use to generate the icons.')
-            ->end()
-            ->scalarNode('screenshot_folder')
-                ->defaultValue('%kernel.project_dir%/public/pwa')
-                ->cannotBeEmpty()
-                ->info('The folder where the screenshots will be generated.')
-            ->end()
-            ->scalarNode('screenshot_prefix_url')
-                ->defaultValue('/pwa')
-                ->info('The URL prefix to use to generate the icons.')
-            ->end()
-            ->scalarNode('manifest_filepath')
-                ->defaultValue('%kernel.project_dir%/public/site.webmanifest')
-                ->info('The filename where the manifest will be generated.')
             ->end()
             ->scalarNode('background_color')
                 ->info(
@@ -399,7 +431,7 @@ final readonly class Configuration implements ConfigurationInterface
                 ->children()
                     ->scalarNode('src')
                         ->isRequired()
-                        ->info('The path to the icon.')
+                        ->info('The path to the icon. Can be served by Asset Mapper.')
                         ->example('icon/logo.svg')
                     ->end()
                     ->arrayNode('sizes')
@@ -432,21 +464,10 @@ final readonly class Configuration implements ConfigurationInterface
                 ->treatFalseLike([])
                 ->treatTrueLike([])
                 ->treatNullLike([])
-                ->validate()
-                    ->ifTrue(
-                        static fn (array $v): bool => basename((string) $v['filepath']) !== basename((string) $v['src'])
-                    )
-                    ->thenInvalid('The filename from the "filepath" and the "src" must be the same.')
-                ->end()
                 ->children()
-                    ->scalarNode('filepath')
-                        ->defaultValue('%kernel.project_dir%/public/sw.js')
-                        ->info('The filename where the service worker will be generated.')
-                    ->end()
                     ->scalarNode('src')
-                        ->cannotBeEmpty()
-                        ->defaultValue('/sw.js')
-                        ->info('The path to the service worker.')
+                        ->isRequired()
+                        ->info('The path to the service worker. Can be served by Asset Mapper.')
                         ->example('/sw.js')
                     ->end()
                     ->scalarNode('scope')
@@ -475,41 +496,17 @@ final readonly class Configuration implements ConfigurationInterface
             ->treatTrueLike([])
             ->treatNullLike([])
             ->arrayPrototype()
-                ->validate()
-                    ->ifTrue(static fn (array $v): bool => ! (isset($v['src']) xor isset($v['path'])))
-                    ->thenInvalid('Either "src", "route" or "path" must be set.')
-                ->end()
-                ->validate()
-                    ->ifTrue(static function (array $v): bool {
-                        if (isset($v['src'])) {
-                            return false;
-                        }
-
-                        if (! isset($v['height']) || ! isset($v['width'])) {
-                            return true;
-                        }
-
-                        return false;
-                    })
-                    ->thenInvalid('When using "path", "height" and "width" must be set.')
-                ->end()
                 ->children()
                     ->scalarNode('src')
-                        ->info('The path to the screenshot.')
+                        ->info('The path to the screenshot. Can be served by Asset Mapper.')
                         ->example('screenshot/lowres.webp')
-                    ->end()
-                    ->scalarNode('path')
-                        ->info('The path to an application page. The screenshot will be generated.')
-                        ->example('https://example.com')
                     ->end()
                     ->scalarNode('height')
                         ->defaultNull()
-                        ->info('When using "route" or "path", the height of the screenshot.')
                         ->example('1080')
                     ->end()
                     ->scalarNode('width')
                         ->defaultNull()
-                        ->info('When using "route" or "path", the height of the screenshot.')
                         ->example('1080')
                     ->end()
                     ->scalarNode('form_factor')

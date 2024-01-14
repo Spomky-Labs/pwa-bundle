@@ -15,9 +15,13 @@ final class Shortcut
 
     public null|string $description = null;
 
-    public null|string $url = null;
+    public string $url;
 
-    public null|string $path = null;
+    /**
+     * @var array<string, mixed>
+     */
+    #[SerializedName('url_params')]
+    public array $urlParameters = [];
 
     /**
      * @var array<Icon>

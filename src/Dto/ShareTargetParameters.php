@@ -12,8 +12,6 @@ final class ShareTargetParameters
 
     public null|string $url = null;
 
-    public null|string $path = null;
-
     /**
      * @var array<File>
      */
