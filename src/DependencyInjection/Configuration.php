@@ -270,6 +270,7 @@ final readonly class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('icon_folder')
                 ->defaultValue('%kernel.project_dir%/public/pwa')
+                ->cannotBeEmpty()
                 ->info('The folder where the icons will be generated.')
             ->end()
             ->scalarNode('icon_prefix_url')
@@ -278,6 +279,7 @@ final readonly class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('screenshot_folder')
                 ->defaultValue('%kernel.project_dir%/public/pwa')
+                ->cannotBeEmpty()
                 ->info('The folder where the screenshots will be generated.')
             ->end()
             ->scalarNode('screenshot_prefix_url')
@@ -428,9 +430,7 @@ final readonly class Configuration implements ConfigurationInterface
             ->arrayNode('serviceworker')
                 ->info('EXPERIMENTAL. Specifies a serviceworker that is registered.')
                 ->treatFalseLike([])
-                ->treatTrueLike([
-                    'generate' => true,
-                ])
+                ->treatTrueLike([])
                 ->treatNullLike([])
                 ->validate()
                     ->ifTrue(

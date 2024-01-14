@@ -6,6 +6,8 @@ namespace SpomkyLabs\PwaBundle\Command;
 
 use JsonException;
 use SpomkyLabs\PwaBundle\Command\SectionProcessor\SectionProcessor;
+use SpomkyLabs\PwaBundle\Dto\Configuration;
+use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,6 +16,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use function dirname;
 use function is_int;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
@@ -23,6 +27,10 @@ use const JSON_UNESCAPED_UNICODE;
 #[AsCommand(name: 'pwa:build', description: 'Generate the Progressive Web App Manifest')]
 final class GenerateManifestCommand extends Command
 {
+    private readonly Configuration $configuration;
+
+    private readonly Manifest $manifest;
+
     /**
      * @param iterable<SectionProcessor> $processors
      */
@@ -32,10 +40,13 @@ final class GenerateManifestCommand extends Command
         #[Autowire('%spomky_labs_pwa.config%')]
         private readonly array $config,
         #[Autowire('%spomky_labs_pwa.dest%')]
-        private readonly array $dest,
+        array $dest,
         private readonly Filesystem $filesystem,
+        private readonly DenormalizerInterface $serializer,
     ) {
         parent::__construct();
+        $this->configuration = $this->serializer->denormalize($dest, Configuration::class);
+        $this->manifest = $this->serializer->denormalize($config, Manifest::class);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -44,6 +55,8 @@ final class GenerateManifestCommand extends Command
         $io->title('PWA Manifest Generator');
         $manifest = $this->config;
         $manifest = array_filter($manifest, static fn ($value) => ($value !== null && $value !== []));
+
+        dump($this->configuration, $this->manifest);
 
         foreach ($this->processors as $processor) {
             $result = $processor->process($io, $this->config, $manifest);
@@ -54,11 +67,11 @@ final class GenerateManifestCommand extends Command
         }
 
         try {
-            if (! $this->filesystem->exists(dirname($this->dest['manifest_filepath']))) {
-                $this->filesystem->mkdir(dirname($this->dest['manifest_filepath']));
+            if (! $this->filesystem->exists(dirname($this->configuration->manifestFilepath))) {
+                $this->filesystem->mkdir(dirname($this->configuration->manifestFilepath));
             }
             file_put_contents(
-                (string) $this->dest['manifest_filepath'],
+                $this->configuration->manifestFilepath,
                 json_encode(
                     $manifest,
                     JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR

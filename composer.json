@@ -26,15 +26,20 @@
     },
     "require": {
         "php": ">=8.2",
+        "phpdocumentor/reflection-docblock": "^5.3",
         "symfony/config": "^6.4|^7.0",
         "symfony/dependency-injection": "^6.4|^7.0",
         "symfony/filesystem": "^6.4|^7.0",
         "symfony/finder": "^6.4|^7.0",
         "symfony/http-kernel": "^6.4|^7.0",
         "symfony/mime": "^6.4|^7.0",
-        "symfony/routing": "^6.4|^7.0"
+        "symfony/property-access": "^6.4|^7.0",
+        "symfony/property-info": "^7.0",
+        "symfony/routing": "^6.4|^7.0",
+        "symfony/serializer": "^6.4|^7.0"
     },
     "require-dev": {
+        "dbrekelmans/bdi": "^1.1",
         "infection/infection": "^0.27",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.0",
