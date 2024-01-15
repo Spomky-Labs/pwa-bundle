@@ -40,7 +40,7 @@ final class TakeScreenshotCommand extends Command
 
     public function isEnabled(): bool
     {
-        return class_exists(Client::class) && class_exists(WebDriverDimension::class);
+        return class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class);
     }
 
     protected function configure(): void

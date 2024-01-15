@@ -26,6 +26,11 @@ final class GenerateIconsCommand extends Command
         parent::__construct();
     }
 
+    public function isEnabled(): bool
+    {
+        return class_exists(MimeTypes::class);
+    }
+
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'The source image');

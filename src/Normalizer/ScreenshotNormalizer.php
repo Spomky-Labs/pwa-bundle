@@ -101,7 +101,7 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
             return $object->format;
         }
 
-        if ($this->imageProcessor === null || $asset === null) {
+        if ($this->imageProcessor === null || $asset === null || ! class_exists(MimeTypes::class)) {
             return null;
         }
 
