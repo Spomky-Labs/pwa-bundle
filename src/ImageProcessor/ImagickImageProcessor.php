@@ -22,7 +22,9 @@ final readonly class ImagickImageProcessor implements ImageProcessor
         }
         $imagick = new Imagick();
         $imagick->readImageBlob($image);
-        $imagick->resizeImage($width, $height, $this->filters, $this->blur, true);
+        if ($width !== null && $height !== null) {
+            $imagick->resizeImage($width, $height, $this->filters, $this->blur, true);
+        }
         $imagick->setImageBackgroundColor(new ImagickPixel('transparent'));
         if ($format !== null) {
             $imagick->setImageFormat($format);

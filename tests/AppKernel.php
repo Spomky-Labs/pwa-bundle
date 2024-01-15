@@ -10,6 +10,9 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
+/**
+ * @internal
+ */
 final class AppKernel extends Kernel
 {
     public function __construct(string $environment)

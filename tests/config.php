@@ -9,6 +9,12 @@ use SpomkyLabs\PwaBundle\Tests\DummyImageProcessor;
 return static function (ContainerConfigurator $container) {
     $container->services()
         ->set(DummyImageProcessor::class);
+
+    $container->services()
+        ->load('SpomkyLabs\\PwaBundle\\Tests\\Controller\\', __DIR__ . '/Controller/')
+        ->tag('controller.service_arguments')
+    ;
+
     $container->extension('framework', [
         'test' => true,
         'secret' => 'test',
@@ -16,14 +22,18 @@ return static function (ContainerConfigurator $container) {
         'session' => [
             'storage_factory_id' => 'session.storage.factory.mock_file',
         ],
+        'asset_mapper' => [
+            'paths' => [
+                'tests/images' => 'pwa',
+            ],
+        ],
+        'router' => [
+            'utf8' => true,
+            'resource' => '%kernel.project_dir%/tests/routes.php',
+        ],
     ]);
     $container->extension('pwa', [
         'image_processor' => DummyImageProcessor::class,
-        'icon_folder' => '%kernel.cache_dir%/samples/icons',
-        'icon_prefix_url' => '/icons',
-        'screenshot_folder' => '%kernel.cache_dir%/samples/screenshots',
-        'screenshot_prefix_url' => '/screenshots',
-        'manifest_filepath' => '%kernel.cache_dir%/samples/manifest/my-pwa.json',
         'background_color' => 'red',
         'categories' => ['books', 'education', 'medical'],
         'description' => 'Awesome application that will help you achieve your dreams.',
@@ -31,7 +41,10 @@ return static function (ContainerConfigurator $container) {
         'display_override' => ['fullscreen', 'minimal-ui'],
         'file_handlers' => [
             [
-                'action' => '/handle-audio-file',
+                'action' => 'audio_file_handler',
+                'action_params' => [
+                    'param1' => 'audio',
+                ],
                 'accept' => [
                     'audio/wav' => ['.wav'],
                     'audio/x-wav' => ['.wav'],
@@ -48,18 +61,18 @@ return static function (ContainerConfigurator $container) {
         ],
         'icons' => [
             [
-                'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                'src' => 'pwa/1920x1920.svg',
                 'sizes' => [48, 72, 96, 128, 256],
                 'format' => 'webp',
             ],
             [
-                'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                'src' => 'pwa/1920x1920.svg',
                 'sizes' => [48, 72, 96, 128, 256],
                 'format' => 'png',
                 'purpose' => 'maskable',
             ],
             [
-                'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                'src' => 'pwa/1920x1920.svg',
                 'sizes' => [0],
             ],
         ],
@@ -103,13 +116,20 @@ return static function (ContainerConfigurator $container) {
         'theme_color' => 'red',
         'screenshots' => [
             [
-                'src' => sprintf('%s/images/screenshots', __DIR__),
+                'src' => 'pwa/screenshots/360x800.svg',
                 'platform' => 'android',
                 'format' => 'png',
+                'label' => '360x800',
+                'width' => 360,
+                'height' => 800,
             ],
         ],
         'share_target' => [
-            'action' => '/shared-content-receiver/',
+            'action' => 'shared_content_receiver',
+            'action_params' => [
+                'param1' => 'value1',
+                'param2' => 'value2',
+            ],
             'method' => 'GET',
             'params' => [
                 'title' => 'name',
@@ -120,7 +140,10 @@ return static function (ContainerConfigurator $container) {
         'shortcuts' => [
             [
                 'name' => "Today's agenda",
-                'url' => '/today',
+                'url' => 'agenda',
+                'url_params' => [
+                    'date' => 'today',
+                ],
                 'description' => 'List of events planned for today',
             ],
             [
@@ -132,18 +155,18 @@ return static function (ContainerConfigurator $container) {
                 'url' => '/create/reminder',
                 'icons' => [
                     [
-                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'src' => 'pwa/1920x1920.svg',
                         'sizes' => [48, 72, 96, 128, 256],
                         'format' => 'webp',
                     ],
                     [
-                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'src' => 'pwa/1920x1920.svg',
                         'sizes' => [48, 72, 96, 128, 256],
                         'format' => 'png',
                         'purpose' => 'maskable',
                     ],
                     [
-                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'src' => 'pwa/1920x1920.svg',
                         'sizes' => [0],
                     ],
                 ],
@@ -175,13 +198,13 @@ return static function (ContainerConfigurator $container) {
                 'type' => 'application/json',
                 'screenshots' => [
                     [
-                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'src' => 'pwa/1920x1920.svg',
                         'label' => 'The PWAmp mini-player widget',
                     ],
                 ],
                 'icons' => [
                     [
-                        'src' => sprintf('%s/images/1920x1920.svg', __DIR__),
+                        'src' => 'pwa/1920x1920.svg',
                         'sizes' => [16, 48],
                         'format' => 'webp',
                     ],
@@ -193,7 +216,6 @@ return static function (ContainerConfigurator $container) {
         'handle_links' => 'auto',
         'serviceworker' => [
             'src' => '/sw/my-sw.js',
-            'filepath' => '%kernel.cache_dir%/samples/sw/my-sw.js',
             'scope' => '/',
             'use_cache' => true,
         ],
