@@ -14,7 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
+use function count;
 
 #[AsCommand(
     name: 'pwa:take-screenshot',
@@ -44,7 +46,14 @@ final class TakeScreenshotCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('url', InputArgument::REQUIRED, 'The URL to take a screenshot from');
-        $this->addArgument('output', InputArgument::REQUIRED, 'The output file');
+        $this->addArgument('output', InputArgument::REQUIRED, 'The output directory of the screenshot');
+        $this->addArgument(
+            'filename',
+            InputArgument::OPTIONAL,
+            'The output name of the screenshot',
+            'screenshot',
+            ['homeage-android', 'feature1']
+        );
         $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
         $this->addOption('height', null, InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
     }
@@ -72,7 +81,28 @@ final class TakeScreenshotCommand extends Command
             ->fullscreen();
         $client->takeScreenshot($tmpName);
 
-        $this->filesystem->copy($tmpName, $input->getArgument('output'), true);
+        $mime = MimeTypes::getDefault();
+        $mimeType = $mime->guessMimeType($tmpName);
+        $extensions = $mime->getExtensions($mimeType);
+        if (count($extensions) === 0) {
+            $io->error(sprintf('Unable to guess the extension for the mime type "%s".', $mimeType));
+            return self::FAILURE;
+        }
+        $sizes = '';
+        if ($width !== null && $height !== null) {
+            $sizes = sprintf('-%dx%d', (int) $width, (int) $height);
+        }
+
+        $format = current($extensions);
+        $filename = sprintf(
+            '%s/%s%s.%s',
+            $input->getArgument('output'),
+            $input->getArgument('filename'),
+            $sizes,
+            $format
+        );
+
+        $this->filesystem->copy($tmpName, $filename, true);
         $this->filesystem->remove($tmpName);
         $io->success('Screenshot saved');
 

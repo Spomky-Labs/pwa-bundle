@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Screenshot;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\AssetMapper\MappedAsset;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
 
 final readonly class ScreenshotNormalizer implements NormalizerInterface
 {
     public function __construct(
-        private AssetMapperInterface $assetMapper
+        private AssetMapperInterface $assetMapper,
+        private null|ImageProcessor $imageProcessor,
     ) {
     }
 
@@ -20,25 +24,24 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
     {
         assert($object instanceof Screenshot);
         $url = null;
+        $asset = null;
         if (! str_starts_with($object->src, '/')) {
-            $url = $this->assetMapper->getAsset($object->src)?->publicPath;
+            $asset = $this->assetMapper->getAsset($object->src);
+            $url = $asset?->publicPath;
         }
         if ($url === null) {
             $url = $object->src;
         }
-        $sizes = null;
-        if ($object->width !== null && $object->height !== null) {
-            $sizes = sprintf('%dx%d', $object->width, $object->height);
-        }
+        ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($object, $asset);
+        $format = $this->getFormat($object, $asset);
 
         $result = [
             'src' => $url,
             'sizes' => $sizes,
-            'width' => $object->width,
-            'form_factor' => $object->formFactor,
+            'form_factor' => $formFactor,
             'label' => $object->label,
             'platform' => $object->platform,
-            'format' => $object->format,
+            'format' => $format,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -61,5 +64,57 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
         return [
             Screenshot::class => true,
         ];
+    }
+
+    /**
+     * @return array{sizes: string|null, formFactor: string|null}
+     */
+    private function getSizes(Screenshot $object, null|MappedAsset $asset): array
+    {
+        if ($object->width !== null && $object->height !== null) {
+            return [
+                'sizes' => sprintf('%dx%d', $object->width, $object->height),
+                'formFactor' => $object->formFactor ?? $this->getFormFactor($object->width, $object->height),
+            ];
+        }
+
+        if ($this->imageProcessor === null || $asset === null) {
+            return [
+                'sizes' => null,
+                'formFactor' => $object->formFactor,
+            ];
+        }
+
+        ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes(
+            file_get_contents($asset->sourcePath)
+        );
+
+        return [
+            'sizes' => sprintf('%dx%d', $width, $height),
+            'formFactor' => $object->formFactor ?? $this->getFormFactor($width, $height),
+        ];
+    }
+
+    private function getFormat(Screenshot $object, ?MappedAsset $asset): ?string
+    {
+        if ($object->format !== null) {
+            return $object->format;
+        }
+
+        if ($this->imageProcessor === null || $asset === null) {
+            return null;
+        }
+
+        $mime = MimeTypes::getDefault();
+        return $mime->guessMimeType($asset->sourcePath);
+    }
+
+    private function getFormFactor(?int $width, ?int $height): ?string
+    {
+        if ($width === null || $height === null) {
+            return null;
+        }
+
+        return $width > $height ? 'wide' : 'narrow';
     }
 }

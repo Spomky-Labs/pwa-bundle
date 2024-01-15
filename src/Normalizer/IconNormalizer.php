@@ -38,6 +38,7 @@ final readonly class IconNormalizer implements NormalizerInterface
             $data,
             static fn ($value) => ($value !== null && $value !== [])
         );
+
         return $cleanup($result);
     }
 

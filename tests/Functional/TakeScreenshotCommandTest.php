@@ -18,12 +18,13 @@ final class TakeScreenshotCommandTest extends AbstractPwaTestCase
         // Given
         $command = self::$application->find('pwa:take-screenshot');
         $commandTester = new CommandTester($command);
-        $output = sprintf('%s/samples/screenshots/screenshot-1024x1920.png', self::$kernel->getCacheDir());
+        $output = sprintf('%s/samples/screenshots/', self::$kernel->getCacheDir());
 
         // When
         $commandTester->execute([
-            'url' => 'https://localhost',
+            'url' => 'https://symfony.com',
             'output' => $output,
+            'filename' => 'screenshot',
             '--width' => '1024',
             '--height' => '1920',
         ]);
