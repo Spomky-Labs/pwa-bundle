@@ -30,6 +30,7 @@ final class GenerateIconsCommand extends Command
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'The source image');
         $this->addArgument('output', InputArgument::REQUIRED, 'The output directory');
+        $this->addArgument('filename', InputArgument::OPTIONAL, 'The output directory', 'icon');
         $this->addOption('format', null, InputOption::VALUE_OPTIONAL, 'The format of the icons');
         $this->addArgument(
             'sizes',
@@ -46,6 +47,7 @@ final class GenerateIconsCommand extends Command
 
         $source = $input->getArgument('source');
         $dest = $input->getArgument('output');
+        $filename = $input->getArgument('filename');
         $format = $input->getOption('format');
         $sizes = $input->getArgument('sizes');
 
@@ -73,8 +75,7 @@ final class GenerateIconsCommand extends Command
         foreach ($sizes as $size) {
             $io->info('Generating icon ' . $size . 'x' . $size . '...');
             $tmp = $this->imageProcessor->process(file_get_contents($source), (int) $size, (int) $size, $format);
-            $filename = sprintf('%s/icon-%sx%s.%s', $dest, $size, $size, $format);
-            $this->filesystem->dumpFile($filename, $tmp);
+            $this->filesystem->dumpFile(sprintf('%s/%s-%sx%s.%s', $dest, $filename, $size, $size, $format), $tmp);
             $io->info('Icon ' . $size . 'x' . $size . ' generated.');
         }
         $io->info('Done.');

@@ -30,10 +30,8 @@
         "symfony/asset-mapper": "^6.4|^7.0",
         "symfony/config": "^6.4|^7.0",
         "symfony/dependency-injection": "^6.4|^7.0",
-        "symfony/filesystem": "^6.4|^7.0",
         "symfony/finder": "^6.4|^7.0",
         "symfony/http-kernel": "^6.4|^7.0",
-        "symfony/mime": "^6.4|^7.0",
         "symfony/property-access": "^6.4|^7.0",
         "symfony/property-info": "^7.0",
         "symfony/routing": "^6.4|^7.0",
@@ -51,7 +49,9 @@
         "phpstan/phpstan-strict-rules": "^1.0",
         "phpunit/phpunit": "^10.0",
         "rector/rector": "^0.19",
+        "symfony/filesystem": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
+        "symfony/mime": "^6.4|^7.0",
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.4|^7.0",
         "symfony/yaml": "^6.4|^7.0",
@@ -67,6 +67,8 @@
     "suggest": {
         "ext-gd": "Required to generate icons (or Imagick).",
         "ext-imagick": "Required to generate icons (or GD).",
+        "symfony/mime": "For generating and manipulating icons or screenshots",
+        "symfony/filesystem": "For generating and manipulating icons or screenshots",
         "symfony/panther": "For generating screenshots directly from your application"
     }
 }

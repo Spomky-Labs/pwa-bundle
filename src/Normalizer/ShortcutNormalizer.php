@@ -7,16 +7,20 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 use SpomkyLabs\PwaBundle\Dto\Shortcut;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
 use const FILTER_VALIDATE_URL;
 
-final readonly class ShortcutNormalizer implements NormalizerInterface
+final class ShortcutNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
+    use NormalizerAwareTrait;
+
     public function __construct(
-        private RouterInterface $router,
+        private readonly RouterInterface $router,
         #[Autowire('%spomky_labs_pwa.routes.reference_type%')]
-        private int $referenceType,
+        private readonly int $referenceType,
     ) {
     }
 
@@ -33,7 +37,7 @@ final readonly class ShortcutNormalizer implements NormalizerInterface
             'short_name' => $object->shortName,
             'description' => $object->description,
             'url' => $url,
-            'icons' => $object->icons,
+            'icons' => $this->normalizer->normalize($object->icons, $format, $context),
         ];
 
         $cleanup = static fn (array $data): array => array_filter(

@@ -6,6 +6,9 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\Service\Builder;
+use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
+use SpomkyLabs\PwaBundle\Twig\PwaExtension;
+use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -46,4 +49,19 @@ return static function (ContainerConfigurator $container): void {
             ->alias('pwa.image_processor.gd', GDImageProcessor::class)
         ;
     }
+
+    $container->set(PwaDevServerSubscriber::class)
+        ->args([
+            '$profiler' => service('profiler')
+                ->nullOnInvalid(),
+        ])
+        ->tag('kernel.event_subscriber')
+    ;
+
+    $container->set(PwaExtension::class)
+        ->tag('twig.extension')
+    ;
+    $container->set(PwaRuntime::class)
+        ->tag('twig.runtime')
+    ;
 };
