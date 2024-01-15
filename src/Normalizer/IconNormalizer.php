@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Icon;
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\Mime\MimeTypes;
@@ -16,7 +15,6 @@ final readonly class IconNormalizer implements NormalizerInterface
 {
     public function __construct(
         private AssetMapperInterface $assetMapper,
-        private null|ImageProcessor $imageProcessor,
     ) {
     }
 
@@ -70,7 +68,7 @@ final readonly class IconNormalizer implements NormalizerInterface
             return $object->format;
         }
 
-        if ($this->imageProcessor === null || $asset === null || ! class_exists(MimeTypes::class)) {
+        if ($asset === null || ! class_exists(MimeTypes::class)) {
             return null;
         }
 

@@ -437,8 +437,8 @@ final readonly class Configuration implements ConfigurationInterface
                 ->beforeNormalization()
                     ->ifString()
                     ->then(static fn (string $v): array => [
-                            'src' => $v,
-                        ])
+                        'src' => $v,
+                    ])
                 ->end()
                 ->children()
                     ->scalarNode('src')
@@ -511,8 +511,8 @@ final readonly class Configuration implements ConfigurationInterface
                 ->beforeNormalization()
                     ->ifString()
                     ->then(static fn (string $v): array => [
-                            'src' => $v,
-                        ])
+                        'src' => $v,
+                    ])
                 ->end()
                 ->children()
                     ->scalarNode('src')

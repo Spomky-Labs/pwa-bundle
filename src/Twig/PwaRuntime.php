@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Twig;
 
+use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Mime\MimeTypes;
 use const PHP_EOL;
 
 final readonly class PwaRuntime
@@ -28,14 +31,18 @@ final readonly class PwaRuntime
         $output = sprintf('<link rel="manifest" href="%s">', $url);
         if ($this->manifest->icons !== [] && $icons === true) {
             foreach ($this->manifest->icons as $icon) {
-                $iconUrl = $this->getIconPublicUrl($icon->src);
-                $output .= sprintf(
-                    '%s<link rel="%s" sizes="%s" href="%s">',
-                    PHP_EOL,
+                ['url' => $url, 'format' => $format] = $this->getIconInfo($icon);
+                $attributes = sprintf(
+                    'rel="%s" sizes="%s" href="%s"',
                     str_contains($icon->purpose ?? '', 'maskable') ? 'mask-icon' : 'icon',
                     $icon->getSizeList(),
-                    $iconUrl
+                    $url
                 );
+                if ($format !== null) {
+                    $attributes .= sprintf(' type="%s"', $format);
+                }
+
+                $output .= sprintf('%s<link %s>', PHP_EOL, $attributes);
             }
         }
         if ($this->manifest->themeColor !== null && $themeColor === true) {
@@ -45,17 +52,39 @@ final readonly class PwaRuntime
         return $output;
     }
 
-    private function getIconPublicUrl(string $source): ?string
+    /**
+     * @return array{url: string, format: string|null}
+     */
+    private function getIconInfo(Icon $icon): array
     {
         $url = null;
-        if (! str_starts_with($source, '/')) {
-            $asset = $this->assetMapper->getAsset($source);
+        $format = $icon->format;
+        if (! str_starts_with($icon->src, '/')) {
+            $asset = $this->assetMapper->getAsset($icon->src);
             $url = $asset?->publicPath;
+            $format = $this->getFormat($icon, $asset);
         }
         if ($url === null) {
-            $url = $source;
+            $url = $icon;
         }
 
-        return $url;
+        return [
+            'url' => $url,
+            'format' => $format,
+        ];
+    }
+
+    private function getFormat(Icon $object, ?MappedAsset $asset): ?string
+    {
+        if ($object->format !== null) {
+            return $object->format;
+        }
+
+        if ($asset === null || ! class_exists(MimeTypes::class)) {
+            return null;
+        }
+
+        $mime = MimeTypes::getDefault();
+        return $mime->guessMimeType($asset->sourcePath);
     }
 }
