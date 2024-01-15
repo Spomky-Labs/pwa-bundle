@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Icon;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\AssetMapper\MappedAsset;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
 
 final readonly class IconNormalizer implements NormalizerInterface
 {
     public function __construct(
-        private AssetMapperInterface $assetMapper
+        private AssetMapperInterface $assetMapper,
+        private null|ImageProcessor $imageProcessor,
     ) {
     }
 
@@ -20,17 +24,20 @@ final readonly class IconNormalizer implements NormalizerInterface
     {
         assert($object instanceof Icon);
         $url = null;
+        $asset = null;
         if (! str_starts_with($object->src, '/')) {
-            $url = $this->assetMapper->getAsset($object->src)?->publicPath;
+            $asset = $this->assetMapper->getAsset($object->src);
+            $url = $asset?->publicPath;
         }
         if ($url === null) {
             $url = $object->src;
         }
+        $format = $this->getFormat($object, $asset);
 
         $result = [
             'src' => $url,
             'sizes' => $object->getSizeList(),
-            'type' => $object->format,
+            'type' => $format,
             'purpose' => $object->purpose,
         ];
 
@@ -55,5 +62,19 @@ final readonly class IconNormalizer implements NormalizerInterface
         return [
             Icon::class => true,
         ];
+    }
+
+    private function getFormat(Icon $object, ?MappedAsset $asset): ?string
+    {
+        if ($object->format !== null) {
+            return $object->format;
+        }
+
+        if ($this->imageProcessor === null || $asset === null || ! class_exists(MimeTypes::class)) {
+            return null;
+        }
+
+        $mime = MimeTypes::getDefault();
+        return $mime->guessMimeType($asset->sourcePath);
     }
 }

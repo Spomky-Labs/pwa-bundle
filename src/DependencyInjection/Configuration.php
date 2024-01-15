@@ -434,6 +434,12 @@ final readonly class Configuration implements ConfigurationInterface
             ->treatTrueLike([])
             ->treatNullLike([])
             ->arrayPrototype()
+                ->beforeNormalization()
+                    ->ifString()
+                    ->then(static fn (string $v): array => [
+                            'src' => $v,
+                        ])
+                ->end()
                 ->children()
                     ->scalarNode('src')
                         ->isRequired()
@@ -502,6 +508,12 @@ final readonly class Configuration implements ConfigurationInterface
             ->treatTrueLike([])
             ->treatNullLike([])
             ->arrayPrototype()
+                ->beforeNormalization()
+                    ->ifString()
+                    ->then(static fn (string $v): array => [
+                            'src' => $v,
+                        ])
+                ->end()
                 ->children()
                     ->scalarNode('src')
                         ->info('The path to the screenshot. Can be served by Asset Mapper.')

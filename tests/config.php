@@ -114,16 +114,7 @@ return static function (ContainerConfigurator $container) {
         'scope' => '/app/',
         'start_url' => 'https://example.com',
         'theme_color' => 'red',
-        'screenshots' => [
-            [
-                'src' => 'pwa/screenshots/360x800.svg',
-                'platform' => 'android',
-                'format' => 'png',
-                'label' => '360x800',
-                'width' => 360,
-                'height' => 800,
-            ],
-        ],
+        'screenshots' => ['pwa/screenshots/360x800.svg'],
         'share_target' => [
             'action' => 'shared_content_receiver',
             'action_params' => [
@@ -154,20 +145,10 @@ return static function (ContainerConfigurator $container) {
                 'name' => 'New reminder',
                 'url' => '/create/reminder',
                 'icons' => [
+                    'pwa/1920x1920.svg',
                     [
                         'src' => 'pwa/1920x1920.svg',
-                        'sizes' => [48, 72, 96, 128, 256],
-                        'format' => 'webp',
-                    ],
-                    [
-                        'src' => 'pwa/1920x1920.svg',
-                        'sizes' => [48, 72, 96, 128, 256],
-                        'format' => 'png',
                         'purpose' => 'maskable',
-                    ],
-                    [
-                        'src' => 'pwa/1920x1920.svg',
-                        'sizes' => [0],
                     ],
                 ],
             ],
