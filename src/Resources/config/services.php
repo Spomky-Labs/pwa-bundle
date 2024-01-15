@@ -6,6 +6,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\Service\Builder;
+use SpomkyLabs\PwaBundle\Subscriber\AssetsCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
@@ -49,6 +50,8 @@ return static function (ContainerConfigurator $container): void {
             ->alias('pwa.image_processor.gd', GDImageProcessor::class)
         ;
     }
+
+    $container->set(AssetsCompileEventListener::class);
 
     $container->set(PwaDevServerSubscriber::class)
         ->args([
