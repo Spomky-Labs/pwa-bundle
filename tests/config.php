@@ -191,8 +191,8 @@ return static function (ContainerConfigurator $container) {
                 'description' => 'widget to control the PWAmp music player',
                 'tag' => 'pwamp',
                 'template' => 'pwamp-template',
-                'ms_ac_template' => '/widgets/mini-player-template.json',
-                'data' => 'widgets/mini-player-data.json',
+                'ms_ac_template' => 'app_widget_template',
+                'data' => 'app_widget_data',
                 'type' => 'application/json',
                 'screenshots' => [
                     [

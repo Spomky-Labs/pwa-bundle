@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
-use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class Widget
 {
+    use TranslatableTrait;
+
     public string $name;
 
     #[SerializedName('short_name')]
@@ -32,9 +33,9 @@ final class Widget
     public null|string $template = null;
 
     #[SerializedName('ms_ac_template')]
-    public string $adaptativeCardTemplate;
+    public Url $adaptativeCardTemplate;
 
-    public null|string $data = null;
+    public null|Url $data = null;
 
     public null|string $type = null;
 
@@ -46,19 +47,17 @@ final class Widget
 
     public function getName(): string|TranslatableInterface
     {
-        if (! interface_exists(TranslatableInterface::class)) {
-            return $this->name;
-        }
+        return $this->provideTranslation($this->name);
+    }
 
-        return new TranslatableMessage($this->name);
+    #[SerializedName('short_name')]
+    public function getShortName(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->shortName);
     }
 
     public function getDescription(): string|TranslatableInterface
     {
-        if (! interface_exists(TranslatableInterface::class) || $this->description === null) {
-            return $this->description;
-        }
-
-        return new TranslatableMessage($this->description);
+        return $this->provideTranslation($this->description);
     }
 }

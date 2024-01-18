@@ -564,17 +564,18 @@ final readonly class Configuration implements ConfigurationInterface
                                 'The template to use to display the widget in the operating system widgets dashboard. Note: this property is currently only informational and not used. See ms_ac_template below.'
                             )
                         ->end()
-                        ->scalarNode('ms_ac_template')
-                            ->isRequired()
-                            ->info(
-                                'The URL of the custom Adaptive Cards template to use to display the widget in the operating system widgets dashboard. See Define a widget template below.'
+                        ->append(
+                            $this->getUrlNode(
+                                'ms_ac_template',
+                                'The URL of the custom Adaptive Cards template to use to display the widget in the operating system widgets dashboard.'
                             )
-                        ->end()
-                        ->scalarNode('data')
-                            ->info(
+                        )
+                        ->append(
+                            $this->getUrlNode(
+                                'data',
                                 'The URL where the data to fill the template with can be found. If present, this URL is required to return valid JSON.'
                             )
-                        ->end()
+                        )
                         ->scalarNode('type')
                             ->info('The MIME type for the widget data.')
                         ->end()

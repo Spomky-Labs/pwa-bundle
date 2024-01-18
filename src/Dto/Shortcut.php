@@ -30,6 +30,12 @@ final class Shortcut
         $this->provideTranslation($this->name);
     }
 
+    #[SerializedName('short_name')]
+    public function getShortName(): string|TranslatableInterface
+    {
+        $this->provideTranslation($this->shortName);
+    }
+
     public function getDescription(): string|TranslatableInterface
     {
         return $this->provideTranslation($this->description);

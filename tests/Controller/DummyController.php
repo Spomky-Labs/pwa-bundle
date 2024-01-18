@@ -26,4 +26,14 @@ final class DummyController extends AbstractController
     public function agenda(string $date): void
     {
     }
+
+    #[Route('/widget/template', name: 'app_widget_template')]
+    public function widgetTemplate(): void
+    {
+    }
+
+    #[Route('/widget/data', name: 'app_widget_data')]
+    public function widgetData(): void
+    {
+    }
 }
