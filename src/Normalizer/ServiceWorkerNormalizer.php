@@ -20,11 +20,11 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
     {
         assert($object instanceof ServiceWorker);
         $url = null;
-        if (! str_starts_with($object->src, '/')) {
-            $url = $this->assetMapper->getAsset($object->src)?->publicPath;
+        if (! str_starts_with($object->dest, '/')) {
+            $url = $this->assetMapper->getAsset($object->dest)?->publicPath;
         }
         if ($url === null) {
-            $url = $object->src;
+            $url = $object->dest;
         }
 
         $result = [

@@ -8,7 +8,9 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class ServiceWorker
 {
-    public null|string $src = null;
+    public string $src;
+
+    public string $dest;
 
     public null|string $scope = null;
 
