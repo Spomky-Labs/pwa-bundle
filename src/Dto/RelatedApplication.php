@@ -8,7 +8,7 @@ final class RelatedApplication
 {
     public string $platform;
 
-    public string $url;
+    public Url $url;
 
     public null|string $id = null;
 }

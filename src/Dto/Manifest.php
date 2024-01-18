@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class Manifest
 {
+    use TranslatableTrait;
+
     #[SerializedName('background_color')]
     public null|string $backgroundColor = null;
 
@@ -108,4 +111,34 @@ final class Manifest
 
     #[SerializedName('serviceworker')]
     public null|ServiceWorker $serviceWorker = null;
+
+    /**
+     * @return array<TranslatableInterface|string>
+     */
+    public function getCategories(): array
+    {
+        return $this->provideTranslation($this->categories);
+    }
+
+    public function getDescription(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->description);
+    }
+
+    public function getName(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->name);
+    }
+
+    #[SerializedName('short_name')]
+    public function getShortName(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->shortName);
+    }
+
+    #[SerializedName('start_url')]
+    public function getStartUrl(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->startUrl);
+    }
 }

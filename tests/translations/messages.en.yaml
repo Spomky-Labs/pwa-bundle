@@ -1,0 +1,11 @@
+pwa:
+    name: 'Weather App'
+    short_name: 'weather-app'
+    start_url: './'
+    description: 'A simple weather app built as a PWA with Symfony'
+    categories:
+        - 'utility'
+        - 'productivity'
+        - 'weather'
+    screenshots:
+        - 'This is a screenshot of the app'
