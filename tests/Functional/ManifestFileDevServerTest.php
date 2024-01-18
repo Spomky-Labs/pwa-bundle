@@ -19,10 +19,11 @@ final class ManifestFileDevServerTest extends WebTestCase
         $client = static::createClient();
 
         // When
-        $client->request('GET', '/site.manifest');
+        $client->request('GET', '/site.webmanifest');
 
         // Then
         static::assertResponseIsSuccessful();
         static::assertResponseHeaderSame('Content-Type', 'application/manifest+json');
+        dump($client->getResponse()->getContent());
     }
 }

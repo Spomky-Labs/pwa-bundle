@@ -63,18 +63,7 @@ final readonly class Configuration implements ConfigurationInterface
                             ->info('The description of the shortcut.')
                             ->example('Awesome shortcut')
                         ->end()
-                        ->scalarNode('url')
-                            ->isRequired()
-                            ->info('The URL of the shortcut.')
-                            ->example('https://example.com')
-                        ->end()
-                        ->arrayNode('url_params')
-                            ->treatFalseLike([])
-                            ->treatTrueLike([])
-                            ->treatNullLike([])
-                            ->prototype('variable')->end()
-                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
-                        ->end()
+                        ->append($this->getUrlNode('url', 'The URL of the shortcut.'))
                         ->append($this->getIconsNode('The icons of the shortcut.'))
                     ->end()
                 ->end()
@@ -103,18 +92,7 @@ final readonly class Configuration implements ConfigurationInterface
                 ->treatNullLike([])
                 ->arrayPrototype()
                     ->children()
-                        ->scalarNode('action')
-                            ->isRequired()
-                            ->info('The action to take.')
-                            ->example('/handle-audio-file')
-                        ->end()
-                        ->arrayNode('action_params')
-                            ->treatFalseLike([])
-                            ->treatTrueLike([])
-                            ->treatNullLike([])
-                            ->prototype('variable')->end()
-                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
-                        ->end()
+                        ->append($this->getUrlNode('action', 'The action to take.', ['/handle-audio-file']))
                         ->arrayNode('accept')
                             ->requiresAtLeastOneElement()
                             ->useAttributeAsKey('name')
@@ -140,18 +118,9 @@ final readonly class Configuration implements ConfigurationInterface
                 ->treatNullLike([])
                 ->info('The share target of the application.')
                 ->children()
-                    ->scalarNode('action')
-                        ->isRequired()
-                        ->info('The action of the share target.')
-                        ->example('/shared-content-receiver/')
-                    ->end()
-                    ->arrayNode('action_params')
-                        ->treatFalseLike([])
-                        ->treatTrueLike([])
-                        ->treatNullLike([])
-                        ->prototype('variable')->end()
-                        ->info('The parameters of the action. Only used if the action is a route to a controller.')
-                    ->end()
+                    ->append(
+                        $this->getUrlNode('action', 'The action of the share target.', ['/shared-content-receiver/'])
+                    )
                     ->scalarNode('method')
                         ->info('The method of the share target.')
                         ->example('GET')
@@ -211,18 +180,7 @@ final readonly class Configuration implements ConfigurationInterface
                             ->info('The protocol of the handler.')
                             ->example('web+jngl')
                         ->end()
-                        ->scalarNode('url')
-                            ->isRequired()
-                            ->info('The URL of the handler.')
-                            ->example('/lookup?type=%s')
-                        ->end()
-                        ->arrayNode('url_params')
-                            ->treatFalseLike([])
-                            ->treatTrueLike([])
-                            ->treatNullLike([])
-                            ->prototype('variable')->end()
-                            ->info('The parameters of the action. Only used if the action is a route to a controller.')
-                        ->end()
+                        ->append($this->getUrlNode('url', 'The URL of the handler.'))
                     ->end()
                 ->end()
             ->end()
@@ -269,11 +227,11 @@ final readonly class Configuration implements ConfigurationInterface
                             ->info('The platform of the application.')
                             ->example('play')
                         ->end()
-                        ->scalarNode('url')
-                            ->isRequired()
-                            ->info('The URL of the application.')
-                            ->example('https://play.google.com/store/apps/details?id=com.example.app1')
-                        ->end()
+                        ->append(
+                            $this->getUrlNode('url', 'The URL of the application.', [
+                                'https://play.google.com/store/apps/details?id=com.example.app1',
+                            ])
+                        )
                         ->scalarNode('id')
                             ->info('The ID of the application.')
                             ->example('com.example.app1')
@@ -314,7 +272,7 @@ final readonly class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->scalarNode('manifest_public_url')
-                ->defaultValue('/site.manifest')
+                ->defaultValue('/site.webmanifest')
                 ->cannotBeEmpty()
                 ->info('The public URL of the manifest file.')
                 ->example('/site.manifest')
@@ -638,5 +596,40 @@ final readonly class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ->end();
+    }
+
+    /**
+     * @param array<string> $examples
+     */
+    private function getUrlNode(string $name, string $info, null|array $examples = null): ArrayNodeDefinition
+    {
+        $treeBuilder = new TreeBuilder($name);
+        $node = $treeBuilder->getRootNode();
+        assert($node instanceof ArrayNodeDefinition);
+        $node
+            ->info($info)
+            ->beforeNormalization()
+                ->ifString()
+                ->then(static fn (string $v): array => [
+                    'path' => $v,
+                ])
+            ->end()
+            ->children()
+                ->scalarNode('path')
+                    ->isRequired()
+                    ->info('The URL of the shortcut.')
+                    ->example($examples ?? ['https://example.com', 'app_action_route', '/do/action'])
+                ->end()
+                ->arrayNode('params')
+                    ->treatFalseLike([])
+                    ->treatTrueLike([])
+                    ->treatNullLike([])
+                    ->prototype('variable')->end()
+                    ->info('The parameters of the action. Only used if the action is a route to a controller.')
+                ->end()
+            ->end()
+        ->end();
+
+        return $node;
     }
 }

@@ -27,7 +27,7 @@ Please have a look at the [Web app manifests](https://developer.mozilla.org/en-U
 Install the bundle with Composer: 
 
 ```bash
-composer require --dev spomky-labs/phpwa
+composer require spomky-labs/phpwa
 ```
 
 This project follows the [semantic versioning](http://semver.org/) strictly.
@@ -69,12 +69,22 @@ pwa:
             'application/json': ['.json']
 ```
 
+### Using the Manifest
+
+The manifest can be used in your HTML pages with the following Twig function in the `<head>` section.
+It will automatically add the manifest your HTML pages and any other useful meta tags.
+
+```html
+{{ pwa() }}
+```
+
 ### Manifest Generation
 
-When the configuration is set, you can generate the manifest with the following command:
+On `dev` or `test` environment, the manifest will be generated for you.
+On `prod` environment, the manifest is compiled during the deployment with Asset Mapper.
 
 ```bash
-symfony console pwa:build
+symfony console asset-map:compile
 ```
 
 By default, the manifest will be generated in the `public` directory with the name `/site.webmanifest`.
@@ -83,26 +93,12 @@ You can change the output file name and the output folder with the following con
 ```yaml
 # config/packages/phpwa.yaml
 pwa:
-    manifest_filepath: '%kernel.project_dir%/public/sub-folder/pwa.json'
-```
-### Using the Manifest
-
-The manifest can be used in your HTML pages with the following code in the `<head>` section.
-In you customized the output filename or the public folder, please replace `/site.webmanifest` with the path to your manifest file.
-
-```html
-<link rel="manifest" href="/site.webmanifest">
+    manifest_public_url: '/foo/pwa.json'
 ```
 
-### Manifest Icons
+### Manifest Icons and Screenshots
 
-The bundle is able to generate icons from a source image.
-This is applicable to the application icons, shortcut icons or Windows 10 widget icons members of the manifest.
-The icons must be square and the source image should be at best quality as possible.
-
-To process the icons, you should set an icon processor. The bundle provides a GD processor and an Imagick processor.
-Depending on your system, you may have to install one extension or the other.
-
+The bundle is able to link your assets to the manifest file.
 Please note that the icons of a size greater than 1024px may be ignored by the browser.
 
 ```yaml
@@ -110,68 +106,35 @@ Please note that the icons of a size greater than 1024px may be ignored by the b
 pwa:
     image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     icons:
-        - src: "%kernel.project_dir%/assets/images/logo.png"
-          sizes: [48, 57, 60, 72, 76, 96, 114, 128, 144, 152, 180, 192, 256, 384, 512, 1024]
-          format: 'webp'
-        - src: "%kernel.project_dir%/assets/images/mask.png"
-          sizes: [48, 57, 60, 72, 76, 96, 114, 128, 144, 152, 180, 192, 256, 384, 512, 1024]
-          purpose: 'maskable'
-        - src: "%kernel.project_dir%/assets/images/logo.svg"
+        - src: "images/logo.png"
+          sizes: [48, 96, 128, 256, 512, 1024]
+        - src: "images/logo.svg"
           sizes: [0] # 0 means `any` size and is suitable for vector images
+        - src: "images/logo.svg"
+          purpose: 'maskable'
+          sizes: [0]
+    screenshots:
+        - src: "screenshots/android_dashboard.png"
+          platform: 'android'
+          label: "View of the dashboard on Android"
+        -  "screenshots/android_feature1.png"
+        -  "screenshots/android_feature2.png"
     shortcuts:
         - name: "Shortcut 1"
           short_name: "shortcut-1"
           url: "/shortcut1"
           description: "Shortcut 1 description"
           icons:
-              - src: "%kernel.project_dir%/assets/images/shortcut1.png"
-                sizes: [48, 72, 96, 128, 144, 192, 256, 384, 512]
-                format: 'webp'
+              - src: "images/shortcut1.png"
+                sizes: [48, 96, 128, 256, 512, 1024]
         - name: "Shortcut 2"
           short_name: "shortcut-2"
           url: "/shortcut2"
           description: "Shortcut 2 description"
           icons:
-              - src: "%kernel.project_dir%/assets/images/shortcut2.png"
-                sizes: [48, 72, 96, 128, 144, 192, 256, 384, 512]
-                format: 'webp'
+              - src: "images/shortcut2.png"
+                sizes: [48, 96, 128, 256, 512, 1024]
 ```
-
-With the configuration above, the bundle will generate
-* 16 icons from the `logo.png` image. The icons will be converted from `png` to `webp`.
-* 16 icons from the `mask.png` image. The format will be `png` and the purpose will be `maskable`.
-* And 1 icon from the `logo.svg` image. The format will be `svg` and the size will be `any`.
-
-If the `format` member is present, the bundle will convert the image to the specified format.
-In the example above, the `logo.png` image will be converted to `webp`, but the `mask.png` image will not be converted.
-
-### Manifest Screenshots
-
-The bundle is able to generate screenshots from a source image.
-This is applicable to the application screenshots or Windows 10 widget screenshot members of the manifest.
-Similar to icons, the source image should be at best quality as possible.
-
-You can select a folder where the source images are stored.
-The bundle will automatically generate screenshots from all the images in the folder. 
-
-```yaml
-# config/packages/phpwa.yaml
-pwa:
-    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
-    screenshots:
-        - src: "%kernel.project_dir%/assets/screenshots/narrow/"
-          form_factor: "narrow"
-        - src: "%kernel.project_dir%/assets/screenshots/wide/"
-          form_factor: "wide"
-        - src: "%kernel.project_dir%/assets/screenshots/android_dashboard.png"
-          platform: 'android'
-          format: 'webp'
-          label: "View of the dashboard on Android"
-```
-
-The bundle will automatically generate screenshots from the source images and add additional information in the manifest
-such as the `sizes` and the `form_factor` (`wide` or `narrow`).
-The `format` parameter is optional. It indicates the format of the generated image. If not set, the format will be the same as the source image.
 
 ### Manifest Shortcuts
 
@@ -194,21 +157,28 @@ pwa:
 
 ## Service Worker
 
-The following command will generate a Service Worker in the `public` directory with the name `/sw.js`:
+The service worker is a JavaScript file that is executed by the browser.
+It can be served by Asset Mapper.
 
-```bash
-symfony console pwa:sw
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    serviceworker: 'script/service-worker.js'
+
 ```
 
-If you want override the existing Service Worker, you can use the `--force` option:
-
-```bash
-symfony console pwa:sw --force
+```yaml
+#The following configuration is similar
+pwa:
+    serviceworker:
+        src: 'script/service-worker.js'
+        dest: '/sw.js'
+        scope: '/'
 ```
 
 Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
 It can also be done in a JavaScript file such as `app.js`.
-In you customized the output filename or the public folder, please replace `sw.js` with the path to your Service Worker file.
+In you customized the destination filename, please replace `/sw.js` with the path to your Service Worker file.
 
 ```html
 <script>
@@ -220,19 +190,8 @@ In you customized the output filename or the public folder, please replace `sw.j
 </script>
 ```
 
-The location of the Service Worker is important. It must be at the root of your application.
-In addition, the `serviceworker.src` member of the manifest must be set to the same location.
 The `serviceworker.scope` member may be set to the same location or to a sub-folder.
 Do not forget to update the `scope` member in the JS configuration.
-
-```yaml
-# config/packages/phpwa.yaml
-pwa:
-    serviceworker:
-        filepath: '%kernel.project_dir%/public/sub-folder/service-worker.js'
-        src: '/sub-folder/service-worker.js'
-        scope: '/'
-```
 
 ### Service Worker Configuration
 

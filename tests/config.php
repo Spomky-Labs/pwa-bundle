@@ -31,19 +31,27 @@ return static function (ContainerConfigurator $container) {
             'utf8' => true,
             'resource' => '%kernel.project_dir%/tests/routes.php',
         ],
+        'default_locale' => 'en',
+        'translator' => [
+            'enabled' => true,
+            'default_path' => '%kernel.project_dir%/tests/translations',
+            'fallbacks' => ['en'],
+        ],
     ]);
     $container->extension('pwa', [
         'image_processor' => DummyImageProcessor::class,
         'background_color' => 'red',
-        'categories' => ['books', 'education', 'medical'],
-        'description' => 'Awesome application that will help you achieve your dreams.',
+        'categories' => ['pwa.categories.0', 'pwa.categories.1', 'pwa.categories.2'],
+        'description' => 'pwa.description',
         'display' => 'standalone',
         'display_override' => ['fullscreen', 'minimal-ui'],
         'file_handlers' => [
             [
-                'action' => 'audio_file_handler',
-                'action_params' => [
-                    'param1' => 'audio',
+                'action' => [
+                    'path' => 'audio_file_handler',
+                    'params' => [
+                        'param1' => 'audio',
+                    ],
                 ],
                 'accept' => [
                     'audio/wav' => ['.wav'],
@@ -76,7 +84,7 @@ return static function (ContainerConfigurator $container) {
                 'sizes' => [0],
             ],
         ],
-        'id' => '?homescreen=1',
+        'id' => '/?homescreen=1',
         'launch_handler' => [
             'client_mode' => ['focus-existing', 'auto'],
         ],
@@ -84,8 +92,8 @@ return static function (ContainerConfigurator $container) {
         'prefer_related_applications' => true,
         'dir' => 'rtl',
         'lang' => 'ar',
-        'name' => 'تطبيق رائع',
-        'short_name' => 'رائع',
+        'name' => 'pwa.name',
+        'short_name' => 'pwa.short_name',
         'protocol_handlers' => [
             [
                 'protocol' => 'web+jngl',
@@ -111,15 +119,22 @@ return static function (ContainerConfigurator $container) {
                 'url' => 'https://apps.microsoft.com/store/detail/example-app1/id123456789',
             ],
         ],
-        'scope' => '/app/',
-        'start_url' => 'https://example.com',
+        'scope' => '/',
+        'start_url' => 'pwa.start_url',
         'theme_color' => 'red',
-        'screenshots' => ['pwa/screenshots/360x800.svg'],
+        'screenshots' => [
+            [
+                'src' => 'pwa/screenshots/360x800.svg',
+                'label' => 'pwa.screenshots.0',
+            ],
+        ],
         'share_target' => [
-            'action' => 'shared_content_receiver',
-            'action_params' => [
-                'param1' => 'value1',
-                'param2' => 'value2',
+            'action' => [
+                'path' => 'shared_content_receiver',
+                'params' => [
+                    'param1' => 'value1',
+                    'param2' => 'value2',
+                ],
             ],
             'method' => 'GET',
             'params' => [
@@ -131,9 +146,11 @@ return static function (ContainerConfigurator $container) {
         'shortcuts' => [
             [
                 'name' => "Today's agenda",
-                'url' => 'agenda',
-                'url_params' => [
-                    'date' => 'today',
+                'url' => [
+                    'path' => 'agenda',
+                    'params' => [
+                        'date' => 'today',
+                    ],
                 ],
                 'description' => 'List of events planned for today',
             ],
@@ -174,7 +191,7 @@ return static function (ContainerConfigurator $container) {
                 'description' => 'widget to control the PWAmp music player',
                 'tag' => 'pwamp',
                 'template' => 'pwamp-template',
-                'ms_ac_template' => 'widgets/mini-player-template.json',
+                'ms_ac_template' => '/widgets/mini-player-template.json',
                 'data' => 'widgets/mini-player-data.json',
                 'type' => 'application/json',
                 'screenshots' => [

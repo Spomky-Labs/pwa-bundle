@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class Shortcut
 {
+    use TranslatableTrait;
+
     public string $name;
 
     #[SerializedName('short_name')]
@@ -15,16 +18,20 @@ final class Shortcut
 
     public null|string $description = null;
 
-    public string $url;
-
-    /**
-     * @var array<string, mixed>
-     */
-    #[SerializedName('url_params')]
-    public array $urlParameters = [];
+    public Url $url;
 
     /**
      * @var array<Icon>
      */
     public array $icons = [];
+
+    public function getName(): string|TranslatableInterface
+    {
+        $this->provideTranslation($this->name);
+    }
+
+    public function getDescription(): string|TranslatableInterface
+    {
+        return $this->provideTranslation($this->description);
+    }
 }
