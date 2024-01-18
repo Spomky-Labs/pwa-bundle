@@ -27,13 +27,13 @@ final class Shortcut
 
     public function getName(): string|TranslatableInterface
     {
-        $this->provideTranslation($this->name);
+        return $this->provideTranslation($this->name);
     }
 
     #[SerializedName('short_name')]
     public function getShortName(): string|TranslatableInterface
     {
-        $this->provideTranslation($this->shortName);
+        return $this->provideTranslation($this->shortName);
     }
 
     public function getDescription(): string|TranslatableInterface
