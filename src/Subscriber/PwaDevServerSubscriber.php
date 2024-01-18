@@ -105,7 +105,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $this->profiler?->disable();
 
         $response = new Response($data, Response::HTTP_OK, [
-            'Content-Type' => 'application/manifest+json',
+            'Content-Type' => 'application/javascript',
             'X-SW-Dev' => true,
             'Etag' => hash('xxh128', $data),
         ]);
