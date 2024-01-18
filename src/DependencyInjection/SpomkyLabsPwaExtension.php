@@ -38,12 +38,18 @@ final class SpomkyLabsPwaExtension extends Extension
         }
         $container->setParameter('spomky_labs_pwa.routes.reference_type', $config['path_type_reference']);
         $container->setParameter('spomky_labs_pwa.manifest_public_url', $config['manifest_public_url']);
+        $container->setParameter('spomky_labs_pwa.sw_public_url', $config['serviceworker']['dest'] ?? null);
+        $container->setParameter(
+            'spomky_labs_pwa.serviceworker.precaching_placeholder',
+            $config['serviceworker']['precaching_placeholder'] ?? 'self.__WB_MANIFEST'
+        );
 
         unset(
             $config['image_processor'],
             $config['web_client'],
             $config['path_type_reference'],
             $config['manifest_public_url'],
+            $config['serviceworker']['precaching_placeholder'],
         );
         $container->setParameter('spomky_labs_pwa.config', $config);
         if (! in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {

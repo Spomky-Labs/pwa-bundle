@@ -10,6 +10,7 @@ const {
     warmStrategyCache, // Warm the cache with URLs that are likely to be visited next or during offline navigation.
 } = workbox.recipes;
 const { CacheFirst } = workbox.strategies;
+const { precacheAndRoute } = workbox.precaching;
 const { registerRoute } = workbox.routing;
 const { CacheableResponsePlugin } = workbox.cacheableResponse;
 const { ExpirationPlugin } = workbox.expiration;
@@ -59,6 +60,10 @@ registerRoute(
         ],
     }),
 );
+
+// This directive will be compiled and populated with asset routes and revisions
+// At the moment, only static assets served by Asset Mapper are listed.
+precacheAndRoute(self.__WB_MANIFEST);
 
 // Warm the cache with URLs that are likely to be visited next or during offline navigation.
 const strategy = new CacheFirst();
