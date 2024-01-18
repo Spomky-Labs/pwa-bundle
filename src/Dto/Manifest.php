@@ -120,24 +120,24 @@ final class Manifest
         return $this->provideTranslation($this->categories);
     }
 
-    public function getDescription(): string|TranslatableInterface
+    public function getDescription(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->description);
     }
 
-    public function getName(): string|TranslatableInterface
+    public function getName(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->name);
     }
 
     #[SerializedName('short_name')]
-    public function getShortName(): string|TranslatableInterface
+    public function getShortName(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->shortName);
     }
 
     #[SerializedName('start_url')]
-    public function getStartUrl(): string|TranslatableInterface
+    public function getStartUrl(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->startUrl);
     }

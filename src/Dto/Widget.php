@@ -51,12 +51,12 @@ final class Widget
     }
 
     #[SerializedName('short_name')]
-    public function getShortName(): string|TranslatableInterface
+    public function getShortName(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->shortName);
     }
 
-    public function getDescription(): string|TranslatableInterface
+    public function getDescription(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->description);
     }

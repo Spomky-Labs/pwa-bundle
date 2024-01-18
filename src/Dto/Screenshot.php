@@ -26,7 +26,7 @@ final class Screenshot
 
     public null|string $format = null;
 
-    public function getLabel(): string|TranslatableInterface
+    public function getLabel(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->label);
     }

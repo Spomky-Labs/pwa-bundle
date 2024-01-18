@@ -21,12 +21,12 @@ final class ShareTargetParameters
      */
     public array $files = [];
 
-    public function getTitle(): string|TranslatableInterface
+    public function getTitle(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->title);
     }
 
-    public function getText(): string|TranslatableInterface
+    public function getText(): null|string|TranslatableInterface
     {
         return $this->provideTranslation($this->text);
     }
