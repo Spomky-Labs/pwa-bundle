@@ -9,6 +9,7 @@ use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use const JSON_PRETTY_PRINT;
@@ -37,7 +38,7 @@ final readonly class AssetsCompileEventListener
         $data = $this->serializer->serialize($this->manifest, 'json', [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            'json_encode_options' => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
         $this->assetsFilesystem->write($this->manifestPublicUrl, $data);
     }

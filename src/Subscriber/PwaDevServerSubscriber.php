@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use const JSON_PRETTY_PRINT;
@@ -83,7 +84,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $body = $this->serializer->serialize($this->manifest, 'json', [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            'json_encode_options' => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
         $response = new Response($body, Response::HTTP_OK, [
             'Cache-Control' => 'public, max-age=604800, immutable',
