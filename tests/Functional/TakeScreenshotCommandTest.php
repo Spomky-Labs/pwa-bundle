@@ -16,7 +16,7 @@ final class TakeScreenshotCommandTest extends AbstractPwaTestCase
     public static function aScreenshotIsCorrectlyTake(): void
     {
         // Given
-        $command = self::$application->find('pwa:take-screenshot');
+        $command = self::$application->find('pwa:create:screenshot');
         $commandTester = new CommandTester($command);
         $output = sprintf('%s/samples/screenshots/', self::$kernel->getCacheDir());
 

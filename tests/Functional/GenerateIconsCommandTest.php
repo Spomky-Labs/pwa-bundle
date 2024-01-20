@@ -13,10 +13,10 @@ use Symfony\Component\Console\Tester\CommandTester;
 final class GenerateIconsCommandTest extends AbstractPwaTestCase
 {
     #[Test]
-    public static function aScreenshotIsCorrectlyTake(): void
+    public static function iconsAreCorrectlyCreated(): void
     {
         // Given
-        $command = self::$application->find('pwa:generate-icons');
+        $command = self::$application->find('pwa:create:icons');
         $commandTester = new CommandTester($command);
         $output = sprintf('%s/samples/icons', self::$kernel->getCacheDir());
 

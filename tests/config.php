@@ -213,7 +213,7 @@ return static function (ContainerConfigurator $container) {
         ],
         'handle_links' => 'auto',
         'serviceworker' => [
-            'src' => '/sw/my-sw.js',
+            'src' => __DIR__ . '/sw.js',
             'scope' => '/',
             'use_cache' => true,
         ],

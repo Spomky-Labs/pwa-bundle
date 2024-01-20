@@ -16,7 +16,7 @@ final class ServiceWorkerCommandTest extends AbstractPwaTestCase
     public static function theCommandCanGenerateTheServiceWorker(): void
     {
         // Given
-        $command = self::$application->find('pwa:sw');
+        $command = self::$application->find('pwa:create:sw');
         $commandTester = new CommandTester($command);
         $output = sprintf('%s/samples/my-sw.js', self::$kernel->getCacheDir());
 

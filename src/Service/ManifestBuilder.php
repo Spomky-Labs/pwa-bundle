@@ -8,7 +8,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use function assert;
 
-final class Builder
+final class ManifestBuilder
 {
     private null|Manifest $manifest = null;
 

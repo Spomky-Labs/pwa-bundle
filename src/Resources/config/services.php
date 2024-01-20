@@ -5,7 +5,7 @@ declare(strict_types=1);
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
-use SpomkyLabs\PwaBundle\Service\Builder;
+use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Subscriber\AssetsCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
@@ -23,13 +23,13 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
     ;
 
-    $container->set(Builder::class)
+    $container->set(ManifestBuilder::class)
         ->args([
             '$config' => '%spomky_labs_pwa.config%',
         ])
     ;
     $container->set(Manifest::class)
-        ->factory([service(Builder::class), 'createManifest'])
+        ->factory([service(ManifestBuilder::class), 'createManifest'])
     ;
 
     $container->load('SpomkyLabs\\PwaBundle\\Command\\', '../../Command/*');

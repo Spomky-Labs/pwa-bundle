@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use function count;
 
-#[AsCommand(name: 'pwa:generate-icons', description: 'Generate icons for your PWA')]
+#[AsCommand(name: 'pwa:create:icons', description: 'Generate icons for your PWA')]
 final class GenerateIconsCommand extends Command
 {
     public function __construct(

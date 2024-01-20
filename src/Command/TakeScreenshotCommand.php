@@ -19,7 +19,7 @@ use Symfony\Component\Panther\Client;
 use function count;
 
 #[AsCommand(
-    name: 'pwa:take-screenshot',
+    name: 'pwa:create:screenshot',
     description: 'Take a screenshot of the application store it in your asset folder'
 )]
 final class TakeScreenshotCommand extends Command
