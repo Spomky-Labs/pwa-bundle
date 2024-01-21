@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Command;
 
 use Facebook\WebDriver\WebDriverDimension;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -27,6 +28,7 @@ final class CreateScreenshotCommand extends Command
     private readonly Client $webClient;
 
     public function __construct(
+        private readonly ImageProcessor $imageProcessor,
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
@@ -64,6 +66,14 @@ final class CreateScreenshotCommand extends Command
         );
         $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
         $this->addOption('height', null, InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
+        $this->addOption(
+            'format',
+            'f',
+            InputOption::VALUE_OPTIONAL,
+            'The format of the icons',
+            null,
+            ['png', 'jpg', 'webp']
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -77,6 +87,7 @@ final class CreateScreenshotCommand extends Command
         $url = $input->getArgument('url');
         $height = $input->getOption('height');
         $width = $input->getOption('width');
+        $format = $input->getOption('format');
 
         $client = clone $this->webClient;
         $client->request('GET', $url);
@@ -91,6 +102,14 @@ final class CreateScreenshotCommand extends Command
             ->window()
             ->fullscreen();
         $client->takeScreenshot($tmpName);
+
+        if ($format !== null) {
+            $data = $this->imageProcessor->process(file_get_contents($tmpName), null, null, $format);
+            file_put_contents($tmpName, $data);
+        }
+        if ($width === null || $height === null) {
+            ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes(file_get_contents($tmpName));
+        }
 
         $mime = MimeTypes::getDefault();
         $mimeType = $mime->guessMimeType($tmpName);

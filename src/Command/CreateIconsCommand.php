@@ -48,7 +48,14 @@ final class CreateIconsCommand extends Command
             sprintf('%s/assets/icons/', $this->projectDir)
         );
         $this->addArgument('filename', InputArgument::OPTIONAL, 'The output directory', 'icon');
-        $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'The format of the icons');
+        $this->addOption(
+            'format',
+            'f',
+            InputOption::VALUE_OPTIONAL,
+            'The format of the icons',
+            null,
+            ['png', 'jpg', 'webp']
+        );
         $this->addArgument(
             'sizes',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
