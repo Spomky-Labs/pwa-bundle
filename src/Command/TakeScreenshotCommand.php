@@ -52,10 +52,10 @@ final class TakeScreenshotCommand extends Command
             InputArgument::OPTIONAL,
             'The output name of the screenshot',
             'screenshot',
-            ['homeage-android', 'feature1']
+            ['homepage-android', 'feature1']
         );
-        $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
-        $this->addOption('height', null, InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
+        $this->addOption('width', 'w', InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
+        $this->addOption('height', 'h', InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

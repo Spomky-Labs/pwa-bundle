@@ -36,12 +36,12 @@ final class GenerateIconsCommand extends Command
         $this->addArgument('source', InputArgument::REQUIRED, 'The source image');
         $this->addArgument('output', InputArgument::REQUIRED, 'The output directory');
         $this->addArgument('filename', InputArgument::OPTIONAL, 'The output directory', 'icon');
-        $this->addOption('format', null, InputOption::VALUE_OPTIONAL, 'The format of the icons');
+        $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'The format of the icons');
         $this->addArgument(
             'sizes',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
             'The sizes of the icons',
-            ['192', '512']
+            ['16', '32', '48', '96', '144', '180', '256', '512', '1024']
         );
     }
 
