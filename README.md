@@ -44,8 +44,8 @@ A Service Worker can be used to provide offline capabilities to the application 
 ### Manifest Configuration
 
 The bundle is able to generate a manifest from a configuration file.
-The manifest members defined in the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) are supported
-without any change, with the exception of some members described in the following sections.
+The manifest members defined in the [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) are supported.
+Other members may be added in the future.
 
 ```yaml
 # config/packages/phpwa.yaml
@@ -80,8 +80,8 @@ It will automatically add the manifest your HTML pages and any other useful meta
 
 ### Manifest Generation
 
-On `dev` or `test` environment, the manifest will be generated for you.
-On `prod` environment, the manifest is compiled during the deployment with Asset Mapper.
+On `dev` or `test` environment, the manifest and the service worker (if any) will be generated for you.
+On `prod` environment, these files are compiled during the deployment with Asset Mapper.
 
 ```bash
 symfony console asset-map:compile
@@ -98,27 +98,29 @@ pwa:
 
 ### Manifest Icons and Screenshots
 
-The bundle is able to link your assets to the manifest file.
+Thanks to Symfony Asset Mapper, the bundle is able to link your application assets to the manifest file.
 Please note that the icons of a size greater than 1024px may be ignored by the browser.
 
-```yaml
+```yaml  
 # config/packages/phpwa.yaml
 pwa:
-    image_processor: 'pwa.image_processor.gd' # or 'pwa.image_processor.imagick'
     icons:
         - src: "images/logo.png"
           sizes: [48, 96, 128, 256, 512, 1024]
         - src: "images/logo.svg"
-          sizes: [0] # 0 means `any` size and is suitable for vector images
+          sizes: [0] # 0 means `any` size and is suitable only for vector images
         - src: "images/logo.svg"
           purpose: 'maskable'
-          sizes: [0]
+          sizes: 'any' # "any" is understood
+        - src: "/home/foo/projectA/images/logo.png" # Absolute path
+          purpose: 'maskable'
+          sizes: 512 # Passing a signed integer is also understood and similar to [512]
     screenshots:
         - src: "screenshots/android_dashboard.png"
           platform: 'android'
           label: "View of the dashboard on Android"
-        -  "screenshots/android_feature1.png"
-        -  "screenshots/android_feature2.png"
+        -  "screenshots/android_feature1.png" # Only src is required. This is a shortcut
+        -  "/home/foo/projectA/images/android_feature2.png" # Absolute path
     shortcuts:
         - name: "Shortcut 1"
           short_name: "shortcut-1"
@@ -136,23 +138,63 @@ pwa:
                 sizes: [48, 96, 128, 256, 512, 1024]
 ```
 
-### Manifest Shortcuts
+### URLs and Actions
 
-The `shortcuts` member may contain a list of action shortcuts that point to specific URLs in your application.
-You can define URLs as relative paths or by using the route name.
+The `shortcuts`, `file_handlers`, `protocol_handlers`, `related_applications` or `shared_targets`
+members may contain a list of URLs/actions. You can define URLs as relative paths or by using the route name.
 
 ```yaml
 # config/packages/phpwa.yaml
 pwa:
     shortcuts:
+        - name: "Action 0"
+          short_name: "action-0"
+          url: "https://example.com/action" # Absolute URL
+          description: "Action 0 description"
         - name: "Action 1"
           short_name: "action-1"
-          url: "/action1"
+          url: "/action1" # Relative path
           description: "Action 1 description"
         - name: "Action 2"
           short_name: "action-2"
-          url: "app_action2"
+          url: "app_action2" # Route name
           description: "Use this route to generate the URL"
+        - name: "Action 2"
+          short_name: "action-2"
+          url:
+            path: "app_action2" # Route name (same as above)
+            params: # Route parameters
+                foo: "bar"
+                param1: "value1"
+          description: "Use this route with parameters to generate the URL"
+    file_handlers:
+        - action: '/edit'
+          accept:
+            'text/*': ['.txt']
+            'application/json': ['.json']
+        - action: 'app_edit'
+          accept:
+            'text/*': ['.txt']
+            'application/json': ['.json']
+        - action:
+            path: 'app_edit'
+            params:
+                foo: 'bar'
+                param1: 'value1'
+          accept:
+            'text/*': ['.txt']
+            'application/json': ['.json']
+    protocol_handlers:
+        - protocol: 'mailto'
+          url: ...
+    related_applications:
+        - platform: 'play'
+          url: ...
+          id: 'com.example.app1'
+        - platform: 'itunes'
+          url: ...
+    shared_targets:
+        - url: ...
 ```
 
 ## Service Worker
@@ -164,7 +206,6 @@ It can be served by Asset Mapper.
 # config/packages/phpwa.yaml
 pwa:
     serviceworker: 'script/service-worker.js'
-
 ```
 
 ```yaml
@@ -172,8 +213,8 @@ pwa:
 pwa:
     serviceworker:
         src: 'script/service-worker.js'
-        dest: '/sw.js'
-        scope: '/'
+        dest: '/sw.js' # Optional
+        scope: '/' # Optional
 ```
 
 Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
@@ -190,15 +231,89 @@ In you customized the destination filename, please replace `/sw.js` with the pat
 </script>
 ```
 
-The `serviceworker.scope` member may be set to the same location or to a sub-folder.
-Do not forget to update the `scope` member in the JS configuration.
+### Using Workbox
 
-### Service Worker Configuration
+The bundle provides a Service Worker based on [Workbox](https://developers.google.com/web/tools/workbox).
+Use the following command to enable it:
 
-The Service Worker uses Workbox and comes with predefined configuration and recipes.
-You are free to change the configuration and the recipes to fit your needs.
-In particular, you can change the cache strategy, the cache expiration, the cache name, etc.
-Please refer to the [Workbox documentation](https://developers.google.com/web/tools/workbox).
+```bash
+symfony console pwa:create:sw
+```
+
+This will create a Service Worker in `assets/script/service-worker.js`.
+
+We recommend the use of `workbox-window`.
+
+```bash
+symfony console importmap:require workbox-window
+```
+
+Then, you can register the Service Worker with the following code:
+
+```js
+// assets/app.js
+import {Workbox} from 'workbox-window';
+
+const wb = new Workbox('/sw.js');
+wb.register();
+```
+
+Or directly in your HTML page:
+
+```html
+<script type="module">
+    if ('serviceWorker' in navigator) {
+        const {Workbox} = await import('workbox-window');
+
+        const wb = new Workbox('/sw.js');
+        wb.register();
+    }
+</script>
+```
+
+See https://developer.chrome.com/docs/workbox/using-workbox-window for more information.
+
+### Workbox Precaching
+
+The bundle is able to generate a Workbox configuration file to precache your assets.
+It is enabled by default. You can disable it by removing the placeholder in the service worker file.
+By default, the placeholder is `//PRECACHING_PLACEHOLDER`.
+
+### Workbox Warm Cache
+
+The bundle is able to generate a Workbox configuration file to warm the cache.
+No route is warmed by default. You have to define the routes you want to warm.
+Please note that only application URLs cache be cached.
+
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    serviceworker:
+        src: 'sw.js'
+        warm_cache_urls:
+            - 'app_homepage' # Simple route name
+            -
+                path: 'app_feature1' # Route name without parameters
+            -
+                path: 'app_feature2' # Route name with parameters
+                params:
+                    foo: 'bar'
+                    param1: 'value1'
+```
+
+### Workbox Offline Fallback Page
+
+The bundle is able to generate a Workbox configuration file to provide an offline fallback page.
+By default, the offline fallback page is disabled.
+You can enable it by defining the route name of the offline fallback page.
+
+```yaml
+# config/packages/phpwa.yaml
+pwa:
+    serviceworker:
+        src: 'sw.js'
+        offline_fallback: 'app_offline_page'
+```
 
 # Support
 
