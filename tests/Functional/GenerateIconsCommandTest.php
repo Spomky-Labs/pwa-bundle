@@ -23,7 +23,7 @@ final class GenerateIconsCommandTest extends AbstractPwaTestCase
         // When
         $commandTester->execute([
             'source' => __DIR__ . '/../images/1920x1920.svg',
-            'output' => $output,
+            '--output' => $output,
             '--format' => 'png',
             'sizes' => [192, 512],
         ]);
