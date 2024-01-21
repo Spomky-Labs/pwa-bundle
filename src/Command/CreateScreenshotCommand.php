@@ -42,7 +42,13 @@ final class CreateScreenshotCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('url', InputArgument::REQUIRED, 'The URL to take a screenshot from');
+        $this->addArgument(
+            'url',
+            InputArgument::REQUIRED,
+            'The URL to take a screenshot from',
+            null,
+            ['https://example.com', 'https://example.com/feature1']
+        );
         $this->addArgument(
             'output',
             InputArgument::OPTIONAL,

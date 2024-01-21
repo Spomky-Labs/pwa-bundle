@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Command;
 
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,11 +17,13 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use function count;
+use function is_string;
 
 #[AsCommand(name: 'pwa:create:icons', description: 'Generate icons for your PWA')]
 final class CreateIconsCommand extends Command
 {
     public function __construct(
+        private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
         private readonly ImageProcessor $imageProcessor,
         #[Autowire('%kernel.project_dir%')]
@@ -31,7 +34,13 @@ final class CreateIconsCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('source', InputArgument::REQUIRED, 'The source image');
+        $this->addArgument(
+            'source',
+            InputArgument::REQUIRED,
+            'The source image or an asset logical path',
+            null,
+            ['images/logo.svg', '/home/foo/projetA/favicon.png']
+        );
         $this->addArgument(
             'output',
             InputArgument::OPTIONAL,
@@ -59,7 +68,8 @@ final class CreateIconsCommand extends Command
         $format = $input->getOption('format');
         $sizes = $input->getArgument('sizes');
 
-        if (! $this->filesystem->exists($source)) {
+        $sourcePath = $this->getSourcePath($source);
+        if (! is_string($sourcePath)) {
             $io->info('The source image does not exist.');
             return self::FAILURE;
         }
@@ -71,7 +81,8 @@ final class CreateIconsCommand extends Command
 
         $mime = MimeTypes::getDefault();
         if ($format === null) {
-            $mimeType = $mime->guessMimeType($source);
+            dump($sourcePath);
+            $mimeType = $mime->guessMimeType($sourcePath);
             $extensions = $mime->getExtensions($mimeType);
             if (count($extensions) === 0) {
                 $io->error(sprintf('Unable to guess the extension for the mime type "%s".', $mimeType));
@@ -82,12 +93,24 @@ final class CreateIconsCommand extends Command
 
         foreach ($sizes as $size) {
             $io->info('Generating icon ' . $size . 'x' . $size . '...');
-            $tmp = $this->imageProcessor->process(file_get_contents($source), (int) $size, (int) $size, $format);
+            $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), (int) $size, (int) $size, $format);
             $this->filesystem->dumpFile(sprintf('%s/%s-%sx%s.%s', $dest, $filename, $size, $size, $format), $tmp);
             $io->info('Icon ' . $size . 'x' . $size . ' generated.');
         }
         $io->info('Done.');
 
         return self::SUCCESS;
+    }
+
+    private function getSourcePath(string $source): int|string
+    {
+        $asset = $this->assetMapper->getAsset($source);
+        if ($asset !== null) {
+            return $asset->sourcePath;
+        }
+        if (! $this->filesystem->exists($source)) {
+            return self::FAILURE;
+        }
+        return $source;
     }
 }
