@@ -208,6 +208,16 @@ pwa:
     serviceworker: 'script/service-worker.js'
 ```
 
+The bundle provides a Service Worker based on [Workbox](https://developers.google.com/web/tools/workbox).
+Use the following command to enable it:
+
+```bash
+symfony console pwa:create:sw
+```
+
+This will create a Service Worker in `assets/sw.js`.
+Feel free to modify it as you want.
+
 ```yaml
 #The following configuration is similar
 pwa:
@@ -217,71 +227,32 @@ pwa:
         scope: '/' # Optional
 ```
 
-Next, you have to register the Service Worker in your HTML pages with the following code in the `<head>` section.
-It can also be done in a JavaScript file such as `app.js`.
-In you customized the destination filename, please replace `/sw.js` with the path to your Service Worker file.
+The Service Worker is directly injected into your HTML pages by the Twig function `pwa` (see above).
+You can disable this feature by calling the Twig function with `false` as argument.
 
 ```html
-<script>
-    if (navigator.serviceWorker) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/sw.js", {scope: '/'});
-        })
-    }
-</script>
+{{ pwa(injectSW=false) }}
 ```
 
-### Using Workbox
-
-The bundle provides a Service Worker based on [Workbox](https://developers.google.com/web/tools/workbox).
-Use the following command to enable it:
-
-```bash
-symfony console pwa:create:sw
-```
-
-This will create a Service Worker in `assets/script/service-worker.js`.
-
-We recommend the use of `workbox-window`.
+The injection method uses a CDN version of `workbox-window`.
+You can install this package with the following command.
+The inject code will detect the presence of the package and will use it if available.
 
 ```bash
 symfony console importmap:require workbox-window
-```
-
-Then, you can register the Service Worker with the following code:
-
-```js
-// assets/app.js
-import {Workbox} from 'workbox-window';
-
-const wb = new Workbox('/sw.js');
-wb.register();
-```
-
-Or directly in your HTML page:
-
-```html
-<script type="module">
-    if ('serviceWorker' in navigator) {
-        const {Workbox} = await import('workbox-window');
-
-        const wb = new Workbox('/sw.js');
-        wb.register();
-    }
-</script>
 ```
 
 See https://developer.chrome.com/docs/workbox/using-workbox-window for more information.
 
 ### Workbox Precaching
 
-The bundle is able to generate a Workbox configuration file to precache your assets.
+If you use the provided Service Worker, you can enable the Workbox Precaching feature.
 It is enabled by default. You can disable it by removing the placeholder in the service worker file.
 By default, the placeholder is `//PRECACHING_PLACEHOLDER`.
 
 ### Workbox Warm Cache
 
-The bundle is able to generate a Workbox configuration file to warm the cache.
+If you use the provided Service Worker, you can enable the Workbox Warm Cache feature.
 No route is warmed by default. You have to define the routes you want to warm.
 Please note that only application URLs cache be cached.
 
@@ -303,7 +274,7 @@ pwa:
 
 ### Workbox Offline Fallback Page
 
-The bundle is able to generate a Workbox configuration file to provide an offline fallback page.
+If you use the provided Service Worker, you can enable the Workbox Offline Fallback Page feature.
 By default, the offline fallback page is disabled.
 You can enable it by defining the route name of the offline fallback page.
 
