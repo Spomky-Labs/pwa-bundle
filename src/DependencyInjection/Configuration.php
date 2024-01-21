@@ -10,6 +10,8 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use function assert;
+use function is_int;
+use function is_string;
 
 final readonly class Configuration implements ConfigurationInterface
 {
@@ -405,6 +407,20 @@ final readonly class Configuration implements ConfigurationInterface
                         ->example('icon/logo.svg')
                     ->end()
                     ->arrayNode('sizes')
+                        ->beforeNormalization()
+                            ->ifTrue(static fn (mixed $v): bool => is_int($v))
+                            ->then(static fn (int $v): array => [$v])
+                        ->end()
+                        ->beforeNormalization()
+                            ->ifTrue(static fn (mixed $v): bool => is_string($v))
+                            ->then(static function (string $v): array {
+                                if ($v === 'any') {
+                                    return [0];
+                                }
+
+                                return [(int) $v];
+                            })
+                        ->end()
                         ->info(
                             'The sizes of the icon. 16 means 16x16, 32 means 32x32, etc. 0 means "any" (i.e. it is a vector image).'
                         )
@@ -413,7 +429,7 @@ final readonly class Configuration implements ConfigurationInterface
                     ->end()
                     ->scalarNode('format')
                         ->info('The icon format output.')
-                        ->example(['webp', 'png'])
+                        ->example(['image/webp', 'image/png'])
                     ->end()
                     ->scalarNode('purpose')
                         ->info('The purpose of the icon.')
@@ -567,7 +583,7 @@ final readonly class Configuration implements ConfigurationInterface
                     ->end()
                     ->scalarNode('format')
                         ->info('The format of the screenshot. Will convert the file if set.')
-                        ->example(['jpg', 'png', 'webp'])
+                        ->example(['image/jpg', 'image/png', 'image/webp'])
                     ->end()
                 ->end()
             ->end();

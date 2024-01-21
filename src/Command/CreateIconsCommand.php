@@ -16,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Yaml\Yaml;
 use function count;
 use function is_string;
 
@@ -41,13 +42,14 @@ final class CreateIconsCommand extends Command
             null,
             ['images/logo.svg', '/home/foo/projetA/favicon.png']
         );
-        $this->addArgument(
+        $this->addOption(
             'output',
-            InputArgument::OPTIONAL,
+            'o',
+            InputOption::VALUE_OPTIONAL,
             'The output directory',
             sprintf('%s/assets/icons/', $this->projectDir)
         );
-        $this->addArgument('filename', InputArgument::OPTIONAL, 'The output directory', 'icon');
+        $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'The output directory', 'icon');
         $this->addOption(
             'format',
             'f',
@@ -70,8 +72,8 @@ final class CreateIconsCommand extends Command
         $io->title('PWA Icons Generator');
 
         $source = $input->getArgument('source');
-        $dest = $input->getArgument('output');
-        $filename = $input->getArgument('filename');
+        $dest = rtrim((string) $input->getOption('output'), '/');
+        $filename = $input->getOption('filename');
         $format = $input->getOption('format');
         $sizes = $input->getArgument('sizes');
 
@@ -88,7 +90,6 @@ final class CreateIconsCommand extends Command
 
         $mime = MimeTypes::getDefault();
         if ($format === null) {
-            dump($sourcePath);
             $mimeType = $mime->guessMimeType($sourcePath);
             $extensions = $mime->getExtensions($mimeType);
             if (count($extensions) === 0) {
@@ -98,13 +99,36 @@ final class CreateIconsCommand extends Command
             $format = current($extensions);
         }
 
+        $generatedIcons = [];
         foreach ($sizes as $size) {
-            $io->info('Generating icon ' . $size . 'x' . $size . '...');
-            $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), (int) $size, (int) $size, $format);
-            $this->filesystem->dumpFile(sprintf('%s/%s-%sx%s.%s', $dest, $filename, $size, $size, $format), $tmp);
-            $io->info('Icon ' . $size . 'x' . $size . ' generated.');
+            $size = (int) $size;
+            $outputSize = $size === 0 ? 'any' : sprintf('%sx%s', $size, $size);
+            $io->info(sprintf('Processing icon %s', $outputSize));
+            $tmp = $this->imageProcessor->process(
+                file_get_contents($sourcePath),
+                $size === 0 ? null : $size,
+                $size === 0 ? null : $size,
+                $format
+            );
+            $filePath = sprintf('%s/%s-%s.%s', $dest, $filename, $outputSize, $format);
+            $this->filesystem->dumpFile($filePath, $tmp);
+            $asset = $this->assetMapper->getAssetFromSourcePath($filePath);
+            $config = [
+                'src' => $asset === null ? $filePath : $asset->logicalPath,
+                'sizes' => [$size],
+            ];
+            $destMimeType = $mime->guessMimeType($filePath);
+            if ($destMimeType !== null) {
+                $config['type'] = $destMimeType;
+            }
+
+            $generatedIcons[] = $config;
         }
-        $io->info('Done.');
+
+        $io->success('Icons have been generated. You can now use them in your application configuration file.');
+        $io->writeln(Yaml::dump([
+            'icons' => $generatedIcons,
+        ], 10, 2));
 
         return self::SUCCESS;
     }

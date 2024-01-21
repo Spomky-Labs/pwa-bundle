@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Command;
 
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
+use Symfony\Component\Yaml\Yaml;
 use function count;
 
 #[AsCommand(
@@ -28,6 +30,7 @@ final class CreateScreenshotCommand extends Command
     private readonly Client $webClient;
 
     public function __construct(
+        private readonly AssetMapperInterface $assetMapper,
         private readonly ImageProcessor $imageProcessor,
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
@@ -85,6 +88,7 @@ final class CreateScreenshotCommand extends Command
         $io->title('PWA - Take a screenshot');
 
         $url = $input->getArgument('url');
+        $dest = rtrim((string) $input->getArgument('output'), '/');
         $height = $input->getOption('height');
         $width = $input->getOption('width');
         $format = $input->getOption('format');
@@ -124,17 +128,25 @@ final class CreateScreenshotCommand extends Command
         }
 
         $format = current($extensions);
-        $filename = sprintf(
-            '%s/%s%s.%s',
-            $input->getArgument('output'),
-            $input->getArgument('filename'),
-            $sizes,
-            $format
-        );
+        $filename = sprintf('%s/%s%s.%s', $dest, $input->getArgument('filename'), $sizes, $format);
 
         $this->filesystem->copy($tmpName, $filename, true);
         $this->filesystem->remove($tmpName);
-        $io->success('Screenshot saved');
+        $asset = $this->assetMapper->getAssetFromSourcePath($filename);
+        $outputMimeType = $mime->guessMimeType($filename);
+
+        $config = [
+            'src' => $asset === null ? $filename : $asset->logicalPath,
+            'width' => $width,
+            'height' => $height,
+        ];
+        if ($outputMimeType !== null) {
+            $config['type'] = $outputMimeType;
+        }
+        $io->success('Screenshot saved. You can now use it in your application configuration file.');
+        $io->writeln(Yaml::dump([
+            'screenshots' => [$config],
+        ], 10, 2));
 
         return self::SUCCESS;
     }
