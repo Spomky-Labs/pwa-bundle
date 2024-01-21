@@ -28,6 +28,8 @@ final class CreateScreenshotCommand extends Command
 
     public function __construct(
         private readonly Filesystem $filesystem,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
         #[Autowire('@pwa.web_client')]
         null|Client $webClient = null,
     ) {
@@ -41,7 +43,12 @@ final class CreateScreenshotCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('url', InputArgument::REQUIRED, 'The URL to take a screenshot from');
-        $this->addArgument('output', InputArgument::REQUIRED, 'The output directory of the screenshot');
+        $this->addArgument(
+            'output',
+            InputArgument::OPTIONAL,
+            'The output directory of the screenshot',
+            sprintf('%s/assets/screenshots/', $this->projectDir)
+        );
         $this->addArgument(
             'filename',
             InputArgument::OPTIONAL,
@@ -49,8 +56,8 @@ final class CreateScreenshotCommand extends Command
             'screenshot',
             ['homepage-android', 'feature1']
         );
-        $this->addOption('width', 'w', InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
-        $this->addOption('height', 'h', InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
+        $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
+        $this->addOption('height', null, InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

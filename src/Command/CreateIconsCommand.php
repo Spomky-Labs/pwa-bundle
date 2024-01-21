@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use function count;
@@ -22,6 +23,8 @@ final class CreateIconsCommand extends Command
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly ImageProcessor $imageProcessor,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
     ) {
         parent::__construct();
     }
@@ -29,7 +32,12 @@ final class CreateIconsCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'The source image');
-        $this->addArgument('output', InputArgument::REQUIRED, 'The output directory');
+        $this->addArgument(
+            'output',
+            InputArgument::OPTIONAL,
+            'The output directory',
+            sprintf('%s/assets/icons/', $this->projectDir)
+        );
         $this->addArgument('filename', InputArgument::OPTIONAL, 'The output directory', 'icon');
         $this->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'The format of the icons');
         $this->addArgument(
