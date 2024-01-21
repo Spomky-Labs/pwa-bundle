@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,23 +12,33 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Config\FileLocator;
+use Symfony\Component\Yaml\Yaml;
 use function count;
 
 #[AsCommand(name: 'pwa:create:sw', description: 'Generate a basic Service Worker')]
 final class CreateServiceWorkerCommand extends Command
 {
     public function __construct(
+        private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
         private readonly FileLocator $fileLocator,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addArgument('output', InputArgument::REQUIRED, 'The output file');
+        $this->addArgument(
+            'output',
+            InputArgument::OPTIONAL,
+            'The output file',
+            sprintf('%s/assets/sw.js', $this->projectDir)
+        );
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the generation of the service worker');
     }
 
@@ -51,7 +62,16 @@ final class CreateServiceWorkerCommand extends Command
         }
         $resourcePath = $resourcePath[0];
         $this->filesystem->copy($resourcePath, $dest);
-        $io->info('Service worker generated.');
+        $asset = $this->assetMapper->getAssetFromSourcePath($dest);
+
+        $config = [
+            'src' => $asset === null ? $dest : $asset->logicalPath,
+        ];
+
+        $io->info('Service worker generated. You can now use it in your application configuration file.');
+        $io->writeln(Yaml::dump([
+            'serviceworker' => $config,
+        ], 10, 2));
 
         return self::SUCCESS;
     }
