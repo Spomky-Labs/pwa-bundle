@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Facebook\WebDriver\WebDriverDimension;
+use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
+use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
+use SpomkyLabs\PwaBundle\Command\CreateServiceWorkerCommand;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
@@ -13,6 +17,8 @@ use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Panther\Client;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container): void {
@@ -32,7 +38,13 @@ return static function (ContainerConfigurator $container): void {
         ->factory([service(ManifestBuilder::class), 'createManifest'])
     ;
 
-    $container->load('SpomkyLabs\\PwaBundle\\Command\\', '../../Command/*');
+    $container->set(CreateServiceWorkerCommand::class);
+    if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
+        $container->set(CreateScreenshotCommand::class);
+    }
+    if (class_exists(MimeTypes::class)) {
+        $container->set(CreateIconsCommand::class);
+    }
 
     $container->load('SpomkyLabs\\PwaBundle\\Normalizer\\', '../../Normalizer/*')
         ->tag('serializer.normalizer', [

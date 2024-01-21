@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Config\FileLocator;
 use function count;
 
 #[AsCommand(name: 'pwa:create:sw', description: 'Generate a basic Service Worker')]
-final class GenerateServiceWorkerCommand extends Command
+final class CreateServiceWorkerCommand extends Command
 {
     public function __construct(
         private readonly Filesystem $filesystem,

@@ -22,7 +22,7 @@ use function count;
     name: 'pwa:create:screenshot',
     description: 'Take a screenshot of the application store it in your asset folder'
 )]
-final class TakeScreenshotCommand extends Command
+final class CreateScreenshotCommand extends Command
 {
     private readonly Client $webClient;
 
@@ -36,11 +36,6 @@ final class TakeScreenshotCommand extends Command
             $webClient = Client::createChromeClient();
         }
         $this->webClient = $webClient;
-    }
-
-    public function isEnabled(): bool
-    {
-        return class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class);
     }
 
     protected function configure(): void
@@ -60,6 +55,9 @@ final class TakeScreenshotCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (! $this->isEnabled()) {
+            return self::FAILURE;
+        }
         $io = new SymfonyStyle($input, $output);
         $io->title('PWA - Take a screenshot');
 

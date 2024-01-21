@@ -17,18 +17,13 @@ use Symfony\Component\Mime\MimeTypes;
 use function count;
 
 #[AsCommand(name: 'pwa:create:icons', description: 'Generate icons for your PWA')]
-final class GenerateIconsCommand extends Command
+final class CreateIconsCommand extends Command
 {
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly ImageProcessor $imageProcessor,
     ) {
         parent::__construct();
-    }
-
-    public function isEnabled(): bool
-    {
-        return class_exists(MimeTypes::class);
     }
 
     protected function configure(): void
