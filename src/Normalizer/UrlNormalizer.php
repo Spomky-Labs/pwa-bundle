@@ -24,11 +24,11 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
     ) {
     }
 
-    public function normalize(mixed $object, string $format = null, array $context = []): ?string
+    public function normalize(mixed $object, string $format = null, array $context = []): string
     {
         assert($object instanceof Url);
 
-        if (! str_starts_with($object->path, '/') && ! filter_var($object->path, FILTER_VALIDATE_URL)) {
+        if (! str_starts_with($object->path, '/') && filter_var($object->path, FILTER_VALIDATE_URL) === false) {
             return $this->router->generate($object->path, $object->params, $this->referenceType);
         }
 

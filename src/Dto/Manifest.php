@@ -75,10 +75,10 @@ final class Manifest
      */
     public array $screenshots = [];
 
-    #[SerializedName('file_handlers')]
     /**
      * @var array<FileHandler>
      */
+    #[SerializedName('file_handlers')]
     public array $fileHandlers = [];
 
     #[SerializedName('launch_handler')]

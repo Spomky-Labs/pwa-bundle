@@ -48,7 +48,7 @@ final class CreateServiceWorkerCommand extends Command
         $io->title('PWA Service Worker Generator');
 
         $dest = $input->getArgument('output');
-        $force = $input->getOption('force');
+        $force = (bool) $input->getOption('force');
 
         if ($this->filesystem->exists($dest) && ! $force) {
             $io->info('Service worker already exists. Skipping.');

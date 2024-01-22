@@ -16,6 +16,9 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
     ) {
     }
 
+    /**
+     * @return array{scope?: string, src: string, use_cache?: bool}
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof ServiceWorker);

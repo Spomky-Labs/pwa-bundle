@@ -14,6 +14,9 @@ final class ShortcutNormalizer implements NormalizerInterface, NormalizerAwareIn
 {
     use NormalizerAwareTrait;
 
+    /**
+     * @return array{description?: string, icons?: array, name: string, short_name?: string, url: string}
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Shortcut);

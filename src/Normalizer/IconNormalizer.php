@@ -18,6 +18,9 @@ final readonly class IconNormalizer implements NormalizerInterface
     ) {
     }
 
+    /**
+     * @return array{src: string, sizes?: string, type?: string, purpose?: string}
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);

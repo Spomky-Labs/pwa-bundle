@@ -32,9 +32,9 @@ final class ServiceWorker
     #[SerializedName('offline_fallback')]
     public null|Url $offlineFallback = null;
 
-    #[SerializedName('warm_cache_urls')]
     /**
      * @var array<Url>
      */
+    #[SerializedName('warm_cache_urls')]
     public array $warmCacheUrls = [];
 }

@@ -20,6 +20,9 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
     ) {
     }
 
+    /**
+     * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Screenshot);

@@ -1,2 +1,446 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$mimeType of method Symfony\\\\Component\\\\Mime\\\\MimeTypes\\:\\:getExtensions\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$source of method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsCommand\\:\\:getSourcePath\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Parameter \\#5 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsCommand.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 4
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$mimeType of method Symfony\\\\Component\\\\Mime\\\\MimeTypes\\:\\:getExtensions\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$uri of method Symfony\\\\Component\\\\Panther\\\\Client\\:\\:request\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$files of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:exists\\(\\) expects iterable\\|string, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateServiceWorkerCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$sourcePath of method Symfony\\\\Component\\\\AssetMapper\\\\AssetMapperInterface\\:\\:getAssetFromSourcePath\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateServiceWorkerCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|string given\\.$#"
+			count: 1
+			path: src/Command/CreateServiceWorkerCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$targetFile of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:copy\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Command/CreateServiceWorkerCommand.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 4
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
+			count: 1
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:arrayNode\\(\\)\\.$#"
+			count: 1
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:beforeNormalization\\(\\)\\.$#"
+			count: 1
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:end\\(\\)\\.$#"
+			count: 1
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
+			count: 4
+			path: src/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\DependencyInjection\\\\SpomkyLabsPwaExtension\\:\\:getConfiguration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/DependencyInjection/SpomkyLabsPwaExtension.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/File.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/File.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\FileHandler has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/FileHandler.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\FileHandler has an uninitialized property \\$action\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/FileHandler.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Icon has an uninitialized property \\$sizeList\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Icon.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Icon has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Icon.php
+
+		-
+			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Dto\\\\LaunchHandler\\:\\:\\$clientMode type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Dto/LaunchHandler.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getCategories\\(\\) should return array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\> but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getStartUrl\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$protocol\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ProtocolHandler.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ProtocolHandler.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\RelatedApplication has an uninitialized property \\$platform\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/RelatedApplication.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\RelatedApplication has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/RelatedApplication.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ScopeExtension has an uninitialized property \\$origin\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ScopeExtension.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Screenshot\\:\\:getLabel\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Screenshot.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$dest\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$offlineFallbackPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$precachingPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$warmCachePlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$widgetsPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ServiceWorker.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTarget has an uninitialized property \\$action\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ShareTarget.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTargetParameters\\:\\:getText\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/ShareTargetParameters.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTargetParameters\\:\\:getTitle\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/ShareTargetParameters.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Url has an uninitialized property \\$path\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Url.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget has an uninitialized property \\$adaptativeCardTemplate\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\GDImageProcessor\\:\\:process\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagepng expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagesavealpha expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagesx expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagesy expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/IconNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, type\\?\\: string, purpose\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
+			count: 1
+			path: src/Normalizer/IconNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/IconNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, form_factor\\?\\: string, label\\?\\: string, platform\\?\\: string, format\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Parameter \\#1 \\$haystack of function str_starts_with expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Parameter \\#1 \\$logicalPath of method Symfony\\\\Component\\\\AssetMapper\\\\AssetMapperInterface\\:\\:getAsset\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ServiceWorkerNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) should return array\\{scope\\?\\: string, src\\: string, use_cache\\?\\: bool\\} but returns array\\<mixed\\>\\.$#"
+			count: 1
+			path: src/Normalizer/ServiceWorkerNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ServiceWorkerNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ShortcutNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ShortcutNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) should return array\\{description\\?\\: string, icons\\?\\: array, name\\: string, short_name\\?\\: string, url\\: string\\} but returns array\\<mixed\\>\\.$#"
+			count: 1
+			path: src/Normalizer/ShortcutNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/ShortcutNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/UrlNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/UrlNormalizer.php

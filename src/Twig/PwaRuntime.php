@@ -32,7 +32,7 @@ final readonly class PwaRuntime
     }
 
     /**
-     * @param array<string, mixed> $swAttributes
+     * @param array<string, bool|int|string|null|float> $swAttributes
      */
     public function load(
         bool $injectThemeColor = true,
@@ -58,7 +58,7 @@ final readonly class PwaRuntime
     }
 
     /**
-     * @param array<string, mixed> $swAttributes
+     * @param array<string, bool|int|string|null|float> $swAttributes
      */
     private function injectServiceWorker(string $output, bool $injectSW, array $swAttributes): string
     {
@@ -129,7 +129,7 @@ SERVICE_WORKER;
             $format = $this->getFormat($icon, $asset);
         }
         if ($url === null) {
-            $url = $icon;
+            $url = $icon->src;
         }
 
         return [
@@ -152,6 +152,9 @@ SERVICE_WORKER;
         return $mime->guessMimeType($asset->sourcePath);
     }
 
+    /**
+     * @param array<string, bool|int|string|null|float> $attributes
+     */
     private function createAttributesString(array $attributes): string
     {
         $attributeString = '';
