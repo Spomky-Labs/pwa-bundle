@@ -27,7 +27,7 @@ Please have a look at the [Web app manifests](https://developer.mozilla.org/en-U
 Install the bundle with Composer: 
 
 ```bash
-composer require Spomky-Labs/phpwa
+composer require spomky-labs/phpwa
 ```
 
 This project follows the [semantic versioning](http://semver.org/) strictly.
