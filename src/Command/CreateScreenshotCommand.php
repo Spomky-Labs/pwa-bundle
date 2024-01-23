@@ -31,10 +31,10 @@ final class CreateScreenshotCommand extends Command
 
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
-        private readonly ImageProcessor $imageProcessor,
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly null|ImageProcessor $imageProcessor,
         #[Autowire('@pwa.web_client')]
         null|Client $webClient = null,
     ) {
@@ -43,6 +43,11 @@ final class CreateScreenshotCommand extends Command
             $webClient = Client::createChromeClient();
         }
         $this->webClient = $webClient;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->imageProcessor !== null;
     }
 
     protected function configure(): void
@@ -81,11 +86,12 @@ final class CreateScreenshotCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (! $this->isEnabled()) {
-            return self::FAILURE;
-        }
         $io = new SymfonyStyle($input, $output);
         $io->title('PWA - Take a screenshot');
+        if ($this->imageProcessor === null) {
+            $io->error('The image processor is not enabled.');
+            return self::FAILURE;
+        }
 
         $url = $input->getArgument('url');
         $dest = rtrim((string) $input->getArgument('output'), '/');

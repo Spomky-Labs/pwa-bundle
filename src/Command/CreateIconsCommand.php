@@ -26,11 +26,16 @@ final class CreateIconsCommand extends Command
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
-        private readonly ImageProcessor $imageProcessor,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly null|ImageProcessor $imageProcessor,
     ) {
         parent::__construct();
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->imageProcessor !== null;
     }
 
     protected function configure(): void
@@ -70,6 +75,10 @@ final class CreateIconsCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('PWA Icons Generator');
+        if ($this->imageProcessor === null) {
+            $io->error('The image processor is not enabled.');
+            return self::FAILURE;
+        }
 
         $source = $input->getArgument('source');
         $dest = rtrim((string) $input->getOption('output'), '/');
