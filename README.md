@@ -78,15 +78,6 @@ It will automatically add the manifest your HTML pages and any other useful meta
 {{ pwa() }}
 ```
 
-### Manifest Generation
-
-On `dev` or `test` environment, the manifest and the service worker (if any) will be generated for you.
-On `prod` environment, these files are compiled during the deployment with Asset Mapper.
-
-```bash
-symfony console asset-map:compile
-```
-
 By default, the manifest will be generated in the `public` directory with the name `/site.webmanifest`.
 You can change the output file name and the output folder with the following configuration option:
 
@@ -294,6 +285,15 @@ pwa:
     serviceworker:
         src: 'sw.js'
         offline_fallback: 'app_offline_page'
+```
+
+### Deployment
+
+On `dev` or `test` environment, the manifest and the service worker (if any) will be generated for you.
+On `prod` environment, these files are compiled during the deployment with Asset Mapper.
+
+```bash
+symfony console asset-map:compile
 ```
 
 # Support
