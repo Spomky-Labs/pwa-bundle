@@ -101,9 +101,19 @@ pwa:
 Thanks to Symfony Asset Mapper, the bundle is able to link your application assets to the manifest file.
 Please note that the icons of a size greater than 1024px may be ignored by the browser.
 
+When you use images (icons or screenshots), you must define an ImageProcessor.
+The bundle provides two image processors:
+
+* `pwa.image_processor.gd`: this processor uses the GD library.
+* `pwa.image_processor.imagick`: this processor uses the Imagick library.
+
+Use one of these processors in your configuration file. You can define a custom image processor if you want.
+This service must implement the `SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor` interface.
+
 ```yaml  
 # config/packages/phpwa.yaml
 pwa:
+    image_processor: 'pwa.image_processor.gd'
     icons:
         - src: "images/logo.png"
           sizes: [48, 96, 128, 256, 512, 1024]
