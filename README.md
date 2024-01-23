@@ -287,8 +287,7 @@ pwa:
         offline_fallback: 'app_offline_page'
 ```
 
-### Deployment
-
+## Deployment
 On `dev` or `test` environment, the manifest and the service worker (if any) will be generated for you.
 On `prod` environment, these files are compiled during the deployment with Asset Mapper.
 
