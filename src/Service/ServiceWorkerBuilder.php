@@ -15,6 +15,7 @@ use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
+use const PHP_EOL;
 
 final readonly class ServiceWorkerBuilder
 {
@@ -146,9 +147,19 @@ WARM_CACHE_URL_STRATEGY;
             $body,
             'offlineFallback'
         ) ? '' : 'const { offlineFallback } = workbox.recipes;';
+        $networkOnlyStrategy = str_contains(
+            $body,
+            'NetworkOnly'
+        ) ? '' : 'const { NetworkOnly } = workbox.strategies;';
+        $setDefaultHandlerRouting = str_contains(
+            $body,
+            'setDefaultHandler'
+        ) ? '' : 'const { setDefaultHandler } = workbox.routing;' . PHP_EOL . 'setDefaultHandler(new NetworkOnly());';
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY
 {$offlineFallbackMethod}
+{$networkOnlyStrategy}
+{$setDefaultHandlerRouting}
 offlineFallback({
     pageFallback: {$url},
 });
