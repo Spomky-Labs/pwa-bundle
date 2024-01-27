@@ -24,6 +24,9 @@ final class Workbox
     #[SerializedName('warm_cache_placeholder')]
     public string $warmCachePlaceholder;
 
+    #[SerializedName('standard_rules_placeholder')]
+    public string $standardRulesPlaceholder;
+
     #[SerializedName('precaching_placeholder')]
     public string $precachingPlaceholder;
 
