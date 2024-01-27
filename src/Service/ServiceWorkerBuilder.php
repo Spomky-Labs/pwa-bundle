@@ -53,11 +53,39 @@ final readonly class ServiceWorkerBuilder
     private function processWorkbox(Workbox $workbox, string $body): string
     {
         $body = $this->processWorkboxImport($workbox, $body);
+        $body = $this->processStandardRules($workbox, $body);
         $body = $this->processPrecachedAssets($workbox, $body);
         $body = $this->processWarmCacheUrls($workbox, $body);
         $body = $this->processWidgets($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
+    }
+
+    private function processStandardRules(Workbox $workbox, string $body): string
+    {
+        if (! str_contains($body, $workbox->standardRulesPlaceholder)) {
+            return $body;
+        }
+
+        $declaration = <<<STANDARD_RULE_STRATEGY
+workbox.recipes.pageCache();
+workbox.recipes.imageCache();
+workbox.recipes.googleFontsCache();
+const matchCallback = ({request}) => request.destination === 'style' || request.destination === 'script' || request.destination === 'worker';
+workbox.routing.registerRoute(
+    matchCallback,
+    new workbox.strategies.CacheFirst({
+        cacheName: 'static-resources',
+        plugins: [
+            new workbox.cacheableResponse.CacheableResponsePlugin({
+                statuses: [0, 200],
+            }),
+        ],
+    })
+);
+STANDARD_RULE_STRATEGY;
+
+        return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);
     }
 
     private function processPrecachedAssets(Workbox $workbox, string $body): string
@@ -75,14 +103,9 @@ final readonly class ServiceWorkerBuilder
         $assets = $this->serializer->serialize($result, 'json', [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
-        $precacheAndRouteDeclaration = str_contains(
-            $body,
-            'precacheAndRoute'
-        ) ? '' : 'const { precacheAndRoute } = workbox.precaching;';
 
         $declaration = <<<PRECACHE_STRATEGY
-{$precacheAndRouteDeclaration}
-precacheAndRoute({$assets});
+workbox.precaching.precacheAndRoute({$assets});
 PRECACHE_STRATEGY;
 
         return str_replace($workbox->precachingPlaceholder, trim($declaration), $body);
@@ -102,21 +125,10 @@ PRECACHE_STRATEGY;
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
 
-        $cacheFirstStrategyDeclaration = str_contains(
-            $body,
-            'CacheFirst'
-        ) ? '' : 'const { CacheFirst } = workbox.strategies;';
-        $warmStrategyCacheMethod = str_contains(
-            $body,
-            'warmStrategyCache'
-        ) ? '' : 'const { warmStrategyCache } = workbox.recipes;';
-
         $declaration = <<<WARM_CACHE_URL_STRATEGY
-{$cacheFirstStrategyDeclaration}
-{$warmStrategyCacheMethod}
-warmStrategyCache({
+workbox.recipes.warmStrategyCache({
     urls: {$routes},
-    strategy: new CacheFirst()
+    strategy: new workbox.strategies.CacheFirst()
 });
 WARM_CACHE_URL_STRATEGY;
 
@@ -133,27 +145,7 @@ WARM_CACHE_URL_STRATEGY;
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
 
-        $offlineFallbackMethod = str_contains(
-            $body,
-            'offlineFallback'
-        ) ? '' : 'const { offlineFallback } = workbox.recipes;';
-        $networkOnlyStrategy = str_contains(
-            $body,
-            'NetworkOnly'
-        ) ? '' : 'const { NetworkOnly } = workbox.strategies;';
-        $setDefaultHandlerRouting = str_contains(
-            $body,
-            'setDefaultHandler'
-        ) ? '' : 'const { setDefaultHandler } = workbox.routing;' . PHP_EOL . 'setDefaultHandler(new NetworkOnly());';
-
-        $declaration = <<<OFFLINE_FALLBACK_STRATEGY
-{$offlineFallbackMethod}
-{$networkOnlyStrategy}
-{$setDefaultHandlerRouting}
-offlineFallback({
-    pageFallback: {$url},
-});
-OFFLINE_FALLBACK_STRATEGY;
+        $declaration = sprintf('%sworkbox.recipes.offlineFallback({ pageFallback: %s });', PHP_EOL, $url);
 
         return str_replace($workbox->offlineFallbackPlaceholder, trim($declaration), $body);
     }
@@ -251,7 +243,6 @@ importScripts(
 );
 IMPORT_CDN_STRATEGY;
         } else {
-            $version = $workbox->version;
             $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
             $declaration = <<<IMPORT_CDN_STRATEGY
 importScripts('{$publicUrl}/workbox-sw.js');

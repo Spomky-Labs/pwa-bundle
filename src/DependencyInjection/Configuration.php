@@ -493,6 +493,13 @@ final readonly class Configuration implements ConfigurationInterface
                                 )
                                 ->example('//WORKBOX_IMPORT_PLACEHOLDER')
                             ->end()
+                            ->scalarNode('standard_rules_placeholder')
+                                ->defaultValue('//STANDARD_RULES_PLACEHOLDER')
+                                ->info(
+                                    'The placeholder for the standard rules. Will be replaced by caching strategies.'
+                                )
+                                ->example('//STANDARD_RULES_PLACEHOLDER')
+                            ->end()
                             ->scalarNode('precaching_placeholder')
                                 ->defaultValue('//PRECACHING_PLACEHOLDER')
                                 ->info(
