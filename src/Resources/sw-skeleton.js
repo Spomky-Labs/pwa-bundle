@@ -1,6 +1,6 @@
-importScripts(
-    'https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js'
-);
+// *** Workbox ***
+// Workbox is imported from a CDN or local files.
+//WORKBOX_IMPORT_PLACEHOLDER
 
 // *** Recipes ***
 // You are free to change or remove any of these presets as you wish.
