@@ -14,6 +14,7 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Subscriber\AssetsCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
+use SpomkyLabs\PwaBundle\Subscriber\WorkboxCompileEventListener;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -65,6 +66,7 @@ return static function (ContainerConfigurator $container): void {
         ;
     }
 
+    $container->set(WorkboxCompileEventListener::class);
     $container->set(AssetsCompileEventListener::class);
     $container->set(ServiceWorkerCompileEventListener::class);
     $container->set(ServiceWorkerBuilder::class);

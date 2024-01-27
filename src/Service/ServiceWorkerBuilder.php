@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Dto\Workbox;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -19,52 +20,49 @@ use const PHP_EOL;
 
 final readonly class ServiceWorkerBuilder
 {
-    private ?string $serviceWorkerPublicUrl;
-
     public function __construct(
         private SerializerInterface $serializer,
         private Manifest $manifest,
         private AssetMapperInterface $assetMapper,
     ) {
-        $serviceWorkerPublicUrl = $manifest->serviceWorker?->dest;
-        $this->serviceWorkerPublicUrl = $serviceWorkerPublicUrl === null ? null : '/' . trim(
-            $serviceWorkerPublicUrl,
-            '/'
-        );
     }
 
     public function build(): ?string
     {
-        if ($this->serviceWorkerPublicUrl === null) {
-            return null;
-        }
-        $serviceWorkerSource = $this->manifest->serviceWorker?->src;
-        if ($serviceWorkerSource === null) {
+        $serviceWorker = $this->manifest->serviceWorker;
+        if ($serviceWorker === null) {
             return null;
         }
 
-        if (! str_starts_with($serviceWorkerSource, '/')) {
-            $asset = $this->assetMapper->getAsset($serviceWorkerSource);
+        if (! str_starts_with($serviceWorker->src, '/')) {
+            $asset = $this->assetMapper->getAsset($serviceWorker->src);
             assert($asset !== null, 'Unable to find service worker source asset');
             $body = $asset->content ?? file_get_contents($asset->sourcePath);
         } else {
-            $body = file_get_contents($serviceWorkerSource);
+            $body = file_get_contents($serviceWorker->src);
         }
         assert(is_string($body), 'Unable to find service worker source content');
-        $body = $this->processPrecachedAssets($body);
-        $body = $this->processWarmCacheUrls($body);
-        $body = $this->processWidgets($body);
+        $workbox = $serviceWorker->workbox;
+        if ($workbox->enabled === true) {
+            $body = $this->processWorkbox($workbox, $body);
+        }
 
-        return $this->processOfflineFallback($body);
+        return $body;
     }
 
-    private function processPrecachedAssets(string $body): string
+    private function processWorkbox(Workbox $workbox, string $body): string
     {
-        $config = $this->manifest->serviceWorker;
-        if ($config === null) {
-            return $body;
-        }
-        if (! str_contains($body, $config->precachingPlaceholder)) {
+        $body = $this->processWorkboxImport($workbox, $body);
+        $body = $this->processPrecachedAssets($workbox, $body);
+        $body = $this->processWarmCacheUrls($workbox, $body);
+        $body = $this->processWidgets($workbox, $body);
+
+        return $this->processOfflineFallback($workbox, $body);
+    }
+
+    private function processPrecachedAssets(Workbox $workbox, string $body): string
+    {
+        if (! str_contains($body, $workbox->precachingPlaceholder)) {
             return $body;
         }
         $result = [];
@@ -87,19 +85,15 @@ final readonly class ServiceWorkerBuilder
 precacheAndRoute({$assets});
 PRECACHE_STRATEGY;
 
-        return str_replace($config->precachingPlaceholder, trim($declaration), $body);
+        return str_replace($workbox->precachingPlaceholder, trim($declaration), $body);
     }
 
-    private function processWarmCacheUrls(string $body): string
+    private function processWarmCacheUrls(Workbox $workbox, string $body): string
     {
-        $config = $this->manifest->serviceWorker;
-        if ($config === null) {
+        if (! str_contains($body, $workbox->warmCachePlaceholder)) {
             return $body;
         }
-        if (! str_contains($body, $config->warmCachePlaceholder)) {
-            return $body;
-        }
-        $urls = $config->warmCacheUrls;
+        $urls = $workbox->warmCacheUrls;
         if (count($urls) === 0) {
             return $body;
         }
@@ -126,20 +120,16 @@ warmStrategyCache({
 });
 WARM_CACHE_URL_STRATEGY;
 
-        return str_replace($config->warmCachePlaceholder, trim($declaration), $body);
+        return str_replace($workbox->warmCachePlaceholder, trim($declaration), $body);
     }
 
-    private function processOfflineFallback(string $body): string
+    private function processOfflineFallback(Workbox $workbox, string $body): string
     {
-        $config = $this->manifest->serviceWorker;
-        if ($config === null) {
-            return $body;
-        }
-        if (! str_contains($body, $config->offlineFallbackPlaceholder) || $config->offlineFallback === null) {
+        if (! str_contains($body, $workbox->offlineFallbackPlaceholder) || $workbox->offlineFallback === null) {
             return $body;
         }
 
-        $url = $this->serializer->serialize($config->offlineFallback, 'json', [
+        $url = $this->serializer->serialize($workbox->offlineFallback, 'json', [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ]);
 
@@ -165,16 +155,12 @@ offlineFallback({
 });
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($config->offlineFallbackPlaceholder, trim($declaration), $body);
+        return str_replace($workbox->offlineFallbackPlaceholder, trim($declaration), $body);
     }
 
-    private function processWidgets(string $body): string
+    private function processWidgets(Workbox $workbox, string $body): string
     {
-        $config = $this->manifest->serviceWorker;
-        if ($config === null) {
-            return $body;
-        }
-        if (! str_contains($body, $config->widgetsPlaceholder)) {
+        if (! str_contains($body, $workbox->widgetsPlaceholder)) {
             return $body;
         }
         $tags = [];
@@ -250,6 +236,32 @@ async function updateWidgets() {
 }
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($config->widgetsPlaceholder, trim($declaration), $body);
+        return str_replace($workbox->widgetsPlaceholder, trim($declaration), $body);
+    }
+
+    private function processWorkboxImport(Workbox $workbox, string $body): string
+    {
+        if (! str_contains($body, $workbox->workboxImportPlaceholder)) {
+            return $body;
+        }
+        if ($workbox->useCDN === true) {
+            $declaration = <<<IMPORT_CDN_STRATEGY
+importScripts(
+    'https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js'
+);
+IMPORT_CDN_STRATEGY;
+        } else {
+            $version = $workbox->version;
+            $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
+            $declaration = <<<IMPORT_CDN_STRATEGY
+importScripts('{$publicUrl}/workbox-sw.js');
+
+workbox.setConfig({
+  modulePathPrefix: '{$publicUrl}',
+});
+IMPORT_CDN_STRATEGY;
+        }
+
+        return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
     }
 }

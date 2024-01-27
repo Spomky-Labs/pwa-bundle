@@ -55,7 +55,7 @@ final class CreateServiceWorkerCommand extends Command
             return self::SUCCESS;
         }
 
-        $resourcePath = $this->fileLocator->locate('@SpomkyLabsPwaBundle/Resources/workbox.js', null, false);
+        $resourcePath = $this->fileLocator->locate('@SpomkyLabsPwaBundle/Resources/sw-skeleton.js', null, false);
         if (count($resourcePath) !== 1) {
             $io->error('Unable to find the Workbox resource.');
             return Command::FAILURE;

@@ -236,27 +236,12 @@ parameters:
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$offlineFallbackPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/ServiceWorker.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$precachingPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/ServiceWorker.php
-
-		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$warmCachePlaceholder\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/ServiceWorker.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$widgetsPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$workbox\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/ServiceWorker.php
 
@@ -329,6 +314,51 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
 			count: 1
 			path: src/Dto/Widget.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$offlineFallbackPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$precachingPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$useCDN\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$version\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$warmCachePlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$widgetsPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$workboxImportPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$workboxPublicUrl\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
 
 		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\GDImageProcessor\\:\\:process\\(\\) should return string but returns string\\|false\\.$#"
@@ -444,3 +474,8 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/UrlNormalizer.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function mb_strlen expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Subscriber/PwaDevServerSubscriber.php

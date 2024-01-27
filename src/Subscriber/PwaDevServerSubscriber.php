@@ -9,6 +9,7 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -16,6 +17,11 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use function assert;
+use function count;
+use function is_array;
+use function is_string;
+use function mb_strlen;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -27,7 +33,12 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 
     private null|string $serviceWorkerPublicUrl;
 
+    private null|string $workboxPublicUrl;
+
+    private null|string $workboxVersion;
+
     public function __construct(
+        private readonly FileLocator $fileLocator,
         private ServiceWorkerBuilder $serviceWorkerBuilder,
         private SerializerInterface $serializer,
         private Manifest $manifest,
@@ -41,6 +52,14 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             $serviceWorkerPublicUrl,
             '/'
         );
+        if ($manifest->serviceWorker?->workbox->enabled === true) {
+            $this->workboxVersion = $manifest->serviceWorker->workbox->version;
+            $workboxPublicUrl = $manifest->serviceWorker->workbox->workboxPublicUrl;
+            $this->workboxPublicUrl = '/' . trim($workboxPublicUrl, '/');
+        } else {
+            $this->workboxVersion = null;
+            $this->workboxPublicUrl = null;
+        }
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -49,12 +68,20 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        switch ($event->getRequest()->getPathInfo()) {
-            case $this->manifestPublicUrl :
+        $pathInfo = $event->getRequest()
+            ->getPathInfo();
+        switch (true) {
+            case $pathInfo === $this->manifestPublicUrl :
                 $this->serveManifest($event);
                 break;
-            case $this->serviceWorkerPublicUrl :
+            case $pathInfo === $this->serviceWorkerPublicUrl :
                 $this->serveServiceWorker($event);
+                break;
+            case $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
+                $pathInfo,
+                $this->workboxPublicUrl
+            ) :
+                $this->serveWorkboxFile($event, $pathInfo);
                 break;
         }
     }
@@ -109,6 +136,37 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             'Content-Type' => 'application/javascript',
             'X-SW-Dev' => true,
             'Etag' => hash('xxh128', $data),
+        ]);
+
+        $event->setResponse($response);
+        $event->stopPropagation();
+    }
+
+    private function serveWorkboxFile(RequestEvent $event, string $pathInfo): void
+    {
+        if (str_contains($pathInfo, '/..')) {
+            return;
+        }
+        $asset = mb_substr($pathInfo, mb_strlen($this->workboxPublicUrl));
+        $resource = sprintf('@SpomkyLabsPwaBundle/Resources/workbox-v%s%s', $this->workboxVersion, $asset);
+        $resourcePath = $this->fileLocator->locate($resource, null, false);
+        if (is_array($resourcePath)) {
+            if (count($resourcePath) === 1) {
+                $resourcePath = $resourcePath[0];
+            } else {
+                return;
+            }
+        }
+        if (! is_string($resourcePath)) {
+            return;
+        }
+
+        $body = file_get_contents($resourcePath);
+        assert(is_string($body), 'Unable to load the file content.');
+        $response = new Response($body, Response::HTTP_OK, [
+            'Content-Type' => 'application/javascript',
+            'X-SW-Dev' => true,
+            'Etag' => hash('xxh128', $body),
         ]);
 
         $event->setResponse($response);
