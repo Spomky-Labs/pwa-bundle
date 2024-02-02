@@ -25,7 +25,7 @@ final readonly class PwaRuntime
         private ImportMapConfigReader $importMapConfigReader,
         private AssetMapperInterface $assetMapper,
         private Manifest $manifest,
-        #[Autowire('%spomky_labs_pwa.manifest_public_url%')]
+        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');

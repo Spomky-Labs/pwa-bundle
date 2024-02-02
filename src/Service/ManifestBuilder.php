@@ -21,7 +21,7 @@ final class ManifestBuilder
     ) {
     }
 
-    public function createManifest(): Manifest
+    public function create(): Manifest
     {
         if ($this->manifest === null) {
             $result = $this->denormalizer->denormalize($this->config, Manifest::class);

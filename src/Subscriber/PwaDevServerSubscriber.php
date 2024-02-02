@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Subscriber;
 
 use SpomkyLabs\PwaBundle\Dto\Manifest;
-use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,23 +39,28 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private null|string $workboxVersion;
 
     public function __construct(
-        private readonly FileLocator $fileLocator,
-        private ServiceWorkerBuilder $serviceWorkerBuilder,
+        private FileLocator $fileLocator,
+        private ServiceWorkerCompiler $serviceWorkerBuilder,
         private SerializerInterface $serializer,
         private Manifest $manifest,
-        #[Autowire('%spomky_labs_pwa.manifest_public_url%')]
+        ServiceWorker $serviceWorker,
+        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
+        private bool $manifestEnabled,
+        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
+        private bool $serviceWorkerEnabled,
+        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         private null|Profiler $profiler,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
-        $serviceWorkerPublicUrl = $manifest->serviceWorker?->dest;
+        $serviceWorkerPublicUrl = $serviceWorker?->dest;
         $this->serviceWorkerPublicUrl = $serviceWorkerPublicUrl === null ? null : '/' . trim(
             $serviceWorkerPublicUrl,
             '/'
         );
-        if ($manifest->serviceWorker?->workbox->enabled === true) {
-            $this->workboxVersion = $manifest->serviceWorker->workbox->version;
-            $workboxPublicUrl = $manifest->serviceWorker->workbox->workboxPublicUrl;
+        if ($serviceWorker?->workbox->enabled === true) {
+            $this->workboxVersion = $serviceWorker->workbox->version;
+            $workboxPublicUrl = $serviceWorker->workbox->workboxPublicUrl;
             $this->workboxPublicUrl = '/' . trim($workboxPublicUrl, '/');
         } else {
             $this->workboxVersion = null;
@@ -70,14 +76,15 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 
         $pathInfo = $event->getRequest()
             ->getPathInfo();
+
         switch (true) {
-            case $pathInfo === $this->manifestPublicUrl :
+            case $this->manifestEnabled === true && $pathInfo === $this->manifestPublicUrl :
                 $this->serveManifest($event);
                 break;
-            case $pathInfo === $this->serviceWorkerPublicUrl :
+            case $this->serviceWorkerEnabled === true && $pathInfo === $this->serviceWorkerPublicUrl :
                 $this->serveServiceWorker($event);
                 break;
-            case $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
+            case $this->serviceWorkerEnabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
                 $pathInfo,
                 $this->workboxPublicUrl
             ) :
@@ -126,7 +133,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 
     private function serveServiceWorker(RequestEvent $event): void
     {
-        $data = $this->serviceWorkerBuilder->build();
+        $data = $this->serviceWorkerBuilder->compile();
         if ($data === null) {
             return;
         }

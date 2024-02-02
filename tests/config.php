@@ -40,182 +40,190 @@ return static function (ContainerConfigurator $container) {
     ]);
     $container->extension('pwa', [
         'image_processor' => DummyImageProcessor::class,
-        'background_color' => 'red',
-        'categories' => ['pwa.categories.0', 'pwa.categories.1', 'pwa.categories.2'],
-        'description' => 'pwa.description',
-        'display' => 'standalone',
-        'display_override' => ['fullscreen', 'minimal-ui'],
-        'file_handlers' => [
-            [
+        'manifest' => [
+            'enabled' => true,
+            'background_color' => 'red',
+            'categories' => ['pwa.categories.0', 'pwa.categories.1', 'pwa.categories.2'],
+            'description' => 'pwa.description',
+            'display' => 'standalone',
+            'display_override' => ['fullscreen', 'minimal-ui'],
+            'file_handlers' => [
+                [
+                    'action' => [
+                        'path' => 'audio_file_handler',
+                        'params' => [
+                            'param1' => 'audio',
+                        ],
+                    ],
+                    'accept' => [
+                        'audio/wav' => ['.wav'],
+                        'audio/x-wav' => ['.wav'],
+                        'audio/mpeg' => ['.mp3'],
+                        'audio/mp4' => ['.mp4'],
+                        'audio/aac' => ['.adts'],
+                        'audio/ogg' => ['.ogg'],
+                        'application/ogg' => ['.ogg'],
+                        'audio/webm' => ['.webm'],
+                        'audio/flac' => ['.flac'],
+                        'audio/mid' => ['.rmi', '.mid'],
+                    ],
+                ],
+            ],
+            'icons' => [
+                [
+                    'src' => 'pwa/1920x1920.svg',
+                    'sizes' => [48, 72, 96, 128, 256],
+                    'format' => 'webp',
+                ],
+                [
+                    'src' => 'pwa/1920x1920.svg',
+                    'sizes' => [48, 72, 96, 128, 256],
+                    'format' => 'png',
+                    'purpose' => 'maskable',
+                ],
+                [
+                    'src' => 'pwa/1920x1920.svg',
+                    'sizes' => [0],
+                ],
+            ],
+            'id' => '/?homescreen=1',
+            'launch_handler' => [
+                'client_mode' => ['focus-existing', 'auto'],
+            ],
+            'orientation' => 'portrait-primary',
+            'prefer_related_applications' => true,
+            'dir' => 'rtl',
+            'lang' => 'ar',
+            'name' => 'pwa.name',
+            'short_name' => 'pwa.short_name',
+            'protocol_handlers' => [
+                [
+                    'protocol' => 'web+jngl',
+                    'url' => '/lookup?type=%s',
+                ],
+                [
+                    'protocol' => 'web+jnglstore',
+                    'url' => '/shop?for=%s',
+                ],
+            ],
+            'related_applications' => [
+                [
+                    'platform' => 'play',
+                    'url' => 'https://play.google.com/store/apps/details?id=com.example.app1',
+                    'id' => 'com.example.app1',
+                ],
+                [
+                    'platform' => 'itunes',
+                    'url' => 'https://itunes.apple.com/app/example-app1/id123456789',
+                ],
+                [
+                    'platform' => 'windows',
+                    'url' => 'https://apps.microsoft.com/store/detail/example-app1/id123456789',
+                ],
+            ],
+            'scope' => '/',
+            'start_url' => 'pwa.start_url',
+            'theme_color' => 'red',
+            'screenshots' => [
+                [
+                    'src' => 'pwa/screenshots/360x800.svg',
+                    'label' => 'pwa.screenshots.0',
+                ],
+            ],
+            'share_target' => [
                 'action' => [
-                    'path' => 'audio_file_handler',
+                    'path' => 'shared_content_receiver',
                     'params' => [
-                        'param1' => 'audio',
+                        'param1' => 'value1',
+                        'param2' => 'value2',
                     ],
                 ],
-                'accept' => [
-                    'audio/wav' => ['.wav'],
-                    'audio/x-wav' => ['.wav'],
-                    'audio/mpeg' => ['.mp3'],
-                    'audio/mp4' => ['.mp4'],
-                    'audio/aac' => ['.adts'],
-                    'audio/ogg' => ['.ogg'],
-                    'application/ogg' => ['.ogg'],
-                    'audio/webm' => ['.webm'],
-                    'audio/flac' => ['.flac'],
-                    'audio/mid' => ['.rmi', '.mid'],
-                ],
-            ],
-        ],
-        'icons' => [
-            [
-                'src' => 'pwa/1920x1920.svg',
-                'sizes' => [48, 72, 96, 128, 256],
-                'format' => 'webp',
-            ],
-            [
-                'src' => 'pwa/1920x1920.svg',
-                'sizes' => [48, 72, 96, 128, 256],
-                'format' => 'png',
-                'purpose' => 'maskable',
-            ],
-            [
-                'src' => 'pwa/1920x1920.svg',
-                'sizes' => [0],
-            ],
-        ],
-        'id' => '/?homescreen=1',
-        'launch_handler' => [
-            'client_mode' => ['focus-existing', 'auto'],
-        ],
-        'orientation' => 'portrait-primary',
-        'prefer_related_applications' => true,
-        'dir' => 'rtl',
-        'lang' => 'ar',
-        'name' => 'pwa.name',
-        'short_name' => 'pwa.short_name',
-        'protocol_handlers' => [
-            [
-                'protocol' => 'web+jngl',
-                'url' => '/lookup?type=%s',
-            ],
-            [
-                'protocol' => 'web+jnglstore',
-                'url' => '/shop?for=%s',
-            ],
-        ],
-        'related_applications' => [
-            [
-                'platform' => 'play',
-                'url' => 'https://play.google.com/store/apps/details?id=com.example.app1',
-                'id' => 'com.example.app1',
-            ],
-            [
-                'platform' => 'itunes',
-                'url' => 'https://itunes.apple.com/app/example-app1/id123456789',
-            ],
-            [
-                'platform' => 'windows',
-                'url' => 'https://apps.microsoft.com/store/detail/example-app1/id123456789',
-            ],
-        ],
-        'scope' => '/',
-        'start_url' => 'pwa.start_url',
-        'theme_color' => 'red',
-        'screenshots' => [
-            [
-                'src' => 'pwa/screenshots/360x800.svg',
-                'label' => 'pwa.screenshots.0',
-            ],
-        ],
-        'share_target' => [
-            'action' => [
-                'path' => 'shared_content_receiver',
+                'method' => 'GET',
                 'params' => [
-                    'param1' => 'value1',
-                    'param2' => 'value2',
+                    'title' => 'name',
+                    'text' => 'description',
+                    'url' => 'link',
                 ],
             ],
-            'method' => 'GET',
-            'params' => [
-                'title' => 'name',
-                'text' => 'description',
-                'url' => 'link',
-            ],
-        ],
-        'shortcuts' => [
-            [
-                'name' => "Today's agenda",
-                'url' => [
-                    'path' => 'agenda',
-                    'params' => [
-                        'date' => 'today',
+            'shortcuts' => [
+                [
+                    'name' => "Today's agenda",
+                    'url' => [
+                        'path' => 'agenda',
+                        'params' => [
+                            'date' => 'today',
+                        ],
                     ],
+                    'description' => 'List of events planned for today',
                 ],
-                'description' => 'List of events planned for today',
-            ],
-            [
-                'name' => 'New event',
-                'url' => '/create/event',
-            ],
-            [
-                'name' => 'New reminder',
-                'url' => '/create/reminder',
-                'icons' => [
-                    'pwa/1920x1920.svg',
-                    [
-                        'src' => 'pwa/1920x1920.svg',
-                        'purpose' => 'maskable',
+                [
+                    'name' => 'New event',
+                    'url' => '/create/event',
+                ],
+                [
+                    'name' => 'New reminder',
+                    'url' => '/create/reminder',
+                    'icons' => [
+                        'pwa/1920x1920.svg',
+                        [
+                            'src' => 'pwa/1920x1920.svg',
+                            'purpose' => 'maskable',
+                        ],
                     ],
                 ],
             ],
-        ],
-        'edge_side_panel' => [
-            'preferred_width' => 480,
-        ],
-        'iarc_rating_id' => '123456',
-        'scope_extensions' => [
-            [
-                'origin' => '*.foo.com',
+            'edge_side_panel' => [
+                'preferred_width' => 480,
             ],
-            [
-                'origin' => 'https://*.bar.com',
-            ],
-            [
-                'origin' => 'https://*.baz.com',
-            ],
-        ],
-        'widgets' => [
-            [
-                'name' => 'PWAmp mini player',
-                'description' => 'widget to control the PWAmp music player',
-                'tag' => 'pwamp',
-                'template' => 'pwamp-template',
-                'ms_ac_template' => 'app_widget_template',
-                'data' => 'app_widget_data',
-                'type' => 'application/json',
-                'screenshots' => [
-                    [
-                        'src' => 'pwa/1920x1920.svg',
-                        'label' => 'The PWAmp mini-player widget',
-                    ],
+            'iarc_rating_id' => '123456',
+            'scope_extensions' => [
+                [
+                    'origin' => '*.foo.com',
                 ],
-                'icons' => [
-                    [
-                        'src' => 'pwa/1920x1920.svg',
-                        'sizes' => [16, 48],
-                        'format' => 'webp',
-                    ],
+                [
+                    'origin' => 'https://*.bar.com',
                 ],
-                'auth' => false,
-                'update' => 86400,
+                [
+                    'origin' => 'https://*.baz.com',
+                ],
             ],
+            'widgets' => [
+                [
+                    'name' => 'PWAmp mini player',
+                    'description' => 'widget to control the PWAmp music player',
+                    'tag' => 'pwamp',
+                    'template' => 'pwamp-template',
+                    'ms_ac_template' => 'app_widget_template',
+                    'data' => 'app_widget_data',
+                    'type' => 'application/json',
+                    'screenshots' => [
+                        [
+                            'src' => 'pwa/1920x1920.svg',
+                            'label' => 'The PWAmp mini-player widget',
+                        ],
+                    ],
+                    'icons' => [
+                        [
+                            'src' => 'pwa/1920x1920.svg',
+                            'sizes' => [16, 48],
+                            'format' => 'webp',
+                        ],
+                    ],
+                    'auth' => false,
+                    'update' => 86400,
+                ],
+            ],
+            'handle_links' => 'auto',
         ],
-        'handle_links' => 'auto',
         'serviceworker' => [
+            'enabled' => true,
             'src' => __DIR__ . '/sw.js',
             'scope' => '/',
             'use_cache' => true,
+            'workbox' => [
+                'warm_cache_urls' => ['privacy_policy', 'terms_of_service'],
+                'offline_fallback' => '/offline.html',
+            ],
         ],
     ]);
 };
