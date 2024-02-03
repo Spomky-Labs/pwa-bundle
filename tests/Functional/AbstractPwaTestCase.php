@@ -32,5 +32,6 @@ abstract class AbstractPwaTestCase extends KernelTestCase
     {
         $filesystem = self::getContainer()->get(Filesystem::class);
         $filesystem->remove(sprintf('%s/samples', self::$kernel->getCacheDir()));
+        $filesystem->remove(sprintf('%s/output', self::$kernel->getCacheDir()));
     }
 }

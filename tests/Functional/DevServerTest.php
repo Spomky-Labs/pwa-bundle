@@ -38,6 +38,5 @@ final class DevServerTest extends WebTestCase
         // Then
         static::assertResponseIsSuccessful();
         static::assertResponseHeaderSame('Content-Type', 'application/javascript');
-        dump($client->getResponse()->getContent());
     }
 }

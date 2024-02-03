@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use SpomkyLabs\PwaBundle\Tests\DummyImageProcessor;
+use SpomkyLabs\PwaBundle\Tests\TestFilesystem;
 
 return static function (ContainerConfigurator $container) {
     $container->services()
         ->set(DummyImageProcessor::class);
+    $container->services()
+        ->set('asset_mapper.local_public_assets_filesystem', TestFilesystem::class)
+        ->autoconfigure()
+        ->autowire();
 
     $container->services()
         ->load('SpomkyLabs\\PwaBundle\\Tests\\Controller\\', __DIR__ . '/Controller/')

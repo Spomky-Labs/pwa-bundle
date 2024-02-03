@@ -53,12 +53,9 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         private null|Profiler $profiler,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
-        $serviceWorkerPublicUrl = $serviceWorker?->dest;
-        $this->serviceWorkerPublicUrl = $serviceWorkerPublicUrl === null ? null : '/' . trim(
-            $serviceWorkerPublicUrl,
-            '/'
-        );
-        if ($serviceWorker?->workbox->enabled === true) {
+        $serviceWorkerPublicUrl = $serviceWorker->dest;
+        $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
+        if ($serviceWorker->workbox->enabled === true) {
             $this->workboxVersion = $serviceWorker->workbox->version;
             $workboxPublicUrl = $serviceWorker->workbox->workboxPublicUrl;
             $this->workboxPublicUrl = '/' . trim($workboxPublicUrl, '/');
@@ -78,16 +75,16 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             ->getPathInfo();
 
         switch (true) {
-            case $this->manifestEnabled === true && $pathInfo === $this->manifestPublicUrl :
+            case $this->manifestEnabled === true && $pathInfo === $this->manifestPublicUrl:
                 $this->serveManifest($event);
                 break;
-            case $this->serviceWorkerEnabled === true && $pathInfo === $this->serviceWorkerPublicUrl :
+            case $this->serviceWorkerEnabled === true && $pathInfo === $this->serviceWorkerPublicUrl:
                 $this->serveServiceWorker($event);
                 break;
             case $this->serviceWorkerEnabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
                 $pathInfo,
                 $this->workboxPublicUrl
-            ) :
+            ):
                 $this->serveWorkboxFile($event, $pathInfo);
                 break;
         }

@@ -37,9 +37,6 @@ final readonly class ServiceWorkerCompiler
             return null;
         }
         $serviceWorker = $this->serviceWorker;
-        if ($serviceWorker === null) {
-            return null;
-        }
 
         if (! str_starts_with($serviceWorker->src, '/')) {
             $asset = $this->assetMapper->getAsset($serviceWorker->src);
