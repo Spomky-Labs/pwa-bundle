@@ -19,6 +19,8 @@ use function is_string;
 final readonly class WorkboxCompileEventListener
 {
     public function __construct(
+        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
+        private bool $serviceWorkerEnabled,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private PublicAssetsFilesystemInterface $assetsFilesystem,
         private Manifest $manifest,
@@ -28,6 +30,9 @@ final readonly class WorkboxCompileEventListener
 
     public function __invoke(PreAssetsCompileEvent $event): void
     {
+        if (! $this->serviceWorkerEnabled) {
+            return;
+        }
         $serviceWorker = $this->manifest->serviceWorker;
         if ($serviceWorker === null || $serviceWorker->workbox->enabled !== true || $serviceWorker->workbox->useCDN === true) {
             return;

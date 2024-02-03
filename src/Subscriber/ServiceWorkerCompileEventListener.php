@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Subscriber;
 
-use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -16,8 +16,10 @@ final readonly class ServiceWorkerCompileEventListener
     private ?string $serviceWorkerPublicUrl;
 
     public function __construct(
-        private ServiceWorkerBuilder $serviceWorkerBuilder,
-        #[Autowire('%spomky_labs_pwa.sw_public_url%')]
+        private ServiceWorkerCompiler $serviceWorkerBuilder,
+        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
+        private bool $serviceWorkerEnabled,
+        #[Autowire('%spomky_labs_pwa.sw.public_url%')]
         ?string $serviceWorkerPublicUrl,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private PublicAssetsFilesystemInterface $assetsFilesystem,
@@ -30,7 +32,10 @@ final readonly class ServiceWorkerCompileEventListener
 
     public function __invoke(PreAssetsCompileEvent $event): void
     {
-        $data = $this->serviceWorkerBuilder->build();
+        if (! $this->serviceWorkerEnabled) {
+            return;
+        }
+        $data = $this->serviceWorkerBuilder->compile();
         if ($data === null || $this->serviceWorkerPublicUrl === null) {
             return;
         }

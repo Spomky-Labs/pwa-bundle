@@ -25,7 +25,9 @@ final readonly class AssetsCompileEventListener
     public function __construct(
         private SerializerInterface $serializer,
         private Manifest $manifest,
-        #[Autowire('%spomky_labs_pwa.manifest_public_url%')]
+        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
+        private bool $manifestEnabled,
+        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private PublicAssetsFilesystemInterface $assetsFilesystem,
@@ -35,6 +37,9 @@ final readonly class AssetsCompileEventListener
 
     public function __invoke(PreAssetsCompileEvent $event): void
     {
+        if (! $this->manifestEnabled) {
+            return;
+        }
         $data = $this->serializer->serialize($this->manifest, 'json', [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,

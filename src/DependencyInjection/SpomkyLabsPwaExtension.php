@@ -37,16 +37,22 @@ final class SpomkyLabsPwaExtension extends Extension
             $container->setAlias('pwa.web_client', $config['web_client']);
         }
         $container->setParameter('spomky_labs_pwa.routes.reference_type', $config['path_type_reference']);
-        $container->setParameter('spomky_labs_pwa.manifest_public_url', $config['manifest_public_url']);
-        $container->setParameter('spomky_labs_pwa.sw_public_url', $config['serviceworker']['dest'] ?? null);
+        $serviceWorkerConfig = $config['serviceworker'];
+        $manifestConfig = $config['manifest'];
+        if ($serviceWorkerConfig['enabled'] === true && $manifestConfig['enabled'] === true) {
+            $manifestConfig['serviceworker'] = $serviceWorkerConfig;
+        }
 
-        unset(
-            $config['image_processor'],
-            $config['web_client'],
-            $config['path_type_reference'],
-            $config['manifest_public_url'],
-        );
-        $container->setParameter('spomky_labs_pwa.config', $config);
+        /*** Manifest ***/
+        $container->setParameter('spomky_labs_pwa.manifest.enabled', $config['manifest']['enabled']);
+        $container->setParameter('spomky_labs_pwa.manifest.public_url', $config['manifest']['public_url'] ?? null);
+        $container->setParameter('spomky_labs_pwa.manifest.config', $manifestConfig);
+
+        /*** Service Worker ***/
+        $container->setParameter('spomky_labs_pwa.sw.enabled', $config['serviceworker']['enabled']);
+        $container->setParameter('spomky_labs_pwa.sw.public_url', $config['serviceworker']['dest'] ?? null);
+        $container->setParameter('spomky_labs_pwa.sw.config', $serviceWorkerConfig);
+
         if (! in_array($container->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $container->removeDefinition(PwaDevServerSubscriber::class);
         }

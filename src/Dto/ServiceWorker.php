@@ -8,6 +8,8 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class ServiceWorker
 {
+    public bool $enabled;
+
     public string $src;
 
     public string $dest;
