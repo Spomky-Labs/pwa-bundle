@@ -11,7 +11,7 @@ final class Screenshot
 {
     use TranslatableTrait;
 
-    public null|string $src = null;
+    public Asset $src;
 
     public null|int $height = null;
 

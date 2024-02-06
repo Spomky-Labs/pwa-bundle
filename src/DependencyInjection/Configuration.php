@@ -130,18 +130,6 @@ final readonly class Configuration implements ConfigurationInterface
                                 )
                                 ->example('//STANDARD_RULES_PLACEHOLDER')
                             ->end()
-                            ->scalarNode('precaching_placeholder')
-                                ->defaultValue('//PRECACHING_PLACEHOLDER')
-                                ->info(
-                                    'The placeholder for the precaching. Will be replaced by the assets and versions.'
-                                )
-                                ->example('//PRECACHING_PLACEHOLDER')
-                            ->end()
-                            ->scalarNode('warm_cache_placeholder')
-                                ->defaultValue('//WARM_CACHE_URLS_PLACEHOLDER')
-                                ->info('The placeholder for the warm cache. Will be replaced by the URLs.')
-                                ->example('//WARM_CACHE_URLS_PLACEHOLDER')
-                            ->end()
                             ->scalarNode('offline_fallback_placeholder')
                                 ->defaultValue('//OFFLINE_FALLBACK_PLACEHOLDER')
                                 ->info('The placeholder for the offline fallback. Will be replaced by the URL.')
@@ -156,10 +144,37 @@ final readonly class Configuration implements ConfigurationInterface
                             ->end()
                             ->append(
                                 $this->getUrlNode(
-                                    'offline_fallback',
-                                    'The URL of the offline fallback. If not set, the offline fallback will be disabled.'
+                                    'page_fallback',
+                                    'The URL of the offline page fallback.'
                                 )
                             )
+                            ->append(
+                                $this->getUrlNode(
+                                    'image_fallback',
+                                    'The URL of the offline image fallback.'
+                                )
+                            )
+                            ->append(
+                                $this->getUrlNode(
+                                    'font_fallback',
+                                    'The URL of the offline font fallback.'
+                                )
+                            )
+                            ->scalarNode('image_regex')
+                                ->defaultValue('/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/')
+                                ->info('The regex to match the images.')
+                                ->example('/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/')
+                            ->end()
+                            ->integerNode('max_image_cache_entries')
+                                ->defaultValue(60)
+                                ->info('The maximum number of entries in the image cache.')
+                                ->example([50, 100, 200])
+                            ->end()
+                            ->integerNode('network_timeout_seconds')
+                                ->defaultValue(3)
+                                ->info('The network timeout in seconds before cache is called (for warm cache URLs only).')
+                                ->example([1, 2, 5])
+                            ->end()
                             ->arrayNode('warm_cache_urls')
                                 ->treatNullLike([])
                                 ->treatFalseLike([])

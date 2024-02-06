@@ -78,9 +78,10 @@ final readonly class PwaRuntime
         if ($registerOptions !== '') {
             $registerOptions = sprintf(', {%s}', mb_substr($registerOptions, 2));
         }
-        $hasWorkboxWindow = $this->importMapConfigReader->findRootImportMapEntry('workbox-window') !== null;
-        $workboxUrl = $hasWorkboxWindow ? 'workbox-window' : 'https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-window.prod.mjs';
-        $declaration = <<<SERVICE_WORKER
+        if ($serviceWorker->workbox->enabled === true) {
+            $hasWorkboxWindow = $this->importMapConfigReader->findRootImportMapEntry('workbox-window') !== null;
+            $workboxUrl = $hasWorkboxWindow ? 'workbox-window' : 'https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-window.prod.mjs';
+            $declaration = <<<SERVICE_WORKER
 <script type="module" {$scriptAttributes}>
   import {Workbox} from '{$workboxUrl}';
   if ('serviceWorker' in navigator) {
@@ -89,6 +90,22 @@ final readonly class PwaRuntime
   }
 </script>
 SERVICE_WORKER;
+        } else {
+            $declaration = <<<SERVICE_WORKER
+<script {$scriptAttributes}>
+    const registerServiceWorker = async () => {
+      if ("serviceWorker" in navigator) {
+        try {
+          await navigator.serviceWorker.register('{$url}'{$registerOptions});
+        } catch (error) {
+          // Nothing to do
+        }
+      }
+    };
+    registerServiceWorker();
+</script>
+SERVICE_WORKER;
+        }
 
         return $output . sprintf('%s%s', PHP_EOL, $declaration);
     }
@@ -123,13 +140,13 @@ SERVICE_WORKER;
     {
         $url = null;
         $format = $icon->format;
-        if (! str_starts_with($icon->src, '/')) {
-            $asset = $this->assetMapper->getAsset($icon->src);
+        if (! str_starts_with($icon->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($icon->src->src);
             $url = $asset?->publicPath;
             $format = $this->getFormat($icon, $asset);
         }
         if ($url === null) {
-            $url = $icon->src;
+            $url = $icon->src->src;
         }
 
         return [

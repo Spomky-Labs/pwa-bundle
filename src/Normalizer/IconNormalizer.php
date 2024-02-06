@@ -24,19 +24,14 @@ final readonly class IconNormalizer implements NormalizerInterface
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);
-        $url = null;
-        $asset = null;
-        if (! str_starts_with($object->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src);
-            $url = $asset?->publicPath;
+        $format = null;
+        if (! str_starts_with($object->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($object->src->src);
+            $format = $this->getFormat($object, $asset);
         }
-        if ($url === null) {
-            $url = $object->src;
-        }
-        $format = $this->getFormat($object, $asset);
 
         $result = [
-            'src' => $url,
+            'src' => $object->src,
             'sizes' => $object->getSizeList(),
             'type' => $format,
             'purpose' => $object->purpose,

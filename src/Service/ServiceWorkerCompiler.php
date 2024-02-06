@@ -38,12 +38,12 @@ final readonly class ServiceWorkerCompiler
         }
         $serviceWorker = $this->serviceWorker;
 
-        if (! str_starts_with($serviceWorker->src, '/')) {
-            $asset = $this->assetMapper->getAsset($serviceWorker->src);
+        if (! str_starts_with($serviceWorker->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($serviceWorker->src->src);
             assert($asset !== null, 'Unable to find service worker source asset');
             $body = $asset->content ?? file_get_contents($asset->sourcePath);
         } else {
-            $body = file_get_contents($serviceWorker->src);
+            $body = file_get_contents($serviceWorker->src->src);
         }
         assert(is_string($body), 'Unable to find service worker source content');
         $workbox = $serviceWorker->workbox;
@@ -58,8 +58,6 @@ final readonly class ServiceWorkerCompiler
     {
         $body = $this->processWorkboxImport($workbox, $body);
         $body = $this->processStandardRules($workbox, $body);
-        $body = $this->processPrecachedAssets($workbox, $body);
-        $body = $this->processWarmCacheUrls($workbox, $body);
         $body = $this->processWidgets($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
@@ -71,87 +69,77 @@ final readonly class ServiceWorkerCompiler
             return $body;
         }
 
+        $images = [];
+        $static = [];
+        foreach ($this->assetMapper->allAssets() as $asset) {
+            if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1) {
+                $images[] = $asset->publicPath;
+            } elseif (preg_match($workbox->staticRegex, $asset->sourcePath) === 1) {
+                $static[] = $asset->publicPath;
+            }
+        }
+        $jsonOptions = [
+            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        $imageUrls = $this->serializer->serialize($images, 'json', $jsonOptions);
+        $staticUrls = $this->serializer->serialize($static, 'json', $jsonOptions);
+        $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $jsonOptions);
+
         $declaration = <<<STANDARD_RULE_STRATEGY
-workbox.recipes.pageCache();
-workbox.recipes.imageCache();
-workbox.recipes.googleFontsCache();
-const matchCallback = ({request}) => request.destination === 'style' || request.destination === 'script' || request.destination === 'worker';
-workbox.routing.registerRoute(
-    matchCallback,
-    new workbox.strategies.CacheFirst({
-        cacheName: 'static-resources',
-        plugins: [
-            new workbox.cacheableResponse.CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-        ],
-    })
-);
+workbox.recipes.pageCache({
+    cacheName: 'pages',
+    networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
+    warmCache: {$routes}
+});
+workbox.recipes.imageCache({
+    cacheName: 'images',
+    maxEntries: {$workbox->maxImageCacheEntries},
+    warmCache: {$imageUrls}
+});
+workbox.recipes.staticResourceCache({
+    cacheName: 'assets',
+    warmCache: {$staticUrls}
+});
 STANDARD_RULE_STRATEGY;
 
         return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);
     }
 
-    private function processPrecachedAssets(Workbox $workbox, string $body): string
-    {
-        if (! str_contains($body, $workbox->precachingPlaceholder)) {
-            return $body;
-        }
-        $result = [];
-        foreach ($this->assetMapper->allAssets() as $asset) {
-            $result[] = [
-                'url' => $asset->publicPath,
-                'revision' => $asset->digest,
-            ];
-        }
-        $assets = $this->serializer->serialize($result, 'json', [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
-
-        $declaration = <<<PRECACHE_STRATEGY
-workbox.precaching.precacheAndRoute({$assets});
-PRECACHE_STRATEGY;
-
-        return str_replace($workbox->precachingPlaceholder, trim($declaration), $body);
-    }
-
-    private function processWarmCacheUrls(Workbox $workbox, string $body): string
-    {
-        if (! str_contains($body, $workbox->warmCachePlaceholder)) {
-            return $body;
-        }
-        $urls = $workbox->warmCacheUrls;
-        if (count($urls) === 0) {
-            return $body;
-        }
-
-        $routes = $this->serializer->serialize($urls, 'json', [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
-
-        $declaration = <<<WARM_CACHE_URL_STRATEGY
-workbox.recipes.warmStrategyCache({
-    urls: {$routes},
-    strategy: new workbox.strategies.CacheFirst()
-});
-WARM_CACHE_URL_STRATEGY;
-
-        return str_replace($workbox->warmCachePlaceholder, trim($declaration), $body);
-    }
-
     private function processOfflineFallback(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->offlineFallbackPlaceholder) || $workbox->offlineFallback === null) {
+        if (! str_contains($body, $workbox->offlineFallbackPlaceholder)) {
+            return $body;
+        }
+        if ($workbox->pageFallback === null && $workbox->imageFallback === null && $workbox->fontFallback === null) {
             return $body;
         }
 
-        $url = $this->serializer->serialize($workbox->offlineFallback, 'json', [
+        $jsonOptions = [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
+        ];
+        $pageFallback = $workbox->pageFallback === null ? 'null' : $this->serializer->serialize(
+            $workbox->pageFallback,
+            'json',
+            $jsonOptions
+        );
+        $imageFallback = $workbox->imageFallback === null ? 'null' : $this->serializer->serialize(
+            $workbox->imageFallback,
+            'json',
+            $jsonOptions
+        );
+        $fontFallback = $workbox->fontFallback === null ? 'null' : $this->serializer->serialize(
+            $workbox->fontFallback,
+            'json',
+            $jsonOptions
+        );
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
-workbox.recipes.offlineFallback({ pageFallback: {$url} });
+workbox.recipes.offlineFallback({
+    pageFallback: {$pageFallback},
+    imageFallback: {$imageFallback},
+    pageFallback: {$fontFallback}
+});
 OFFLINE_FALLBACK_STRATEGY;
 
         return str_replace($workbox->offlineFallbackPlaceholder, trim($declaration), $body);
@@ -245,18 +233,13 @@ OFFLINE_FALLBACK_STRATEGY;
         }
         if ($workbox->useCDN === true) {
             $declaration = <<<IMPORT_CDN_STRATEGY
-importScripts(
-    'https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js'
-);
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
 IMPORT_CDN_STRATEGY;
         } else {
             $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
             $declaration = <<<IMPORT_CDN_STRATEGY
 importScripts('{$publicUrl}/workbox-sw.js');
-
-workbox.setConfig({
-  modulePathPrefix: '{$publicUrl}',
-});
+workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
 IMPORT_CDN_STRATEGY;
         }
 
