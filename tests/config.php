@@ -227,7 +227,7 @@ return static function (ContainerConfigurator $container) {
             'use_cache' => true,
             'workbox' => [
                 'warm_cache_urls' => ['privacy_policy', 'terms_of_service'],
-                'offline_fallback' => '/offline.html',
+                'page_fallback' => '/offline.html',
             ],
         ],
     ]);
