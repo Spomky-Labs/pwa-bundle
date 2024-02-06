@@ -48,6 +48,15 @@ final class Workbox
     #[SerializedName('network_timeout_seconds')]
     public int $networkTimeoutSeconds = 3;
 
+    #[SerializedName('max_font_age')]
+    public int $maxFontAge = 60 * 60 * 24 * 365;
+
+    #[SerializedName('max_font_cache_entries')]
+    public int $maxFontCacheEntries = 60;
+
+    #[SerializedName('max_image_age')]
+    public int $maxImageAge = 60 * 60 * 24 * 365;
+
     #[SerializedName('max_image_cache_entries')]
     public int $maxImageCacheEntries = 60;
 

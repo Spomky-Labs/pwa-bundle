@@ -9,14 +9,18 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
 
-final readonly class ScreenshotNormalizer implements NormalizerInterface
+final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
+    use NormalizerAwareTrait;
+
     public function __construct(
-        private AssetMapperInterface $assetMapper,
-        private null|ImageProcessor $imageProcessor,
+        private readonly AssetMapperInterface $assetMapper,
+        private readonly null|ImageProcessor $imageProcessor,
     ) {
     }
 
@@ -28,10 +32,11 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
         assert($object instanceof Screenshot);
         $url = null;
         $asset = null;
+        $imageFormat = null;
         if (! str_starts_with($object->src->src, '/')) {
             $asset = $this->assetMapper->getAsset($object->src->src);
             $url = $asset?->publicPath;
-            $format = $this->getFormat($object, $asset);
+            $imageFormat = $this->getFormat($object, $asset);
         }
         if ($url === null) {
             $url = $object->src->src;
@@ -39,12 +44,12 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
         ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($object, $asset);
 
         $result = [
-            'src' => $url,
+            'src' => $this->normalizer->normalize($object->src, $format, $context),
             'sizes' => $sizes,
             'form_factor' => $formFactor,
             'label' => $object->label,
             'platform' => $object->platform,
-            'format' => $format,
+            'format' => $imageFormat,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(

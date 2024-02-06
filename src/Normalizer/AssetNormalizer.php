@@ -25,7 +25,6 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
     {
         assert($object instanceof Asset);
         $url = null;
-        dump($object);
         if (! str_starts_with($object->src, '/')) {
             $asset = $this->assetMapper->getAsset($object->src);
             $url = $asset?->publicPath;
