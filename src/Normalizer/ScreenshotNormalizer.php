@@ -28,15 +28,15 @@ final readonly class ScreenshotNormalizer implements NormalizerInterface
         assert($object instanceof Screenshot);
         $url = null;
         $asset = null;
-        if (! str_starts_with($object->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src);
+        if (! str_starts_with($object->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($object->src->src);
             $url = $asset?->publicPath;
+            $format = $this->getFormat($object, $asset);
         }
         if ($url === null) {
-            $url = $object->src;
+            $url = $object->src->src;
         }
         ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($object, $asset);
-        $format = $this->getFormat($object, $asset);
 
         $result = [
             'src' => $url,

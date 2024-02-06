@@ -96,11 +96,6 @@ parameters:
 			path: src/Command/CreateServiceWorkerCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|string given\\.$#"
-			count: 1
-			path: src/Command/CreateServiceWorkerCommand.php
-
-		-
 			message: "#^Parameter \\#2 \\$targetFile of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:copy\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateServiceWorkerCommand.php
@@ -221,6 +216,11 @@ parameters:
 			path: src/Dto/ScopeExtension.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Screenshot has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Screenshot.php
+
+		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Screenshot\\:\\:getLabel\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
 			count: 1
 			path: src/Dto/Screenshot.php
@@ -326,11 +326,6 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$precachingPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/Workbox.php
-
-		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$standardRulesPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
@@ -342,11 +337,6 @@ parameters:
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$version\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/Workbox.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$warmCachePlaceholder\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -391,6 +381,31 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:denormalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:supportsDenormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/IconNormalizer.php
@@ -421,17 +436,7 @@ parameters:
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
-			message: "#^Parameter \\#1 \\$haystack of function str_starts_with expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Normalizer/ScreenshotNormalizer.php
-
-		-
 			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			message: "#^Parameter \\#1 \\$logicalPath of method Symfony\\\\Component\\\\AssetMapper\\\\AssetMapperInterface\\:\\:getAsset\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/Normalizer/ScreenshotNormalizer.php
 
@@ -479,8 +484,3 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/UrlNormalizer.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function mb_strlen expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Subscriber/PwaDevServerSubscriber.php

@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Icon
 {
-    public string $src;
+    public Asset $src;
 
     /**
      * @var array<int>
