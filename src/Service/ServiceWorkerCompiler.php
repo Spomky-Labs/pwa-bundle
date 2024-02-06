@@ -70,19 +70,19 @@ final readonly class ServiceWorkerCompiler
         }
 
         $images = [];
-        $static = [];
+        $statics = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
             if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1) {
                 $images[] = $asset->publicPath;
             } elseif (preg_match($workbox->staticRegex, $asset->sourcePath) === 1) {
-                $static[] = $asset->publicPath;
+                $statics[] = $asset->publicPath;
             }
         }
         $jsonOptions = [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
         $imageUrls = $this->serializer->serialize($images, 'json', $jsonOptions);
-        $staticUrls = $this->serializer->serialize($static, 'json', $jsonOptions);
+        $staticUrls = $this->serializer->serialize($statics, 'json', $jsonOptions);
         $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $jsonOptions);
 
         $declaration = <<<STANDARD_RULE_STRATEGY
@@ -94,12 +94,28 @@ workbox.recipes.pageCache({
 workbox.recipes.imageCache({
     cacheName: 'images',
     maxEntries: {$workbox->maxImageCacheEntries},
+    maxImageAge: {$workbox->maxImageAge},
     warmCache: {$imageUrls}
 });
 workbox.recipes.staticResourceCache({
     cacheName: 'assets',
     warmCache: {$staticUrls}
 });
+workbox.routing.registerRoute(
+  ({request}) => request.destination === 'font',
+  new workbox.strategies.CacheFirst({
+    cacheName: 'fonts',
+    plugins: [
+      new workbox.cacheableResponse.CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new workbox.expiration.ExpirationPlugin({
+        maxAgeSeconds: {$workbox->maxFontAge},
+        maxEntries: {$workbox->maxFontCacheEntries},
+      }),
+    ],
+  })
+);
 STANDARD_RULE_STRATEGY;
 
         return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);
@@ -138,7 +154,7 @@ workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 workbox.recipes.offlineFallback({
     pageFallback: {$pageFallback},
     imageFallback: {$imageFallback},
-    pageFallback: {$fontFallback}
+    fontFallback: {$fontFallback}
 });
 OFFLINE_FALLBACK_STRATEGY;
 

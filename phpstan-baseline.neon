@@ -456,26 +456,6 @@ parameters:
 			path: src/Normalizer/ServiceWorkerNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ShortcutNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ShortcutNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:normalize\\(\\) should return array\\{description\\?\\: string, icons\\?\\: array, name\\: string, short_name\\?\\: string, url\\: string\\} but returns array\\<mixed\\>\\.$#"
-			count: 1
-			path: src/Normalizer/ShortcutNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ShortcutNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ShortcutNormalizer.php
-
-		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/UrlNormalizer.php

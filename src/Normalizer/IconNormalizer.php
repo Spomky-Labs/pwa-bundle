@@ -8,13 +8,17 @@ use SpomkyLabs\PwaBundle\Dto\Icon;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
 
-final readonly class IconNormalizer implements NormalizerInterface
+final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
+    use NormalizerAwareTrait;
+
     public function __construct(
-        private AssetMapperInterface $assetMapper,
+        private readonly AssetMapperInterface $assetMapper,
     ) {
     }
 
@@ -24,16 +28,16 @@ final readonly class IconNormalizer implements NormalizerInterface
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);
-        $format = null;
+        $imageFormat = null;
         if (! str_starts_with($object->src->src, '/')) {
             $asset = $this->assetMapper->getAsset($object->src->src);
-            $format = $this->getFormat($object, $asset);
+            $imageFormat = $this->getFormat($object, $asset);
         }
 
         $result = [
-            'src' => $object->src,
+            'src' => $this->normalizer->normalize($object->src, $format, $context),
             'sizes' => $object->getSizeList(),
-            'type' => $format,
+            'type' => $imageFormat,
             'purpose' => $object->purpose,
         ];
 
