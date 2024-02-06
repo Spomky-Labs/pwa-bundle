@@ -142,24 +142,9 @@ final readonly class Configuration implements ConfigurationInterface
                                 )
                                 ->example('//WIDGETS_PLACEHOLDER')
                             ->end()
-                            ->append(
-                                $this->getUrlNode(
-                                    'page_fallback',
-                                    'The URL of the offline page fallback.'
-                                )
-                            )
-                            ->append(
-                                $this->getUrlNode(
-                                    'image_fallback',
-                                    'The URL of the offline image fallback.'
-                                )
-                            )
-                            ->append(
-                                $this->getUrlNode(
-                                    'font_fallback',
-                                    'The URL of the offline font fallback.'
-                                )
-                            )
+                            ->append($this->getUrlNode('page_fallback', 'The URL of the offline page fallback.'))
+                            ->append($this->getUrlNode('image_fallback', 'The URL of the offline image fallback.'))
+                            ->append($this->getUrlNode('font_fallback', 'The URL of the offline font fallback.'))
                             ->scalarNode('image_regex')
                                 ->defaultValue('/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/')
                                 ->info('The regex to match the images.')
@@ -172,7 +157,9 @@ final readonly class Configuration implements ConfigurationInterface
                             ->end()
                             ->integerNode('network_timeout_seconds')
                                 ->defaultValue(3)
-                                ->info('The network timeout in seconds before cache is called (for warm cache URLs only).')
+                                ->info(
+                                    'The network timeout in seconds before cache is called (for warm cache URLs only).'
+                                )
                                 ->example([1, 2, 5])
                             ->end()
                             ->arrayNode('warm_cache_urls')

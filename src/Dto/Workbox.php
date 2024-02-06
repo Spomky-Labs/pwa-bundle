@@ -44,8 +44,10 @@ final class Workbox
      */
     #[SerializedName('warm_cache_urls')]
     public array $warmCacheUrls = [];
+
     #[SerializedName('network_timeout_seconds')]
     public int $networkTimeoutSeconds = 3;
+
     #[SerializedName('max_image_cache_entries')]
     public int $maxImageCacheEntries = 60;
 

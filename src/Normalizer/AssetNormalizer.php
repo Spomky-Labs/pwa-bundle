@@ -49,8 +49,12 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
         return $data instanceof Asset;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
-    {
+    public function supportsDenormalization(
+        mixed $data,
+        string $type,
+        string $format = null,
+        array $context = []
+    ): bool {
         return $type === Asset::class;
     }
 
