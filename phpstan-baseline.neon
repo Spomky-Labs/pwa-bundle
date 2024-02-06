@@ -96,11 +96,6 @@ parameters:
 			path: src/Command/CreateServiceWorkerCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|string given\\.$#"
-			count: 1
-			path: src/Command/CreateServiceWorkerCommand.php
-
-		-
 			message: "#^Parameter \\#2 \\$targetFile of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:copy\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateServiceWorkerCommand.php
@@ -489,8 +484,3 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/UrlNormalizer.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function mb_strlen expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Subscriber/PwaDevServerSubscriber.php

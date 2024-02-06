@@ -151,7 +151,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         if (str_contains($pathInfo, '/..')) {
             return;
         }
-        $asset = mb_substr($pathInfo, mb_strlen($this->workboxPublicUrl));
+        $asset = mb_substr($pathInfo, mb_strlen((string) $this->workboxPublicUrl));
         $resource = sprintf('@SpomkyLabsPwaBundle/Resources/workbox-v%s%s', $this->workboxVersion, $asset);
         $resourcePath = $this->fileLocator->locate($resource, null, false);
         if (is_array($resourcePath)) {
