@@ -51,7 +51,25 @@ final readonly class ServiceWorkerCompiler
             $body = $this->processWorkbox($workbox, $body);
         }
 
-        return $body;
+        return $this->processSkipWaiting($body);
+    }
+
+    private function processSkipWaiting(string $body): string
+    {
+        if ($this->serviceWorker->skipWaiting === false) {
+            return $body;
+        }
+
+        $declaration = <<<SKIP_WAITING
+self.addEventListener("install", function (event) {
+  event.waitUntil(self.skipWaiting());
+});
+self.addEventListener("activate", function (event) {
+  event.waitUntil(self.clients.claim());
+});
+SKIP_WAITING;
+
+        return $body . trim($declaration);
     }
 
     private function processWorkbox(Workbox $workbox, string $body): string
@@ -61,6 +79,26 @@ final readonly class ServiceWorkerCompiler
         $body = $this->processWidgets($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
+    }
+
+    private function processWorkboxImport(Workbox $workbox, string $body): string
+    {
+        if (! str_contains($body, $workbox->workboxImportPlaceholder)) {
+            return $body;
+        }
+        if ($workbox->useCDN === true) {
+            $declaration = <<<IMPORT_CDN_STRATEGY
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
+IMPORT_CDN_STRATEGY;
+        } else {
+            $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
+            $declaration = <<<IMPORT_CDN_STRATEGY
+importScripts('{$publicUrl}/workbox-sw.js');
+workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
+IMPORT_CDN_STRATEGY;
+        }
+
+        return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
     }
 
     private function processStandardRules(Workbox $workbox, string $body): string
@@ -240,25 +278,5 @@ async function updateWidgets() {
 OFFLINE_FALLBACK_STRATEGY;
 
         return str_replace($workbox->widgetsPlaceholder, trim($declaration), $body);
-    }
-
-    private function processWorkboxImport(Workbox $workbox, string $body): string
-    {
-        if (! str_contains($body, $workbox->workboxImportPlaceholder)) {
-            return $body;
-        }
-        if ($workbox->useCDN === true) {
-            $declaration = <<<IMPORT_CDN_STRATEGY
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
-IMPORT_CDN_STRATEGY;
-        } else {
-            $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
-            $declaration = <<<IMPORT_CDN_STRATEGY
-importScripts('{$publicUrl}/workbox-sw.js');
-workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
-IMPORT_CDN_STRATEGY;
-        }
-
-        return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
     }
 }
