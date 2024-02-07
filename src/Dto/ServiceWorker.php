@@ -19,5 +19,8 @@ final class ServiceWorker
     #[SerializedName('use_cache')]
     public null|bool $useCache = null;
 
+    #[SerializedName('skip_waiting')]
+    public bool $skipWaiting = false;
+
     public Workbox $workbox;
 }
