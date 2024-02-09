@@ -136,7 +136,9 @@ final class CreateIconsCommand extends Command
 
         $io->success('Icons have been generated. You can now use them in your application configuration file.');
         $io->writeln(Yaml::dump([
-            'icons' => $generatedIcons,
+            'yaml' => [
+                'icons' => $generatedIcons,
+            ],
         ], 10, 2));
 
         return self::SUCCESS;

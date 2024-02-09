@@ -59,19 +59,14 @@ final class CreateScreenshotCommand extends Command
             null,
             ['https://example.com', 'https://example.com/feature1']
         );
-        $this->addArgument(
+        $this->addOption(
             'output',
-            InputArgument::OPTIONAL,
-            'The output directory of the screenshot',
-            sprintf('%s/assets/screenshots/', $this->projectDir)
+            'o',
+            InputOption::VALUE_OPTIONAL,
+            'The output directory',
+            sprintf('%s/assets/icons/', $this->projectDir)
         );
-        $this->addArgument(
-            'filename',
-            InputArgument::OPTIONAL,
-            'The output name of the screenshot',
-            'screenshot',
-            ['homepage-android', 'feature1']
-        );
+        $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'The output filename', 'screenshot');
         $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
         $this->addOption('height', null, InputOption::VALUE_OPTIONAL, 'The height of the screenshot');
         $this->addOption(
@@ -94,7 +89,7 @@ final class CreateScreenshotCommand extends Command
         }
 
         $url = $input->getArgument('url');
-        $dest = rtrim((string) $input->getArgument('output'), '/');
+        $dest = rtrim((string) $input->getOption('output'), '/');
         $height = $input->getOption('height');
         $width = $input->getOption('width');
         $format = $input->getOption('format');
@@ -134,7 +129,7 @@ final class CreateScreenshotCommand extends Command
         }
 
         $format = current($extensions);
-        $filename = sprintf('%s/%s%s.%s', $dest, $input->getArgument('filename'), $sizes, $format);
+        $filename = sprintf('%s/%s%s.%s', $dest, $input->getOption('filename'), $sizes, $format);
 
         $this->filesystem->copy($tmpName, $filename, true);
         $this->filesystem->remove($tmpName);
@@ -151,7 +146,9 @@ final class CreateScreenshotCommand extends Command
         }
         $io->success('Screenshot saved. You can now use it in your application configuration file.');
         $io->writeln(Yaml::dump([
-            'screenshots' => [$config],
+            'pwa' => [
+                'screenshots' => [$config],
+            ],
         ], 10, 2));
 
         return self::SUCCESS;
