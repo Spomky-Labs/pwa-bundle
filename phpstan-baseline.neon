@@ -46,6 +46,46 @@ parameters:
 			path: src/Command/CreateIconsCommand.php
 
 		-
+			message: "#^Cannot access property \\$sourcePath on Symfony\\\\Component\\\\AssetMapper\\\\MappedAsset\\|null\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Cannot call method process\\(\\) on SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\|null\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:__construct\\(\\) has parameter \\$configuration with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:generateIcons\\(\\) has parameter \\$generatedIcons with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:generateIcons\\(\\) has parameter \\$icon with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:generateIcons\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$data of static method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:cleanup\\(\\) expects array\\<int\\|string, mixed\\>, array given\\.$#"
+			count: 1
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
+			message: "#^Parameter \\#4 \\$outputDirectory of method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsFromConfigurationCommand\\:\\:generateIcons\\(\\) expects string, mixed given\\.$#"
+			count: 3
+			path: src/Command/CreateIconsFromConfigurationCommand.php
+
+		-
 			message: "#^Cannot cast mixed to int\\.$#"
 			count: 4
 			path: src/Command/CreateScreenshotCommand.php

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
+use SpomkyLabs\PwaBundle\Command\CreateIconsFromConfigurationCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\CreateServiceWorkerCommand;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
@@ -62,6 +63,7 @@ return static function (ContainerConfigurator $container): void {
     }
     if (class_exists(MimeTypes::class)) {
         $container->set(CreateIconsCommand::class);
+        $container->set(CreateIconsFromConfigurationCommand::class);
     }
 
     /*** Normalizers ***/
