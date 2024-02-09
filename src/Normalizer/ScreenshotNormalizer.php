@@ -30,16 +30,11 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Screenshot);
-        $url = null;
         $asset = null;
-        $imageFormat = null;
-        if (! str_starts_with($object->src->src, '/')) {
+        $imageType = $object->type;
+        if ($imageType === null && ! str_starts_with($object->src->src, '/')) {
             $asset = $this->assetMapper->getAsset($object->src->src);
-            $url = $asset?->publicPath;
-            $imageFormat = $this->getFormat($object, $asset);
-        }
-        if ($url === null) {
-            $url = $object->src->src;
+            $imageType = $this->getType($asset);
         }
         ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($object, $asset);
 
@@ -49,7 +44,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
             'form_factor' => $formFactor,
             'label' => $object->label,
             'platform' => $object->platform,
-            'format' => $imageFormat,
+            'format' => $imageType,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -103,12 +98,8 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
         ];
     }
 
-    private function getFormat(Screenshot $object, ?MappedAsset $asset): ?string
+    private function getType(?MappedAsset $asset): ?string
     {
-        if ($object->format !== null) {
-            return $object->format;
-        }
-
         if ($this->imageProcessor === null || $asset === null || ! class_exists(MimeTypes::class)) {
             return null;
         }

@@ -64,5 +64,20 @@ final class Workbox
     public string $imageRegex = '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/';
 
     #[SerializedName('static_regex')]
-    public string $staticRegex = '/\.(css|js|json|xml|txt|woff2|ttf|eot|otf|map|webmanifest)$/';
+    public string $staticRegex = '/\.(css|m?jsx?|json|xml|txt|woff2|ttf|eot|otf|map|webmanifest)$/';
+
+    #[SerializedName('clear_cache')]
+    public bool $clearCache = true;
+
+    #[SerializedName('image_cache_name')]
+    public string $imageCacheName = 'images';
+
+    #[SerializedName('font_cache_name')]
+    public string $fontCacheName = 'fonts';
+
+    #[SerializedName('page_cache_name')]
+    public string $pageCacheName = 'pages';
+
+    #[SerializedName('asset_cache_name')]
+    public string $assetCacheName = 'assets';
 }

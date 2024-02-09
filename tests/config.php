@@ -78,12 +78,12 @@ return static function (ContainerConfigurator $container) {
                 [
                     'src' => 'pwa/1920x1920.svg',
                     'sizes' => [48, 72, 96, 128, 256],
-                    'format' => 'webp',
+                    'type' => 'webp',
                 ],
                 [
                     'src' => 'pwa/1920x1920.svg',
                     'sizes' => [48, 72, 96, 128, 256],
-                    'format' => 'png',
+                    'type' => 'png',
                     'purpose' => 'maskable',
                 ],
                 [
@@ -211,7 +211,7 @@ return static function (ContainerConfigurator $container) {
                         [
                             'src' => 'pwa/1920x1920.svg',
                             'sizes' => [16, 48],
-                            'format' => 'webp',
+                            'type' => 'webp',
                         ],
                     ],
                     'auth' => false,
