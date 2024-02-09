@@ -24,7 +24,7 @@ final class Screenshot
 
     public null|string $platform = null;
 
-    public null|string $format = null;
+    public null|string $type = null;
 
     public function getLabel(): null|string|TranslatableInterface
     {
