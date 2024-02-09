@@ -75,6 +75,7 @@ SKIP_WAITING;
     private function processWorkbox(Workbox $workbox, string $body): string
     {
         $body = $this->processWorkboxImport($workbox, $body);
+        $body = $this->processClearCache($workbox, $body);
         $body = $this->processStandardRules($workbox, $body);
         $body = $this->processWidgets($workbox, $body);
 
@@ -101,6 +102,28 @@ IMPORT_CDN_STRATEGY;
         return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
     }
 
+    private function processClearCache(Workbox $workbox, string $body): string
+    {
+        if ($workbox->clearCache === false) {
+            return $body;
+        }
+
+        $declaration = <<<CLEAR_CACHE
+self.addEventListener("install", function (event) {
+    event.waitUntil(caches.keys().then(function (cacheNames) {
+            return Promise.all(
+                cacheNames.map(function (cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+        })
+    );
+});
+CLEAR_CACHE;
+
+        return $body . trim($declaration);
+    }
+
     private function processStandardRules(Workbox $workbox, string $body): string
     {
         if (! str_contains($body, $workbox->standardRulesPlaceholder)) {
@@ -125,24 +148,24 @@ IMPORT_CDN_STRATEGY;
 
         $declaration = <<<STANDARD_RULE_STRATEGY
 workbox.recipes.pageCache({
-    cacheName: 'pages',
+    cacheName: '{$workbox->pageCacheName}',
     networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
     warmCache: {$routes}
 });
 workbox.recipes.imageCache({
-    cacheName: 'images',
+    cacheName: '{$workbox->imageCacheName}',
     maxEntries: {$workbox->maxImageCacheEntries},
     maxImageAge: {$workbox->maxImageAge},
     warmCache: {$imageUrls}
 });
 workbox.recipes.staticResourceCache({
-    cacheName: 'assets',
+    cacheName: '{$workbox->assetCacheName}',
     warmCache: {$staticUrls}
 });
 workbox.routing.registerRoute(
   ({request}) => request.destination === 'font',
   new workbox.strategies.CacheFirst({
-    cacheName: 'fonts',
+    cacheName: '{$workbox->fontCacheName}',
     plugins: [
       new workbox.cacheableResponse.CacheableResponsePlugin({
         statuses: [0, 200],
