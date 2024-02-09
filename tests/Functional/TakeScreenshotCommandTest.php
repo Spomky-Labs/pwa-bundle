@@ -23,8 +23,8 @@ final class TakeScreenshotCommandTest extends AbstractPwaTestCase
         // When
         $commandTester->execute([
             'url' => 'https://symfony.com',
-            'output' => $output,
-            'filename' => 'screenshot',
+            '--output' => $output,
+            '--filename' => 'screenshot',
             '--width' => '1024',
             '--height' => '1920',
         ]);
