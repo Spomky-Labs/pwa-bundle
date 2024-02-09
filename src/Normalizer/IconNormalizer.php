@@ -28,16 +28,16 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);
-        $imageFormat = null;
+        $imageType = $object->type;
         if (! str_starts_with($object->src->src, '/')) {
             $asset = $this->assetMapper->getAsset($object->src->src);
-            $imageFormat = $this->getFormat($object, $asset);
+            $imageType = $this->getType($asset);
         }
 
         $result = [
             'src' => $this->normalizer->normalize($object->src, $format, $context),
             'sizes' => $object->getSizeList(),
-            'type' => $imageFormat,
+            'type' => $imageType,
             'purpose' => $object->purpose,
         ];
 
@@ -64,12 +64,8 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         ];
     }
 
-    private function getFormat(Icon $object, ?MappedAsset $asset): ?string
+    private function getType(?MappedAsset $asset): ?string
     {
-        if ($object->format !== null) {
-            return $object->format;
-        }
-
         if ($asset === null || ! class_exists(MimeTypes::class)) {
             return null;
         }

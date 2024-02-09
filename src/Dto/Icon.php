@@ -16,7 +16,7 @@ final class Icon
     #[SerializedName('sizes')]
     public array $sizeList;
 
-    public null|string $format = null;
+    public null|string $type = null;
 
     public null|string $purpose = null;
 
