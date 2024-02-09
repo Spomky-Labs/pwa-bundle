@@ -116,15 +116,15 @@ SERVICE_WORKER;
             return $output;
         }
         foreach ($this->manifest->icons as $icon) {
-            ['url' => $url, 'format' => $format] = $this->getIconInfo($icon);
+            ['url' => $url, 'type' => $type] = $this->getIconInfo($icon);
             $attributes = sprintf(
                 'rel="%s" sizes="%s" href="%s"',
                 str_contains($icon->purpose ?? '', 'maskable') ? 'mask-icon' : 'icon',
                 $icon->getSizeList(),
                 $url
             );
-            if ($format !== null) {
-                $attributes .= sprintf(' type="%s"', $format);
+            if ($type !== null) {
+                $attributes .= sprintf(' type="%s"', $type);
             }
 
             $output .= sprintf('%s<link %s>', PHP_EOL, $attributes);
@@ -134,16 +134,16 @@ SERVICE_WORKER;
     }
 
     /**
-     * @return array{url: string, format: string|null}
+     * @return array{url: string, type: string|null}
      */
     private function getIconInfo(Icon $icon): array
     {
         $url = null;
-        $format = $icon->format;
-        if (! str_starts_with($icon->src->src, '/')) {
+        $type = $icon->type;
+        if ($type === null && ! str_starts_with($icon->src->src, '/')) {
             $asset = $this->assetMapper->getAsset($icon->src->src);
             $url = $asset?->publicPath;
-            $format = $this->getFormat($icon, $asset);
+            $type = $this->getFormat($asset);
         }
         if ($url === null) {
             $url = $icon->src->src;
@@ -151,16 +151,12 @@ SERVICE_WORKER;
 
         return [
             'url' => $url,
-            'format' => $format,
+            'type' => $type,
         ];
     }
 
-    private function getFormat(Icon $object, ?MappedAsset $asset): ?string
+    private function getFormat(?MappedAsset $asset): ?string
     {
-        if ($object->format !== null) {
-            return $object->format;
-        }
-
         if ($asset === null || ! class_exists(MimeTypes::class)) {
             return null;
         }
