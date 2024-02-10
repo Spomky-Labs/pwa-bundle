@@ -34,10 +34,10 @@ final class Workbox
     public null|Url $pageFallback = null;
 
     #[SerializedName('image_fallback')]
-    public null|Url $imageFallback = null;
+    public null|Asset $imageFallback = null;
 
     #[SerializedName('font_fallback')]
-    public null|Url $fontFallback = null;
+    public null|Asset $fontFallback = null;
 
     /**
      * @var array<Url>
