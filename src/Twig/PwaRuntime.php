@@ -21,6 +21,10 @@ final readonly class PwaRuntime
     private string $manifestPublicUrl;
 
     public function __construct(
+        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
+        private bool $manifestEnabled,
+        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
+        private bool $serviceWorkerEnabled,
         #[Autowire('@asset_mapper.importmap.config_reader')]
         private ImportMapConfigReader $importMapConfigReader,
         private AssetMapperInterface $assetMapper,
@@ -40,12 +44,23 @@ final readonly class PwaRuntime
         bool $injectSW = true,
         array $swAttributes = []
     ): string {
-        $url = $this->assetMapper->getPublicPath($this->manifestPublicUrl) ?? $this->manifestPublicUrl;
-        $output = sprintf('%s<link rel="manifest" href="%s">', PHP_EOL, $url);
+        $output = '';
+        if ($this->manifestEnabled === true) {
+            $output = $this->injectManifestFile($output);
+        }
+        if ($this->serviceWorkerEnabled === true) {
+            $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
+        }
         $output = $this->injectIcons($output, $injectIcons);
-        $output = $this->injectThemeColor($output, $injectThemeColor);
 
-        return $this->injectServiceWorker($output, $injectSW, $swAttributes);
+        return $this->injectThemeColor($output, $injectThemeColor);
+    }
+
+    private function injectManifestFile(string $output): string
+    {
+        $url = $this->assetMapper->getPublicPath($this->manifestPublicUrl) ?? $this->manifestPublicUrl;
+
+        return $output . sprintf('%s<link rel="manifest" href="%s">', PHP_EOL, $url);
     }
 
     private function injectThemeColor(string $output, bool $themeColor): string
