@@ -130,53 +130,108 @@ CLEAR_CACHE;
             return $body;
         }
 
-        $images = [];
-        $statics = [];
+        $assets = [];
+        $fonts = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1) {
-                $images[] = $asset->publicPath;
-            } elseif (preg_match($workbox->staticRegex, $asset->sourcePath) === 1) {
-                $statics[] = $asset->publicPath;
+            if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1 || preg_match(
+                $workbox->staticRegex,
+                $asset->sourcePath
+            ) === 1) {
+                $assets[] = $asset->publicPath;
+            } elseif (preg_match($workbox->fontRegex, $asset->sourcePath) === 1) {
+                $fonts[] = $asset->publicPath;
             }
         }
         $jsonOptions = [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
-        $imageUrls = $this->serializer->serialize($images, 'json', $jsonOptions);
-        $staticUrls = $this->serializer->serialize($statics, 'json', $jsonOptions);
+        $assetUrls = $this->serializer->serialize($assets, 'json', $jsonOptions);
+        $fontUrls = $this->serializer->serialize($fonts, 'json', $jsonOptions);
+        $assetUrlsLength = count($assets) * 2;
         $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $jsonOptions);
 
         $declaration = <<<STANDARD_RULE_STRATEGY
+// Pages cached during the navigation.
 workbox.recipes.pageCache({
     cacheName: '{$workbox->pageCacheName}',
     networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
     warmCache: {$routes}
 });
-workbox.recipes.imageCache({
-    cacheName: '{$workbox->imageCacheName}',
-    maxEntries: {$workbox->maxImageCacheEntries},
-    maxImageAge: {$workbox->maxImageAge},
-    warmCache: {$imageUrls}
-});
-workbox.recipes.staticResourceCache({
-    cacheName: '{$workbox->assetCacheName}',
-    warmCache: {$staticUrls}
-});
+
+//Images cache
 workbox.routing.registerRoute(
-  ({request}) => request.destination === 'font',
+  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('/assets')),
   new workbox.strategies.CacheFirst({
-    cacheName: '{$workbox->fontCacheName}',
+    cacheName: '{$workbox->imageCacheName}',
     plugins: [
-      new workbox.cacheableResponse.CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
+      new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
       new workbox.expiration.ExpirationPlugin({
-        maxAgeSeconds: {$workbox->maxFontAge},
-        maxEntries: {$workbox->maxFontCacheEntries},
+        maxEntries: {$workbox->maxImageCacheEntries},
+        maxAgeSeconds: {$workbox->maxImageAge},
       }),
     ],
   })
 );
+
+// Assets served by Asset Mapper
+// - Strategy: CacheFirst
+const assetCacheStrategy = new workbox.strategies.CacheFirst({
+  cacheName: '{$workbox->assetCacheName}',
+  plugins: [
+    new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
+    new workbox.expiration.ExpirationPlugin({
+      maxEntries: {$assetUrlsLength},
+      maxAgeSeconds: 365 * 24 * 60 * 60,
+    }),
+  ],
+});
+// - Strategy: only the Asset Mapper public route
+workbox.routing.registerRoute(
+  ({url}) => url.pathname.startsWith('/assets'),
+  assetCacheStrategy
+);
+self.addEventListener('install', event => {
+  const done = {$assetUrls}.map(
+    path =>
+      assetCacheStrategy.handleAll({
+        event,
+        request: new Request(path),
+      })[1]
+  );
+
+  event.waitUntil(Promise.all(done));
+});
+
+
+const fontCacheStrategy = new workbox.strategies.CacheFirst({
+  cacheName: '{$workbox->fontCacheName}',
+  plugins: [
+    new workbox.cacheableResponse.CacheableResponsePlugin({
+      statuses: [0, 200],
+    }),
+    new workbox.expiration.ExpirationPlugin({
+      maxAgeSeconds: {$workbox->maxFontAge},
+      maxEntries: {$workbox->maxFontCacheEntries},
+    }),
+  ],
+});
+workbox.routing.registerRoute(
+  ({request}) => request.destination === 'font',
+  fontCacheStrategy
+);
+self.addEventListener('install', event => {
+  const done = {$fontUrls}.map(
+    path =>
+      fontCacheStrategy.handleAll({
+        event,
+        request: new Request(path),
+      })[1]
+  );
+
+  event.waitUntil(Promise.all(done));
+});
+
+
 STANDARD_RULE_STRATEGY;
 
         return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);

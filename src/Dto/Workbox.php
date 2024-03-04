@@ -64,7 +64,10 @@ final class Workbox
     public string $imageRegex = '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/';
 
     #[SerializedName('static_regex')]
-    public string $staticRegex = '/\.(css|m?jsx?|json|xml|txt|woff2|ttf|eot|otf|map|webmanifest)$/';
+    public string $staticRegex = '/\.(css|m?jsx?|json|xml|txt|map|webmanifest)$/';
+
+    #[SerializedName('font_regex')]
+    public string $fontRegex = '/\.(ttf|eot|otf|woff2)$/';
 
     #[SerializedName('clear_cache')]
     public bool $clearCache = true;
