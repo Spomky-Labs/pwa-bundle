@@ -13,7 +13,6 @@
 /phpstan-baseline.neon export-ignore
 /phpunit.xml.dist export-ignore
 /rector export-ignore
-
 /bin export-ignore
 /babel.config.js export-ignore
 /jest.config.js export-ignore
