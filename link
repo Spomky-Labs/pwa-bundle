@@ -11,7 +11,7 @@ require __DIR__.'/vendor/autoload.php';
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Links dependencies to components to a local clone of the main spomky-labs/phpwa GitHub repository.
+ * Links dependencies to components to a local clone of the main spomky-labs/pwa-bundle GitHub repository.
  * Inspired by symfony/symfony and async-aws/aws
  */
 
@@ -19,8 +19,8 @@ $copy = false !== $k = array_search('--copy', $argv, true);
 $copy && array_splice($argv, $k, 1);
 $pathToProject = $argv[1] ?? getcwd();
 
-if (!is_dir("$pathToProject/vendor/spomky-labs/phpwa")) {
-    echo 'Link (or copy) dependencies to components to a local clone of the spomky-labs/phpwa GitHub repository.'.PHP_EOL.PHP_EOL;
+if (!is_dir("$pathToProject/vendor/spomky-labs/pwa-bundle")) {
+    echo 'Link (or copy) dependencies to components to a local clone of the spomky-labs/pwa-bundle GitHub repository.'.PHP_EOL.PHP_EOL;
     echo "Usage: $argv[0] /path/to/the/project".PHP_EOL;
     echo '       Use `--copy` to copy dependencies instead of symlink'.PHP_EOL.PHP_EOL;
     echo "The directory \"$pathToProject\" does not exist or the dependencies are not installed, did you forget to run \"composer install\" in your project?".PHP_EOL;
@@ -38,8 +38,8 @@ foreach ($directories as $dir) {
     }
 }
 
-if (is_dir("$pathToProject/vendor/spomky-labs/phpwa")) {
-    if ($filesystem->exists($composer = "$pathToProject/vendor/spomky-labs/phpwa/composer.json")) {
+if (is_dir("$pathToProject/vendor/spomky-labs/pwa-bundle")) {
+    if ($filesystem->exists($composer = "$pathToProject/vendor/spomky-labs/pwa-bundle/composer.json")) {
         $packages[json_decode(file_get_contents($composer))->name] = realpath(__DIR__);
     }
 }
