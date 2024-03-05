@@ -4,6 +4,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
+        "symfony-ux",
         "PWA",
         "Bundle",
         "Symfony"
@@ -67,6 +68,12 @@
         "allow-plugins": {
             "phpstan/extension-installer": true,
             "infection/extension-installer": true
+        }
+    },
+    "extra": {
+        "thanks": {
+            "name": "spomky-labs/pwa-bundle",
+            "url": "https://github.com/spomky-labs/pwa-bundle"
         }
     },
     "suggest": {
