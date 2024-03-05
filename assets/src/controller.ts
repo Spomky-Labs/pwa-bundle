@@ -50,7 +50,6 @@ export default class extends Controller {
     }
 
     statusChanged(data) {
-        console.log('statusChanged', data);
         this.messageTargets.forEach((element) => {
             element.innerHTML = data.message;
         });

@@ -37,7 +37,6 @@ class default_1 extends Controller {
         this.dispatch(name, { detail: payload, prefix: 'connection-status' });
     }
     statusChanged(data) {
-        console.log('statusChanged', data);
         this.messageTargets.forEach((element) => {
             element.innerHTML = data.message;
         });

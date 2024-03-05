@@ -67,7 +67,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $builder->prependExtensionConfig('framework', [
             'asset_mapper' => [
                 'paths' => [
-                    __DIR__ . '/../assets/dist' => '@spomky-labs/pwa-bundle/status',
+                    __DIR__ . '/../assets/dist' => '@pwa/connection-status/status',
                 ],
             ],
         ]);
