@@ -321,6 +321,11 @@ parameters:
 			path: src/Dto/Widget.php
 
 		-
+			message: "#^Attribute class JetBrains\\\\PhpStorm\\\\Deprecated does not exist\\.$#"
+			count: 4
+			path: src/Dto/Workbox.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
@@ -469,3 +474,8 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/UrlNormalizer.php
+
+		-
+			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Service/ServiceWorkerCompiler.php

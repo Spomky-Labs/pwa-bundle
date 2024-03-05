@@ -18,9 +18,12 @@ use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
+use const PHP_EOL;
 
 final readonly class ServiceWorkerCompiler
 {
+    private array $jsonOptions;
+
     public function __construct(
         private SerializerInterface $serializer,
         #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
@@ -31,6 +34,9 @@ final readonly class ServiceWorkerCompiler
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
     ) {
+        $this->jsonOptions = [
+            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
     }
 
     public function compile(): ?string
@@ -52,6 +58,7 @@ final readonly class ServiceWorkerCompiler
         if ($workbox->enabled === true) {
             $body = $this->processWorkbox($workbox, $body);
         }
+        $body = $this->processWidgets($body);
 
         return $this->processSkipWaiting($body);
     }
@@ -71,24 +78,23 @@ self.addEventListener("activate", function (event) {
 });
 SKIP_WAITING;
 
-        return $body . trim($declaration);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
     private function processWorkbox(Workbox $workbox, string $body): string
     {
         $body = $this->processWorkboxImport($workbox, $body);
         $body = $this->processClearCache($workbox, $body);
-        $body = $this->processStandardRules($workbox, $body);
-        $body = $this->processWidgets($workbox, $body);
+        $body = $this->processAssetCacheRules($workbox, $body);
+        $body = $this->processFontCacheRules($workbox, $body);
+        $body = $this->processPageImageCacheRule($workbox, $body);
+        $body = $this->processImageCacheRule($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
     }
 
     private function processWorkboxImport(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->workboxImportPlaceholder)) {
-            return $body;
-        }
         if ($workbox->useCDN === true) {
             $declaration = <<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
@@ -101,7 +107,7 @@ workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
 IMPORT_CDN_STRATEGY;
         }
 
-        return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
+        return trim($declaration) . PHP_EOL . PHP_EOL . $body;
     }
 
     private function processClearCache(Workbox $workbox, string $body): string
@@ -123,60 +129,25 @@ self.addEventListener("install", function (event) {
 });
 CLEAR_CACHE;
 
-        return $body . trim($declaration);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
-    private function processStandardRules(Workbox $workbox, string $body): string
+    private function processAssetCacheRules(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->standardRulesPlaceholder)) {
-            return $body;
-        }
-
         $assets = [];
-        $fonts = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
             if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1 || preg_match(
                 $workbox->staticRegex,
                 $asset->sourcePath
             ) === 1) {
                 $assets[] = $asset->publicPath;
-            } elseif (preg_match($workbox->fontRegex, $asset->sourcePath) === 1) {
-                $fonts[] = $asset->publicPath;
             }
         }
-        $jsonOptions = [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ];
-        $assetUrls = $this->serializer->serialize($assets, 'json', $jsonOptions);
-        $fontUrls = $this->serializer->serialize($fonts, 'json', $jsonOptions);
+        $assetUrls = $this->serializer->serialize($assets, 'json', $this->jsonOptions);
         $assetUrlsLength = count($assets) * 2;
-        $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $jsonOptions);
 
-        $declaration = <<<STANDARD_RULE_STRATEGY
-// Pages cached during the navigation.
-workbox.recipes.pageCache({
-    cacheName: '{$workbox->pageCacheName}',
-    networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
-    warmCache: {$routes}
-});
-
-//Images cache
-workbox.routing.registerRoute(
-  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
-  new workbox.strategies.CacheFirst({
-    cacheName: '{$workbox->imageCacheName}',
-    plugins: [
-      new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: {$workbox->maxImageCacheEntries},
-        maxAgeSeconds: {$workbox->maxImageAge},
-      }),
-    ],
-  })
-);
-
+        $declaration = <<<ASSET_CACHE_RULE_STRATEGY
 // Assets served by Asset Mapper
-// - Strategy: CacheFirst
 const assetCacheStrategy = new workbox.strategies.CacheFirst({
   cacheName: '{$workbox->assetCacheName}',
   plugins: [
@@ -187,7 +158,6 @@ const assetCacheStrategy = new workbox.strategies.CacheFirst({
     }),
   ],
 });
-// - Strategy: only the Asset Mapper public route
 workbox.routing.registerRoute(
   ({url}) => url.pathname.startsWith('{$this->assetPublicPrefix}'),
   assetCacheStrategy
@@ -203,8 +173,23 @@ self.addEventListener('install', event => {
 
   event.waitUntil(Promise.all(done));
 });
+ASSET_CACHE_RULE_STRATEGY;
 
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
 
+    private function processFontCacheRules(Workbox $workbox, string $body): string
+    {
+        $fonts = [];
+        foreach ($this->assetMapper->allAssets() as $asset) {
+            if (preg_match($workbox->fontRegex, $asset->sourcePath) === 1) {
+                $fonts[] = $asset->publicPath;
+            }
+        }
+        $fontUrls = $this->serializer->serialize($fonts, 'json', $this->jsonOptions);
+
+        $declaration = <<<FONT_CACHE_RULE_STRATEGY
+// Font cached during the navigation or provided by Asset Mapper.
 const fontCacheStrategy = new workbox.strategies.CacheFirst({
   cacheName: '{$workbox->fontCacheName}',
   plugins: [
@@ -232,39 +217,68 @@ self.addEventListener('install', event => {
 
   event.waitUntil(Promise.all(done));
 });
+FONT_CACHE_RULE_STRATEGY;
 
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
 
-STANDARD_RULE_STRATEGY;
+    private function processPageImageCacheRule(Workbox $workbox, string $body): string
+    {
+        $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $this->jsonOptions);
 
-        return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);
+        $declaration = <<<PAGE_CACHE_RULE_STRATEGY
+// Pages cached during the navigation.
+workbox.recipes.pageCache({
+    cacheName: '{$workbox->pageCacheName}',
+    networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
+    warmCache: {$routes}
+});
+PAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processImageCacheRule(Workbox $workbox, string $body): string
+    {
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+//Images cache during the navigation and NOT provided by Asset Mapper.
+workbox.routing.registerRoute(
+  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
+  new workbox.strategies.CacheFirst({
+    cacheName: '{$workbox->imageCacheName}',
+    plugins: [
+      new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: {$workbox->maxImageCacheEntries},
+        maxAgeSeconds: {$workbox->maxImageAge},
+      }),
+    ],
+  })
+);
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
     private function processOfflineFallback(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->offlineFallbackPlaceholder)) {
-            return $body;
-        }
         if ($workbox->pageFallback === null && $workbox->imageFallback === null && $workbox->fontFallback === null) {
             return $body;
         }
-
-        $jsonOptions = [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ];
         $pageFallback = $workbox->pageFallback === null ? 'null' : $this->serializer->serialize(
             $workbox->pageFallback,
             'json',
-            $jsonOptions
+            $this->jsonOptions
         );
         $imageFallback = $workbox->imageFallback === null ? 'null' : $this->serializer->serialize(
             $workbox->imageFallback,
             'json',
-            $jsonOptions
+            $this->jsonOptions
         );
         $fontFallback = $workbox->fontFallback === null ? 'null' : $this->serializer->serialize(
             $workbox->fontFallback,
             'json',
-            $jsonOptions
+            $this->jsonOptions
         );
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY
@@ -276,14 +290,11 @@ workbox.recipes.offlineFallback({
 });
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($workbox->offlineFallbackPlaceholder, trim($declaration), $body);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
-    private function processWidgets(Workbox $workbox, string $body): string
+    private function processWidgets(string $body): string
     {
-        if (! str_contains($body, $workbox->widgetsPlaceholder)) {
-            return $body;
-        }
         $tags = [];
         foreach ($this->manifest->widgets as $widget) {
             if ($widget->tag !== null) {
@@ -357,6 +368,6 @@ async function updateWidgets() {
 }
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($workbox->widgetsPlaceholder, trim($declaration), $body);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 }
