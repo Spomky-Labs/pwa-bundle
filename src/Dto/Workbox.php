@@ -39,6 +39,12 @@ final class Workbox
     #[SerializedName('offline_fallback')]
     public OfflineFallback $offlineFallback;
 
+    /**
+     * @var array<BackgroundSync>
+     */
+    #[SerializedName('background_sync')]
+    public array $backgroundSync = [];
+
     #[SerializedName('clear_cache')]
     public bool $clearCache = true;
 }

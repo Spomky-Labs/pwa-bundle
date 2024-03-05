@@ -102,6 +102,7 @@ SKIP_WAITING;
         $body = $this->processImageCacheRule($workbox, $body);
         $body = $this->processCacheRootFilesRule($workbox, $body);
         $body = $this->processCacheGoogleFontsRule($workbox, $body);
+        $body = $this->processBackgroundSyncRule($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
     }
@@ -312,6 +313,32 @@ IMAGE_CACHE_RULE_STRATEGY;
         $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
 workbox.recipes.googleFontsCache({$options});
 IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processBackgroundSyncRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->backgroundSync === []) {
+            return $body;
+        }
+
+        $declaration = '';
+        foreach ($workbox->backgroundSync as $sync) {
+            $options = [
+                'maxRetentionTime' => $sync->maxRetentionTime,
+                'forceSyncCallback' => $sync->forceSyncFallback,
+            ];
+            $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
+            $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+            $declaration .= <<<BACKGROUND_SYNC_RULE_STRATEGY
+workbox.routing.registerRoute(
+    '{$sync->regex}',
+    new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{$options})] }),
+    '{$sync->method}'
+);
+BACKGROUND_SYNC_RULE_STRATEGY;
+        }
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }

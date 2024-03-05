@@ -101,6 +101,31 @@ parameters:
 			path: src/Command/CreateServiceWorkerCommand.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$forceSyncFallback\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$maxRetentionTime\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$method\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$queueName\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$regex\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/File.php
@@ -652,6 +677,11 @@ parameters:
 
 		-
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Service/ServiceWorkerCompiler.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between bool\\|int and null will always evaluate to true\\.$#"
 			count: 1
 			path: src/Service/ServiceWorkerCompiler.php
 
