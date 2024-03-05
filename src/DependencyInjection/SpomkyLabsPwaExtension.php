@@ -10,11 +10,12 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use function in_array;
 
-final class SpomkyLabsPwaExtension extends Extension
+final class SpomkyLabsPwaExtension extends Extension implements PrependExtensionInterface
 {
     private const ALIAS = 'pwa';
 
@@ -36,6 +37,10 @@ final class SpomkyLabsPwaExtension extends Extension
         if ($config['web_client'] !== null) {
             $container->setAlias('pwa.web_client', $config['web_client']);
         }
+        $container->setParameter(
+            'spomky_labs_pwa.asset_public_prefix',
+            '/' . trim((string) $config['asset_public_prefix'], '/')
+        );
         $container->setParameter('spomky_labs_pwa.routes.reference_type', $config['path_type_reference']);
         $serviceWorkerConfig = $config['serviceworker'];
         $manifestConfig = $config['manifest'];
@@ -61,5 +66,26 @@ final class SpomkyLabsPwaExtension extends Extension
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration(self::ALIAS);
+    }
+
+    public function prepend(ContainerBuilder $container): void
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+        if (isset($bundles['FrameworkBundle'])) {
+            foreach ($container->getExtensions() as $name => $extension) {
+                if ($name !== 'framework') {
+                    continue;
+                }
+                $config = $container->getExtensionConfig($name);
+                foreach ($config as $c) {
+                    if (! isset($c['asset_mapper']['public_prefix'])) {
+                        continue;
+                    }
+                    $container->prependExtensionConfig('pwa', [
+                        'asset_public_prefix' => $c['asset_mapper']['public_prefix'],
+                    ]);
+                }
+            }
+        }
     }
 }
