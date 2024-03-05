@@ -1,5 +1,5 @@
 {
-    "name": "spomky-labs/phpwa",
+    "name": "spomky-labs/pwa-bundle",
     "description": "Progressive Web App Manifest Generator Bundle for Symfony.",
     "type": "symfony-bundle",
     "license": "MIT",
@@ -11,7 +11,7 @@
             "homepage": "https://github.com/Spomky"
         },{
             "name": "All contributors",
-            "homepage": "https://github.com/spomky-labs/phpwa/contributors"
+            "homepage": "https://github.com/spomky-labs/pwa-bundle/contributors"
         }
     ],
     "autoload": {
