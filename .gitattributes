@@ -12,4 +12,9 @@
 /phpstan.neon export-ignore
 /phpstan-baseline.neon export-ignore
 /phpunit.xml.dist export-ignore
-/rector export-ignore
+/rector.php export-ignore
+/bin export-ignore
+/babel.config.js export-ignore
+/jest.config.js export-ignore
+/rollup.config.js export-ignore
+/tsconfig.json export-ignore

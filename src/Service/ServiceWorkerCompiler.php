@@ -18,19 +18,34 @@ use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
+use const PHP_EOL;
 
 final readonly class ServiceWorkerCompiler
 {
+    private array $jsonOptions;
+
+    private string $manifestPublicUrl;
+
     public function __construct(
         private SerializerInterface $serializer,
-        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
-        private string $assetPublicPrefix,
+        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        string $manifestPublicUrl,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
+        #[Autowire('%kernel.debug%')]
+        bool $debug,
     ) {
+        $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
+        $options = [
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        if ($debug === true) {
+            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+        $this->jsonOptions = $options;
     }
 
     public function compile(): ?string
@@ -52,6 +67,7 @@ final readonly class ServiceWorkerCompiler
         if ($workbox->enabled === true) {
             $body = $this->processWorkbox($workbox, $body);
         }
+        $body = $this->processWidgets($body);
 
         return $this->processSkipWaiting($body);
     }
@@ -71,24 +87,26 @@ self.addEventListener("activate", function (event) {
 });
 SKIP_WAITING;
 
-        return $body . trim($declaration);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
     private function processWorkbox(Workbox $workbox, string $body): string
     {
         $body = $this->processWorkboxImport($workbox, $body);
         $body = $this->processClearCache($workbox, $body);
-        $body = $this->processStandardRules($workbox, $body);
-        $body = $this->processWidgets($workbox, $body);
+        $body = $this->processAssetCacheRules($workbox, $body);
+        $body = $this->processFontCacheRules($workbox, $body);
+        $body = $this->processPageImageCacheRule($workbox, $body);
+        $body = $this->processImageCacheRule($workbox, $body);
+        $body = $this->processCacheRootFilesRule($workbox, $body);
+        $body = $this->processCacheGoogleFontsRule($workbox, $body);
+        $body = $this->processBackgroundSyncRule($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
     }
 
     private function processWorkboxImport(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->workboxImportPlaceholder)) {
-            return $body;
-        }
         if ($workbox->useCDN === true) {
             $declaration = <<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
@@ -101,7 +119,7 @@ workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
 IMPORT_CDN_STRATEGY;
         }
 
-        return str_replace($workbox->workboxImportPlaceholder, trim($declaration), $body);
+        return trim($declaration) . PHP_EOL . PHP_EOL . $body;
     }
 
     private function processClearCache(Workbox $workbox, string $body): string
@@ -123,62 +141,26 @@ self.addEventListener("install", function (event) {
 });
 CLEAR_CACHE;
 
-        return $body . trim($declaration);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
-    private function processStandardRules(Workbox $workbox, string $body): string
+    private function processAssetCacheRules(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->standardRulesPlaceholder)) {
+        if ($workbox->assetCache->enabled === false) {
             return $body;
         }
-
         $assets = [];
-        $fonts = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1 || preg_match(
-                $workbox->staticRegex,
-                $asset->sourcePath
-            ) === 1) {
+            if (preg_match($workbox->assetCache->regex, $asset->sourcePath) === 1) {
                 $assets[] = $asset->publicPath;
-            } elseif (preg_match($workbox->fontRegex, $asset->sourcePath) === 1) {
-                $fonts[] = $asset->publicPath;
             }
         }
-        $jsonOptions = [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ];
-        $assetUrls = $this->serializer->serialize($assets, 'json', $jsonOptions);
-        $fontUrls = $this->serializer->serialize($fonts, 'json', $jsonOptions);
+        $assetUrls = $this->serializer->serialize($assets, 'json', $this->jsonOptions);
         $assetUrlsLength = count($assets) * 2;
-        $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $jsonOptions);
 
-        $declaration = <<<STANDARD_RULE_STRATEGY
-// Pages cached during the navigation.
-workbox.recipes.pageCache({
-    cacheName: '{$workbox->pageCacheName}',
-    networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
-    warmCache: {$routes}
-});
-
-//Images cache
-workbox.routing.registerRoute(
-  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
-  new workbox.strategies.CacheFirst({
-    cacheName: '{$workbox->imageCacheName}',
-    plugins: [
-      new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
-      new workbox.expiration.ExpirationPlugin({
-        maxEntries: {$workbox->maxImageCacheEntries},
-        maxAgeSeconds: {$workbox->maxImageAge},
-      }),
-    ],
-  })
-);
-
-// Assets served by Asset Mapper
-// - Strategy: CacheFirst
+        $declaration = <<<ASSET_CACHE_RULE_STRATEGY
 const assetCacheStrategy = new workbox.strategies.CacheFirst({
-  cacheName: '{$workbox->assetCacheName}',
+  cacheName: '{$workbox->assetCache->cacheName}',
   plugins: [
     new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
     new workbox.expiration.ExpirationPlugin({
@@ -187,7 +169,6 @@ const assetCacheStrategy = new workbox.strategies.CacheFirst({
     }),
   ],
 });
-// - Strategy: only the Asset Mapper public route
 workbox.routing.registerRoute(
   ({url}) => url.pathname.startsWith('{$this->assetPublicPrefix}'),
   assetCacheStrategy
@@ -203,17 +184,34 @@ self.addEventListener('install', event => {
 
   event.waitUntil(Promise.all(done));
 });
+ASSET_CACHE_RULE_STRATEGY;
 
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
 
+    private function processFontCacheRules(Workbox $workbox, string $body): string
+    {
+        if ($workbox->fontCache->enabled === false) {
+            return $body;
+        }
+        $fonts = [];
+        foreach ($this->assetMapper->allAssets() as $asset) {
+            if (preg_match($workbox->fontCache->regex, $asset->sourcePath) === 1) {
+                $fonts[] = $asset->publicPath;
+            }
+        }
+        $fontUrls = $this->serializer->serialize($fonts, 'json', $this->jsonOptions);
+
+        $declaration = <<<FONT_CACHE_RULE_STRATEGY
 const fontCacheStrategy = new workbox.strategies.CacheFirst({
-  cacheName: '{$workbox->fontCacheName}',
+  cacheName: '{$workbox->fontCache->cacheName}',
   plugins: [
     new workbox.cacheableResponse.CacheableResponsePlugin({
       statuses: [0, 200],
     }),
     new workbox.expiration.ExpirationPlugin({
-      maxAgeSeconds: {$workbox->maxFontAge},
-      maxEntries: {$workbox->maxFontCacheEntries},
+      maxAgeSeconds: {$workbox->fontCache->maxAge},
+      maxEntries: {$workbox->fontCache->maxEntries},
     }),
   ],
 });
@@ -232,58 +230,140 @@ self.addEventListener('install', event => {
 
   event.waitUntil(Promise.all(done));
 });
+FONT_CACHE_RULE_STRATEGY;
 
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
 
-STANDARD_RULE_STRATEGY;
+    private function processPageImageCacheRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->pageCache->enabled === false) {
+            return $body;
+        }
+        $routes = $this->serializer->serialize($workbox->pageCache->urls, 'json', $this->jsonOptions);
 
-        return str_replace($workbox->standardRulesPlaceholder, trim($declaration), $body);
+        $declaration = <<<PAGE_CACHE_RULE_STRATEGY
+workbox.recipes.pageCache({
+    cacheName: '{$workbox->pageCache->cacheName}',
+    networkTimeoutSeconds: {$workbox->pageCache->networkTimeout},
+    warmCache: {$routes}
+});
+PAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processImageCacheRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->imageCache->enabled === false) {
+            return $body;
+        }
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+workbox.routing.registerRoute(
+  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
+  new workbox.strategies.CacheFirst({
+    cacheName: '{$workbox->imageCache->cacheName}',
+    plugins: [
+      new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: {$workbox->imageCache->maxEntries},
+        maxAgeSeconds: {$workbox->imageCache->maxAge},
+      }),
+    ],
+  })
+);
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processCacheRootFilesRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->cacheManifest === false) {
+            return $body;
+        }
+
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+workbox.routing.registerRoute(
+  ({url}) => '{$this->manifestPublicUrl}' === url.pathname,
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'manifest'
+  })
+);
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processCacheGoogleFontsRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->googleFontCache->enabled === false) {
+            return $body;
+        }
+        $options = [
+            'cachePrefix' => $workbox->googleFontCache->cachePrefix,
+            'maxAge' => $workbox->googleFontCache->maxAge,
+            'maxEntries' => $workbox->googleFontCache->maxEntries,
+        ];
+        $options = array_filter($options, static fn (mixed $v): bool => ($v !== null && $v !== ''));
+        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+workbox.recipes.googleFontsCache({$options});
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processBackgroundSyncRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->backgroundSync === []) {
+            return $body;
+        }
+
+        $declaration = '';
+        foreach ($workbox->backgroundSync as $sync) {
+            $options = [
+                'maxRetentionTime' => $sync->maxRetentionTime,
+                'forceSyncCallback' => $sync->forceSyncFallback,
+            ];
+            $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
+            $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+            $declaration .= <<<BACKGROUND_SYNC_RULE_STRATEGY
+workbox.routing.registerRoute(
+    '{$sync->regex}',
+    new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{$options})] }),
+    '{$sync->method}'
+);
+BACKGROUND_SYNC_RULE_STRATEGY;
+        }
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
     private function processOfflineFallback(Workbox $workbox, string $body): string
     {
-        if (! str_contains($body, $workbox->offlineFallbackPlaceholder)) {
+        if ($workbox->offlineFallback->enabled === false) {
             return $body;
         }
-        if ($workbox->pageFallback === null && $workbox->imageFallback === null && $workbox->fontFallback === null) {
-            return $body;
-        }
-
-        $jsonOptions = [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        $options = [
+            'pageFallback' => $workbox->offlineFallback->pageFallback,
+            'imageFallback' => $workbox->offlineFallback->imageFallback,
+            'fontFallback' => $workbox->offlineFallback->fontFallback,
         ];
-        $pageFallback = $workbox->pageFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->pageFallback,
-            'json',
-            $jsonOptions
-        );
-        $imageFallback = $workbox->imageFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->imageFallback,
-            'json',
-            $jsonOptions
-        );
-        $fontFallback = $workbox->fontFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->fontFallback,
-            'json',
-            $jsonOptions
-        );
+        $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
+        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
-workbox.recipes.offlineFallback({
-    pageFallback: {$pageFallback},
-    imageFallback: {$imageFallback},
-    fontFallback: {$fontFallback}
-});
+workbox.recipes.offlineFallback({$options});
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($workbox->offlineFallbackPlaceholder, trim($declaration), $body);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
-    private function processWidgets(Workbox $workbox, string $body): string
+    private function processWidgets(string $body): string
     {
-        if (! str_contains($body, $workbox->widgetsPlaceholder)) {
-            return $body;
-        }
         $tags = [];
         foreach ($this->manifest->widgets as $widget) {
             if ($widget->tag !== null) {
@@ -357,6 +437,6 @@ async function updateWidgets() {
 }
 OFFLINE_FALLBACK_STRATEGY;
 
-        return str_replace($workbox->widgetsPlaceholder, trim($declaration), $body);
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 }

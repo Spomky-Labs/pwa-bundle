@@ -25,10 +25,8 @@ return static function (RectorConfig $config): void {
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ]);
     $config->phpVersion(PhpVersion::PHP_82);
-    $config->paths([__DIR__ . '/src', __DIR__ . '/tests']);
-    $config->skip([
-        __DIR__ . '/tests/Controller/DummyController.php',
-    ]);
+    $config->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']);
+    $config->skip([__DIR__ . '/tests/Controller/DummyController.php']);
     $config->parallel();
     $config->importNames();
     $config->importShortClasses();

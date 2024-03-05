@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Command;
 
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,7 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
 use function count;
 
@@ -24,7 +24,6 @@ final class CreateServiceWorkerCommand extends Command
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
-        private readonly FileLocator $fileLocator,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -55,7 +54,8 @@ final class CreateServiceWorkerCommand extends Command
             return self::SUCCESS;
         }
 
-        $resourcePath = $this->fileLocator->locate('@SpomkyLabsPwaBundle/Resources/sw-skeleton.js', null, false);
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources');
+        $resourcePath = $fileLocator->locate('sw-skeleton.js', null, false);
         if (count($resourcePath) !== 1) {
             $io->error('Unable to find the Workbox resource.');
             return Command::FAILURE;

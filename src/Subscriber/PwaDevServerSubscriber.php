@@ -7,10 +7,10 @@ namespace SpomkyLabs\PwaBundle\Subscriber;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -39,7 +39,6 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private null|string $workboxVersion;
 
     public function __construct(
-        private FileLocator $fileLocator,
         private ServiceWorkerCompiler $serviceWorkerBuilder,
         private SerializerInterface $serializer,
         private Manifest $manifest,
@@ -87,6 +86,8 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             ):
                 $this->serveWorkboxFile($event, $pathInfo);
                 break;
+            default:
+                // Do nothing
         }
     }
 
@@ -152,8 +153,9 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             return;
         }
         $asset = mb_substr($pathInfo, mb_strlen((string) $this->workboxPublicUrl));
-        $resource = sprintf('@SpomkyLabsPwaBundle/Resources/workbox-v%s%s', $this->workboxVersion, $asset);
-        $resourcePath = $this->fileLocator->locate($resource, null, false);
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources');
+        $resource = sprintf('workbox-v%s%s', $this->workboxVersion, $asset);
+        $resourcePath = $fileLocator->locate($resource, null, false);
         if (is_array($resourcePath)) {
             if (count($resourcePath) === 1) {
                 $resourcePath = $resourcePath[0];
