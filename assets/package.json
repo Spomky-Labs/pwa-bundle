@@ -1,0 +1,28 @@
+{
+    "name": "@spomky-labs/pwa-bundle",
+    "description": "PWA for Symfony",
+    "license": "MIT",
+    "version": "1.0.0",
+    "main": "dist/controller.js",
+    "types": "dist/controller.d.ts",
+    "symfony": {
+        "controllers": {
+            "status": {
+                "main": "dist/controller.js",
+                "name": "spomky-labs/pwa-status",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            }
+        },
+        "importmap": {
+            "@hotwired/stimulus": "^3.0.0"
+        }
+    },
+    "peerDependencies": {
+        "@hotwired/stimulus": "^3.0.0"
+    },
+    "devDependencies": {
+        "@hotwired/stimulus": "^3.0.0"
+    }
+}

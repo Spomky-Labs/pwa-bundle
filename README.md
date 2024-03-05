@@ -1,5 +1,4 @@
-Progressive Web App for Symfony
-===============================
+# Progressive Web App for Symfony
 
 ![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Coding%20Standards/badge.svg)
 ![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Static%20Analyze/badge.svg)
@@ -24,7 +23,7 @@ Please have a look at the [Web app manifests](https://developer.mozilla.org/en-U
 
 # Installation
 
-Install the bundle with Composer: 
+Install the bundle with Composer:
 
 ```bash
 composer require spomky-labs/pwa-bundle
@@ -42,9 +41,9 @@ I bring solutions to your problems and answer your questions.
 
 If you really love that project and the work I have done or if you want I prioritize your issues, then you can help me out for a couple of :beers: or more!
 
-* [Become a sponsor](https://github.com/sponsors/Spomky)
-* [Become a Patreon](https://www.patreon.com/FlorentMorselli)
-* [Buy me a coffee](https://www.buymeacoffee.com/FlorentMorselli)
+-   [Become a sponsor](https://github.com/sponsors/Spomky)
+-   [Become a Patreon](https://www.patreon.com/FlorentMorselli)
+-   [Buy me a coffee](https://www.buymeacoffee.com/FlorentMorselli)
 
 # Contributing
 
@@ -58,7 +57,7 @@ Please make sure to [follow these best practices](.github/CONTRIBUTING.md).
 # Security Issues
 
 If you discover a security vulnerability within the project, please **don't use the bug tracker and don't publish it publicly**.
-Instead, all security issues must be sent to security [at] spomky-labs.com. 
+Instead, all security issues must be sent to security [at] spomky-labs.com.
 
 # Licence
 

@@ -1,0 +1,18 @@
+name: Exported files
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
+
+      - name: "Check exported files"
+        run: |
+          EXPECTED="LICENSE,README.md,RELEASES.md,SECURITY.md,composer.json,link,package.json"
+          CURRENT="$(git archive HEAD | tar --list --exclude="src" --exclude="src/*" | paste -s -d ",")"
+          echo "CURRENT =${CURRENT}"
+          echo "EXPECTED=${EXPECTED}"
+          test "${CURRENT}" == "${EXPECTED}"

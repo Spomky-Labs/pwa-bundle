@@ -58,6 +58,23 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
+        $this->setAssetPublicPrefix($builder);
+        $this->setAssetMapperPath($builder);
+    }
+
+    private function setAssetMapperPath(ContainerBuilder $builder): void
+    {
+        $builder->prependExtensionConfig('framework', [
+            'asset_mapper' => [
+                'paths' => [
+                    __DIR__ . '/../assets/dist' => '@spomky-labs/pwa-bundle/status',
+                ],
+            ],
+        ]);
+    }
+
+    private function setAssetPublicPrefix(ContainerBuilder $builder): void
+    {
         $bundles = $builder->getParameter('kernel.bundles');
         if (isset($bundles['FrameworkBundle'])) {
             foreach ($builder->getExtensions() as $name => $extension) {
