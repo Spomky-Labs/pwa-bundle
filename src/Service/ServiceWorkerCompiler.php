@@ -32,6 +32,8 @@ final readonly class ServiceWorkerCompiler
         string $manifestPublicUrl,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
+        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
+        private string $assetPublicPrefix,
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
