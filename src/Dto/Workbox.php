@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
-use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Workbox
@@ -22,76 +21,24 @@ final class Workbox
     #[SerializedName('cache_manifest')]
     public bool $cacheManifest;
 
+    #[SerializedName('image_cache')]
+    public ImageCache $imageCache;
+
+    #[SerializedName('font_cache')]
+    public FontCache $fontCache;
+
+    #[SerializedName('page_cache')]
+    public PageCache $pageCache;
+
+    #[SerializedName('asset_cache')]
+    public AssetCache $assetCache;
+
     #[SerializedName('google_fonts')]
     public GoogleFontCache $googleFontCache;
 
-    #[SerializedName('workbox_import_placeholder')]
-    #[Deprecated('No longer used.')]
-    public string $workboxImportPlaceholder;
-
-    #[SerializedName('standard_rules_placeholder')]
-    #[Deprecated('No longer used.')]
-    public string $standardRulesPlaceholder;
-
-    #[SerializedName('offline_fallback_placeholder')]
-    #[Deprecated('No longer used.')]
-    public string $offlineFallbackPlaceholder;
-
-    #[SerializedName('widgets_placeholder')]
-    #[Deprecated('No longer used.')]
-    public string $widgetsPlaceholder;
-
-    #[SerializedName('page_fallback')]
-    public null|Url $pageFallback = null;
-
-    #[SerializedName('image_fallback')]
-    public null|Asset $imageFallback = null;
-
-    #[SerializedName('font_fallback')]
-    public null|Asset $fontFallback = null;
-
-    /**
-     * @var array<Url>
-     */
-    #[SerializedName('warm_cache_urls')]
-    public array $warmCacheUrls = [];
-
-    #[SerializedName('network_timeout_seconds')]
-    public int $networkTimeoutSeconds = 3;
-
-    #[SerializedName('max_font_age')]
-    public int $maxFontAge = 60 * 60 * 24 * 365;
-
-    #[SerializedName('max_font_cache_entries')]
-    public int $maxFontCacheEntries = 60;
-
-    #[SerializedName('max_image_age')]
-    public int $maxImageAge = 60 * 60 * 24 * 365;
-
-    #[SerializedName('max_image_cache_entries')]
-    public int $maxImageCacheEntries = 60;
-
-    #[SerializedName('image_regex')]
-    public string $imageRegex = '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/';
-
-    #[SerializedName('static_regex')]
-    public string $staticRegex = '/\.(css|m?jsx?|json|xml|txt|map|webmanifest)$/';
-
-    #[SerializedName('font_regex')]
-    public string $fontRegex = '/\.(ttf|eot|otf|woff2)$/';
+    #[SerializedName('offline_fallback')]
+    public OfflineFallback $offlineFallback;
 
     #[SerializedName('clear_cache')]
     public bool $clearCache = true;
-
-    #[SerializedName('image_cache_name')]
-    public string $imageCacheName = 'images';
-
-    #[SerializedName('font_cache_name')]
-    public string $fontCacheName = 'fonts';
-
-    #[SerializedName('page_cache_name')]
-    public string $pageCacheName = 'pages';
-
-    #[SerializedName('asset_cache_name')]
-    public string $assetCacheName = 'assets';
 }

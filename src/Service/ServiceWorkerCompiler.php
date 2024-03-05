@@ -37,11 +37,17 @@ final readonly class ServiceWorkerCompiler
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
+        #[Autowire('%kernel.debug%')]
+        bool $debug,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
-        $this->jsonOptions = [
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        $options = [
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
+        if ($debug === true) {
+            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+        $this->jsonOptions = $options;
     }
 
     public function compile(): ?string
@@ -141,12 +147,12 @@ CLEAR_CACHE;
 
     private function processAssetCacheRules(Workbox $workbox, string $body): string
     {
+        if ($workbox->assetCache->enabled === false) {
+            return $body;
+        }
         $assets = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($workbox->imageRegex, $asset->sourcePath) === 1 || preg_match(
-                $workbox->staticRegex,
-                $asset->sourcePath
-            ) === 1) {
+            if (preg_match($workbox->assetCache->regex, $asset->sourcePath) === 1) {
                 $assets[] = $asset->publicPath;
             }
         }
@@ -154,9 +160,8 @@ CLEAR_CACHE;
         $assetUrlsLength = count($assets) * 2;
 
         $declaration = <<<ASSET_CACHE_RULE_STRATEGY
-// Assets served by Asset Mapper
 const assetCacheStrategy = new workbox.strategies.CacheFirst({
-  cacheName: '{$workbox->assetCacheName}',
+  cacheName: '{$workbox->assetCache->cacheName}',
   plugins: [
     new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
     new workbox.expiration.ExpirationPlugin({
@@ -187,25 +192,27 @@ ASSET_CACHE_RULE_STRATEGY;
 
     private function processFontCacheRules(Workbox $workbox, string $body): string
     {
+        if ($workbox->fontCache->enabled === false) {
+            return $body;
+        }
         $fonts = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($workbox->fontRegex, $asset->sourcePath) === 1) {
+            if (preg_match($workbox->fontCache->regex, $asset->sourcePath) === 1) {
                 $fonts[] = $asset->publicPath;
             }
         }
         $fontUrls = $this->serializer->serialize($fonts, 'json', $this->jsonOptions);
 
         $declaration = <<<FONT_CACHE_RULE_STRATEGY
-// Font cached during the navigation or provided by Asset Mapper.
 const fontCacheStrategy = new workbox.strategies.CacheFirst({
-  cacheName: '{$workbox->fontCacheName}',
+  cacheName: '{$workbox->fontCache->cacheName}',
   plugins: [
     new workbox.cacheableResponse.CacheableResponsePlugin({
       statuses: [0, 200],
     }),
     new workbox.expiration.ExpirationPlugin({
-      maxAgeSeconds: {$workbox->maxFontAge},
-      maxEntries: {$workbox->maxFontCacheEntries},
+      maxAgeSeconds: {$workbox->fontCache->maxAge},
+      maxEntries: {$workbox->fontCache->maxEntries},
     }),
   ],
 });
@@ -231,13 +238,15 @@ FONT_CACHE_RULE_STRATEGY;
 
     private function processPageImageCacheRule(Workbox $workbox, string $body): string
     {
-        $routes = $this->serializer->serialize($workbox->warmCacheUrls, 'json', $this->jsonOptions);
+        if ($workbox->pageCache->enabled === false) {
+            return $body;
+        }
+        $routes = $this->serializer->serialize($workbox->pageCache->urls, 'json', $this->jsonOptions);
 
         $declaration = <<<PAGE_CACHE_RULE_STRATEGY
-// Pages cached during the navigation.
 workbox.recipes.pageCache({
-    cacheName: '{$workbox->pageCacheName}',
-    networkTimeoutSeconds: {$workbox->networkTimeoutSeconds},
+    cacheName: '{$workbox->pageCache->cacheName}',
+    networkTimeoutSeconds: {$workbox->pageCache->networkTimeout},
     warmCache: {$routes}
 });
 PAGE_CACHE_RULE_STRATEGY;
@@ -247,17 +256,19 @@ PAGE_CACHE_RULE_STRATEGY;
 
     private function processImageCacheRule(Workbox $workbox, string $body): string
     {
+        if ($workbox->imageCache->enabled === false) {
+            return $body;
+        }
         $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
-//Images cache during the navigation and NOT provided by Asset Mapper.
 workbox.routing.registerRoute(
   ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
   new workbox.strategies.CacheFirst({
-    cacheName: '{$workbox->imageCacheName}',
+    cacheName: '{$workbox->imageCache->cacheName}',
     plugins: [
       new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
       new workbox.expiration.ExpirationPlugin({
-        maxEntries: {$workbox->maxImageCacheEntries},
-        maxAgeSeconds: {$workbox->maxImageAge},
+        maxEntries: {$workbox->imageCache->maxEntries},
+        maxAgeSeconds: {$workbox->imageCache->maxAge},
       }),
     ],
   })
@@ -274,7 +285,6 @@ IMAGE_CACHE_RULE_STRATEGY;
         }
 
         $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
-//Cache manifest file
 workbox.routing.registerRoute(
   ({url}) => '{$this->manifestPublicUrl}' === url.pathname,
   new workbox.strategies.StaleWhileRevalidate({
@@ -300,7 +310,6 @@ IMAGE_CACHE_RULE_STRATEGY;
         $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
 
         $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
-//Cache Google Fonts
 workbox.recipes.googleFontsCache({$options});
 IMAGE_CACHE_RULE_STRATEGY;
 
@@ -309,32 +318,20 @@ IMAGE_CACHE_RULE_STRATEGY;
 
     private function processOfflineFallback(Workbox $workbox, string $body): string
     {
-        if ($workbox->pageFallback === null && $workbox->imageFallback === null && $workbox->fontFallback === null) {
+        if ($workbox->offlineFallback->enabled === false) {
             return $body;
         }
-        $pageFallback = $workbox->pageFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->pageFallback,
-            'json',
-            $this->jsonOptions
-        );
-        $imageFallback = $workbox->imageFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->imageFallback,
-            'json',
-            $this->jsonOptions
-        );
-        $fontFallback = $workbox->fontFallback === null ? 'null' : $this->serializer->serialize(
-            $workbox->fontFallback,
-            'json',
-            $this->jsonOptions
-        );
+        $options = [
+            'pageFallback' => $workbox->offlineFallback->pageFallback,
+            'imageFallback' => $workbox->offlineFallback->imageFallback,
+            'fontFallback' => $workbox->offlineFallback->fontFallback,
+        ];
+        $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
+        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
-workbox.recipes.offlineFallback({
-    pageFallback: {$pageFallback},
-    imageFallback: {$imageFallback},
-    fontFallback: {$fontFallback}
-});
+workbox.recipes.offlineFallback({$options});
 OFFLINE_FALLBACK_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);

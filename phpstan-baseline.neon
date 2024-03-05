@@ -291,8 +291,8 @@ parameters:
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Attribute class JetBrains\\\\PhpStorm\\\\Deprecated does not exist\\.$#"
-			count: 4
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$assetCache\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
 			path: src/Dto/Workbox.php
 
 		-
@@ -306,17 +306,27 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$fontCache\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$googleFontCache\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$offlineFallbackPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$imageCache\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$standardRulesPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$offlineFallback\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCache\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -327,16 +337,6 @@ parameters:
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$version\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/Workbox.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$widgetsPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/Workbox.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$workboxImportPlaceholder\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -476,8 +476,123 @@ parameters:
 			path: src/Resources/config/definition/path_type_reference.php
 
 		-
+			message: "#^Anonymous function should return array but returns mixed\\.$#"
+			count: 10
+			path: src/Resources/config/definition/service_worker.php
+
+		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
 			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'asset_cache' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'asset_cache_name' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'font_cache' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'font_cache_name' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'font_fallback' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'font_regex' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'image_cache' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'image_cache_name' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'image_fallback' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'image_regex' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'max_font_age' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'max_font_cache…' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'max_image_age' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'max_image_cache…' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'network_timeout…' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'offline_fallback' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'page_cache' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'page_fallback' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'static_regex' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'warm_cache_urls' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
+			count: 4
 			path: src/Resources/config/definition/service_worker.php
 
 		-
