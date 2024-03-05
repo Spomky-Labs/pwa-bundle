@@ -28,12 +28,12 @@ final readonly class ServiceWorkerCompiler
 
     public function __construct(
         private SerializerInterface $serializer,
-        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
-        private readonly string $assetPublicPrefix,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
+        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
+        private string $assetPublicPrefix,
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,

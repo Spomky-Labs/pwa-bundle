@@ -28,8 +28,6 @@ final class CreateIconsCommand extends Command
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
-        private readonly string $assetPublicPrefix,
         private readonly null|ImageProcessor $imageProcessor,
     ) {
         parent::__construct();
@@ -54,7 +52,7 @@ final class CreateIconsCommand extends Command
             'o',
             InputOption::VALUE_OPTIONAL,
             'The output directory',
-            sprintf('%s%s/icons/', $this->projectDir, $this->assetPublicPrefix)
+            sprintf('%s/assets/icons/', $this->projectDir)
         );
         $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'The output directory', 'icon');
         $this->addOption(

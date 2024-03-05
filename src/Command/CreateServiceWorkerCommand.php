@@ -24,8 +24,6 @@ final class CreateServiceWorkerCommand extends Command
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
-        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
-        private readonly string $assetPublicPrefix,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -38,7 +36,7 @@ final class CreateServiceWorkerCommand extends Command
             'output',
             InputArgument::OPTIONAL,
             'The output file',
-            sprintf('%s%s/sw.js', $this->projectDir, $this->assetPublicPrefix)
+            sprintf('%s/assets/sw.js', $this->projectDir)
         );
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force the generation of the service worker');
     }
