@@ -92,8 +92,8 @@ return static function (ECSConfig $config) use ($header): void {
 
     $config->skip([
         PhpUnitTestClassRequiresCoversFixer::class,
-        MethodChainingIndentationFixer::class => [__DIR__ . '/src/DependencyInjection/Configuration.php'],
-        MethodChainingNewlineFixer::class => [__DIR__ . '/src/DependencyInjection/Configuration.php'],
+        MethodChainingIndentationFixer::class => [__DIR__ . '/src/Resources/config'],
+        MethodChainingNewlineFixer::class => [__DIR__ . '/src/Resources/config'],
     ]);
 
     $config->parallel();

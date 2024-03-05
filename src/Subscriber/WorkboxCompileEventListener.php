@@ -7,9 +7,9 @@ namespace SpomkyLabs\PwaBundle\Subscriber;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Config\FileLocator;
 use function assert;
 use function in_array;
 use function is_array;
@@ -24,7 +24,6 @@ final readonly class WorkboxCompileEventListener
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private PublicAssetsFilesystemInterface $assetsFilesystem,
         private Manifest $manifest,
-        private FileLocator $fileLocator,
     ) {
     }
 
@@ -40,9 +39,8 @@ final readonly class WorkboxCompileEventListener
         $workboxVersion = $serviceWorker->workbox->version;
         $workboxPublicUrl = '/' . trim($serviceWorker->workbox->workboxPublicUrl, '/');
 
-        $resourcePath = $this->fileLocator->locate(
-            sprintf('@SpomkyLabsPwaBundle/Resources/workbox-v%s', $workboxVersion)
-        );
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources');
+        $resourcePath = $fileLocator->locate(sprintf('workbox-v%s', $workboxVersion));
         if (! is_string($resourcePath)) {
             return;
         }
