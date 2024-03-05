@@ -3,25 +3,30 @@
     "description": "Progressive Web App Manifest Generator Bundle for Symfony.",
     "type": "symfony-bundle",
     "license": "MIT",
-    "keywords": ["PWA", "Bundle", "Symfony"],
+    "keywords": [
+        "PWA",
+        "Bundle",
+        "Symfony"
+    ],
     "homepage": "https://github.com/spomky-labs",
     "authors": [
         {
             "name": "Florent Morselli",
             "homepage": "https://github.com/Spomky"
-        },{
+        },
+        {
             "name": "All contributors",
             "homepage": "https://github.com/spomky-labs/pwa-bundle/contributors"
         }
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\PwaBundle\\":  "src/"
+            "SpomkyLabs\\PwaBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SpomkyLabs\\PwaBundle\\Tests\\":  "tests/"
+            "SpomkyLabs\\PwaBundle\\Tests\\": "tests/"
         }
     },
     "require": {
