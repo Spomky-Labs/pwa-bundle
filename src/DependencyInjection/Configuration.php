@@ -126,6 +126,11 @@ final readonly class Configuration implements ConfigurationInterface
                                 ->info('The public path to the local workbox. Only used if use_cdn is false.')
                             ->end()
                             ->scalarNode('workbox_import_placeholder')
+                                ->setDeprecated(
+                                    'spomky-labs/phpwa',
+                                    '1.1.0',
+                                    'The "%node%" option is deprecated and will be removed in 2.0.0. No replacement.'
+                                )
                                 ->defaultValue('//WORKBOX_IMPORT_PLACEHOLDER')
                                ->info(
                                    'The placeholder for the workbox import. Will be replaced by the workbox import.'
@@ -133,6 +138,11 @@ final readonly class Configuration implements ConfigurationInterface
                                 ->example('//WORKBOX_IMPORT_PLACEHOLDER')
                             ->end()
                             ->scalarNode('standard_rules_placeholder')
+                                ->setDeprecated(
+                                    'spomky-labs/phpwa',
+                                    '1.1.0',
+                                    'The "%node%" option is deprecated and will be removed in 2.0.0. No replacement.'
+                                )
                                 ->defaultValue('//STANDARD_RULES_PLACEHOLDER')
                                 ->info(
                                     'The placeholder for the standard rules. Will be replaced by caching strategies.'
@@ -140,11 +150,21 @@ final readonly class Configuration implements ConfigurationInterface
                                 ->example('//STANDARD_RULES_PLACEHOLDER')
                             ->end()
                             ->scalarNode('offline_fallback_placeholder')
+                                ->setDeprecated(
+                                    'spomky-labs/phpwa',
+                                    '1.1.0',
+                                    'The "%node%" option is deprecated and will be removed in 2.0.0. No replacement.'
+                                )
                                 ->defaultValue('//OFFLINE_FALLBACK_PLACEHOLDER')
                                 ->info('The placeholder for the offline fallback. Will be replaced by the URL.')
                                 ->example('//OFFLINE_FALLBACK_PLACEHOLDER')
                             ->end()
                             ->scalarNode('widgets_placeholder')
+                                ->setDeprecated(
+                                    'spomky-labs/phpwa',
+                                    '1.1.0',
+                                    'The "%node%" option is deprecated and will be removed in 2.0.0. No replacement.'
+                                )
                                 ->defaultValue('//WIDGETS_PLACEHOLDER')
                                 ->info(
                                     'The placeholder for the widgets. Will be replaced by the widgets management events.'

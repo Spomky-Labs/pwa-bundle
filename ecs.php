@@ -28,7 +28,7 @@ use PhpCsFixer\Fixer\Strict\StrictParamFixer;
 use PhpCsFixer\Fixer\Whitespace\ArrayIndentationFixer;
 use PhpCsFixer\Fixer\Whitespace\CompactNullableTypehintFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
-use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
+use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -92,13 +92,10 @@ return static function (ECSConfig $config) use ($header): void {
 
     $config->skip([
         PhpUnitTestClassRequiresCoversFixer::class,
-        MethodChainingIndentationFixer::class => [__DIR__.'/src/DependencyInjection/Configuration.php'],
-        \Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer::class => [__DIR__.'/src/DependencyInjection/Configuration.php'],
+        MethodChainingIndentationFixer::class => [__DIR__ . '/src/DependencyInjection/Configuration.php'],
+        MethodChainingNewlineFixer::class => [__DIR__ . '/src/DependencyInjection/Configuration.php'],
     ]);
 
     $config->parallel();
-    $config->paths([
-        __DIR__.'/src',
-        __DIR__.'/tests',
-    ]);
+    $config->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']);
 };

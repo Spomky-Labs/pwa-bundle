@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Workbox
@@ -19,15 +20,19 @@ final class Workbox
     public string $workboxPublicUrl;
 
     #[SerializedName('workbox_import_placeholder')]
+    #[Deprecated('No longer used.')]
     public string $workboxImportPlaceholder;
 
     #[SerializedName('standard_rules_placeholder')]
+    #[Deprecated('No longer used.')]
     public string $standardRulesPlaceholder;
 
     #[SerializedName('offline_fallback_placeholder')]
+    #[Deprecated('No longer used.')]
     public string $offlineFallbackPlaceholder;
 
     #[SerializedName('widgets_placeholder')]
+    #[Deprecated('No longer used.')]
     public string $widgetsPlaceholder;
 
     #[SerializedName('page_fallback')]
