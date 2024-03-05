@@ -101,41 +101,6 @@ parameters:
 			path: src/Command/CreateServiceWorkerCommand.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 4
-			path: src/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
-			count: 2
-			path: src/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:beforeNormalization\\(\\)\\.$#"
-			count: 1
-			path: src/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:end\\(\\)\\.$#"
-			count: 1
-			path: src/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
-			count: 5
-			path: src/DependencyInjection/Configuration.php
-
-		-
-			message: "#^Cannot access offset 'public_prefix' on mixed\\.$#"
-			count: 1
-			path: src/DependencyInjection/SpomkyLabsPwaExtension.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\DependencyInjection\\\\SpomkyLabsPwaExtension\\:\\:getConfiguration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DependencyInjection/SpomkyLabsPwaExtension.php
-
-		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/File.php
@@ -476,6 +441,96 @@ parameters:
 			path: src/Normalizer/UrlNormalizer.php
 
 		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/asset_public_prefix.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:end\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/file_handlers.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/icons.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:beforeNormalization\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/launch_handler.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/protocol_handlers.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/related_applications.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/screenshots.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/shared_target.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/shortcuts.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/url_node.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/utils/widgets.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/web_client.php
+
+		-
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/ServiceWorkerCompiler.php
+
+		-
+			message: "#^Cannot access offset 'public_prefix' on mixed\\.$#"
+			count: 1
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/SpomkyLabsPwaBundle.php
