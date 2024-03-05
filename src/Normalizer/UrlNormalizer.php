@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Url;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -19,8 +18,6 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
 
     public function __construct(
         private readonly RouterInterface $router,
-        #[Autowire('%spomky_labs_pwa.routes.reference_type%')]
-        private readonly int $referenceType,
     ) {
     }
 
@@ -29,7 +26,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
         assert($object instanceof Url);
 
         if (! str_starts_with($object->path, '/') && filter_var($object->path, FILTER_VALIDATE_URL) === false) {
-            return $this->router->generate($object->path, $object->params, $this->referenceType);
+            return $this->router->generate($object->path, $object->params, $object->pathTypeReference);
         }
 
         return $object->path;
