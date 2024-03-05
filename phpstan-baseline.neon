@@ -121,6 +121,11 @@ parameters:
 			path: src/Dto/FileHandler.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\GoogleFontCache has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/GoogleFontCache.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Icon has an uninitialized property \\$sizeList\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Icon.php
@@ -297,6 +302,11 @@ parameters:
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Workbox.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$googleFontCache\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 

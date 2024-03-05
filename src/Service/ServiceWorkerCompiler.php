@@ -95,6 +95,7 @@ SKIP_WAITING;
         $body = $this->processPageImageCacheRule($workbox, $body);
         $body = $this->processImageCacheRule($workbox, $body);
         $body = $this->processCacheRootFilesRule($workbox, $body);
+        $body = $this->processCacheGoogleFontsRule($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
     }
@@ -280,6 +281,27 @@ workbox.routing.registerRoute(
     cacheName: 'manifest'
   })
 );
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processCacheGoogleFontsRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->googleFontCache->enabled === false) {
+            return $body;
+        }
+        $options = [
+            'cachePrefix' => $workbox->googleFontCache->cachePrefix,
+            'maxAge' => $workbox->googleFontCache->maxAge,
+            'maxEntries' => $workbox->googleFontCache->maxEntries,
+        ];
+        $options = array_filter($options, static fn (mixed $v): bool => ($v !== null && $v !== ''));
+        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+//Cache Google Fonts
+workbox.recipes.googleFontsCache({$options});
 IMAGE_CACHE_RULE_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);

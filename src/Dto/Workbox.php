@@ -22,6 +22,9 @@ final class Workbox
     #[SerializedName('cache_manifest')]
     public bool $cacheManifest;
 
+    #[SerializedName('google_fonts')]
+    public GoogleFontCache $googleFontCache;
+
     #[SerializedName('workbox_import_placeholder')]
     #[Deprecated('No longer used.')]
     public string $workboxImportPlaceholder;
