@@ -23,6 +23,8 @@ final readonly class ServiceWorkerCompiler
 {
     public function __construct(
         private SerializerInterface $serializer,
+        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
+        private readonly string $assetPublicPrefix,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
         private Manifest $manifest,
@@ -160,7 +162,7 @@ workbox.recipes.pageCache({
 
 //Images cache
 workbox.routing.registerRoute(
-  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('/assets')),
+  ({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('{$this->assetPublicPrefix}')),
   new workbox.strategies.CacheFirst({
     cacheName: '{$workbox->imageCacheName}',
     plugins: [
@@ -187,7 +189,7 @@ const assetCacheStrategy = new workbox.strategies.CacheFirst({
 });
 // - Strategy: only the Asset Mapper public route
 workbox.routing.registerRoute(
-  ({url}) => url.pathname.startsWith('/assets'),
+  ({url}) => url.pathname.startsWith('{$this->assetPublicPrefix}'),
   assetCacheStrategy
 );
 self.addEventListener('install', event => {

@@ -126,6 +126,11 @@ parameters:
 			path: src/DependencyInjection/Configuration.php
 
 		-
+			message: "#^Cannot access offset 'public_prefix' on mixed\\.$#"
+			count: 1
+			path: src/DependencyInjection/SpomkyLabsPwaExtension.php
+
+		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\DependencyInjection\\\\SpomkyLabsPwaExtension\\:\\:getConfiguration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/DependencyInjection/SpomkyLabsPwaExtension.php

@@ -35,6 +35,8 @@ final class CreateScreenshotCommand extends Command
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly null|ImageProcessor $imageProcessor,
+        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
+        private readonly string $assetPublicPrefix,
         #[Autowire('@pwa.web_client')]
         null|Client $webClient = null,
     ) {
@@ -64,7 +66,7 @@ final class CreateScreenshotCommand extends Command
             'o',
             InputOption::VALUE_OPTIONAL,
             'The output directory',
-            sprintf('%s/assets/icons/', $this->projectDir)
+            sprintf('%s%s/icons/', $this->projectDir, $this->assetPublicPrefix)
         );
         $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'The output filename', 'screenshot');
         $this->addOption('width', null, InputOption::VALUE_OPTIONAL, 'The width of the screenshot');
