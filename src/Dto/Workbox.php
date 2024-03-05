@@ -19,6 +19,9 @@ final class Workbox
     #[SerializedName('workbox_public_url')]
     public string $workboxPublicUrl;
 
+    #[SerializedName('cache_manifest')]
+    public bool $cacheManifest;
+
     #[SerializedName('workbox_import_placeholder')]
     #[Deprecated('No longer used.')]
     public string $workboxImportPlaceholder;

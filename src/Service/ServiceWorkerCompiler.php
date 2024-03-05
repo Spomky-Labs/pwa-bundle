@@ -24,16 +24,21 @@ final readonly class ServiceWorkerCompiler
 {
     private array $jsonOptions;
 
+    private string $manifestPublicUrl;
+
     public function __construct(
         private SerializerInterface $serializer,
         #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
         private readonly string $assetPublicPrefix,
+        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        string $manifestPublicUrl,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
     ) {
+        $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $this->jsonOptions = [
             JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
@@ -89,6 +94,7 @@ SKIP_WAITING;
         $body = $this->processFontCacheRules($workbox, $body);
         $body = $this->processPageImageCacheRule($workbox, $body);
         $body = $this->processImageCacheRule($workbox, $body);
+        $body = $this->processCacheRootFilesRule($workbox, $body);
 
         return $this->processOfflineFallback($workbox, $body);
     }
@@ -253,6 +259,25 @@ workbox.routing.registerRoute(
         maxAgeSeconds: {$workbox->maxImageAge},
       }),
     ],
+  })
+);
+IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processCacheRootFilesRule(Workbox $workbox, string $body): string
+    {
+        if ($workbox->cacheManifest === false) {
+            return $body;
+        }
+
+        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
+//Cache manifest file
+workbox.routing.registerRoute(
+  ({url}) => '{$this->manifestPublicUrl}' === url.pathname,
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'manifest'
   })
 );
 IMAGE_CACHE_RULE_STRATEGY;
