@@ -36,10 +36,6 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         if ($serviceWorkerConfig['enabled'] === true && $manifestConfig['enabled'] === true) {
             $manifestConfig['serviceworker'] = $serviceWorkerConfig;
         }
-        $builder->setParameter(
-            'spomky_labs_pwa.asset_public_prefix',
-            '/' . trim((string) $config['asset_public_prefix'], '/')
-        );
 
         /*** Manifest ***/
         $builder->setParameter('spomky_labs_pwa.manifest.enabled', $config['manifest']['enabled']);
@@ -58,7 +54,6 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $this->setAssetPublicPrefix($builder);
         $this->setAssetMapperPath($builder);
     }
 
@@ -71,26 +66,5 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
                 ],
             ],
         ]);
-    }
-
-    private function setAssetPublicPrefix(ContainerBuilder $builder): void
-    {
-        $bundles = $builder->getParameter('kernel.bundles');
-        if (isset($bundles['FrameworkBundle'])) {
-            foreach ($builder->getExtensions() as $name => $extension) {
-                if ($name !== 'framework') {
-                    continue;
-                }
-                $config = $builder->getExtensionConfig($name);
-                foreach ($config as $c) {
-                    if (! isset($c['asset_mapper']['public_prefix'])) {
-                        continue;
-                    }
-                    $builder->prependExtensionConfig('pwa', [
-                        'asset_public_prefix' => $c['asset_mapper']['public_prefix'],
-                    ]);
-                }
-            }
-        }
     }
 }

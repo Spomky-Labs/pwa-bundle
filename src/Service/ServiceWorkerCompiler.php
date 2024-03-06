@@ -8,6 +8,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -25,6 +26,7 @@ final readonly class ServiceWorkerCompiler
     private array $jsonOptions;
 
     private string $manifestPublicUrl;
+    private string $assetPublicPrefix;
 
     public function __construct(
         private SerializerInterface $serializer,
@@ -32,14 +34,15 @@ final readonly class ServiceWorkerCompiler
         string $manifestPublicUrl,
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]
         private bool $serviceWorkerEnabled,
-        #[Autowire('%spomky_labs_pwa.asset_public_prefix%')]
-        private string $assetPublicPrefix,
+        #[Autowire(service: 'asset_mapper.public_assets_path_resolver')]
+        PublicAssetsPathResolverInterface $publicAssetsPathResolver,
         private Manifest $manifest,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
         #[Autowire('%kernel.debug%')]
         bool $debug,
     ) {
+        $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $options = [
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
