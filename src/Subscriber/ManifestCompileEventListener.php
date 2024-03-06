@@ -18,9 +18,10 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 #[AsEventListener(PreAssetsCompileEvent::class)]
-final readonly class AssetsCompileEventListener
+final readonly class ManifestCompileEventListener
 {
     private string $manifestPublicUrl;
+    private array $jsonOptions;
 
     public function __construct(
         private SerializerInterface $serializer,
@@ -31,8 +32,19 @@ final readonly class AssetsCompileEventListener
         string $manifestPublicUrl,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private PublicAssetsFilesystemInterface $assetsFilesystem,
+        #[Autowire('%kernel.debug%')]
+        bool $debug,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
+        $options = [
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        if ($debug === true) {
+            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+        $this->jsonOptions = $options;
     }
 
     public function __invoke(PreAssetsCompileEvent $event): void
@@ -40,11 +52,7 @@ final readonly class AssetsCompileEventListener
         if (! $this->manifestEnabled) {
             return;
         }
-        $data = $this->serializer->serialize($this->manifest, 'json', [
-            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
+        $data = $this->serializer->serialize($this->manifest, 'json', $this->jsonOptions);
         $this->assetsFilesystem->write($this->manifestPublicUrl, $data);
     }
 }

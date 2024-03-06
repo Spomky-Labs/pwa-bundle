@@ -11,6 +11,7 @@ use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use function assert;
 use function count;
@@ -45,6 +46,8 @@ final readonly class ServiceWorkerCompiler
         $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $options = [
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
         if ($debug === true) {

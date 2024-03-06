@@ -37,6 +37,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private null|string $workboxPublicUrl;
 
     private null|string $workboxVersion;
+    private array $jsonOptions;
 
     public function __construct(
         private ServiceWorkerCompiler $serviceWorkerBuilder,
@@ -50,6 +51,8 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         private null|Profiler $profiler,
+        #[Autowire('%kernel.debug%')]
+        bool $debug,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $serviceWorkerPublicUrl = $serviceWorker->dest;
@@ -62,6 +65,15 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             $this->workboxVersion = null;
             $this->workboxPublicUrl = null;
         }
+        $options = [
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        if ($debug === true) {
+            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+        $this->jsonOptions = $options;
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -113,11 +125,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private function serveManifest(RequestEvent $event): void
     {
         $this->profiler?->disable();
-        $body = $this->serializer->serialize($this->manifest, 'json', [
-            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            JsonEncode::OPTIONS => JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
+        $body = $this->serializer->serialize($this->manifest, 'json', $this->jsonOptions);
         $response = new Response($body, Response::HTTP_OK, [
             'Cache-Control' => 'public, max-age=604800, immutable',
             'Content-Type' => 'application/manifest+json',

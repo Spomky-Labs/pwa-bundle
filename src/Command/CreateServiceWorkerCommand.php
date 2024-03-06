@@ -18,6 +18,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use function count;
 
+/**
+ * @deprecated This command will be removed in the next major version. Create an empty file in assets/sw.js instead.
+
+ */
 #[AsCommand(name: 'pwa:create:sw', description: 'Generate a basic Service Worker')]
 final class CreateServiceWorkerCommand extends Command
 {

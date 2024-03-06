@@ -13,7 +13,7 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
-use SpomkyLabs\PwaBundle\Subscriber\AssetsCompileEventListener;
+use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\WorkboxCompileEventListener;
@@ -87,7 +87,7 @@ return static function (ContainerConfigurator $container): void {
 
     /*** Event Listeners and Subscribers ***/
     $container->set(WorkboxCompileEventListener::class);
-    $container->set(AssetsCompileEventListener::class);
+    $container->set(ManifestCompileEventListener::class);
     $container->set(ServiceWorkerCompileEventListener::class);
     $container->set(ServiceWorkerCompiler::class);
 
