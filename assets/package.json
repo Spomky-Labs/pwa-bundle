@@ -1,15 +1,20 @@
 {
-    "name": "@pwa/connection-status",
-    "description": "PWA for Symfony",
+    "name": "@spomky-labs/pwa-bundle",
+    "description": "Stimulus Controllers for the PWA Bundle",
     "license": "MIT",
     "version": "1.0.0",
-    "main": "dist/controller.js",
-    "types": "dist/controller.d.ts",
     "symfony": {
         "controllers": {
             "connection-status": {
-                "main": "dist/controller.js",
+                "main": "src/connection-status_controller.js",
                 "name": "pwa/connection-status",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "backgroundsync-form": {
+                "main": "src/backgroundsync-form_controller.js",
+                "name": "pwa/backgroundsync-form",
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
