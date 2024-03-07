@@ -29,6 +29,13 @@ Install the bundle with Composer:
 composer require spomky-labs/pwa-bundle
 ```
 
+If you want to use the commands to generate icons and screenshots, install the necessary dependencies:
+
+```bash
+composer require symfony/panther symfony/mime symfony/filesystem --dev
+bin/console pwa:create:icons --help
+```
+
 This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
