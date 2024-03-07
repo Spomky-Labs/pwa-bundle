@@ -102,6 +102,7 @@ final readonly class PwaRuntime
   if ('serviceWorker' in navigator) {
     const wb = new Workbox('{$url}'{$registerOptions});
     wb.register();
+    window.workbox = wb;
   }
 </script>
 SERVICE_WORKER;
