@@ -20,10 +20,8 @@ export default class extends Controller {
         event.preventDefault();
         const form = this.element;
         if (!form instanceof HTMLFormElement || !form.checkValidity()) {
-            console.error('Form is not valid', form, form.checkValidity());
             return;
         }
-        console.error(form.method);
 
         const url = form.action;
         try {
@@ -34,10 +32,8 @@ export default class extends Controller {
             params.method = form.method.toUpperCase();
             await fetch(url, params);
         } catch (error) {
-            console.error('Error while sending form', error);
             // No need to do anything here
         } finally {
-            console.log('finally', this.redirectionValue);
             window.location.href = this.redirectionValue || url;
         }
     }
