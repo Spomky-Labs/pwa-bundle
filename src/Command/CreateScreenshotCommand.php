@@ -147,7 +147,9 @@ final class CreateScreenshotCommand extends Command
         $io->success('Screenshot saved. You can now use it in your application configuration file.');
         $io->writeln(Yaml::dump([
             'pwa' => [
-                'screenshots' => [$config],
+                'manifest' => [
+                    'screenshots' => [$config],
+                ],
             ],
         ], 10, 2));
 

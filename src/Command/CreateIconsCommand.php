@@ -135,6 +135,9 @@ final class CreateIconsCommand extends Command
         }
 
         $io->success('Icons have been generated. You can now use them in your application configuration file.');
+        $io->writeln('Here is an example of a configuration file. Please indent it properly before using it in your application configuration file.');
+        $io->writeln('It can be used in the manifest, shortcuts or widgets sections.');
+        $io->writeln('');
         $io->writeln(Yaml::dump([
             'yaml' => [
                 'icons' => $generatedIcons,
