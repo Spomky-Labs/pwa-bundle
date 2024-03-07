@@ -86,21 +86,6 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$files of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:exists\\(\\) expects iterable\\|string, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateServiceWorkerCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$sourcePath of method Symfony\\\\Component\\\\AssetMapper\\\\AssetMapperInterface\\:\\:getAssetFromSourcePath\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateServiceWorkerCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\$targetFile of method Symfony\\\\Component\\\\Filesystem\\\\Filesystem\\:\\:copy\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateServiceWorkerCommand.php
-
-		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$forceSyncFallback\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/BackgroundSync.php
@@ -669,14 +654,6 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
 			count: 1
 			path: src/Resources/config/definition/web_client.php
-
-		-
-			message: """
-				#^Fetching class constant class of deprecated class SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateServiceWorkerCommand\\:
-				This command will be removed in the next major version\\. Create an empty file in assets/sw\\.js instead\\.$#
-			"""
-			count: 1
-			path: src/Resources/config/services.php
 
 		-
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
