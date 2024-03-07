@@ -16,7 +16,7 @@ export default class extends Controller {
         redirection: { type: String, default: null },
     };
 
-    async onSubmit(event) {
+    async send(event) {
         event.preventDefault();
         const form = this.element;
         if (!form instanceof HTMLFormElement || !form.checkValidity()) {
@@ -24,17 +24,36 @@ export default class extends Controller {
         }
 
         const url = form.action;
+        const redirectTo = this.redirectionValue || url;
         try {
             const params = this.paramsValue;
             params.headers = this.headersValue;
-            params.headers['Content-Type'] = form.encType ?? 'application/x-www-form-urlencoded';
-            params.body = new FormData(form);
+            if (form.enctype === 'multipart/form-data') {
+                params.body = new FormData(form);
+            } else if (form.enctype === 'application/json') {
+                params.body = JSON.stringify(Object.fromEntries(new FormData(form)));
+            } else if (form.enctype === 'application/x-www-form-urlencoded') {
+                params.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                params.body = new URLSearchParams(new FormData(form));
+            } else {
+                console.error('Unsupported form enctype');
+            }
             params.method = form.method.toUpperCase();
-            await fetch(url, params);
+            const response = await fetch(url, params);
+            console.log(new URLSearchParams(params.body).toString(), params, params.headers);
+            if (response.redirected) {
+                window.location.assign(response.url);
+                return;
+            }
+            if (redirectTo) {
+                window.location.assign(this.redirectionValue || url);
+            }
         } catch (error) {
-            // No need to do anything here
+            if (redirectTo) {
+                window.location.assign(this.redirectionValue || url);
+            }
         } finally {
-            window.location.href = this.redirectionValue || url;
+            form.reset();
         }
     }
 }
