@@ -27,6 +27,7 @@ final readonly class ServiceWorkerCompiler
     private array $jsonOptions;
 
     private string $manifestPublicUrl;
+
     private string $assetPublicPrefix;
 
     public function __construct(
@@ -339,7 +340,7 @@ IMAGE_CACHE_RULE_STRATEGY;
             $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
             $declaration .= <<<BACKGROUND_SYNC_RULE_STRATEGY
 workbox.routing.registerRoute(
-    '{$sync->regex}',
+    new RegExp('{$sync->regex}'),
     new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{$options})] }),
     '{$sync->method}'
 );

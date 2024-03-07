@@ -37,6 +37,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private null|string $workboxPublicUrl;
 
     private null|string $workboxVersion;
+
     private array $jsonOptions;
 
     public function __construct(

@@ -483,11 +483,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
 			count: 1
-			path: src/Resources/config/definition/asset_public_prefix.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
 			path: src/Resources/config/definition/image_processor.php
 
 		-
@@ -676,6 +671,14 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
+			message: """
+				#^Fetching class constant class of deprecated class SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateServiceWorkerCommand\\:
+				This command will be removed in the next major version\\. Create an empty file in assets/sw\\.js instead\\.$#
+			"""
+			count: 1
+			path: src/Resources/config/services.php
+
+		-
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/ServiceWorkerCompiler.php
@@ -686,11 +689,16 @@ parameters:
 			path: src/Service/ServiceWorkerCompiler.php
 
 		-
-			message: "#^Cannot access offset 'public_prefix' on mixed\\.$#"
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SpomkyLabsPwaBundle.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\ManifestCompileEventListener\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/SpomkyLabsPwaBundle.php
+			path: src/Subscriber/ManifestCompileEventListener.php
+
+		-
+			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\PwaDevServerSubscriber\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Subscriber/PwaDevServerSubscriber.php

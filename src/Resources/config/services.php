@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
-use SpomkyLabs\PwaBundle\Command\CreateServiceWorkerCommand;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
@@ -56,7 +55,6 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     /*** Commands ***/
-    $container->set(CreateServiceWorkerCommand::class);
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
         $container->set(CreateScreenshotCommand::class);
     }

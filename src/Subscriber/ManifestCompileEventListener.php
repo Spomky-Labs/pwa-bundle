@@ -21,6 +21,7 @@ use const JSON_UNESCAPED_UNICODE;
 final readonly class ManifestCompileEventListener
 {
     private string $manifestPublicUrl;
+
     private array $jsonOptions;
 
     public function __construct(
