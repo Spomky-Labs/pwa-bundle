@@ -46,11 +46,11 @@ export default class extends Controller {
                 return;
             }
             if (redirectTo) {
-                window.location.assign(this.redirectionValue || url);
+                window.location.assign(redirectTo);
             }
         } catch (error) {
             if (redirectTo) {
-                window.location.assign(this.redirectionValue || url);
+                window.location.assign(redirectTo);
             }
         } finally {
             form.reset();
