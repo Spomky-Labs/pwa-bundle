@@ -73,7 +73,7 @@ final class CreateScreenshotCommand extends Command
             'format',
             'f',
             InputOption::VALUE_OPTIONAL,
-            'The format of the icons',
+            'The format of the screenshots',
             null,
             ['png', 'jpg', 'webp']
         );
