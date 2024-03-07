@@ -10,7 +10,7 @@ export default class extends Controller {
         offlineMessage: { type: String, default: 'You are offline.' },
     };
 
-    connect() {
+    connect = () => {
         this.dispatchEvent('connect', {});
         if (navigator.onLine) {
             this.statusChanged({
@@ -37,11 +37,11 @@ export default class extends Controller {
             });
         });
     }
-    dispatchEvent(name, payload) {
+    dispatchEvent = (name, payload) => {
         this.dispatch(name, { detail: payload, prefix: 'connection-status' });
     }
 
-    statusChanged(data) {
+    statusChanged = (data) => {
         this.messageTargets.forEach((element) => {
             element.innerHTML = data.message;
         });

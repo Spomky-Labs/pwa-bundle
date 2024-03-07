@@ -18,6 +18,9 @@ final class BackgroundSync
     #[SerializedName('max_retention_time')]
     public int $maxRetentionTime;
 
-    #[SerializedName('force_sync_callback')]
+    #[SerializedName('force_sync_fallback')]
     public bool $forceSyncFallback;
+
+    #[SerializedName('broadcast_channel')]
+    public null|string $broadcastChannel = null;
 }

@@ -16,7 +16,7 @@ export default class extends Controller {
         redirection: { type: String, default: null },
     };
 
-    async send(event) {
+    send = async (event) => {
         event.preventDefault();
         const form = this.element;
         if (!form instanceof HTMLFormElement || !form.checkValidity()) {
@@ -45,15 +45,13 @@ export default class extends Controller {
                 window.location.assign(response.url);
                 return;
             }
-            if (redirectTo) {
+            if (redirectTo !== undefined) {
                 window.location.assign(redirectTo);
             }
         } catch (error) {
-            if (redirectTo) {
+            if (redirectTo !== undefined) {
                 window.location.assign(redirectTo);
             }
-        } finally {
-            form.reset();
         }
     }
 }

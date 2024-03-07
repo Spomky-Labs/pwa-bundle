@@ -332,16 +332,32 @@ IMAGE_CACHE_RULE_STRATEGY;
 
         $declaration = '';
         foreach ($workbox->backgroundSync as $sync) {
-            $options = [
-                'maxRetentionTime' => $sync->maxRetentionTime,
-                'forceSyncCallback' => $sync->forceSyncFallback,
-            ];
-            $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
-            $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+            $forceSyncFallback = $sync->forceSyncFallback === true ? 'true' : 'false';
+            $broadcastChannel = '';
+            if ($sync->broadcastChannel !== null) {
+                $broadcastChannel = <<<BROADCAST_CHANNEL
+,
+    "onSync": async ({queue}) => {
+        try {
+            await queue.replayRequests();
+        } catch (error) {
+            // Failed to replay one or more requests
+        } finally {
+            remainingRequests = await queue.getAll();
+            const bc = new BroadcastChannel('{$sync->broadcastChannel}');
+            bc.postMessage({name: '{$sync->queueName}', remaining: remainingRequests.length});
+            bc.close();
+        }
+    }
+BROADCAST_CHANNEL;
+            }
             $declaration .= <<<BACKGROUND_SYNC_RULE_STRATEGY
 workbox.routing.registerRoute(
     new RegExp('{$sync->regex}'),
-    new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{$options})] }),
+    new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{
+    "maxRetentionTime": {$sync->maxRetentionTime},
+    "forceSyncFallback": {$forceSyncFallback}{$broadcastChannel}
+})] }),
     '{$sync->method}'
 );
 BACKGROUND_SYNC_RULE_STRATEGY;
