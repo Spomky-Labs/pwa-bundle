@@ -4,24 +4,34 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service\Rule;
 
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CacheStrategy;
+use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use const PHP_EOL;
 
-final readonly class ManifestCache implements WorkboxRule
+final readonly class ManifestCache implements ServiceWorkerRule, HasCacheStrategies
 {
     private string $manifestPublicUrl;
 
+    private Workbox $workbox;
+
     public function __construct(
+        ServiceWorker $serviceWorker,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
     ) {
+        $this->workbox = $serviceWorker->workbox;
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
     }
 
-    public function process(Workbox $workbox, string $body): string
+    public function process(string $body): string
     {
-        if ($workbox->cacheManifest === false) {
+        if ($this->workbox->enabled === false) {
+            return $body;
+        }
+        if ($this->workbox->cacheManifest === false) {
             return $body;
         }
 
@@ -35,5 +45,18 @@ workbox.routing.registerRoute(
 IMAGE_CACHE_RULE_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    public function getCacheStrategies(): array
+    {
+        return [
+            CacheStrategy::create(
+                'manifest',
+                CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
+                sprintf("({url}) => '%s' === url.pathname", $this->manifestPublicUrl),
+                $this->workbox->enabled && $this->workbox->cacheManifest,
+                true
+            ),
+        ];
     }
 }

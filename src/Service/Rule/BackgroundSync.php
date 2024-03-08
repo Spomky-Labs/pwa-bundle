@@ -4,19 +4,32 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service\Rule;
 
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CacheStrategy;
+use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
 use const PHP_EOL;
 
-final readonly class BackgroundSync implements WorkboxRule
+final readonly class BackgroundSync implements ServiceWorkerRule, HasCacheStrategies
 {
-    public function process(Workbox $workbox, string $body): string
+    private Workbox $workbox;
+
+    public function __construct(ServiceWorker $serviceWorker)
     {
-        if ($workbox->backgroundSync === []) {
+        $this->workbox = $serviceWorker->workbox;
+    }
+
+    public function process(string $body): string
+    {
+        if ($this->workbox->enabled === false) {
+            return $body;
+        }
+        if ($this->workbox->backgroundSync === []) {
             return $body;
         }
 
         $declaration = '';
-        foreach ($workbox->backgroundSync as $sync) {
+        foreach ($this->workbox->backgroundSync as $sync) {
             $forceSyncFallback = $sync->forceSyncFallback === true ? 'true' : 'false';
             $broadcastChannel = '';
             if ($sync->broadcastChannel !== null) {
@@ -49,5 +62,26 @@ BACKGROUND_SYNC_RULE_STRATEGY;
         }
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    public function getCacheStrategies(): array
+    {
+        $strategies = [];
+        foreach ($this->workbox->backgroundSync as $sync) {
+            $strategies[] = CacheStrategy::create(
+                'backgroundSync',
+                CacheStrategy::STRATEGY_NETWORK_ONLY,
+                $sync->regex,
+                $this->workbox->enabled,
+                true,
+                [
+                    'maxTimeout' => 0,
+                    'maxAge' => 0,
+                    'maxEntries' => 0,
+                ]
+            );
+        }
+
+        return $strategies;
     }
 }

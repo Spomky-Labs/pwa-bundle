@@ -4,19 +4,31 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service\Rule;
 
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use const PHP_EOL;
 
-final readonly class WorkboxImport implements WorkboxRule
+final readonly class WorkboxImport implements ServiceWorkerRule
 {
-    public function process(Workbox $workbox, string $body): string
+    private Workbox $workbox;
+
+    public function __construct(
+        ServiceWorker $serviceWorker
+    ) {
+        $this->workbox = $serviceWorker->workbox;
+    }
+
+    public function process(string $body): string
     {
-        if ($workbox->useCDN === true) {
+        if ($this->workbox->enabled === false) {
+            return $body;
+        }
+        if ($this->workbox->useCDN === true) {
             $declaration = <<<IMPORT_CDN_STRATEGY
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$workbox->version}/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->version}/workbox-sw.js');
 IMPORT_CDN_STRATEGY;
         } else {
-            $publicUrl = '/' . trim($workbox->workboxPublicUrl, '/');
+            $publicUrl = '/' . trim($this->workbox->workboxPublicUrl, '/');
             $declaration = <<<IMPORT_CDN_STRATEGY
 importScripts('{$publicUrl}/workbox-sw.js');
 workbox.setConfig({modulePathPrefix: '{$publicUrl}'});

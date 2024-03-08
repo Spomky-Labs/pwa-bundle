@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service\Rule;
 
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use const PHP_EOL;
 
-final readonly class ClearCache implements WorkboxRule
+final readonly class ClearCache implements ServiceWorkerRule
 {
-    public function process(Workbox $workbox, string $body): string
+    private Workbox $workbox;
+
+    public function __construct(
+        ServiceWorker $serviceWorker
+    ) {
+        $this->workbox = $serviceWorker->workbox;
+    }
+
+    public function process(string $body): string
     {
-        if ($workbox->clearCache === false) {
+        if ($this->workbox->enabled === false) {
+            return $body;
+        }
+        if ($this->workbox->clearCache === false) {
             return $body;
         }
 
