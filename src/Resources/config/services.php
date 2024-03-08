@@ -5,11 +5,12 @@ declare(strict_types=1);
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
+use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
-use SpomkyLabs\PwaBundle\Service\CacheStrategy;
+use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
@@ -63,6 +64,7 @@ return static function (ContainerConfigurator $container): void {
     if (class_exists(MimeTypes::class)) {
         $container->set(CreateIconsCommand::class);
     }
+    $container->set(ListCacheStrategiesCommand::class);
 
     /*** Normalizers ***/
     $container->load('SpomkyLabs\\PwaBundle\\Normalizer\\', '../../Normalizer/*')
@@ -110,7 +112,7 @@ return static function (ContainerConfigurator $container): void {
     $container->instanceof(ServiceWorkerRule::class)
         ->tag('spomky_labs_pwa.service_worker_rule')
     ;
-    $container->instanceof(CacheStrategy::class)
+    $container->instanceof(HasCacheStrategies::class)
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\Service\\Rule\\', '../../Service/Rule/*');
