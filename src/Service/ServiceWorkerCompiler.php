@@ -76,6 +76,7 @@ final readonly class ServiceWorkerCompiler
         if ($workbox->enabled === true) {
             $body = $this->processWorkbox($workbox, $body);
         }
+        $body = $this->processPrefetchOnDemand($body);
         $body = $this->processWidgets($body);
 
         return $this->processSkipWaiting($body);
@@ -282,6 +283,23 @@ workbox.routing.registerRoute(
   })
 );
 IMAGE_CACHE_RULE_STRATEGY;
+
+        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+    }
+
+    private function processPrefetchOnDemand(string $body): string
+    {
+        $declaration = <<<PREFETCH_STRATEGY
+fetchAsync = async (url) => {
+  await fetch(url);
+}
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'PREFETCH') {
+    const urls = event.data.payload.urls || [];
+    urls.forEach((url) => fetchAsync(url));
+  }
+});
+PREFETCH_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
