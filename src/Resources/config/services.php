@@ -10,6 +10,8 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
+use SpomkyLabs\PwaBundle\Service\Rule\WorkboxRule;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
@@ -103,4 +105,13 @@ return static function (ContainerConfigurator $container): void {
     $container->set(PwaRuntime::class)
         ->tag('twig.runtime')
     ;
+
+    /*** Service Worker Compiler Rules ***/
+    $container->instanceof(ServiceWorkerRule::class)
+        ->tag('spomky_labs_pwa.service_worker_rule')
+    ;
+    $container->instanceof(WorkboxRule::class)
+        ->tag('spomky_labs_pwa.workbox_rule')
+    ;
+    $container->load('SpomkyLabs\\PwaBundle\\Service\\Rule\\', '../../Service/Rule/*');
 };

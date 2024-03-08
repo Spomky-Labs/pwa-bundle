@@ -656,11 +656,6 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
-			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Service\\\\ServiceWorkerCompiler\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/ServiceWorkerCompiler.php
-
-		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SpomkyLabsPwaBundle.php
