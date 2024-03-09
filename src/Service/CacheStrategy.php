@@ -31,14 +31,14 @@ final readonly class CacheStrategy
         public bool $enabled,
         public bool $requireWorkbox,
         /**
-         * @var array{maxTimeout?: int, maxAge?: int, maxEntries?: int}
+         * @var array{maxTimeout?: int, maxAge?: int, maxEntries?: int, warmUrls?: string[], plugins?: string[]}
          */
         public array $options = []
     ) {
     }
 
     /**
-     * @param array{maxTimeout?: int, maxAge?: int, maxEntries?: int} $options
+     * @param array{maxTimeout?: int, maxAge?: int, maxEntries?: int, warmUrls?: string[], plugins?: string[]} $options
      */
     public static function create(
         string $name,
@@ -46,7 +46,7 @@ final readonly class CacheStrategy
         string $urlPattern,
         bool $enabled,
         bool $requireWorkbox,
-        array $options = []
+        array $options = [],
     ): self {
         return new self($name, $strategy, $urlPattern, $enabled, $requireWorkbox, $options);
     }

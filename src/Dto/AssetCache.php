@@ -14,4 +14,7 @@ final class AssetCache
     public string $cacheName = 'assets';
 
     public string $regex = '/\.(css|js|json|xml|txt|map|ico|png|jpe?g|gif|svg|webp|bmp)$/';
+
+    #[SerializedName('max_age')]
+    public int $maxAge = 60 * 60 * 24 * 365;
 }

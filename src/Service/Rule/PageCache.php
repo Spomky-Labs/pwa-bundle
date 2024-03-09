@@ -54,12 +54,43 @@ final readonly class PageCache implements ServiceWorkerRule, HasCacheStrategies
             return $body;
         }
         $routes = $this->serializer->serialize($this->workbox->pageCache->urls, 'json', $this->jsonOptions);
+        $strategy = match ($this->workbox->pageCache->strategy) {
+            'staleWhileRevalidate' => 'StaleWhileRevalidate',
+            default => 'NetworkFirst',
+        };
+        $broadcastHeaders = json_encode(
+            $this->workbox->pageCache->broadcastHeaders === [] ? [
+                'Content-Type',
+                'ETag',
+                'Last-Modified',
+            ] : $this->workbox->pageCache->broadcastHeaders,
+            JSON_THROW_ON_ERROR,
+            512
+        );
+        $broadcastUpdate = ($strategy === 'StaleWhileRevalidate' && $this->workbox->pageCache->broadcast === true) ? sprintf(
+            ',new workbox.broadcastUpdate.BroadcastUpdatePlugin({headersToCheck: %s})',
+            $broadcastHeaders
+        ) : '';
 
         $declaration = <<<PAGE_CACHE_RULE_STRATEGY
-workbox.recipes.pageCache({
-    cacheName: '{$this->workbox->pageCache->cacheName}',
-    networkTimeoutSeconds: {$this->workbox->pageCache->networkTimeout},
-    warmCache: {$routes}
+const pageCacheStrategy = new workbox.strategies.{$strategy}({
+  networkTimeoutSeconds: {$this->workbox->pageCache->networkTimeout},
+  cacheName: '{$this->workbox->pageCache->cacheName}',
+  plugins: [new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}){$broadcastUpdate}],
+});
+workbox.routing.registerRoute(
+  ({request}) => request.mode === 'navigate',
+  pageCacheStrategy
+);
+self.addEventListener('install', event => {
+  const done = {$routes}.map(
+    path =>
+      pageCacheStrategy.handleAll({
+        event,
+        request: new Request(path),
+      })[1]
+  );
+  event.waitUntil(Promise.all(done));
 });
 PAGE_CACHE_RULE_STRATEGY;
 
@@ -68,15 +99,27 @@ PAGE_CACHE_RULE_STRATEGY;
 
     public function getCacheStrategies(): array
     {
+        $strategy = match ($this->workbox->pageCache->strategy) {
+            'staleWhileRevalidate' => CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
+            default => CacheStrategy::STRATEGY_NETWORK_FIRST,
+        };
+        $plugins = ['CacheableResponsePlugin'];
+        if ($this->workbox->pageCache->broadcast === true && $strategy === CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE) {
+            $plugins[] = 'BroadcastUpdatePlugin';
+        }
+        $routes = $this->serializer->serialize($this->workbox->pageCache->urls, 'json', $this->jsonOptions);
+        $url = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
         return [
             CacheStrategy::create(
                 $this->workbox->pageCache->cacheName,
-                CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
-                "'({request}) => request.mode === 'navigate'",
+                $strategy,
+                "({request}) => request.mode === 'navigate'",
                 $this->workbox->enabled && $this->workbox->pageCache->enabled,
                 true,
                 [
                     'maxTimeout' => $this->workbox->pageCache->networkTimeout,
+                    'plugins' => $plugins,
+                    'warmUrls' => $url,
                 ]
             ),
         ];

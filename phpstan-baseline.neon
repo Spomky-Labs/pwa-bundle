@@ -656,6 +656,16 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
+			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxEntries\\: int\\<0, max\\>, maxAge\\: int, warmUrls\\: mixed\\} given\\.$#"
+			count: 1
+			path: src/Service/Rule/AssetCache.php
+
+		-
+			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxTimeout\\: int, plugins\\: array\\{0\\: 'CacheableResponsePl…', 1\\?\\: 'BroadcastUpdatePlug…'\\}, warmUrls\\: mixed\\} given\\.$#"
+			count: 1
+			path: src/Service/Rule/PageCache.php
+
+		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SpomkyLabsPwaBundle.php
