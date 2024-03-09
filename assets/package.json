@@ -25,6 +25,13 @@
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
+            },
+            "prefetch-on-demand": {
+                "main": "src/prefetch-on-demand_controller.js",
+                "name": "pwa/prefetch-on-demand",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
             }
         },
         "importmap": {
