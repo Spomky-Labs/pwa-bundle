@@ -4,20 +4,16 @@ import { Controller } from '@hotwired/stimulus';
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-    static values = {
-        urls: { type: Array, default: []}
-    };
-
-    connect = () => {
+    prefetch = ({params}) => {
         const workbox = window.workbox;
-        if (!workbox) {
+        if (!workbox || !params.urls) {
             return;
         }
 
         workbox.messageSW({
             "type": "PREFETCH",
             "payload": {
-                "urls": this.urlsValue
+                "urls": params.urls
             }
         });
     }
