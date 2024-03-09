@@ -94,38 +94,6 @@ return static function (DefinitionConfigurator $definition): void {
                             return $v;
                         })
                     ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(static fn (mixed $v): bool => true)
-                        ->then(static function (mixed $v): array {
-                            if (isset($v['page_cache'])) {
-                                return $v;
-                            }
-                            $v['page_cache'] = array_filter([
-                                'enabled' => true,
-                                'cache_name' => $v['page_cache_name'] ?? 'pages',
-                                'network_timeout' => $v['network_timeout_seconds'] ?? 3,
-                                'urls' => $v['warm_cache_urls'] ?? [],
-                            ], static fn (mixed $v): bool => $v !== null);
-
-                            return $v;
-                        })
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(static fn (mixed $v): bool => true)
-                        ->then(static function (mixed $v): array {
-                            if (isset($v['offline_fallback'])) {
-                                return $v;
-                            }
-                            $v['offline_fallback'] = array_filter([
-                                'enabled' => true,
-                                'page' => $v['page_fallback'] ?? null,
-                                'image' => $v['image_fallback'] ?? null,
-                                'font' => $v['font_fallback'] ?? null,
-                            ], static fn (mixed $v): bool => $v !== null);
-
-                            return $v;
-                        })
-                    ->end()
                     ->children()
                         ->booleanNode('use_cdn')
                             ->defaultFalse()
@@ -207,7 +175,9 @@ return static function (DefinitionConfigurator $definition): void {
                             ->info('Whether to clear the cache during the service worker activation.')
                         ->end()
                         ->arrayNode('offline_fallback')
-                            ->canBeDisabled()
+                            ->treatNullLike([])
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
                             ->children()
                                 ->append(getUrlNode('page', 'The URL of the offline page fallback.'))
                                 ->append(getUrlNode('image', 'The URL of the offline image fallback.'))
@@ -281,64 +251,74 @@ return static function (DefinitionConfigurator $definition): void {
                                 ->end()
                             ->end()
                         ->end()
-                        ->arrayNode('page_cache')
-                            ->canBeDisabled()
-                            ->children()
-                                ->scalarNode('cache_name')
-                                    ->defaultValue('pages')
-                                    ->info('The name of the page cache.')
-                                ->end()
-                                ->integerNode('network_timeout')
-                                    ->defaultValue(3)
-                                    ->info(
-                                        'The network timeout in seconds before cache is called (for warm cache URLs only).'
-                                    )
-                                    ->example([1, 2, 5])
-                                ->end()
-                                ->scalarNode('strategy')
-                                    ->defaultValue('networkFirst')
-                                    ->info(
-                                        'The caching strategy. Only "networkFirst" and "staleWhileRevalidate" are supported.'
-                                    )
-                                    ->example(['networkFirst', 'staleWhileRevalidate'])
-                                ->end()
-                                ->booleanNode('broadcast')
-                                    ->defaultFalse()
-                                    ->info(
-                                        'Whether to broadcast the cache update events. Only supported with "staleWhileRevalidate" strategy.'
-                                    )
-                                ->end()
-                                ->arrayNode('broadcast_headers')
-                                    ->treatNullLike(['Content-Length', 'ETag', 'Last-Modified'])
-                                    ->treatFalseLike(['Content-Length', 'ETag', 'Last-Modified'])
-                                    ->treatTrueLike(['Content-Length', 'ETag', 'Last-Modified'])
-                                    ->defaultValue(['Content-Length', 'ETag', 'Last-Modified'])
-                                    ->scalarPrototype()->end()
-                                ->end()
-                                ->arrayNode('urls')
-                                    ->treatNullLike([])
-                                    ->treatFalseLike([])
-                                    ->treatTrueLike([])
-                                    ->info('The URLs to warm the cache. The URLs shall be served by the application.')
-                                    ->arrayPrototype()
-                                        ->beforeNormalization()
-                                            ->ifString()
-                                            ->then(static fn (string $v): array => [
-                                                'path' => $v,
-                                            ])
-                                        ->end()
-                                        ->children()
-                                            ->scalarNode('path')
-                                                ->isRequired()
-                                                ->info('The URL of the shortcut.')
-                                                ->example('app_homepage')
+                        ->arrayNode('page_caches')
+                            ->treatNullLike([])
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
+                            ->arrayPrototype()
+                                ->children()
+                                    ->scalarNode('regex')
+                                        ->isRequired()
+                                        ->info('The regex to match the URLs.')
+                                    ->end()
+                                    ->scalarNode('cache_name')
+                                        ->isRequired()
+                                        ->info('The name of the page cache.')
+                                    ->end()
+                                    ->integerNode('network_timeout')
+                                        ->defaultValue(3)
+                                        ->info(
+                                            'The network timeout in seconds before cache is called (for "networkFirst" strategy only).'
+                                        )
+                                        ->example([1, 2, 5])
+                                    ->end()
+                                    ->scalarNode('strategy')
+                                        ->defaultValue('networkFirst')
+                                        ->info(
+                                            'The caching strategy. Only "networkFirst" and "staleWhileRevalidate" are supported.'
+                                        )
+                                        ->example(['networkFirst', 'staleWhileRevalidate'])
+                                    ->end()
+                                    ->booleanNode('broadcast')
+                                        ->defaultFalse()
+                                        ->info(
+                                            'Whether to broadcast the cache update events (for "staleWhileRevalidate" strategy only).'
+                                        )
+                                    ->end()
+                                    ->arrayNode('broadcast_headers')
+                                        ->treatNullLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                        ->treatFalseLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                        ->treatTrueLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                        ->defaultValue(['Content-Length', 'ETag', 'Last-Modified'])
+                                        ->scalarPrototype()->end()
+                                    ->end()
+                                    ->arrayNode('urls')
+                                        ->treatNullLike([])
+                                        ->treatFalseLike([])
+                                        ->treatTrueLike([])
+                                        ->info(
+                                            'The URLs to warm the cache. The URLs shall be served by the application.'
+                                        )
+                                        ->arrayPrototype()
+                                            ->beforeNormalization()
+                                                ->ifString()
+                                                ->then(static fn (string $v): array => [
+                                                    'path' => $v,
+                                                ])
                                             ->end()
-                                            ->arrayNode('params')
-                                                ->treatFalseLike([])
-                                                ->treatTrueLike([])
-                                                ->treatNullLike([])
-                                                ->prototype('variable')->end()
-                                                ->info('The parameters of the action.')
+                                            ->children()
+                                                ->scalarNode('path')
+                                                    ->isRequired()
+                                                    ->info('The URL of the shortcut.')
+                                                    ->example('app_homepage')
+                                                ->end()
+                                                ->arrayNode('params')
+                                                    ->treatFalseLike([])
+                                                    ->treatTrueLike([])
+                                                    ->treatNullLike([])
+                                                    ->prototype('variable')->end()
+                                                    ->info('The parameters of the action.')
+                                                ->end()
                                             ->end()
                                         ->end()
                                     ->end()
@@ -409,7 +389,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_cache.cache_name" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].cache_name" instead.'
                             )
                         ->end()
                         ->scalarNode('asset_cache_name')
@@ -501,7 +481,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_cache.network_timeout" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].network_timeout" instead.'
                             )
                         ->end()
                         ->arrayNode('warm_cache_urls')
@@ -512,7 +492,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_cache.urls" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].urls" instead.'
                             )
                             ->arrayPrototype()
                             ->beforeNormalization()

@@ -226,8 +226,14 @@ return static function (ContainerConfigurator $container) {
             'scope' => '/',
             'use_cache' => true,
             'workbox' => [
-                'page_cache' => [
-                    'urls' => ['privacy_policy', 'terms_of_service'],
+                'page_caches' => [
+                    [
+                        'regex' => '.*',
+                        'strategy' => 'staleWhileRevalidate',
+                        'cache_name' => 'page-cache',
+                        'broadcast' => true,
+                        'urls' => ['privacy_policy', 'terms_of_service'],
+                    ],
                 ],
                 'offline_fallback' => [
                     'page' => '/offline.html',

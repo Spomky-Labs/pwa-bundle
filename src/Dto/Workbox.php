@@ -27,8 +27,11 @@ final class Workbox
     #[SerializedName('font_cache')]
     public FontCache $fontCache;
 
-    #[SerializedName('page_cache')]
-    public PageCache $pageCache;
+    /**
+     * @var array<PageCache>
+     */
+    #[SerializedName('page_caches')]
+    public array $pageCaches;
 
     #[SerializedName('asset_cache')]
     public AssetCache $assetCache;

@@ -176,6 +176,16 @@ parameters:
 			path: src/Dto/Manifest.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$cacheName\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/PageCache.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$regex\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/PageCache.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$protocol\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/ProtocolHandler.php
@@ -336,7 +346,7 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCaches\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -482,7 +492,7 @@ parameters:
 
 		-
 			message: "#^Anonymous function should return array but returns mixed\\.$#"
-			count: 10
+			count: 6
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -511,11 +521,6 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'font_fallback' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Cannot access offset 'font_regex' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
@@ -527,11 +532,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'image_cache_name' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'image_fallback' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
@@ -561,43 +561,13 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'network_timeout…' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'offline_fallback' on mixed\\.$#"
-			count: 2
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_cache' on mixed\\.$#"
-			count: 2
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_fallback' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Cannot access offset 'static_regex' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'warm_cache_urls' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
-			count: 4
+			count: 3
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -661,9 +631,19 @@ parameters:
 			path: src/Service/Rule/AssetCache.php
 
 		-
+			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxAge\\: int\\|null, maxEntries\\: int\\|null\\} given\\.$#"
+			count: 1
+			path: src/Service/Rule/GoogleFontCache.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#"
+			count: 1
+			path: src/Service/Rule/OfflineFallback.php
+
+		-
 			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxTimeout\\: int, plugins\\: array\\{0\\: 'CacheableResponsePl…', 1\\?\\: 'BroadcastUpdatePlug…'\\}, warmUrls\\: mixed\\} given\\.$#"
 			count: 1
-			path: src/Service/Rule/PageCache.php
+			path: src/Service/Rule/PageCaches.php
 
 		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
