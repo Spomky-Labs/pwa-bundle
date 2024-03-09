@@ -8,8 +8,6 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class OfflineFallback
 {
-    public bool $enabled = true;
-
     #[SerializedName('page')]
     public null|Url $pageFallback = null;
 

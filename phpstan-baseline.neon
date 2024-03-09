@@ -492,7 +492,7 @@ parameters:
 
 		-
 			message: "#^Anonymous function should return array but returns mixed\\.$#"
-			count: 10
+			count: 6
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -521,11 +521,6 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'font_fallback' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Cannot access offset 'font_regex' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
@@ -537,11 +532,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'image_cache_name' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'image_fallback' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
@@ -571,43 +561,13 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'network_timeout…' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'offline_fallback' on mixed\\.$#"
-			count: 2
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_caches' on mixed\\.$#"
-			count: 2
-			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Cannot access offset 'page_fallback' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Cannot access offset 'static_regex' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'warm_cache_urls' on mixed\\.$#"
-			count: 1
-			path: src/Resources/config/definition/service_worker.php
-
-		-
 			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
-			count: 4
+			count: 3
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -674,6 +634,11 @@ parameters:
 			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxAge\\: int\\|null, maxEntries\\: int\\|null\\} given\\.$#"
 			count: 1
 			path: src/Service/Rule/GoogleFontCache.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#"
+			count: 1
+			path: src/Service/Rule/OfflineFallback.php
 
 		-
 			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxTimeout\\: int, plugins\\: array\\{0\\: 'CacheableResponsePl…', 1\\?\\: 'BroadcastUpdatePlug…'\\}, warmUrls\\: mixed\\} given\\.$#"

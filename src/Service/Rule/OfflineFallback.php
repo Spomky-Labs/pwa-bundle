@@ -46,10 +46,7 @@ final readonly class OfflineFallback implements ServiceWorkerRule
 
     public function process(string $body): string
     {
-        if ($this->workbox->enabled === false) {
-            return $body;
-        }
-        if ($this->workbox->offlineFallback->enabled === false) {
+        if ($this->workbox->enabled === false || ! isset($this->workbox->offlineFallback)) {
             return $body;
         }
         $options = [
@@ -58,6 +55,9 @@ final readonly class OfflineFallback implements ServiceWorkerRule
             'fontFallback' => $this->workbox->offlineFallback->fontFallback,
         ];
         $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
+        if (count($options) === 0) {
+            return $body;
+        }
         $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
 
         $declaration = <<<OFFLINE_FALLBACK_STRATEGY

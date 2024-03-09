@@ -94,38 +94,6 @@ return static function (DefinitionConfigurator $definition): void {
                             return $v;
                         })
                     ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(static fn (mixed $v): bool => true)
-                        ->then(static function (mixed $v): array {
-                            if (isset($v['page_caches'])) {
-                                return $v;
-                            }
-                            $v['page_caches'] = [];
-                            $v['page_caches'][] = array_filter([
-                                'cache_name' => $v['page_cache_name'] ?? 'pages',
-                                'network_timeout' => $v['network_timeout_seconds'] ?? 3,
-                                'urls' => $v['warm_cache_urls'] ?? [],
-                            ], static fn (mixed $v): bool => $v !== null);
-
-                            return $v;
-                        })
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(static fn (mixed $v): bool => true)
-                        ->then(static function (mixed $v): array {
-                            if (isset($v['offline_fallback'])) {
-                                return $v;
-                            }
-                            $v['offline_fallback'] = array_filter([
-                                'enabled' => true,
-                                'page' => $v['page_fallback'] ?? null,
-                                'image' => $v['image_fallback'] ?? null,
-                                'font' => $v['font_fallback'] ?? null,
-                            ], static fn (mixed $v): bool => $v !== null);
-
-                            return $v;
-                        })
-                    ->end()
                     ->children()
                         ->booleanNode('use_cdn')
                             ->defaultFalse()
@@ -207,7 +175,9 @@ return static function (DefinitionConfigurator $definition): void {
                             ->info('Whether to clear the cache during the service worker activation.')
                         ->end()
                         ->arrayNode('offline_fallback')
-                            ->canBeDisabled()
+                            ->treatNullLike([])
+                            ->treatFalseLike([])
+                            ->treatTrueLike([])
                             ->children()
                                 ->append(getUrlNode('page', 'The URL of the offline page fallback.'))
                                 ->append(getUrlNode('image', 'The URL of the offline image fallback.'))
