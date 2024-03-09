@@ -67,7 +67,7 @@ final readonly class AssetCache implements ServiceWorkerRule, HasCacheStrategies
         $assetUrlsLength = count($assets) * 2;
 
         $declaration = <<<ASSET_CACHE_RULE_STRATEGY
-const assetCacheStrategy = new workbox.strategies.CacheFirst({
+const assetCacheStrategy = new workbox.strategies.CacheOnly({
   cacheName: '{$this->workbox->assetCache->cacheName}',
   plugins: [
     new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
@@ -103,7 +103,7 @@ ASSET_CACHE_RULE_STRATEGY;
         return [
             CacheStrategy::create(
                 $this->workbox->assetCache->cacheName,
-                CacheStrategy::STRATEGY_CACHE_FIRST,
+                CacheStrategy::STRATEGY_CACHE_ONLY,
                 sprintf("'({url}) => url.pathname.startsWith('%s')'", $this->assetPublicPrefix),
                 $this->workbox->enabled && $this->workbox->assetCache->enabled,
                 true,

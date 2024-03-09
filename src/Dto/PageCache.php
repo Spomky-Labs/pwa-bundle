@@ -8,13 +8,11 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class PageCache
 {
-    public bool $enabled = true;
-
     #[SerializedName('cache_name')]
-    public string $cacheName = 'pages';
+    public string $cacheName;
 
     #[SerializedName('regex')]
-    public string $regex = '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/';
+    public string $regex;
 
     #[SerializedName('network_timeout')]
     public int $networkTimeout = 3;

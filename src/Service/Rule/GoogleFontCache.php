@@ -77,7 +77,11 @@ IMAGE_CACHE_RULE_STRATEGY;
                 'workbox.recipes.googleFontsCache',
                 'Google Fonts Cache',
                 $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
-                $this->workbox->googleFontCache->enabled
+                $this->workbox->googleFontCache->enabled,
+                [
+                    'maxAge' => $this->workbox->googleFontCache->maxAge,
+                    'maxEntries' => $this->workbox->googleFontCache->maxEntries,
+                ]
             ),
         ];
     }

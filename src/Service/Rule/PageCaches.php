@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service\Rule;
 
+use SpomkyLabs\PwaBundle\Dto\PageCache;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
@@ -18,7 +19,7 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const PHP_EOL;
 
-final readonly class PageCache implements ServiceWorkerRule, HasCacheStrategies
+final readonly class PageCaches implements ServiceWorkerRule, HasCacheStrategies
 {
     /**
      * @var array<string, mixed>
@@ -50,42 +51,81 @@ final readonly class PageCache implements ServiceWorkerRule, HasCacheStrategies
         if ($this->workbox->enabled === false) {
             return $body;
         }
-        if ($this->workbox->pageCache->enabled === false) {
-            return $body;
+
+        foreach (array_values($this->workbox->pageCaches) as $id => $pageCache) {
+            $body = $this->processPageCache($id, $pageCache, $body);
         }
-        $routes = $this->serializer->serialize($this->workbox->pageCache->urls, 'json', $this->jsonOptions);
-        $strategy = match ($this->workbox->pageCache->strategy) {
+
+        return $body;
+    }
+
+    public function getCacheStrategies(): array
+    {
+        $strategies = [];
+        foreach ($this->workbox->pageCaches as $pageCache) {
+            $strategy = match ($pageCache->strategy) {
+                'staleWhileRevalidate' => CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
+                default => CacheStrategy::STRATEGY_NETWORK_FIRST,
+            };
+            $plugins = ['CacheableResponsePlugin'];
+            if ($pageCache->broadcast === true && $strategy === CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE) {
+                $plugins[] = 'BroadcastUpdatePlugin';
+            }
+            $routes = $this->serializer->serialize($pageCache->urls, 'json', $this->jsonOptions);
+            $url = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
+            $strategies[] =
+                CacheStrategy::create(
+                    $pageCache->cacheName,
+                    $strategy,
+                    $pageCache->regex,
+                    $this->workbox->enabled,
+                    true,
+                    [
+                        'maxTimeout' => $pageCache->networkTimeout,
+                        'plugins' => $plugins,
+                        'warmUrls' => $url,
+                    ]
+                );
+        }
+
+        return $strategies;
+    }
+
+    private function processPageCache(int $id, PageCache $pageCache, string $body): string
+    {
+        $routes = $this->serializer->serialize($pageCache->urls, 'json', $this->jsonOptions);
+        $strategy = match ($pageCache->strategy) {
             'staleWhileRevalidate' => 'StaleWhileRevalidate',
             default => 'NetworkFirst',
         };
         $broadcastHeaders = json_encode(
-            $this->workbox->pageCache->broadcastHeaders === [] ? [
+            $pageCache->broadcastHeaders === [] ? [
                 'Content-Type',
                 'ETag',
                 'Last-Modified',
-            ] : $this->workbox->pageCache->broadcastHeaders,
+            ] : $pageCache->broadcastHeaders,
             JSON_THROW_ON_ERROR,
             512
         );
-        $broadcastUpdate = ($strategy === 'StaleWhileRevalidate' && $this->workbox->pageCache->broadcast === true) ? sprintf(
+        $broadcastUpdate = ($strategy === 'StaleWhileRevalidate' && $pageCache->broadcast === true) ? sprintf(
             ',new workbox.broadcastUpdate.BroadcastUpdatePlugin({headersToCheck: %s})',
             $broadcastHeaders
         ) : '';
 
         $declaration = <<<PAGE_CACHE_RULE_STRATEGY
-const pageCacheStrategy = new workbox.strategies.{$strategy}({
-  networkTimeoutSeconds: {$this->workbox->pageCache->networkTimeout},
-  cacheName: '{$this->workbox->pageCache->cacheName}',
+const pageCache{$id}Strategy = new workbox.strategies.{$strategy}({
+  networkTimeoutSeconds: {$pageCache->networkTimeout},
+  cacheName: '{$pageCache->cacheName}',
   plugins: [new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}){$broadcastUpdate}],
 });
 workbox.routing.registerRoute(
-  ({request}) => request.mode === 'navigate',
-  pageCacheStrategy
+  new RegExp('{$pageCache->regex}'),
+  pageCache{$id}Strategy
 );
 self.addEventListener('install', event => {
   const done = {$routes}.map(
     path =>
-      pageCacheStrategy.handleAll({
+      pageCache{$id}Strategy.handleAll({
         event,
         request: new Request(path),
       })[1]
@@ -100,7 +140,7 @@ self.addEventListener('message', (event) => {
     const urls = event.data.payload.urls || [];
     const done = urls.map(
       path =>
-        pageCacheStrategy.handleAll({
+        pageCache{$id}Strategy.handleAll({
           event,
           request: new Request(path),
         })[1]
@@ -111,33 +151,5 @@ self.addEventListener('message', (event) => {
 PAGE_CACHE_RULE_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
-    }
-
-    public function getCacheStrategies(): array
-    {
-        $strategy = match ($this->workbox->pageCache->strategy) {
-            'staleWhileRevalidate' => CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
-            default => CacheStrategy::STRATEGY_NETWORK_FIRST,
-        };
-        $plugins = ['CacheableResponsePlugin'];
-        if ($this->workbox->pageCache->broadcast === true && $strategy === CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE) {
-            $plugins[] = 'BroadcastUpdatePlugin';
-        }
-        $routes = $this->serializer->serialize($this->workbox->pageCache->urls, 'json', $this->jsonOptions);
-        $url = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
-        return [
-            CacheStrategy::create(
-                $this->workbox->pageCache->cacheName,
-                $strategy,
-                "({request}) => request.mode === 'navigate'",
-                $this->workbox->enabled && $this->workbox->pageCache->enabled,
-                true,
-                [
-                    'maxTimeout' => $this->workbox->pageCache->networkTimeout,
-                    'plugins' => $plugins,
-                    'warmUrls' => $url,
-                ]
-            ),
-        ];
     }
 }

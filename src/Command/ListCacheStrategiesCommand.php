@@ -42,7 +42,7 @@ final class ListCacheStrategiesCommand extends Command
                     $strategy->urlPattern,
                     $strategy->enabled ? 'Yes' : 'No',
                     $strategy->requireWorkbox ? 'Yes' : 'No',
-                    Yaml::dump($strategy->options),
+                    '', //Yaml::dump($strategy->options),
                 ]);
             }
         }
