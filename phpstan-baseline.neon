@@ -176,6 +176,16 @@ parameters:
 			path: src/Dto/Manifest.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$cacheName\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/PageCache.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$regex\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/PageCache.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$protocol\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/ProtocolHandler.php
@@ -336,7 +346,7 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCaches\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -571,13 +581,13 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'page_cache' on mixed\\.$#"
-			count: 2
+			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
+			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
-			count: 1
+			message: "#^Cannot access offset 'page_caches' on mixed\\.$#"
+			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -661,9 +671,14 @@ parameters:
 			path: src/Service/Rule/AssetCache.php
 
 		-
+			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxAge\\: int\\|null, maxEntries\\: int\\|null\\} given\\.$#"
+			count: 1
+			path: src/Service/Rule/GoogleFontCache.php
+
+		-
 			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxTimeout\\: int, plugins\\: array\\{0\\: 'CacheableResponsePl…', 1\\?\\: 'BroadcastUpdatePlug…'\\}, warmUrls\\: mixed\\} given\\.$#"
 			count: 1
-			path: src/Service/Rule/PageCache.php
+			path: src/Service/Rule/PageCaches.php
 
 		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
