@@ -92,6 +92,22 @@ self.addEventListener('install', event => {
   );
   event.waitUntil(Promise.all(done));
 });
+fetchAsync = async (url) => {
+  await fetch(url);
+}
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'PREFETCH') {
+    const urls = event.data.payload.urls || [];
+    const done = urls.map(
+      path =>
+        pageCacheStrategy.handleAll({
+          event,
+          request: new Request(path),
+        })[1]
+      );
+      event.waitUntil(Promise.all(done));
+  }
+});
 PAGE_CACHE_RULE_STRATEGY;
 
         return $body . PHP_EOL . PHP_EOL . trim($declaration);
