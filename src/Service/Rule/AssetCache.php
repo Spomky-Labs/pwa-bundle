@@ -62,12 +62,7 @@ final readonly class AssetCache implements ServiceWorkerRule, HasCacheStrategies
         if ($this->workbox->assetCache->enabled === false) {
             return $body;
         }
-        $assets = [];
-        foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($this->workbox->assetCache->regex, $asset->sourcePath) === 1) {
-                $assets[] = $asset->publicPath;
-            }
-        }
+        $assets = $this->getAssets();
         $assetUrls = $this->serializer->serialize($assets, 'json', $this->jsonOptions);
         $assetUrlsLength = count($assets) * 2;
 
@@ -78,7 +73,7 @@ const assetCacheStrategy = new workbox.strategies.CacheFirst({
     new workbox.cacheableResponse.CacheableResponsePlugin({statuses: [0, 200]}),
     new workbox.expiration.ExpirationPlugin({
       maxEntries: {$assetUrlsLength},
-      maxAgeSeconds: 365 * 24 * 60 * 60,
+      maxAgeSeconds: {$this->workbox->assetCache->maxAge},
     }),
   ],
 });
@@ -104,6 +99,7 @@ ASSET_CACHE_RULE_STRATEGY;
 
     public function getCacheStrategies(): array
     {
+        $urls = json_decode($this->serializer->serialize($this->getAssets(), 'json', $this->jsonOptions), true);
         return [
             CacheStrategy::create(
                 $this->workbox->assetCache->cacheName,
@@ -112,10 +108,25 @@ ASSET_CACHE_RULE_STRATEGY;
                 $this->workbox->enabled && $this->workbox->assetCache->enabled,
                 true,
                 [
-                    'maxEntries' => -1,
-                    'maxAge' => 365 * 24 * 60 * 60,
+                    'maxEntries' => count($this->getAssets()) * 2,
+                    'maxAge' => $this->workbox->assetCache->maxAge,
+                    'warmUrls' => $urls,
                 ],
             ),
         ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function getAssets(): array
+    {
+        $assets = [];
+        foreach ($this->assetMapper->allAssets() as $asset) {
+            if (preg_match($this->workbox->assetCache->regex, $asset->sourcePath) === 1) {
+                $assets[] = $asset->publicPath;
+            }
+        }
+        return $assets;
     }
 }

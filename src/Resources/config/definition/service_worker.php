@@ -250,6 +250,11 @@ return static function (DefinitionConfigurator $definition): void {
                                     ->info('The regex to match the assets.')
                                     ->example('/\.(css|js|json|xml|txt|map|ico|png|jpe?g|gif|svg|webp|bmp)$/')
                                 ->end()
+                                ->scalarNode('max_age')
+                                    ->defaultValue(60 * 60 * 24 * 365)
+                                    ->info('The maximum number of seconds before the asset cache is invalidated.')
+                                    ->example([60 * 60 * 24 * 365, 60 * 60 * 24 * 30, 60 * 60 * 24 * 7])
+                                ->end()
                             ->end()
                         ->end()
                         ->arrayNode('font_cache')
@@ -289,6 +294,26 @@ return static function (DefinitionConfigurator $definition): void {
                                         'The network timeout in seconds before cache is called (for warm cache URLs only).'
                                     )
                                     ->example([1, 2, 5])
+                                ->end()
+                                ->scalarNode('strategy')
+                                    ->defaultValue('networkFirst')
+                                    ->info(
+                                        'The caching strategy. Only "networkFirst" and "staleWhileRevalidate" are supported.'
+                                    )
+                                    ->example(['networkFirst', 'staleWhileRevalidate'])
+                                ->end()
+                                ->booleanNode('broadcast')
+                                    ->defaultFalse()
+                                    ->info(
+                                        'Whether to broadcast the cache update events. Only supported with "staleWhileRevalidate" strategy.'
+                                    )
+                                ->end()
+                                ->arrayNode('broadcast_headers')
+                                    ->treatNullLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                    ->treatFalseLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                    ->treatTrueLike(['Content-Length', 'ETag', 'Last-Modified'])
+                                    ->defaultValue(['Content-Length', 'ETag', 'Last-Modified'])
+                                    ->scalarPrototype()->end()
                                 ->end()
                                 ->arrayNode('urls')
                                     ->treatNullLike([])

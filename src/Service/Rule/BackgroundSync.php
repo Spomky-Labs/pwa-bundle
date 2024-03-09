@@ -69,7 +69,7 @@ BACKGROUND_SYNC_RULE_STRATEGY;
         $strategies = [];
         foreach ($this->workbox->backgroundSync as $sync) {
             $strategies[] = CacheStrategy::create(
-                'backgroundSync',
+                '---',
                 CacheStrategy::STRATEGY_NETWORK_ONLY,
                 $sync->regex,
                 $this->workbox->enabled,
@@ -78,6 +78,10 @@ BACKGROUND_SYNC_RULE_STRATEGY;
                     'maxTimeout' => 0,
                     'maxAge' => 0,
                     'maxEntries' => 0,
+                    'plugins' => [
+                        sprintf('backgroundSync: "%s"', $sync->queueName),
+                        sprintf('broadcastChannel: "%s"', $sync->broadcastChannel ?? '---'),
+                    ],
                 ]
             );
         }

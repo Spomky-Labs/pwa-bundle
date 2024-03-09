@@ -19,6 +19,16 @@ final class PageCache
     #[SerializedName('network_timeout')]
     public int $networkTimeout = 3;
 
+    public string $strategy = 'networkFirst';
+
+    public bool $broadcast = false;
+
+    /**
+     * @var array<string>
+     */
+    #[SerializedName('broadcast_headers')]
+    public array $broadcastHeaders = ['Content-Type', 'ETag', 'Last-Modified'];
+
     /**
      * @var array<Url>
      */
