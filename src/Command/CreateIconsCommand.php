@@ -128,7 +128,7 @@ final class CreateIconsCommand extends Command
             ];
             $destMimeType = $mime->guessMimeType($filePath);
             if ($destMimeType !== null) {
-                $config['format'] = $destMimeType;
+                $config['type'] = $destMimeType;
             }
 
             $generatedIcons[] = $config;
