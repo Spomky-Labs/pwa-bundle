@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use SpomkyLabs\PwaBundle\Service\CacheStrategy;
+use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategy;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 
 return static function (DefinitionConfigurator $definition): void {
@@ -98,11 +98,10 @@ return static function (DefinitionConfigurator $definition): void {
                     ->beforeNormalization()
                         ->ifTrue(static fn (mixed $v): bool => true)
                         ->then(static function (mixed $v): array {
-                            if (isset($v['page_caches'])) {
+                            if (isset($v['resource_caches'])) {
                                 return $v;
                             }
-
-                            $v['page_caches'][] = [
+                            $v['resource_caches'][] = [
                                 'match_callback' => 'navigate',
                                 'preload_urls' => $v['warm_cache_urls'] ?? [],
                                 'cache_name' => $v['page_cache_name'] ?? 'pages',
@@ -269,7 +268,7 @@ return static function (DefinitionConfigurator $definition): void {
                                 ->end()
                             ->end()
                         ->end()
-                        ->arrayNode('page_caches')
+                        ->arrayNode('resource_caches')
                             ->treatNullLike([])
                             ->treatFalseLike([])
                             ->treatTrueLike([])
@@ -287,7 +286,7 @@ return static function (DefinitionConfigurator $definition): void {
                                     ->integerNode('network_timeout')
                                         ->defaultValue(3)
                                         ->info(
-                                            'The network timeout in seconds before cache is called (for "NetworkFirst" strategy only).'
+                                            'The network timeout in seconds before cache is called (for "NetworkFirst" and "NetworkOnly" strategies).'
                                         )
                                         ->example([1, 2, 5])
                                     ->end()
@@ -453,7 +452,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].cache_name" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].cache_name" instead.'
                             )
                         ->end()
                         ->scalarNode('asset_cache_name')
@@ -545,7 +544,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].network_timeout" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].network_timeout" instead.'
                             )
                         ->end()
                         ->arrayNode('warm_cache_urls')
@@ -556,7 +555,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].urls" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].urls" instead.'
                             )
                             ->arrayPrototype()
                             ->beforeNormalization()

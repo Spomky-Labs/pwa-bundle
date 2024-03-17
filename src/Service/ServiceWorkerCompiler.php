@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRule;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;

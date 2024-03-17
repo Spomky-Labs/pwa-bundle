@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
-use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
-use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
+use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategies;
+use SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePlugin;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

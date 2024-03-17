@@ -226,7 +226,7 @@ return static function (ContainerConfigurator $container) {
             'scope' => '/',
             'use_cache' => true,
             'workbox' => [
-                'page_caches' => [
+                'resource_caches' => [
                     [
                         'match_callback' => 'regex:.*',
                         'strategy' => 'StaleWhileRevalidate',
