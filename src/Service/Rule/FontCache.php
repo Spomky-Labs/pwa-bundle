@@ -8,7 +8,8 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\CacheableResponsePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\ExpirationPlugin;
 use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -57,17 +58,20 @@ final readonly class FontCache implements HasCacheStrategies
                 true,
                 null,
                 [
-                    CachePlugin::createExpirationPlugin(
+                    ExpirationPlugin::create(
                         $maxEntries,
                         $this->workbox->fontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
                     ),
-                    CachePlugin::createCacheableResponsePlugin(),
+                    CacheableResponsePlugin::create(),
                 ],
                 $urls
             ),
         ];
     }
 
+    /**
+     * @return array<string>
+     */
     private function getFonts(): array
     {
         $fonts = [];

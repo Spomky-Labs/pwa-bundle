@@ -55,8 +55,8 @@ final class ListCacheStrategiesCommand extends Command
                 } else {
                     $table->addRow([
                         $strategy->name,
-                        $strategy->strategy,
-                        $strategy->matchCallback,
+                        '---',
+                        '---',
                         $strategy->enabled ? 'Yes' : 'No',
                         $strategy->requireWorkbox ? 'Yes' : 'No',
                         '',

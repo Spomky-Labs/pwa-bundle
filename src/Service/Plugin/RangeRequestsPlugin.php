@@ -10,4 +10,9 @@ final readonly class RangeRequestsPlugin extends CachePlugin
     {
         return 'new workbox.rangeRequests.RangeRequestsPlugin()';
     }
+
+    public static function create(): static
+    {
+        return new self('RangeRequestsPlugin');
+    }
 }

@@ -9,7 +9,10 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
 use SpomkyLabs\PwaBundle\Service\MatchCallbackHandler\MatchCallbackHandler;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\BroadcastUpdatePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\CacheableResponsePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\ExpirationPlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\RangeRequestsPlugin;
 use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
@@ -56,19 +59,19 @@ final readonly class PageCaches implements HasCacheStrategies
             $cacheName = $pageCache->cacheName ?? sprintf('page-cache-%d', $id);
 
             $plugins = [
-                CachePlugin::createCacheableResponsePlugin(
+                CacheableResponsePlugin::create(
                     $pageCache->cacheableResponseStatuses,
                     $pageCache->cacheableResponseHeaders
                 ),
             ];
             if ($pageCache->broadcast === true && $pageCache->strategy === CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE) {
-                $plugins[] = CachePlugin::createBroadcastUpdatePlugin($pageCache->broadcastHeaders);
+                $plugins[] = BroadcastUpdatePlugin::create($pageCache->broadcastHeaders);
             }
             if ($pageCache->rangeRequests === true && $pageCache->strategy !== CacheStrategy::STRATEGY_NETWORK_ONLY) {
-                $plugins[] = CachePlugin::createRangeRequestsPlugin();
+                $plugins[] = RangeRequestsPlugin::create();
             }
             if ($pageCache->maxEntries !== null || $pageCache->maxAgeInSeconds() !== null) {
-                $plugins[] = CachePlugin::createExpirationPlugin($pageCache->maxEntries, $pageCache->maxAgeInSeconds());
+                $plugins[] = ExpirationPlugin::create($pageCache->maxEntries, $pageCache->maxAgeInSeconds());
             }
 
             $strategies[] =

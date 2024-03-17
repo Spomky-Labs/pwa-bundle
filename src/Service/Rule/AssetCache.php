@@ -8,7 +8,7 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\ExpirationPlugin;
 use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
@@ -61,7 +61,7 @@ final readonly class AssetCache implements HasCacheStrategies
                 true,
                 null,
                 [
-                    CachePlugin::createExpirationPlugin(
+                    ExpirationPlugin::create(
                         count($this->getAssets()) * 2,
                         $this->workbox->assetCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
                     ),

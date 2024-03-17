@@ -39,4 +39,21 @@ BACKGROUND_SYNC_RULE_STRATEGY;
 
         return trim($declaration);
     }
+
+    public static function create(
+        string $queueName,
+        int $maxRetentionTime,
+        bool $forceSyncFallback,
+        ?string $broadcastChannel
+    ): static {
+        return new self(
+            'BackgroundSyncPlugin',
+            [
+                'queueName' => $queueName,
+                'maxRetentionTime' => $maxRetentionTime,
+                'forceSyncFallback' => $forceSyncFallback,
+                'broadcastChannel' => $broadcastChannel,
+            ]
+        );
+    }
 }

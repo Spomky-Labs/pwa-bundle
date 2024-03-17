@@ -8,7 +8,8 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\CacheableResponsePlugin;
+use SpomkyLabs\PwaBundle\Service\Plugin\ExpirationPlugin;
 use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 
 final readonly class GoogleFontCache implements HasCacheStrategies
@@ -44,8 +45,8 @@ final readonly class GoogleFontCache implements HasCacheStrategies
                 true,
                 null,
                 [
-                    CachePlugin::createCacheableResponsePlugin(),
-                    CachePlugin::createExpirationPlugin(
+                    CacheableResponsePlugin::create(),
+                    ExpirationPlugin::create(
                         $this->workbox->googleFontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
                         $this->workbox->googleFontCache->maxEntries ?? 30
                     ),

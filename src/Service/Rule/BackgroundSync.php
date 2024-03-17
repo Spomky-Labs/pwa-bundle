@@ -8,21 +8,22 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\MatchCallbackHandler\MatchCallbackHandler;
+use SpomkyLabs\PwaBundle\Service\Plugin\BackgroundSyncPlugin;
 use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 final readonly class BackgroundSync implements HasCacheStrategies
 {
     private Workbox $workbox;
 
+    /**
+     * @param iterable<MatchCallbackHandler> $matchCallbackHandlers
+     */
     public function __construct(
         ServiceWorker $serviceWorker,
         #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
         private iterable $matchCallbackHandlers,
-        #[Autowire('%kernel.debug%')]
-        bool $debug,
     ) {
         $this->workbox = $serviceWorker->workbox;
     }
@@ -42,7 +43,7 @@ final readonly class BackgroundSync implements HasCacheStrategies
                 true,
                 null,
                 [
-                    CachePlugin::createBackgroundSyncPlugin(
+                    BackgroundSyncPlugin::create(
                         $sync->queueName,
                         $sync->maxRetentionTime,
                         $sync->forceSyncFallback,

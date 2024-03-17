@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use DateInterval;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use function is_string;
 
@@ -27,7 +28,11 @@ abstract class Cache
         }
         if (is_string($this->maxAge)) {
             $now = new DateTimeImmutable();
-            $future = $now->add(DateInterval::createFromDateString($this->maxAge));
+            $interval = DateInterval::createFromDateString($this->maxAge);
+            if ($interval === false) {
+                throw new InvalidArgumentException('Invalid max age');
+            }
+            $future = $now->add($interval);
             return abs($future->getTimestamp() - $now->getTimestamp());
         }
         return $this->maxAge;
