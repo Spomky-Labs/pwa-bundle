@@ -6,16 +6,10 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-final class GoogleFontCache
+final class GoogleFontCache extends Cache
 {
     public bool $enabled;
 
     #[SerializedName('cache_prefix')]
     public null|string $cachePrefix = null;
-
-    #[SerializedName('max_age')]
-    public null|int $maxAge = null;
-
-    #[SerializedName('max_entries')]
-    public null|int $maxEntries = null;
 }

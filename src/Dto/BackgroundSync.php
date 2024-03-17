@@ -6,12 +6,13 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-final class BackgroundSync
+final class BackgroundSync extends Cache
 {
     #[SerializedName('queue_name')]
     public string $queueName;
 
-    public string $regex;
+    #[SerializedName('match_callback')]
+    public string $matchCallback;
 
     public string $method;
 

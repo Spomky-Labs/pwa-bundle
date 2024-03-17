@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SpomkyLabs\PwaBundle\Service\MatchCallbackHandler;
+
+final readonly class DestinationMatchCallbackHandler implements MatchCallbackHandler
+{
+    public function supports(string $matchCallback): bool
+    {
+        return str_starts_with($matchCallback, 'destination:');
+    }
+
+    public function handle(string $matchCallback): string
+    {
+        return sprintf("({request}) => request.destination === '%s'", trim(mb_substr($matchCallback, 12)));
+    }
+}

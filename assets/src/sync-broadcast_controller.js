@@ -26,7 +26,7 @@ export default class extends Controller {
     }
 
     dispatchEvent = (name, payload) => {
-        this.dispatch(name, { detail: payload, prefix: 'connection-status' });
+        this.dispatch(name, { detail: payload });
     }
 
     messageReceived = async (event) => {

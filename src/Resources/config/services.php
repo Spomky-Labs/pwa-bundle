@@ -12,6 +12,7 @@ use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use SpomkyLabs\PwaBundle\Service\MatchCallbackHandler\MatchCallbackHandler;
 use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
@@ -116,4 +117,8 @@ return static function (ContainerConfigurator $container): void {
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\Service\\Rule\\', '../../Service/Rule/*');
+    $container->instanceof(MatchCallbackHandler::class)
+        ->tag('spomky_labs_pwa.match_callback_handler')
+    ;
+    $container->load('SpomkyLabs\\PwaBundle\\Service\\MatchCallbackHandler\\', '../../Service/MatchCallbackHandler/*');
 };

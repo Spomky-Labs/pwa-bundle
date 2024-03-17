@@ -8,10 +8,11 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
+use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use const PHP_EOL;
 
-final readonly class ManifestCache implements ServiceWorkerRule, HasCacheStrategies
+final readonly class ManifestCache implements HasCacheStrategies
 {
     private string $manifestPublicUrl;
 
@@ -50,7 +51,7 @@ IMAGE_CACHE_RULE_STRATEGY;
     public function getCacheStrategies(): array
     {
         return [
-            CacheStrategy::create(
+            WorkboxCacheStrategy::create(
                 'manifest',
                 CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
                 sprintf("({url}) => '%s' === url.pathname", $this->manifestPublicUrl),

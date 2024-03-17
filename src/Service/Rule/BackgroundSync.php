@@ -8,81 +8,61 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use const PHP_EOL;
+use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
-final readonly class BackgroundSync implements ServiceWorkerRule, HasCacheStrategies
+final readonly class BackgroundSync implements HasCacheStrategies
 {
     private Workbox $workbox;
 
-    public function __construct(ServiceWorker $serviceWorker)
-    {
+    public function __construct(
+        ServiceWorker $serviceWorker,
+        #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
+        private iterable $matchCallbackHandlers,
+        #[Autowire('%kernel.debug%')]
+        bool $debug,
+    ) {
         $this->workbox = $serviceWorker->workbox;
     }
 
-    public function process(string $body): string
-    {
-        if ($this->workbox->enabled === false) {
-            return $body;
-        }
-        if ($this->workbox->backgroundSync === []) {
-            return $body;
-        }
-
-        $declaration = '';
-        foreach ($this->workbox->backgroundSync as $sync) {
-            $forceSyncFallback = $sync->forceSyncFallback === true ? 'true' : 'false';
-            $broadcastChannel = '';
-            if ($sync->broadcastChannel !== null) {
-                $broadcastChannel = <<<BROADCAST_CHANNEL
-,
-    "onSync": async ({queue}) => {
-        try {
-            await queue.replayRequests();
-        } catch (error) {
-            // Failed to replay one or more requests
-        } finally {
-            remainingRequests = await queue.getAll();
-            const bc = new BroadcastChannel('{$sync->broadcastChannel}');
-            bc.postMessage({name: '{$sync->queueName}', remaining: remainingRequests.length});
-            bc.close();
-        }
-    }
-BROADCAST_CHANNEL;
-            }
-            $declaration .= <<<BACKGROUND_SYNC_RULE_STRATEGY
-workbox.routing.registerRoute(
-    new RegExp('{$sync->regex}'),
-    new workbox.strategies.NetworkOnly({plugins: [new workbox.backgroundSync.BackgroundSyncPlugin('{$sync->queueName}',{
-    "maxRetentionTime": {$sync->maxRetentionTime},
-    "forceSyncFallback": {$forceSyncFallback}{$broadcastChannel}
-})] }),
-    '{$sync->method}'
-);
-BACKGROUND_SYNC_RULE_STRATEGY;
-        }
-
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
-    }
-
+    /**
+     * @return array<CacheStrategy>
+     */
     public function getCacheStrategies(): array
     {
         $strategies = [];
         foreach ($this->workbox->backgroundSync as $sync) {
-            $strategies[] = CacheStrategy::create(
+            $strategies[] = WorkboxCacheStrategy::create(
                 'BackgroundSync API',
                 CacheStrategy::STRATEGY_NETWORK_ONLY,
-                $sync->regex,
+                $this->prepareMatchCallback($sync->matchCallback),
                 $this->workbox->enabled,
                 true,
+                null,
                 [
-                    'plugins' => [
-                        sprintf('backgroundSync: "%s"', $sync->queueName),
-                        sprintf('broadcastChannel: "%s"', $sync->broadcastChannel ?? '---'),
-                    ],
+                    CachePlugin::createBackgroundSyncPlugin(
+                        $sync->queueName,
+                        $sync->maxRetentionTime,
+                        $sync->forceSyncFallback,
+                        $sync->broadcastChannel
+                    ),
                 ]
             );
         }
 
         return $strategies;
+    }
+
+    private function prepareMatchCallback(string $matchCallback): string
+    {
+        foreach ($this->matchCallbackHandlers as $handler) {
+            if ($handler->supports($matchCallback)) {
+                return $handler->handle($matchCallback);
+            }
+        }
+
+        return $matchCallback;
     }
 }

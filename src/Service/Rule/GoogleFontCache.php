@@ -8,79 +8,47 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CacheStrategy;
 use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Serializer\Encoder\JsonEncode;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
-use function count;
-use const JSON_PRETTY_PRINT;
-use const JSON_THROW_ON_ERROR;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
-use const PHP_EOL;
+use SpomkyLabs\PwaBundle\Service\Plugin\CachePlugin;
+use SpomkyLabs\PwaBundle\Service\WorkboxCacheStrategy;
 
-final readonly class GoogleFontCache implements ServiceWorkerRule, HasCacheStrategies
+final readonly class GoogleFontCache implements HasCacheStrategies
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $jsonOptions;
-
     private Workbox $workbox;
 
     public function __construct(
         ServiceWorker $serviceWorker,
-        private SerializerInterface $serializer,
-        #[Autowire('%kernel.debug%')]
-        bool $debug,
     ) {
         $this->workbox = $serviceWorker->workbox;
-        $options = [
-            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ];
-        if ($debug === true) {
-            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
-        }
-        $this->jsonOptions = $options;
-    }
-
-    public function process(string $body): string
-    {
-        if ($this->workbox->enabled === false) {
-            return $body;
-        }
-        if ($this->workbox->googleFontCache->enabled === false) {
-            return $body;
-        }
-        $options = [
-            'cachePrefix' => $this->workbox->googleFontCache->cachePrefix,
-            'maxAge' => $this->workbox->googleFontCache->maxAge,
-            'maxEntries' => $this->workbox->googleFontCache->maxEntries,
-        ];
-        $options = array_filter($options, static fn (mixed $v): bool => ($v !== null && $v !== ''));
-        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
-
-        $declaration = <<<IMAGE_CACHE_RULE_STRATEGY
-workbox.recipes.googleFontsCache({$options});
-IMAGE_CACHE_RULE_STRATEGY;
-
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
     }
 
     public function getCacheStrategies(): array
     {
+        $prefix = $this->workbox->googleFontCache->cachePrefix ?? '';
+        if ($prefix !== '') {
+            $prefix .= '-';
+        }
+
         return [
-            CacheStrategy::create(
-                'googleFontsCache',
-                'workbox.recipes.googleFontsCache',
-                'Google Fonts Cache',
+            WorkboxCacheStrategy::create(
+                $prefix . 'google-fonts-stylesheets',
+                CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
+                "({url}) => url.origin === 'https://fonts.googleapis.com'",
                 $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
-                $this->workbox->googleFontCache->enabled,
+                true
+            ),
+            WorkboxCacheStrategy::create(
+                $prefix . 'google-fonts-webfonts',
+                CacheStrategy::STRATEGY_CACHE_FIRST,
+                "({url}) => url.origin === 'https://fonts.gstatic.com'",
+                $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
+                true,
+                null,
                 [
-                    'maxAge' => $this->workbox->googleFontCache->maxAge,
-                    'maxEntries' => $this->workbox->googleFontCache->maxEntries,
+                    CachePlugin::createCacheableResponsePlugin(),
+                    CachePlugin::createExpirationPlugin(
+                        $this->workbox->googleFontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
+                        $this->workbox->googleFontCache->maxEntries ?? 30
+                    ),
                 ]
             ),
         ];
