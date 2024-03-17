@@ -11,7 +11,6 @@ use function count;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
-use const PHP_EOL;
 
 final readonly class WindowsWidgets implements ServiceWorkerRule
 {
@@ -21,7 +20,7 @@ final readonly class WindowsWidgets implements ServiceWorkerRule
     ) {
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
         $tags = [];
         foreach ($this->manifest->widgets as $widget) {
@@ -30,7 +29,7 @@ final readonly class WindowsWidgets implements ServiceWorkerRule
             }
         }
         if (count($tags) === 0) {
-            return $body;
+            return '';
         }
         $data = $this->serializer->serialize($tags, 'json', [
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
@@ -96,6 +95,6 @@ async function updateWidgets() {
 }
 OFFLINE_FALLBACK_STRATEGY;
 
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+        return trim($declaration);
     }
 }

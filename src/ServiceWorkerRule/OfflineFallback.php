@@ -15,7 +15,6 @@ use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
-use const PHP_EOL;
 
 final readonly class OfflineFallback implements ServiceWorkerRule
 {
@@ -44,10 +43,10 @@ final readonly class OfflineFallback implements ServiceWorkerRule
         $this->jsonOptions = $options;
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
         if ($this->workbox->enabled === false || ! isset($this->workbox->offlineFallback)) {
-            return $body;
+            return '';
         }
         $options = [
             'pageFallback' => $this->workbox->offlineFallback->pageFallback,
@@ -56,7 +55,7 @@ final readonly class OfflineFallback implements ServiceWorkerRule
         ];
         $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
         if (count($options) === 0) {
-            return $body;
+            return '';
         }
         $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
 
@@ -65,6 +64,6 @@ workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 workbox.recipes.offlineFallback({$options});
 OFFLINE_FALLBACK_STRATEGY;
 
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+        return trim($declaration);
     }
 }

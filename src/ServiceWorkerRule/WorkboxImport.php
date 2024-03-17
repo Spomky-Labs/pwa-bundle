@@ -6,7 +6,6 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use const PHP_EOL;
 
 final readonly class WorkboxImport implements ServiceWorkerRule
 {
@@ -18,10 +17,10 @@ final readonly class WorkboxImport implements ServiceWorkerRule
         $this->workbox = $serviceWorker->workbox;
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
         if ($this->workbox->enabled === false) {
-            return $body;
+            return '';
         }
         if ($this->workbox->useCDN === true) {
             $declaration = <<<IMPORT_CDN_STRATEGY
@@ -35,10 +34,10 @@ workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
 IMPORT_CDN_STRATEGY;
         }
 
-        return trim($declaration) . PHP_EOL . PHP_EOL . $body;
+        return trim($declaration);
     }
 
-    public static function getDefaultPriority(): int
+    public static function getPriority(): int
     {
         return 1024;
     }

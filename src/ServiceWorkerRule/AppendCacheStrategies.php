@@ -33,15 +33,16 @@ final readonly class AppendCacheStrategies implements ServiceWorkerRule
         $this->jsonOptions = $options;
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
+        $body = '';
         foreach ($this->cacheStrategies as $idCacheStrategy => $cacheStrategy) {
             foreach ($cacheStrategy->getCacheStrategies() as $idStrategy => $strategy) {
                 if ($strategy->enabled === false) {
                     continue;
                 }
 
-                $body .= PHP_EOL . PHP_EOL . trim($strategy->render(
+                $body .= PHP_EOL . trim($strategy->render(
                     sprintf('cache_%d_%d', $idCacheStrategy, $idStrategy),
                     $this->jsonOptions
                 ));

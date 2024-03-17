@@ -110,18 +110,18 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     /*** Service Worker Compiler Rules ***/
-    $container->load('SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\', '../../ServiceWorkerRule/*');
     $container->instanceof(ServiceWorkerRule::class)
         ->tag('spomky_labs_pwa.service_worker_rule')
     ;
+    $container->load('SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\', '../../ServiceWorkerRule/*');
 
-    $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*');
     $container->instanceof(HasCacheStrategies::class)
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
+    $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*');
 
-    $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
     $container->instanceof(MatchCallbackHandler::class)
         ->tag('spomky_labs_pwa.match_callback_handler')
     ;
+    $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
 };

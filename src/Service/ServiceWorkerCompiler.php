@@ -33,8 +33,9 @@ final readonly class ServiceWorkerCompiler
             return null;
         }
         $body = '';
+
         foreach ($this->serviceworkerRules as $rule) {
-            $body = $rule->process($body);
+            $body .= $rule->process();
         }
 
         return $body . $this->includeRootSW();
