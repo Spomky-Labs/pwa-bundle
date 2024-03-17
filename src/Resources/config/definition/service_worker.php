@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategy;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 
 return static function (DefinitionConfigurator $definition): void {
@@ -94,6 +95,22 @@ return static function (DefinitionConfigurator $definition): void {
                             return $v;
                         })
                     ->end()
+                    ->beforeNormalization()
+                        ->ifTrue(static fn (mixed $v): bool => true)
+                        ->then(static function (mixed $v): array {
+                            if (isset($v['resource_caches'])) {
+                                return $v;
+                            }
+                            $v['resource_caches'][] = [
+                                'match_callback' => 'navigate',
+                                'preload_urls' => $v['warm_cache_urls'] ?? [],
+                                'cache_name' => $v['page_cache_name'] ?? 'pages',
+                                'network_timeout' => $v['network_timeout_seconds'] ?? 3,
+                            ];
+
+                            return $v;
+                        })
+                    ->end()
                     ->children()
                         ->booleanNode('use_cdn')
                             ->defaultFalse()
@@ -106,7 +123,7 @@ return static function (DefinitionConfigurator $definition): void {
                                     ->defaultNull()
                                     ->info('The cache prefix for the Google fonts.')
                                 ->end()
-                                ->integerNode('max_age')
+                                ->scalarNode('max_age')
                                     ->defaultNull()
                                     ->info('The maximum age of the Google fonts cache (in seconds).')
                                 ->end()
@@ -201,7 +218,7 @@ return static function (DefinitionConfigurator $definition): void {
                                     ->info('The maximum number of entries in the image cache.')
                                     ->example([50, 100, 200])
                                 ->end()
-                                ->integerNode('max_age')
+                                ->scalarNode('max_age')
                                     ->defaultValue(60 * 60 * 24 * 365)
                                     ->info('The maximum number of seconds before the image cache is invalidated.')
                                     ->example([60 * 60 * 24 * 365, 60 * 60 * 24 * 30, 60 * 60 * 24 * 7])
@@ -251,38 +268,84 @@ return static function (DefinitionConfigurator $definition): void {
                                 ->end()
                             ->end()
                         ->end()
-                        ->arrayNode('page_caches')
+                        ->arrayNode('resource_caches')
                             ->treatNullLike([])
                             ->treatFalseLike([])
                             ->treatTrueLike([])
                             ->arrayPrototype()
                                 ->children()
-                                    ->scalarNode('regex')
+                                    ->scalarNode('match_callback')
                                         ->isRequired()
-                                        ->info('The regex to match the URLs.')
+                                        ->info('The regex or callback function to match the URLs.')
+                                        ->example(['/^\/api\//', '({url}) url.pathname === "/api/"'])
                                     ->end()
                                     ->scalarNode('cache_name')
-                                        ->isRequired()
                                         ->info('The name of the page cache.')
+                                        ->example(['pages', 'api'])
                                     ->end()
                                     ->integerNode('network_timeout')
                                         ->defaultValue(3)
                                         ->info(
-                                            'The network timeout in seconds before cache is called (for "networkFirst" strategy only).'
+                                            'The network timeout in seconds before cache is called (for "NetworkFirst" and "NetworkOnly" strategies).'
                                         )
                                         ->example([1, 2, 5])
                                     ->end()
                                     ->scalarNode('strategy')
-                                        ->defaultValue('networkFirst')
+                                        ->defaultValue('NetworkFirst')
                                         ->info(
-                                            'The caching strategy. Only "networkFirst" and "staleWhileRevalidate" are supported.'
+                                            'The caching strategy. Only "NetworkFirst", "CacheFirst" and "StaleWhileRevalidate" are supported.'
                                         )
-                                        ->example(['networkFirst', 'staleWhileRevalidate'])
+                                        ->example(['NetworkFirst', 'StaleWhileRevalidate', 'CacheFirst'])
+                                        ->validate()
+                                            ->ifNotInArray(CacheStrategy::STRATEGIES)
+                                            ->thenInvalid(
+                                                'Invalid caching strategy "%s". Should be one of: ' . implode(
+                                                    ', ',
+                                                    CacheStrategy::STRATEGIES
+                                                )
+                                            )
+                                        ->end()
+                                    ->end()
+                                    ->scalarNode('max_entries')
+                                        ->defaultNull()
+                                        ->info(
+                                            'The maximum number of entries in the cache (for "CacheFirst" and "NetworkFirst" strategy only).'
+                                        )
+                                    ->end()
+                                    ->scalarNode('max_age')
+                                        ->defaultNull()
+                                        ->info(
+                                            'The maximum number of seconds before the cache is invalidated (for "CacheFirst" and "NetWorkFirst" strategy only).'
+                                        )
                                     ->end()
                                     ->booleanNode('broadcast')
                                         ->defaultFalse()
                                         ->info(
-                                            'Whether to broadcast the cache update events (for "staleWhileRevalidate" strategy only).'
+                                            'Whether to broadcast the cache update events (for "StaleWhileRevalidate" strategy only).'
+                                        )
+                                    ->end()
+                                    ->booleanNode('range_requests')
+                                        ->defaultFalse()
+                                        ->info(
+                                            'Whether to support range requests (for "CacheFirst" strategy only).'
+                                        )
+                                    ->end()
+                                    ->arrayNode('cacheable_response_headers')
+                                        ->treatNullLike([])
+                                        ->treatFalseLike([])
+                                        ->treatTrueLike([])
+                                        ->scalarPrototype()->end()
+                                        ->info(
+                                            'The cacheable response headers. If set to ["X-Is-Cacheable" => "true"], only the response with the header "X-Is-Cacheable: true" will be cached.'
+                                        )
+                                    ->end()
+                                    ->arrayNode('cacheable_response_statuses')
+                                        ->treatNullLike([])
+                                        ->treatFalseLike([])
+                                        ->treatTrueLike([])
+                                        ->integerPrototype()->end()
+                                        ->info(
+                                            'The cacheable response statuses. if set to [200], only 200 status will be cached.'
                                         )
                                     ->end()
                                     ->arrayNode('broadcast_headers')
@@ -292,7 +355,7 @@ return static function (DefinitionConfigurator $definition): void {
                                         ->defaultValue(['Content-Length', 'ETag', 'Last-Modified'])
                                         ->scalarPrototype()->end()
                                     ->end()
-                                    ->arrayNode('urls')
+                                    ->arrayNode('preload_urls')
                                         ->treatNullLike([])
                                         ->treatFalseLike([])
                                         ->treatTrueLike([])
@@ -337,9 +400,9 @@ return static function (DefinitionConfigurator $definition): void {
                                         ->info('The name of the queue.')
                                         ->example(['api-requests', 'image-uploads'])
                                     ->end()
-                                    ->scalarNode('regex')
+                                    ->scalarNode('match_callback')
                                         ->isRequired()
-                                        ->info('The regex to match the URLs.')
+                                        ->info('The regex or callback function to match the URLs.')
                                         ->example(['/\/api\//'])
                                     ->end()
                                     ->scalarNode('method')
@@ -389,7 +452,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].cache_name" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].cache_name" instead.'
                             )
                         ->end()
                         ->scalarNode('asset_cache_name')
@@ -481,7 +544,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].network_timeout" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].network_timeout" instead.'
                             )
                         ->end()
                         ->arrayNode('warm_cache_urls')
@@ -492,7 +555,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->setDeprecated(
                                 'spomky-labs/phpwa',
                                 '1.1.0',
-                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.page_caches[].urls" instead.'
+                                'The "%node%" option is deprecated and will be removed in 2.0.0. Please use "pwa.serviceworker.workbox.resource_caches[].urls" instead.'
                             )
                             ->arrayPrototype()
                             ->beforeNormalization()

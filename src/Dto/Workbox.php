@@ -30,8 +30,8 @@ final class Workbox
     /**
      * @var array<PageCache>
      */
-    #[SerializedName('page_caches')]
-    public array $pageCaches;
+    #[SerializedName('resource_caches')]
+    public array $resourceCaches;
 
     #[SerializedName('asset_cache')]
     public AssetCache $assetCache;

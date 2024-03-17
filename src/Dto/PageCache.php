@@ -6,20 +6,32 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-final class PageCache
+final class PageCache extends Cache
 {
-    #[SerializedName('cache_name')]
-    public string $cacheName;
-
-    #[SerializedName('regex')]
-    public string $regex;
+    #[SerializedName('match_callback')]
+    public string $matchCallback;
 
     #[SerializedName('network_timeout')]
     public int $networkTimeout = 3;
 
-    public string $strategy = 'networkFirst';
+    public string $strategy = 'NetworkFirst';
 
     public bool $broadcast = false;
+
+    #[SerializedName('range_requests')]
+    public bool $rangeRequests = false;
+
+    /**
+     * @var int[]
+     */
+    #[SerializedName('cacheable_response_statuses')]
+    public array $cacheableResponseStatuses = [0, 200];
+
+    /**
+     * @var null|array<string, string>
+     */
+    #[SerializedName('cacheable_response_headers')]
+    public array $cacheableResponseHeaders = [];
 
     /**
      * @var array<string>
@@ -30,5 +42,6 @@ final class PageCache
     /**
      * @var array<Url>
      */
+    #[SerializedName('preload_urls')]
     public array $urls = [];
 }

@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Service\Rule;
+namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use const PHP_EOL;
 
 final readonly class ClearCache implements ServiceWorkerRule
 {
@@ -18,13 +17,13 @@ final readonly class ClearCache implements ServiceWorkerRule
         $this->workbox = $serviceWorker->workbox;
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
         if ($this->workbox->enabled === false) {
-            return $body;
+            return '';
         }
         if ($this->workbox->clearCache === false) {
-            return $body;
+            return '';
         }
 
         $declaration = <<<CLEAR_CACHE
@@ -40,6 +39,6 @@ self.addEventListener("install", function (event) {
 });
 CLEAR_CACHE;
 
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+        return trim($declaration);
     }
 }

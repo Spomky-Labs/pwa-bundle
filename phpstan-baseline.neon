@@ -1,6 +1,36 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#1 \\$name of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CachingStrategy/AssetCache.php
+
+		-
+			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/AssetCache.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
+			message: "#^Part \\$this\\-\\>options\\['networkTimeoutSeconds'\\] \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/CachingStrategy/WorkboxCacheStrategy.php
+
+		-
 			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
 			count: 1
 			path: src/Command/CreateIconsCommand.php
@@ -91,6 +121,11 @@ parameters:
 			path: src/Dto/BackgroundSync.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/BackgroundSync.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$maxRetentionTime\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/BackgroundSync.php
@@ -102,11 +137,6 @@ parameters:
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$queueName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/BackgroundSync.php
-
-		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$regex\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
@@ -176,12 +206,12 @@ parameters:
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$cacheName\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/PageCache.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$regex\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^PHPDoc tag @var for property SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache\\:\\:\\$cacheableResponseHeaders with type array\\<string, string\\>\\|null is not subtype of native type array\\.$#"
 			count: 1
 			path: src/Dto/PageCache.php
 
@@ -346,7 +376,7 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$pageCaches\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$resourceCaches\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/Workbox.php
 
@@ -492,11 +522,16 @@ parameters:
 
 		-
 			message: "#^Anonymous function should return array but returns mixed\\.$#"
-			count: 6
+			count: 8
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access an offset on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
@@ -561,7 +596,27 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
+			message: "#^Cannot access offset 'network_timeout…' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'resource_caches' on mixed\\.$#"
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
 			message: "#^Cannot access offset 'static_regex' on mixed\\.$#"
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: "#^Cannot access offset 'warm_cache_urls' on mixed\\.$#"
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
@@ -626,24 +681,14 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
-			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxEntries\\: int\\<0, max\\>, maxAge\\: int, warmUrls\\: mixed\\} given\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
 			count: 1
-			path: src/Service/Rule/AssetCache.php
-
-		-
-			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxAge\\: int\\|null, maxEntries\\: int\\|null\\} given\\.$#"
-			count: 1
-			path: src/Service/Rule/GoogleFontCache.php
+			path: src/ServiceWorkerRule/AppendCacheStrategies.php
 
 		-
 			message: "#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#"
 			count: 1
-			path: src/Service/Rule/OfflineFallback.php
-
-		-
-			message: "#^Parameter \\#6 \\$options of static method SpomkyLabs\\\\PwaBundle\\\\Service\\\\CacheStrategy\\:\\:create\\(\\) expects array\\{maxTimeout\\?\\: int, maxAge\\?\\: int, maxEntries\\?\\: int, warmUrls\\?\\: array\\<string\\>, plugins\\?\\: array\\<string\\>\\}, array\\{maxTimeout\\: int, plugins\\: array\\{0\\: 'CacheableResponsePl…', 1\\?\\: 'BroadcastUpdatePlug…'\\}, warmUrls\\: mixed\\} given\\.$#"
-			count: 1
-			path: src/Service/Rule/PageCaches.php
+			path: src/ServiceWorkerRule/OfflineFallback.php
 
 		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
@@ -659,3 +704,18 @@ parameters:
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\PwaDevServerSubscriber\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Subscriber/PwaDevServerSubscriber.php
+
+		-
+			message: "#^Part \\$broadcastChannel \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/WorkboxPlugin/BackgroundSyncPlugin.php
+
+		-
+			message: "#^Part \\$maxRetentionTime \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/WorkboxPlugin/BackgroundSyncPlugin.php
+
+		-
+			message: "#^Part \\$queueName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 2
+			path: src/WorkboxPlugin/BackgroundSyncPlugin.php

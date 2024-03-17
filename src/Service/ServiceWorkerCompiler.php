@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRule;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
@@ -32,20 +32,27 @@ final readonly class ServiceWorkerCompiler
         if ($this->serviceWorkerEnabled === false) {
             return null;
         }
-        $serviceWorker = $this->serviceWorker;
+        $body = '';
 
-        if (! str_starts_with($serviceWorker->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($serviceWorker->src->src);
+        foreach ($this->serviceworkerRules as $rule) {
+            $body .= $rule->process();
+        }
+
+        return $body . $this->includeRootSW();
+    }
+
+    private function includeRootSW(): string
+    {
+        if ($this->serviceWorker->src->src === '') {
+            return '';
+        }
+        if (! str_starts_with($this->serviceWorker->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($this->serviceWorker->src->src);
             assert($asset !== null, 'Unable to find service worker source asset');
             $body = $asset->content ?? file_get_contents($asset->sourcePath);
         } else {
-            $body = file_get_contents($serviceWorker->src->src);
+            $body = file_get_contents($this->serviceWorker->src->src);
         }
-        assert(is_string($body), 'Unable to find service worker source content');
-        foreach ($this->serviceworkerRules as $rule) {
-            $body = $rule->process($body);
-        }
-
-        return $body;
+        return is_string($body) ? $body : '';
     }
 }

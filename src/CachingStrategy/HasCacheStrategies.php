@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Service;
+namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 interface HasCacheStrategies
 {

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverDimension;
+use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategies;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
@@ -10,11 +11,11 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
-use SpomkyLabs\PwaBundle\Service\HasCacheStrategies;
+use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
-use SpomkyLabs\PwaBundle\Service\Rule\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
@@ -112,8 +113,15 @@ return static function (ContainerConfigurator $container): void {
     $container->instanceof(ServiceWorkerRule::class)
         ->tag('spomky_labs_pwa.service_worker_rule')
     ;
+    $container->load('SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\', '../../ServiceWorkerRule/*');
+
     $container->instanceof(HasCacheStrategies::class)
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
-    $container->load('SpomkyLabs\\PwaBundle\\Service\\Rule\\', '../../Service/Rule/*');
+    $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*');
+
+    $container->instanceof(MatchCallbackHandler::class)
+        ->tag('spomky_labs_pwa.match_callback_handler')
+    ;
+    $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
 };

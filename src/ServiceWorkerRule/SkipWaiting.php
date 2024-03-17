@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Service\Rule;
+namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use const PHP_EOL;
 
 final readonly class SkipWaiting implements ServiceWorkerRule
 {
@@ -14,10 +13,10 @@ final readonly class SkipWaiting implements ServiceWorkerRule
     ) {
     }
 
-    public function process(string $body): string
+    public function process(): string
     {
         if ($this->serviceWorker->skipWaiting === false) {
-            return $body;
+            return '';
         }
 
         $declaration = <<<SKIP_WAITING
@@ -29,6 +28,6 @@ self.addEventListener("activate", function (event) {
 });
 SKIP_WAITING;
 
-        return $body . PHP_EOL . PHP_EOL . trim($declaration);
+        return trim($declaration);
     }
 }
