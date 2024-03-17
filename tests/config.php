@@ -228,11 +228,11 @@ return static function (ContainerConfigurator $container) {
             'workbox' => [
                 'page_caches' => [
                     [
-                        'regex' => '.*',
-                        'strategy' => 'staleWhileRevalidate',
+                        'match_callback' => 'regex:.*',
+                        'strategy' => 'StaleWhileRevalidate',
                         'cache_name' => 'page-cache',
                         'broadcast' => true,
-                        'urls' => ['privacy_policy', 'terms_of_service'],
+                        'preload_urls' => ['privacy_policy', 'terms_of_service'],
                     ],
                 ],
                 'offline_fallback' => [
