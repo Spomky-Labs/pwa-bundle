@@ -51,6 +51,10 @@ function getScreenshotsNode(string $info): ArrayNodeDefinition
         ->info('The format of the screenshot. Will convert the file if set.')
         ->example(['image/jpg', 'image/png', 'image/webp'])
         ->end()
+        ->scalarNode('reference')
+            ->defaultNull()
+            ->info('The URL of the screenshot. Only for reference and not used by the bundle.')
+        ->end()
         ->end()
         ->end();
 
