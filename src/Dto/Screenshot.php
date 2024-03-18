@@ -22,6 +22,8 @@ final class Screenshot
 
     public null|string $label = null;
 
+    public null|string $reference = null;
+
     public null|string $platform = null;
 
     public null|string $type = null;

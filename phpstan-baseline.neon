@@ -77,7 +77,7 @@ parameters:
 
 		-
 			message: "#^Cannot cast mixed to int\\.$#"
-			count: 4
+			count: 6
 			path: src/Command/CreateScreenshotCommand.php
 
 		-

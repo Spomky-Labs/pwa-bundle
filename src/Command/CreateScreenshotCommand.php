@@ -19,6 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 use function count;
 
 #[AsCommand(
@@ -95,7 +96,8 @@ final class CreateScreenshotCommand extends Command
         $format = $input->getOption('format');
 
         $client = clone $this->webClient;
-        $client->request('GET', $url);
+        $crawler = $client->request('GET', $url);
+
         $tmpName = $this->filesystem
             ->tempnam('', 'pwa-');
         if ($width !== null && $height !== null) {
@@ -107,6 +109,13 @@ final class CreateScreenshotCommand extends Command
             ->window()
             ->fullscreen();
         $client->takeScreenshot($tmpName);
+        try {
+            $client->waitFor('title', 5, 500);
+            $result = preg_match("/<title>(.+)<\/title>/i", $crawler->html(), $title);
+            $title = $result === 1 ? $title[1] : null;
+        } catch (Throwable) {
+            $title = null;
+        }
 
         if ($format !== null) {
             $data = $this->imageProcessor->process(file_get_contents($tmpName), null, null, $format);
@@ -138,11 +147,15 @@ final class CreateScreenshotCommand extends Command
 
         $config = [
             'src' => $asset === null ? $filename : $asset->logicalPath,
-            'width' => $width,
-            'height' => $height,
+            'width' => (int) $width,
+            'height' => (int) $height,
+            'reference' => $url,
         ];
         if ($outputMimeType !== null) {
             $config['type'] = $outputMimeType;
+        }
+        if ($title !== null && $title !== '') {
+            $config['label'] = $title;
         }
         $io->success('Screenshot saved. You can now use it in your application configuration file.');
         $io->writeln(Yaml::dump([
