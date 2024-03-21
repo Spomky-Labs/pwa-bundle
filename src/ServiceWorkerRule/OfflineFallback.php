@@ -6,7 +6,6 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -18,36 +17,21 @@ use const JSON_UNESCAPED_UNICODE;
 
 final readonly class OfflineFallback implements ServiceWorkerRule
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $jsonOptions;
-
     private Workbox $workbox;
 
     public function __construct(
         ServiceWorker $serviceWorker,
         private SerializerInterface $serializer,
-        #[Autowire('%kernel.debug%')]
-        bool $debug,
     ) {
         $this->workbox = $serviceWorker->workbox;
-        $options = [
-            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ];
-        if ($debug === true) {
-            $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
-        }
-        $this->jsonOptions = $options;
     }
 
-    public function process(): string
+    public function process(bool $debug = false): string
     {
         if ($this->workbox->enabled === false || ! isset($this->workbox->offlineFallback)) {
             return '';
         }
+
         $options = [
             'pageFallback' => $this->workbox->offlineFallback->pageFallback,
             'imageFallback' => $this->workbox->offlineFallback->imageFallback,
@@ -57,13 +41,54 @@ final readonly class OfflineFallback implements ServiceWorkerRule
         if (count($options) === 0) {
             return '';
         }
-        $options = count($options) === 0 ? '' : $this->serializer->serialize($options, 'json', $this->jsonOptions);
+        $options = count($options) === 0 ? '' : $this->serializer->serialize(
+            $options,
+            'json',
+            $this->serializerOptions($debug)
+        );
 
-        $declaration = <<<OFFLINE_FALLBACK_STRATEGY
+        $declaration = '';
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
+
+
+/**************************************************** OFFLINE FALLBACK ****************************************************/
+// The configuration is set to provide offline fallbacks
+DEBUG_COMMENT;
+        }
+
+        $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 workbox.recipes.offlineFallback({$options});
+
 OFFLINE_FALLBACK_STRATEGY;
 
-        return trim($declaration);
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
+/**************************************************** END OFFLINE FALLBACK ****************************************************/
+
+
+
+
+DEBUG_COMMENT;
+        }
+        return $declaration;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function serializerOptions(bool $debug): array
+    {
+        $jsonOptions = [
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        if ($debug === true) {
+            $jsonOptions[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+
+        return $jsonOptions;
     }
 }

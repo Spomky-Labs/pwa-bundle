@@ -145,10 +145,11 @@ DEBUG_STATEMENT;
         }
 
         $declaration .= <<<ROUTE_REGISTRATION
-
+// Creation of the Workbox Cache Strategy object
 const {$cacheObjectName} = new workbox.strategies.{$this->strategy}({
   {$timeout}{$cacheName}plugins: {$plugins}
 });
+// Register the route with the Workbox Router
 workbox.routing.registerRoute({$this->matchCallback},{$cacheObjectName}{$method});
 
 ROUTE_REGISTRATION;
@@ -156,6 +157,7 @@ ROUTE_REGISTRATION;
         if ($this->preloadUrls !== []) {
             $fontUrls = json_encode($this->preloadUrls, $jsonOptions);
             $declaration .= <<<ASSET_CACHE_RULE_PRELOAD
+// As preloading is enabled, we will add the following assets to the cache when the service worker is installed
 self.addEventListener('install', event => {
   const done = {$fontUrls}.map(
     path =>
@@ -173,6 +175,7 @@ ASSET_CACHE_RULE_PRELOAD;
 
         $declaration .= <<<DEBUG_STATEMENT
 /**************************************************** END CACHE STRATEGY ****************************************************/
+
 
 
 DEBUG_STATEMENT;

@@ -22,7 +22,7 @@ final readonly class AppendCacheStrategies implements ServiceWorkerRule
     ) {
     }
 
-    public function process(): string
+    public function process(bool $debug = false): string
     {
         $body = '';
         foreach ($this->cacheStrategies as $idCacheStrategy => $cacheStrategy) {
