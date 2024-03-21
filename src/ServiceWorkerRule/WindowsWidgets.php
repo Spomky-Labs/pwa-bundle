@@ -34,8 +34,9 @@ final readonly class WindowsWidgets implements ServiceWorkerRule
             return '';
         }
         $data = $this->serializer->serialize($tags, 'json', $this->serializerOptions($debug));
+        $declaration = '';
         if ($debug === true) {
-            $declaration = <<<DEBUG_COMMENT
+            $declaration .= <<<DEBUG_COMMENT
 
 
 /**************************************************** END WINDOWS WIDGETS ****************************************************/
