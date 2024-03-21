@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategy;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategies;
 use SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePlugin;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -39,35 +41,39 @@ final class ListCacheStrategiesCommand extends Command
             ['Name', 'Strategy', 'URL pattern', 'Enabled', 'Workbox?', 'Plugins', 'Preload URLs', 'Options']
         );
         foreach ($this->services as $service) {
-            $strategies = $service->getCacheStrategies();
-            foreach ($strategies as $strategy) {
-                if ($strategy instanceof WorkboxCacheStrategy) {
-                    $table->addRow([
-                        $strategy->getName(),
-                        $strategy->strategy,
-                        $strategy->matchCallback,
-                        $strategy->isEnabled() ? 'Yes' : 'No',
-                        $strategy->needsWorkbox() ? 'Yes' : 'No',
-                        Yaml::dump(array_map(fn (CachePlugin $v): string => $v->getName(), $strategy->getPlugins())),
-                        count($strategy->getPreloadUrls()),
-                        Yaml::dump($strategy->getOptions()),
-                    ]);
-                } else {
-                    $table->addRow([
-                        $strategy->getName(),
-                        '---',
-                        '---',
-                        $strategy->isEnabled() ? 'Yes' : 'No',
-                        $strategy->needsWorkbox() ? 'Yes' : 'No',
-                        '',
-                        '',
-                        '',
-                    ]);
-                }
+            foreach ($service->getCacheStrategies() as $strategy) {
+                $this->processStrategy($strategy, $table);
             }
         }
         $table->render();
 
         return self::SUCCESS;
+    }
+
+    private function processStrategy(CacheStrategy $strategy, Table $table): void
+    {
+        if ($strategy instanceof WorkboxCacheStrategy) {
+            $table->addRow([
+                $strategy->getName(),
+                $strategy->strategy,
+                $strategy->matchCallback,
+                $strategy->isEnabled() ? 'Yes' : 'No',
+                $strategy->needsWorkbox() ? 'Yes' : 'No',
+                Yaml::dump(array_map(fn (CachePlugin $v): string => $v->getName(), $strategy->getPlugins())),
+                count($strategy->getPreloadUrls()),
+                Yaml::dump($strategy->getOptions()),
+            ]);
+        } else {
+            $table->addRow([
+                $strategy->getName(),
+                '---',
+                '---',
+                $strategy->isEnabled() ? 'Yes' : 'No',
+                $strategy->needsWorkbox() ? 'Yes' : 'No',
+                '',
+                '',
+                '',
+            ]);
+        }
     }
 }
