@@ -49,23 +49,25 @@ final readonly class AssetCache implements HasCacheStrategies
         $urls = json_decode($this->serializer->serialize($this->getAssets(), 'json', [
             JsonEncode::OPTIONS => $this->jsonOptions,
         ]), true);
-        return [
-            WorkboxCacheStrategy::create(
-                $this->workbox->assetCache->cacheName,
-                CacheStrategy::STRATEGY_CACHE_FIRST,
-                sprintf("({url}) => url.pathname.startsWith('%s')", $this->assetPublicPrefix),
-                $this->workbox->enabled && $this->workbox->assetCache->enabled,
-                true,
-                null,
-                [
-                    ExpirationPlugin::create(
-                        count($this->getAssets()) * 2,
-                        $this->workbox->assetCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
-                    ),
-                ],
-                $urls
-            ),
-        ];
+
+        $strategy = WorkboxCacheStrategy::create(
+            $this->workbox->enabled && $this->workbox->assetCache->enabled,
+            true,
+            CacheStrategy::STRATEGY_CACHE_FIRST,
+            sprintf("({url}) => url.pathname.startsWith('%s')", $this->assetPublicPrefix),
+        )
+            ->withName($this->workbox->assetCache->cacheName)
+            ->withPlugin(
+                ExpirationPlugin::create(
+                    count($this->getAssets()) * 2,
+                    $this->workbox->assetCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
+                ),
+            );
+
+        if (count($urls) > 0) {
+            $strategy = $strategy->withPreloadUrl(...$urls);
+        }
+        return [$strategy];
     }
 
     /**

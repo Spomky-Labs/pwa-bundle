@@ -6,8 +6,6 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
-use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -30,23 +28,15 @@ final readonly class ImageCache implements HasCacheStrategies
     {
         return [
             WorkboxCacheStrategy::create(
-                $this->workbox->imageCache->cacheName ?? 'images',
+                $this->workbox->enabled && $this->workbox->imageCache->enabled,
+                true,
                 CacheStrategy::STRATEGY_CACHE_FIRST,
                 sprintf(
                     "({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('%s'))",
                     $this->assetPublicPrefix
-                ),
-                $this->workbox->enabled && $this->workbox->imageCache->enabled,
-                true,
-                null,
-                [
-                    CacheableResponsePlugin::create(),
-                    ExpirationPlugin::create(
-                        $this->workbox->imageCache->maxEntries ?? 60,
-                        $this->workbox->imageCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 7
-                    ),
-                ]
-            ),
+                )
+            )
+                ->withName($this->workbox->imageCache->cacheName ?? 'images'),
         ];
     }
 }

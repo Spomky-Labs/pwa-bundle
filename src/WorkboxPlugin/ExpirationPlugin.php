@@ -4,18 +4,35 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class ExpirationPlugin extends CachePlugin
+final readonly class ExpirationPlugin implements CachePlugin
 {
+    private const NAME = 'ExpirationPlugin';
+
+    /**
+     * @var array{maxEntries: null|int, maxAgeSeconds: null|int}
+     */
+    private array $options;
+
+    public function __construct(null|int $maxEntries, null|int $maxAgeSeconds)
+    {
+        $this->options = [
+            'maxEntries' => $maxEntries,
+            'maxAgeSeconds' => $maxAgeSeconds,
+        ];
+    }
+
     public function render(int $jsonOptions = 0): string
     {
         return sprintf('new workbox.expiration.ExpirationPlugin(%s)', json_encode($this->options, $jsonOptions));
     }
 
-    public static function create(null|int $maxEntries, null|string|int $maxAgeSeconds): static
+    public static function create(null|int $maxEntries, null|int $maxAgeSeconds): static
     {
-        return new self('ExpirationPlugin', [
-            'maxEntries' => $maxEntries,
-            'maxAgeSeconds' => $maxAgeSeconds,
-        ]);
+        return new self($maxEntries, $maxAgeSeconds);
+    }
+
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }

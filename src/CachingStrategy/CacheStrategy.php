@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
-abstract readonly class CacheStrategy
+interface CacheStrategy
 {
     public const STRATEGY_CACHE_FIRST = 'CacheFirst';
 
@@ -24,12 +24,11 @@ abstract readonly class CacheStrategy
         self::STRATEGY_STALE_WHILE_REVALIDATE,
     ];
 
-    public function __construct(
-        public string $name,
-        public bool $enabled,
-        public bool $requireWorkbox,
-    ) {
-    }
+    public function getName(): ?string;
 
-    abstract public function render(string $cacheObjectName, int $jsonOptions = 0): string;
+    public function isEnabled(): bool;
+
+    public function needsWorkbox(): bool;
+
+    public function render(string $cacheObjectName, bool $debug = false): string;
 }

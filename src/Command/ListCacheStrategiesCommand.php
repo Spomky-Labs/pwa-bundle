@@ -43,22 +43,22 @@ final class ListCacheStrategiesCommand extends Command
             foreach ($strategies as $strategy) {
                 if ($strategy instanceof WorkboxCacheStrategy) {
                     $table->addRow([
-                        $strategy->name,
+                        $strategy->getName(),
                         $strategy->strategy,
                         $strategy->matchCallback,
-                        $strategy->enabled ? 'Yes' : 'No',
-                        $strategy->requireWorkbox ? 'Yes' : 'No',
-                        Yaml::dump(array_map(fn (CachePlugin $v): string => $v->name, $strategy->plugins)),
-                        count($strategy->preloadUrls),
-                        Yaml::dump($strategy->options),
+                        $strategy->isEnabled() ? 'Yes' : 'No',
+                        $strategy->needsWorkbox() ? 'Yes' : 'No',
+                        Yaml::dump(array_map(fn (CachePlugin $v): string => $v->getName(), $strategy->getPlugins())),
+                        count($strategy->getPreloadUrls()),
+                        Yaml::dump($strategy->getOptions()),
                     ]);
                 } else {
                     $table->addRow([
-                        $strategy->name,
+                        $strategy->getName(),
                         '---',
                         '---',
-                        $strategy->enabled ? 'Yes' : 'No',
-                        $strategy->requireWorkbox ? 'Yes' : 'No',
+                        $strategy->isEnabled() ? 'Yes' : 'No',
+                        $strategy->needsWorkbox() ? 'Yes' : 'No',
                         '',
                         '',
                         '',

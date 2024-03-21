@@ -4,16 +4,28 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class BackgroundSyncPlugin extends CachePlugin
+final readonly class BackgroundSyncPlugin implements CachePlugin
 {
+    private const NAME = 'BackgroundSyncPlugin';
+
+    public function __construct(
+        public string $queueName,
+        public bool $forceSyncFallback,
+        public null|string $broadcastChannel,
+        public int $maxRetentionTime,
+    ) {
+    }
+
+    public function getName(): string
+    {
+        return self::NAME;
+    }
+
     public function render(int $jsonOptions = 0): string
     {
-        $forceSyncFallback = $this->options['forceSyncFallback'] === true ? 'true' : 'false';
-        $broadcastChannel = $this->options['broadcastChannel'];
-        $maxRetentionTime = $this->options['maxRetentionTime'];
-        $queueName = $this->options['queueName'];
+        $forceSyncFallback = $this->forceSyncFallback === true ? 'true' : 'false';
         $broadcastChannelSection = '';
-        if ($broadcastChannel !== null) {
+        if ($this->broadcastChannel !== null) {
             $broadcastChannelSection = <<<BROADCAST_CHANNEL
 , "onSync": async ({queue}) => {
     try {
@@ -22,8 +34,8 @@ final readonly class BackgroundSyncPlugin extends CachePlugin
         // Failed to replay one or more requests
     } finally {
         remainingRequests = await queue.getAll();
-        const bc = new BroadcastChannel('{$broadcastChannel}');
-        bc.postMessage({name: '{$queueName}', remaining: remainingRequests.length});
+        const bc = new BroadcastChannel('{$this->broadcastChannel}');
+        bc.postMessage({name: '{$this->queueName}', remaining: remainingRequests.length});
         bc.close();
     }
 }
@@ -31,8 +43,8 @@ BROADCAST_CHANNEL;
         }
 
         $declaration = <<<BACKGROUND_SYNC_RULE_STRATEGY
-new workbox.backgroundSync.BackgroundSyncPlugin('{$queueName}',{
-    "maxRetentionTime": {$maxRetentionTime},
+new workbox.backgroundSync.BackgroundSyncPlugin('{$this->queueName}',{
+    "maxRetentionTime": {$this->maxRetentionTime},
     "forceSyncFallback": {$forceSyncFallback}{$broadcastChannelSection}
 })
 BACKGROUND_SYNC_RULE_STRATEGY;
@@ -44,16 +56,8 @@ BACKGROUND_SYNC_RULE_STRATEGY;
         string $queueName,
         int $maxRetentionTime,
         bool $forceSyncFallback,
-        ?string $broadcastChannel
+        null|string $broadcastChannel
     ): static {
-        return new self(
-            'BackgroundSyncPlugin',
-            [
-                'queueName' => $queueName,
-                'maxRetentionTime' => $maxRetentionTime,
-                'forceSyncFallback' => $forceSyncFallback,
-                'broadcastChannel' => $broadcastChannel,
-            ]
-        );
+        return new self($queueName, $forceSyncFallback, $broadcastChannel, $maxRetentionTime);
     }
 }

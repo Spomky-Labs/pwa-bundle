@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\SerializerInterface;
+use function count;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -52,7 +53,7 @@ final readonly class ResourceCaches implements HasCacheStrategies
             $routes = $this->serializer->serialize($resourceCache->urls, 'json', [
                 JsonEncode::OPTIONS => $this->jsonOptions,
             ]);
-            $url = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
+            $urls = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
 
             $cacheName = $resourceCache->cacheName ?? sprintf('page-cache-%d', $id);
 
@@ -72,20 +73,22 @@ final readonly class ResourceCaches implements HasCacheStrategies
                 $plugins[] = ExpirationPlugin::create($resourceCache->maxEntries, $resourceCache->maxAgeInSeconds());
             }
 
-            $strategies[] =
-                WorkboxCacheStrategy::create(
-                    $cacheName,
-                    $resourceCache->strategy,
-                    $this->prepareMatchCallback($resourceCache->matchCallback),
-                    $this->workbox->enabled,
-                    true,
-                    null,
-                    $plugins,
-                    $url,
-                    [
-                        'networkTimeoutSeconds' => $resourceCache->networkTimeout,
-                    ]
-                );
+            $strategy = WorkboxCacheStrategy::create(
+                $this->workbox->enabled,
+                true,
+                $resourceCache->strategy,
+                $this->prepareMatchCallback($resourceCache->matchCallback)
+            )
+                ->withName($cacheName)
+                ->withPlugin(...$plugins)
+                ->withOptions([
+                    'networkTimeoutSeconds' => $resourceCache->networkTimeout,
+                ]);
+            if (count($urls) > 0) {
+                $strategy = $strategy->withPreloadUrl(...$urls);
+            }
+
+            $strategies[] = $strategy;
         }
 
         return $strategies;

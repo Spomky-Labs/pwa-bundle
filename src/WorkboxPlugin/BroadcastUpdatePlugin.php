@@ -4,13 +4,36 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class BroadcastUpdatePlugin extends CachePlugin
+final readonly class BroadcastUpdatePlugin implements CachePlugin
 {
+    private const NAME = 'BroadcastUpdatePlugin';
+
+    /**
+     * @var array<string>
+     */
+    private array $headersToCheck;
+
+    /**
+     * @param array<string> $headersToCheck
+     */
+    public function __construct(
+        array $headersToCheck = []
+    ) {
+        $this->headersToCheck = $headersToCheck === [] ? ['Content-Type', 'ETag', 'Last-Modified'] : $headersToCheck;
+    }
+
+    public function getName(): string
+    {
+        return self::NAME;
+    }
+
     public function render(int $jsonOptions = 0): string
     {
         return sprintf(
             'new workbox.broadcastUpdate.BroadcastUpdatePlugin(%s)',
-            json_encode($this->options, $jsonOptions)
+            json_encode([
+                'headersToCheck' => $this->headersToCheck,
+            ], $jsonOptions)
         );
     }
 
@@ -19,10 +42,6 @@ final readonly class BroadcastUpdatePlugin extends CachePlugin
      */
     public static function create(array $headersToCheck = []): static
     {
-        $headersToCheck = $headersToCheck === [] ? ['Content-Type', 'ETag', 'Last-Modified'] : $headersToCheck;
-
-        return new self('BroadcastUpdatePlugin', [
-            'headersToCheck' => $headersToCheck,
-        ]);
+        return new self($headersToCheck);
     }
 }
