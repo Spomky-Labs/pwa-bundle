@@ -34,6 +34,7 @@ final readonly class ClearCache implements ServiceWorkerRule
 /**************************************************** CACHE CLEAR ****************************************************/
 // The configuration is set to clear the cache on each install event
 // The following code will remove all the caches
+
 DEBUG_COMMENT;
         }
 
