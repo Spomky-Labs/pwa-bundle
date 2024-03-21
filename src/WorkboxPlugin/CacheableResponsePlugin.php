@@ -4,8 +4,30 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class CacheableResponsePlugin extends CachePlugin
+final readonly class CacheableResponsePlugin implements CachePlugin
 {
+    private const NAME = 'CacheableResponsePlugin';
+
+    /**
+     * @var array{options?: array{statuses: array<int>, headers?: array<string, string>}}
+     */
+    private array $options;
+
+    /**
+     * @param array<int> $statuses
+     * @param array<string, string> $headers
+     */
+    public function __construct(array $statuses = [0, 200], array $headers = [])
+    {
+        $options = array_filter([
+            'statuses' => $statuses,
+            'headers' => $headers,
+        ], fn ($value) => $value !== []);
+        $this->options = $options === [] ? [
+            'statuses' => [0, 200],
+        ] : $options;
+    }
+
     public function render(int $jsonOptions = 0): string
     {
         return sprintf(
@@ -20,14 +42,11 @@ final readonly class CacheableResponsePlugin extends CachePlugin
      */
     public static function create(array $statuses = [0, 200], array $headers = []): static
     {
-        $options = array_filter([
-            'statuses' => $statuses,
-            'headers' => $headers,
-        ], fn ($value) => $value !== []);
-        $options = $options === [] ? [
-            'statuses' => [0, 200],
-        ] : $options;
+        return new self($statuses, $headers);
+    }
 
-        return new self('CacheableResponsePlugin', $options);
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }

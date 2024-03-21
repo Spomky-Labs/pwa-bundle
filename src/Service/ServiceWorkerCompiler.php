@@ -24,6 +24,8 @@ final readonly class ServiceWorkerCompiler
         private AssetMapperInterface $assetMapper,
         #[TaggedIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
         private iterable $serviceworkerRules,
+        #[Autowire('%kernel.debug%')]
+        public bool $debug,
     ) {
     }
 
@@ -35,7 +37,11 @@ final readonly class ServiceWorkerCompiler
         $body = '';
 
         foreach ($this->serviceworkerRules as $rule) {
-            $body .= $rule->process();
+            $ruleBody = $rule->process($this->debug);
+            if ($this->debug === false) {
+                $ruleBody = trim($ruleBody);
+            }
+            $body .= $ruleBody;
         }
 
         return $body . $this->includeRootSW();

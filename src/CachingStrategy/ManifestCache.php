@@ -27,12 +27,12 @@ final readonly class ManifestCache implements HasCacheStrategies
     {
         return [
             WorkboxCacheStrategy::create(
-                'manifest',
+                $this->workbox->enabled && $this->workbox->cacheManifest,
+                true,
                 CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
                 sprintf("({url}) => '%s' === url.pathname", $this->manifestPublicUrl),
-                $this->workbox->enabled && $this->workbox->cacheManifest,
-                true
-            ),
+            )
+                ->withName('manifest'),
         ];
     }
 }

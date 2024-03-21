@@ -1,27 +1,52 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$name of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$name of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CachingStrategy/AssetCache.php
+
+		-
+			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
 			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
 			count: 1
-			path: src/CachingStrategy/FontCache.php
+			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
 			count: 1
 			path: src/CachingStrategy/FontCache.php
 
 		-
-			message: "#^Parameter \\#8 \\$preloadUrls of static method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:create\\(\\) expects array\\<string\\>, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			count: 2
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
+			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
 			count: 1
 			path: src/CachingStrategy/ResourceCaches.php
 
@@ -704,18 +729,3 @@ parameters:
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\PwaDevServerSubscriber\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Subscriber/PwaDevServerSubscriber.php
-
-		-
-			message: "#^Part \\$broadcastChannel \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: src/WorkboxPlugin/BackgroundSyncPlugin.php
-
-		-
-			message: "#^Part \\$maxRetentionTime \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: src/WorkboxPlugin/BackgroundSyncPlugin.php
-
-		-
-			message: "#^Part \\$queueName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: src/WorkboxPlugin/BackgroundSyncPlugin.php

@@ -17,24 +17,59 @@ final readonly class WorkboxImport implements ServiceWorkerRule
         $this->workbox = $serviceWorker->workbox;
     }
 
-    public function process(): string
+    public function process(bool $debug = false): string
     {
         if ($this->workbox->enabled === false) {
             return '';
         }
+        $declaration = '';
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
+
+
+/**************************************************** WORKBOX IMPORT ****************************************************/
+// The configuration is set to use Workbox
+// The following code will import Workbox from CDN or public URL
+
+DEBUG_COMMENT;
+        }
         if ($this->workbox->useCDN === true) {
-            $declaration = <<<IMPORT_CDN_STRATEGY
+            if ($debug === true) {
+                $declaration .= <<<DEBUG_COMMENT
+// Import from CDN
+
+
+DEBUG_COMMENT;
+            }
+            $declaration .= <<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->version}/workbox-sw.js');
 IMPORT_CDN_STRATEGY;
         } else {
             $publicUrl = '/' . trim($this->workbox->workboxPublicUrl, '/');
-            $declaration = <<<IMPORT_CDN_STRATEGY
+            if ($debug === true) {
+                $declaration .= <<<DEBUG_COMMENT
+// Import from public URL
+
+
+DEBUG_COMMENT;
+            }
+            $declaration .= <<<IMPORT_CDN_STRATEGY
 importScripts('{$publicUrl}/workbox-sw.js');
 workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
+
 IMPORT_CDN_STRATEGY;
         }
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
+/**************************************************** END WORKBOX IMPORT ****************************************************/
 
-        return trim($declaration);
+
+
+
+DEBUG_COMMENT;
+        }
+
+        return $declaration;
     }
 
     public static function getPriority(): int

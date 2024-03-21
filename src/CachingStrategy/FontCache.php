@@ -46,24 +46,26 @@ final readonly class FontCache implements HasCacheStrategies
         ]), true);
         $maxEntries = count($urls) + ($this->workbox->fontCache->maxEntries ?? 60);
 
-        return [
-            WorkboxCacheStrategy::create(
-                $this->workbox->fontCache->cacheName ?? 'fonts',
-                CacheStrategy::STRATEGY_CACHE_FIRST,
-                "({request}) => request.destination === 'font'",
-                $this->workbox->enabled && $this->workbox->fontCache->enabled,
-                true,
-                null,
-                [
-                    ExpirationPlugin::create(
-                        $maxEntries,
-                        $this->workbox->fontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
-                    ),
-                    CacheableResponsePlugin::create(),
-                ],
-                $urls
-            ),
-        ];
+        $strategy = WorkboxCacheStrategy::create(
+            $this->workbox->enabled && $this->workbox->fontCache->enabled,
+            true,
+            CacheStrategy::STRATEGY_CACHE_FIRST,
+            "({request}) => request.destination === 'font'"
+        )
+            ->withName($this->workbox->fontCache->cacheName ?? 'fonts')
+            ->withMethod('GET')
+            ->withPlugin(
+                CacheableResponsePlugin::create(),
+                ExpirationPlugin::create(
+                    $maxEntries,
+                    $this->workbox->fontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365
+                ),
+            );
+        if (count($urls) > 0) {
+            $strategy = $strategy->withPreloadUrl(...$urls);
+        }
+
+        return [$strategy];
     }
 
     /**

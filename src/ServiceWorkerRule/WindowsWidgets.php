@@ -6,8 +6,10 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use function count;
+use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
@@ -20,7 +22,7 @@ final readonly class WindowsWidgets implements ServiceWorkerRule
     ) {
     }
 
-    public function process(): string
+    public function process(bool $debug = false): string
     {
         $tags = [];
         foreach ($this->manifest->widgets as $widget) {
@@ -31,11 +33,20 @@ final readonly class WindowsWidgets implements ServiceWorkerRule
         if (count($tags) === 0) {
             return '';
         }
-        $data = $this->serializer->serialize($tags, 'json', [
-            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
-        ]);
+        $data = $this->serializer->serialize($tags, 'json', $this->serializerOptions($debug));
+        $declaration = '';
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
 
-        $declaration = <<<OFFLINE_FALLBACK_STRATEGY
+
+/**************************************************** END WINDOWS WIDGETS ****************************************************/
+// The following code will manage the installation and uninstallation of widgets
+// NOTE: this feature is experimental and may not work as expected
+
+DEBUG_COMMENT;
+        }
+
+        $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
 self.addEventListener("widgetinstall", event => {
     event.waitUntil(renderWidget(event.widget));
 });
@@ -93,8 +104,35 @@ async function updateWidgets() {
         await self.widgets.updateByTag(widget.definition.tag, {template, data});
     }
 }
-OFFLINE_FALLBACK_STRATEGY;
 
-        return trim($declaration);
+OFFLINE_FALLBACK_STRATEGY;
+        if ($debug === true) {
+            $declaration .= <<<DEBUG_COMMENT
+/**************************************************** END WINDOWS WIDGETS ****************************************************/
+
+
+
+
+DEBUG_COMMENT;
+        }
+
+        return $declaration;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function serializerOptions(bool $debug): array
+    {
+        $jsonOptions = [
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ];
+        if ($debug === true) {
+            $jsonOptions[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
+        }
+
+        return $jsonOptions;
     }
 }

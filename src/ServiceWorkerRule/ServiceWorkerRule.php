@@ -6,5 +6,5 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 interface ServiceWorkerRule
 {
-    public function process(): string;
+    public function process(bool $debug = false): string;
 }
