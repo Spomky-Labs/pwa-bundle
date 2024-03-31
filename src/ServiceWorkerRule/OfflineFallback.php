@@ -54,6 +54,7 @@ final readonly class OfflineFallback implements ServiceWorkerRule
 
 /**************************************************** OFFLINE FALLBACK ****************************************************/
 // The configuration is set to provide offline fallbacks
+
 DEBUG_COMMENT;
         }
 
