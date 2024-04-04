@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
 use function assert;
 
-final readonly class GDImageProcessor implements ImageProcessor
+final readonly class GDImageProcessor implements ImageProcessorInterface
 {
     public function process(string $image, ?int $width, ?int $height, ?string $format): string
     {

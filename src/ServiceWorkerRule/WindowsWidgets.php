@@ -14,7 +14,7 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class WindowsWidgets implements ServiceWorkerRule
+final readonly class WindowsWidgets implements ServiceWorkerRuleInterface
 {
     public function __construct(
         private Manifest $manifest,

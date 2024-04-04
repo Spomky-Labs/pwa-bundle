@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Command;
 
 use Facebook\WebDriver\WebDriverDimension;
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -35,7 +35,7 @@ final class CreateScreenshotCommand extends Command
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        private readonly null|ImageProcessor $imageProcessor,
+        private readonly null|ImageProcessorInterface $imageProcessor,
         #[Autowire('@pwa.web_client')]
         null|Client $webClient = null,
     ) {

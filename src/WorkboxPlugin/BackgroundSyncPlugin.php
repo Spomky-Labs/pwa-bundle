@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class BackgroundSyncPlugin implements CachePlugin
+final readonly class BackgroundSyncPlugin implements CachePluginInterface
 {
     private const NAME = 'BackgroundSyncPlugin';
 

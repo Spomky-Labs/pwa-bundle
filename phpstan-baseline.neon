@@ -71,7 +71,7 @@ parameters:
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
@@ -91,7 +91,7 @@ parameters:
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
+			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
@@ -111,12 +111,12 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
@@ -136,7 +136,7 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
+			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
@@ -501,7 +501,7 @@ parameters:
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessor\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Normalizer/ScreenshotNormalizer.php
 

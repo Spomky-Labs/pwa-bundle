@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRule;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
@@ -15,7 +15,7 @@ use function is_string;
 final readonly class ServiceWorkerCompiler
 {
     /**
-     * @param iterable<ServiceWorkerRule> $serviceworkerRules
+     * @param iterable<ServiceWorkerRuleInterface> $serviceworkerRules
      */
     public function __construct(
         #[Autowire('%spomky_labs_pwa.sw.enabled%')]

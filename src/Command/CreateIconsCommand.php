@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +28,7 @@ final class CreateIconsCommand extends Command
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
-        private readonly null|ImageProcessor $imageProcessor,
+        private readonly null|ImageProcessorInterface $imageProcessor,
     ) {
         parent::__construct();
     }

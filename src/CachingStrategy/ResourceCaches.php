@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandler;
+use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
@@ -21,14 +21,14 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class ResourceCaches implements HasCacheStrategies
+final readonly class ResourceCaches implements HasCacheStrategiesInterface
 {
     private int $jsonOptions;
 
     private Workbox $workbox;
 
     /**
-     * @param iterable<MatchCallbackHandler> $matchCallbackHandlers
+     * @param iterable<MatchCallbackHandlerInterface> $matchCallbackHandlers
      */
     public function __construct(
         ServiceWorker $serviceWorker,
@@ -63,10 +63,10 @@ final readonly class ResourceCaches implements HasCacheStrategies
                     $resourceCache->cacheableResponseHeaders
                 ),
             ];
-            if ($resourceCache->broadcast === true && $resourceCache->strategy === CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE) {
+            if ($resourceCache->broadcast === true && $resourceCache->strategy === CacheStrategyInterface::STRATEGY_STALE_WHILE_REVALIDATE) {
                 $plugins[] = BroadcastUpdatePlugin::create($resourceCache->broadcastHeaders);
             }
-            if ($resourceCache->rangeRequests === true && $resourceCache->strategy !== CacheStrategy::STRATEGY_NETWORK_ONLY) {
+            if ($resourceCache->rangeRequests === true && $resourceCache->strategy !== CacheStrategyInterface::STRATEGY_NETWORK_ONLY) {
                 $plugins[] = RangeRequestsPlugin::create();
             }
             if ($resourceCache->maxEntries !== null || $resourceCache->maxAgeInSeconds() !== null) {

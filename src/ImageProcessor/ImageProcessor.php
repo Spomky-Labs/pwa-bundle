@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
-interface ImageProcessor
+/**
+ * @deprecated since 1.2.0, will be removed in 2.0.0. Use ImageProcessorInterface instead.
+ */
+interface ImageProcessor extends ImageProcessorInterface
 {
-    public function process(string $image, ?int $width, ?int $height, ?string $format): string;
-
-    /**
-     * @return array{width: int, height: int}
-     */
-    public function getSizes(string $image): array;
 }

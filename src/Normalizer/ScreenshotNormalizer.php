@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Screenshot;
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\Mime\MimeTypes;
@@ -20,7 +20,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
 
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
-        private readonly null|ImageProcessor $imageProcessor,
+        private readonly null|ImageProcessorInterface $imageProcessor,
     ) {
     }
 

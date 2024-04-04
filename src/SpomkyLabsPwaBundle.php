@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle;
 
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,7 +26,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $container->import('Resources/config/services.php');
 
         if ($config['image_processor'] !== null) {
-            $builder->setAlias(ImageProcessor::class, $config['image_processor']);
+            $builder->setAlias(ImageProcessorInterface::class, $config['image_processor']);
         }
         if ($config['web_client'] !== null) {
             $builder->setAlias('pwa.web_client', $config['web_client']);

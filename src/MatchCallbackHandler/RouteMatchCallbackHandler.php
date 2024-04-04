@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\MatchCallbackHandler;
 
 use Symfony\Component\Routing\RouterInterface;
 
-final readonly class RouteMatchCallbackHandler implements MatchCallbackHandler
+final readonly class RouteMatchCallbackHandler implements MatchCallbackHandlerInterface
 {
     public function __construct(
         private RouterInterface $router

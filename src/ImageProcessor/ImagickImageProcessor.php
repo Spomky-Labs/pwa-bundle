@@ -7,7 +7,7 @@ namespace SpomkyLabs\PwaBundle\ImageProcessor;
 use Imagick;
 use ImagickPixel;
 
-final readonly class ImagickImageProcessor implements ImageProcessor
+final readonly class ImagickImageProcessor implements ImageProcessorInterface
 {
     public function __construct(
         private int $filters = Imagick::FILTER_LANCZOS2,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategy;
+use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 
 return static function (DefinitionConfigurator $definition): void {
@@ -297,11 +297,11 @@ return static function (DefinitionConfigurator $definition): void {
                                         )
                                         ->example(['NetworkFirst', 'StaleWhileRevalidate', 'CacheFirst'])
                                         ->validate()
-                                            ->ifNotInArray(CacheStrategy::STRATEGIES)
+                                            ->ifNotInArray(CacheStrategyInterface::STRATEGIES)
                                             ->thenInvalid(
                                                 'Invalid caching strategy "%s". Should be one of: ' . implode(
                                                     ', ',
-                                                    CacheStrategy::STRATEGIES
+                                                    CacheStrategyInterface::STRATEGIES
                                                 )
                                             )
                                         ->end()

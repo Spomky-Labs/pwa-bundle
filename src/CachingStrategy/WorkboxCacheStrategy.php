@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
-use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePlugin;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePluginInterface;
 use function in_array;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final class WorkboxCacheStrategy implements CacheStrategy
+final class WorkboxCacheStrategy implements CacheStrategyInterface
 {
     private null|string $name = null;
 
     private null|string $method = null;
 
     /**
-     * @var array<CachePlugin>
+     * @var array<CachePluginInterface>
      */
     private array $plugins = [];
 
@@ -63,7 +63,7 @@ final class WorkboxCacheStrategy implements CacheStrategy
         return $this;
     }
 
-    public function withPlugin(CachePlugin $plugin, CachePlugin ...$plugins): static
+    public function withPlugin(CachePluginInterface $plugin, CachePluginInterface ...$plugins): static
     {
         $this->plugins = array_merge([$plugin], $plugins);
         return $this;
@@ -122,7 +122,7 @@ final class WorkboxCacheStrategy implements CacheStrategy
             $cacheName = sprintf("cacheName: '%s',", $this->getName() ?? $cacheObjectName);
         }
         $plugins = sprintf('[%s]', implode(', ', array_map(
-            fn (CachePlugin $plugin) => $plugin->render($jsonOptions),
+            fn (CachePluginInterface $plugin) => $plugin->render($jsonOptions),
             $this->plugins
         )));
         $method = $this->method !== null ? ",'{$this->method}'" : '';
@@ -191,7 +191,7 @@ DEBUG_STATEMENT;
     }
 
     /**
-     * @return array<CachePlugin>
+     * @return array<CachePluginInterface>
      */
     public function getPlugins(): array
     {
