@@ -44,8 +44,8 @@ final readonly class GoogleFontCache implements HasCacheStrategies
                 ->withPlugin(
                     CacheableResponsePlugin::create(),
                     ExpirationPlugin::create(
-                        $this->workbox->googleFontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365,
-                        $this->workbox->googleFontCache->maxEntries ?? 30
+                        $this->workbox->googleFontCache->maxEntries ?? 30,
+                        $this->workbox->googleFontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365
                     ),
                 ),
         ];
