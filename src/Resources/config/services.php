@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverDimension;
-use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategies;
+use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
@@ -11,11 +11,11 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
-use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandler;
+use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
-use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRule;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
@@ -110,17 +110,17 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     /*** Service Worker Compiler Rules ***/
-    $container->instanceof(ServiceWorkerRule::class)
+    $container->instanceof(ServiceWorkerRuleInterface::class)
         ->tag('spomky_labs_pwa.service_worker_rule')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\', '../../ServiceWorkerRule/*');
 
-    $container->instanceof(HasCacheStrategies::class)
+    $container->instanceof(HasCacheStrategiesInterface::class)
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*');
 
-    $container->instanceof(MatchCallbackHandler::class)
+    $container->instanceof(MatchCallbackHandlerInterface::class)
         ->tag('spomky_labs_pwa.match_callback_handler')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');

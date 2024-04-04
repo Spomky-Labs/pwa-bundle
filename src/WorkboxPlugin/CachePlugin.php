@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-interface CachePlugin
+/**
+ * @deprecated since 1.2.0, to be removed in 2.0.0. Use CachePluginInterface instead.
+ */
+interface CachePlugin extends CachePluginInterface
 {
-    public function getName(): string;
-
-    public function render(int $jsonOptions = 0): string;
 }

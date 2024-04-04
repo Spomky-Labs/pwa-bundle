@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class CacheableResponsePlugin implements CachePlugin
+final readonly class CacheableResponsePlugin implements CachePluginInterface
 {
     private const NAME = 'CacheableResponsePlugin';
 

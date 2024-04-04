@@ -9,7 +9,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final readonly class ImageCache implements HasCacheStrategies
+final readonly class ImageCache implements HasCacheStrategiesInterface
 {
     private string $assetPublicPrefix;
 
@@ -30,7 +30,7 @@ final readonly class ImageCache implements HasCacheStrategies
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->imageCache->enabled,
                 true,
-                CacheStrategy::STRATEGY_CACHE_FIRST,
+                CacheStrategyInterface::STRATEGY_CACHE_FIRST,
                 sprintf(
                     "({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('%s'))",
                     $this->assetPublicPrefix

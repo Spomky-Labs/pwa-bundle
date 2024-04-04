@@ -9,7 +9,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 
-final readonly class GoogleFontCache implements HasCacheStrategies
+final readonly class GoogleFontCache implements HasCacheStrategiesInterface
 {
     private Workbox $workbox;
 
@@ -30,14 +30,14 @@ final readonly class GoogleFontCache implements HasCacheStrategies
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
                 true,
-                CacheStrategy::STRATEGY_STALE_WHILE_REVALIDATE,
+                CacheStrategyInterface::STRATEGY_STALE_WHILE_REVALIDATE,
                 "({url}) => url.origin === 'https://fonts.googleapis.com'",
             )
                 ->withName($prefix . 'google-fonts-stylesheets'),
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
                 true,
-                CacheStrategy::STRATEGY_CACHE_FIRST,
+                CacheStrategyInterface::STRATEGY_CACHE_FIRST,
                 "({url}) => url.origin === 'https://fonts.gstatic.com'"
             )
                 ->withName($prefix . 'google-fonts-webfonts')

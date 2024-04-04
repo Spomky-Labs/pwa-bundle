@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 
-final readonly class SkipWaiting implements ServiceWorkerRule
+final readonly class SkipWaiting implements ServiceWorkerRuleInterface
 {
     public function __construct(
         private ServiceWorker $serviceWorker

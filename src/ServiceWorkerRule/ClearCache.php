@@ -7,7 +7,7 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 
-final readonly class ClearCache implements ServiceWorkerRule
+final readonly class ClearCache implements ServiceWorkerRuleInterface
 {
     private Workbox $workbox;
 

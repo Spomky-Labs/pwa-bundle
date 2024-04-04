@@ -18,7 +18,7 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class FontCache implements HasCacheStrategies
+final readonly class FontCache implements HasCacheStrategiesInterface
 {
     private int $jsonOptions;
 
@@ -49,7 +49,7 @@ final readonly class FontCache implements HasCacheStrategies
         $strategy = WorkboxCacheStrategy::create(
             $this->workbox->enabled && $this->workbox->fontCache->enabled,
             true,
-            CacheStrategy::STRATEGY_CACHE_FIRST,
+            CacheStrategyInterface::STRATEGY_CACHE_FIRST,
             "({request}) => request.destination === 'font'"
         )
             ->withName($this->workbox->fontCache->cacheName ?? 'fonts')

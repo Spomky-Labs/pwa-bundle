@@ -18,7 +18,7 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class AssetCache implements HasCacheStrategies
+final readonly class AssetCache implements HasCacheStrategiesInterface
 {
     private int $jsonOptions;
 
@@ -53,7 +53,7 @@ final readonly class AssetCache implements HasCacheStrategies
         $strategy = WorkboxCacheStrategy::create(
             $this->workbox->enabled && $this->workbox->assetCache->enabled,
             true,
-            CacheStrategy::STRATEGY_CACHE_FIRST,
+            CacheStrategyInterface::STRATEGY_CACHE_FIRST,
             sprintf("({url}) => url.pathname.startsWith('%s')", $this->assetPublicPrefix),
         )
             ->withName($this->workbox->assetCache->cacheName)

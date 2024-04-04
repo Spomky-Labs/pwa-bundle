@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\MatchCallbackHandler;
 
-interface MatchCallbackHandler
+/**
+ * @deprecated since 1.2.0, will be removed in 2.0.0. Use MatchCallbackHandlerInterface instead.
+ */
+interface MatchCallbackHandler extends MatchCallbackHandlerInterface
 {
-    public function supports(string $matchCallback): bool;
-
-    public function handle(string $matchCallback): string;
 }

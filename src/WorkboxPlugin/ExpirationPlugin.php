@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class ExpirationPlugin implements CachePlugin
+final readonly class ExpirationPlugin implements CachePluginInterface
 {
     private const NAME = 'ExpirationPlugin';
 

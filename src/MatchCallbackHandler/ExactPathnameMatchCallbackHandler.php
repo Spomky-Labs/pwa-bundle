@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\MatchCallbackHandler;
 
-final readonly class ExactPathnameMatchCallbackHandler implements MatchCallbackHandler
+final readonly class ExactPathnameMatchCallbackHandler implements MatchCallbackHandlerInterface
 {
     public function supports(string $matchCallback): bool
     {
