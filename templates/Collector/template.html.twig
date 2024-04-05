@@ -8,6 +8,28 @@
 
     {% set text %}
         <div class="sf-toolbar-info-piece">
+            <b>Manifest</b>
+            {% if collector.data.manifest.enabled %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">Enabled</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>
+            {% endif %}
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Service worker</b>
+            {% if collector.data.serviceWorker.enabled %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">Enabled</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>
+            {% endif %}
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>└&nbsp;Workbox</b>
+            {% if collector.workbox.enabled %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">Enabled</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>
+            {% endif %}
         </div>
     {% endset %}
 
@@ -15,19 +37,7 @@
 {% endblock %}
 
 {% block head %}
-    {# Optional. Here you can link to or define your own CSS and JS contents. #}
-    {# Use {{ parent() }} to extend the default styles instead of overriding them. #}
     {{ parent() }}
-{% endblock %}
-
-{% block menu %}
-    <span class="label">
-        <span class="icon">{{ source('@SpomkyLabsPwa/Collector/pwa.svg') }}</span>
-        <strong>PWA</strong>
-    </span>
-{% endblock %}
-
-{% block panel %}
     <style>
         .status-badge {
             background-color: var(--badge-background);
@@ -63,6 +73,16 @@
             line-height: 0.7rem;
         }
     </style>
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon">{{ source('@SpomkyLabsPwa/Collector/pwa.svg') }}</span>
+        <strong>PWA</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
     <h2>Progressive Web App</h2>
     <div class="sf-tabs">
         <div class="tab">
