@@ -96,6 +96,9 @@ final class Manifest
     #[SerializedName('related_applications')]
     public array $relatedApplications = [];
 
+    #[SerializedName('prefer_related_applications')]
+    public bool $preferRelatedApplications = false;
+
     /**
      * @var array<Shortcut>
      */
