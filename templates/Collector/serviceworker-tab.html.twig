@@ -1,0 +1,159 @@
+<h3>Details</h3>
+<p>Status:
+    {% if collector.data.serviceWorker.enabled %}
+        <span class="status-badge status-success">enabled</span>
+    {% else %}
+        <span class="status-badge status-warning">disabled</span>
+    {% endif %}
+<table>
+    <thead>
+    <tr>
+        <th scope="col" class="key">Key</th>
+        <th scope="col">Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Destination</td>
+        <td>{{ collector.data.serviceWorker.dest }}</td>
+    </tr>
+    <tr>
+        <td>Scope</td>
+        <td>{{ collector.data.serviceWorker.scope }}</td>
+    </tr>
+    <tr>
+        <td>Use Cache</td>
+        <td>{{ collector.data.serviceWorker.useCache ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Skip Waiting</td>
+        <td>{{ collector.data.serviceWorker.skipWaiting ? 'Yes' : 'No' }}</td>
+    </tr>
+</table>
+<h3>Workbox</h3>
+<p>Status: {% if collector.workbox.enabled %}
+        <span class="status-badge status-success">enabled!</span>
+    {% else %}
+        <span class="status-badge status-warning">disabled</span>
+    {% endif %}
+<table>
+    <thead>
+    <tr>
+        <th scope="col" class="key">Key</th>
+        <th scope="col">Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Use CDN?</td>
+        <td>
+            {% if collector.workbox.useCDN %}
+                Yes, version: {{ collector.workbox.version }}
+            {% else %}
+                No
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Clear cache?</td>
+        <td>{% if collector.workbox.clearCache %}Yes{% else %}No{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Cache manifest?</td>
+        <td>{% if collector.workbox.cacheManifest %}Yes{% else %}No{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Asset cache</td>
+        <td>
+            {% if collector.workbox.assetCache.enabled %}
+                <span class="badge status-success">Enabled</span><br>
+                Cache name: <span class="badge">{{ collector.workbox.assetCache.cacheName }}</span><br>
+                Regex: <span class="badge">{{ collector.workbox.assetCache.regex }}</span>
+            {% else %}
+                <span class="badge status-warning">Disabled</span><br>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Font cache</td>
+        <td>
+            {% if collector.workbox.fontCache.enabled %}
+                <span class="badge status-success">Enabled</span>
+            {% else %}
+                <span class="badge status-warning">Disabled</span><br>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Google Font cache</td>
+        <td>
+            {% if collector.workbox.googleFontCache.enabled %}
+                <span class="badge status-success">Enabled</span><br>
+                Cache name: <span class="badge">{{ collector.workbox.googleFontCache.cacheName ?? 'default' }}</span>
+            {% else %}
+                <span class="badge status-warning">Disabled</span><br>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Image cache</td>
+        <td>
+            {% if collector.workbox.imageCache.enabled %}
+                <span class="badge status-success">Enabled</span><br>
+                Cache name: <span class="badge">{{ collector.workbox.imageCache.cacheName }}</span><br>
+                Regex: <span class="badge">{{ collector.workbox.imageCache.regex }}</span>
+            {% else %}
+                <span class="badge status-warning">Disabled</span><br>
+            {% endif %}
+        </td>
+    </tr>
+    </tbody>
+</table>
+<h3>Caching Strategies</h3>
+<table>
+    <thead>
+    <tr>
+        <th scope="col" class="key">Name</th>
+        <th scope="col">
+            Enabled? <br>
+            Workbox?
+        </th>
+        <th scope="col">
+            Strategy<br>
+            Match Callback<br>
+            Method
+        </th>
+        <th scope="col">Plugins</th>
+        <th scope="col">URL Preload</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cachingStrategy in collector.cachingStrategies %}
+        <tr>
+            <td>{{ cachingStrategy.getName() }}</td>
+            <td class="break-long-words font-normal">
+                {% if cachingStrategy.isEnabled() %}Yes{% else %}No{% endif %} <br>
+                {% if cachingStrategy.needsWorkbox() %}Yes{% else %}No{% endif %}
+            </td>
+            <td class="break-long-words">
+                {{ cachingStrategy.strategy }} <br>
+                <span class="badge">{{ cachingStrategy.matchCallback }}</span><br>
+                {{ cachingStrategy.getMethod() ?? "GET" }}
+            </td>
+            <td class="break-long-words">
+                {% for plugin in cachingStrategy.plugins %}
+                    {{ dump(plugin) }}
+                {% endfor %}
+            </td>
+            <td class="break-long-words font-normal">
+                {% set preloadedUrls = cachingStrategy.preloadUrls|length %}
+                {% if preloadedUrls == 0 %}
+                    None
+                {% else %}
+                    {{ preloadedUrls }} URL{{ preloadedUrls > 1 ? 's' : '' }}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

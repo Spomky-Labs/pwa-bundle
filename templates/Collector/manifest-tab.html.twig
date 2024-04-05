@@ -1,0 +1,170 @@
+<h3>General information</h3>
+<p>
+    Status:
+    {% if collector.data.manifest.enabled %}
+        <span class="status-badge status-success">enabled</span>
+    {% else %}
+        <span class="status-badge status-warning">disabled</span>
+    {% endif %}
+    <br>
+    Can be installed:
+    {% if collector.data.manifest.installable.status %}
+    <span class="status-badge status-success">yes</span>
+{% else %}
+    <span class="status-badge status-warning">no</span>
+{% endif %}
+</p>
+<ul>
+    {% for reason, value in collector.data.manifest.installable.reasons %}
+        <li>
+            {% if not value %}
+            <span class="badge status-success">success</span>
+        {% else %}
+            <span class="badge status-error">failure</span>
+            {% endif %}:
+            {{ reason }}
+        </li>
+    {% endfor %}
+</ul>
+<h3>Details</h3>
+<table>
+    <thead>
+    <tr>
+        <th scope="col" class="key">Key</th>
+        <th scope="col">Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>ID</td>
+        <td>{{ collector.getManifest().id }}</td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>{{ collector.getManifest().name|trans }}</td>
+    </tr>
+    <tr>
+        <td>Short name</td>
+        <td>{{ collector.getManifest().shortName|trans }}</td>
+    </tr>
+    <tr>
+        <td>Description name</td>
+        <td>{{ collector.getManifest().description|trans }}</td>
+    </tr>
+    <tr>
+        <td>Theme color</td>
+        <td>
+            {% if collector.getManifest().themeColor %}
+                {{ collector.getManifest().themeColor }}
+                <span style="background-color: {{ collector.getManifest().themeColor }}; padding: 0.25rem; color: {{ collector.getManifest().themeColor }};">{{ collector.getManifest().themeColor }}</span>
+            {% else %}
+                n/a
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Background color</td>
+        <td>
+            {% if collector.getManifest().backgroundColor %}
+                {{ collector.getManifest().backgroundColor }}
+                <span style="background-color: {{ collector.getManifest().backgroundColor }}; padding: 0.25rem; color: {{ collector.getManifest().backgroundColor }};">{{ collector.getManifest().backgroundColor }}</span>
+            {% else %}
+                n/a
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Display</td>
+        <td>{{ collector.getManifest().display }}</td>
+    </tr>
+    <tr>
+        <td>Orientation</td>
+        <td>{{ collector.getManifest().orientation }}</td>
+    </tr>
+    <tr>
+        <td>Scope</td>
+        <td>{{ collector.getManifest().scope }}</td>
+    </tr>
+    <tr>
+        <td>Start URL</td>
+        <td>{{ collector.getManifest().startUrl }}</td>
+    </tr>
+    <tr>
+        <td>Categories</td>
+        <td>
+            {% if collector.getManifest().categories|length == 0 %}
+                <span class="badge">none</span>
+            {% else %}
+                <ul>
+                    {% for category in collector.getManifest().categories %}
+                        <li>{{ category|trans }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </td>
+    </tr>
+    </tbody>
+</table>
+<h3 class="tab-title">Application Icons</h3>
+<div class="tab-content">
+    <table>
+        <thead>
+        <tr>
+            <th scope="col" class="key">Source</th>
+            <th scope="col">Sizes</th>
+            <th scope="col">Type</th>
+            <th scope="col">Purpose</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for icon in collector.getManifest().icons %}
+            <tr>
+                <td>{{ icon.src.src }}</td>
+                <td>{{ icon.getSizeList() }}</td>
+                <td>{{ icon.type|default('n/a') }}</td>
+                <td>{{ icon.purpose|default('n/a') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<h3 class="tab-title">Application screenshots</h3>
+<div class="tab-content">
+    <table>
+        <thead>
+        <tr>
+            <th scope="col" class="key">Source</th>
+            <th scope="col">Size</th>
+            <th scope="col">Type</th>
+            <th scope="col">Form factor</th>
+            <th scope="col">Label</th>
+            <th scope="col">Platform</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for screenshot in collector.getManifest().screenshots %}
+            <tr>
+                <td>
+                    {{ screenshot.src.src }}<br>
+                    <span class="badge">{{ screenshot.reference|default('No reference') }}</span>
+                </td>
+                <td>
+                    {% if screenshot.height and screenshot.width %}
+                        {{ screenshot.width }}x{{ screenshot.height }}
+                    {% else %}
+                        n/a
+                    {% endif %}
+                </td>
+                <td>{{ screenshot.type|default('n/a') }}</td>
+                <td>{{ screenshot.formFactor|default('n/a') }}</td>
+                <td>{{ screenshot.label|default('n/a') }}</td>
+                <td>{{ screenshot.platform|default('n/a') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<h3 class="tab-title">Output</h3>
+<div class="tab-content">
+    <pre class="output">{{ collector.data.manifest.output|nl2br }}</pre>
+</div>
