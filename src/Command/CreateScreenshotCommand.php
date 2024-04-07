@@ -20,6 +20,7 @@ use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
+use function assert;
 use function count;
 
 #[AsCommand(
@@ -28,8 +29,6 @@ use function count;
 )]
 final class CreateScreenshotCommand extends Command
 {
-    private readonly Client $webClient;
-
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
@@ -37,13 +36,11 @@ final class CreateScreenshotCommand extends Command
         private readonly string $projectDir,
         private readonly null|ImageProcessorInterface $imageProcessor,
         #[Autowire('@pwa.web_client')]
-        null|Client $webClient = null,
+        private readonly null|Client $webClient = null,
+        #[Autowire(param: 'spomky_labs_pwa.screenshot_user_agent')]
+        private readonly null|string $userAgent = null,
     ) {
         parent::__construct();
-        if ($webClient === null) {
-            $webClient = Client::createChromeClient();
-        }
-        $this->webClient = $webClient;
     }
 
     public function isEnabled(): bool
@@ -95,12 +92,16 @@ final class CreateScreenshotCommand extends Command
         $width = $input->getOption('width');
         $format = $input->getOption('format');
 
-        $client = clone $this->webClient;
+        $client = $this->getClient();
         $crawler = $client->request('GET', $url);
 
         $tmpName = $this->filesystem
             ->tempnam('', 'pwa-');
         if ($width !== null && $height !== null) {
+            if ($width < 0 || $height < 0) {
+                $io->error('Width and height must be positive integers.');
+                return self::FAILURE;
+            }
             $client->manage()
                 ->window()
                 ->setSize(new WebDriverDimension((int) $width, (int) $height));
@@ -167,5 +168,60 @@ final class CreateScreenshotCommand extends Command
         ], 10, 2));
 
         return self::SUCCESS;
+    }
+
+    private function getAvailablePort(): int
+    {
+        $socket = socket_create_listen(0);
+        assert($socket !== false, 'Unable to create a socket.');
+        socket_getsockname($socket, $address, $port);
+        socket_close($socket);
+
+        return $port;
+    }
+
+    private function getDefaultArguments(): array
+    {
+        $args = [];
+
+        if (! ($_SERVER['PANTHER_NO_HEADLESS'] ?? false)) {
+            $args[] = '--headless';
+            $args[] = '--window-size=1200,1100';
+            $args[] = '--disable-gpu';
+        }
+
+        if ($_SERVER['PANTHER_DEVTOOLS'] ?? true) {
+            $args[] = '--auto-open-devtools-for-tabs';
+        }
+
+        if ($_SERVER['PANTHER_NO_SANDBOX'] ?? $_SERVER['HAS_JOSH_K_SEAL_OF_APPROVAL'] ?? false) {
+            $args[] = '--no-sandbox';
+        }
+
+        if ($_SERVER['PANTHER_CHROME_ARGUMENTS'] ?? false) {
+            $arguments = explode(' ', (string) $_SERVER['PANTHER_CHROME_ARGUMENTS']);
+            $args = array_merge($args, $arguments);
+        }
+
+        return $args;
+    }
+
+    private function getClient(): Client
+    {
+        if ($this->webClient !== null) {
+            return clone $this->webClient;
+        }
+        $options = [
+            'port' => $this->getAvailablePort(),
+            'capabilities' => [
+                'acceptInsecureCerts' => true,
+            ],
+        ];
+        $arguments = $this->getDefaultArguments();
+        if ($this->userAgent !== null) {
+            $arguments[] = sprintf('--user-agent=%s', $this->userAgent);
+        }
+
+        return Client::createChromeClient(arguments: $arguments, options: $options);
     }
 }
