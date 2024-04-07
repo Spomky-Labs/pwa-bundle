@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
@@ -26,7 +27,9 @@ return static function (RectorConfig $config): void {
     ]);
     $config->phpVersion(PhpVersion::PHP_82);
     $config->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']);
-    $config->skip([__DIR__ . '/tests/Controller/DummyController.php']);
+    $config->skip([
+        RemoveEmptyClassMethodRector::class => [__DIR__ . '/tests/Controller/'],
+    ]);
     $config->parallel();
     $config->importNames();
     $config->importShortClasses();

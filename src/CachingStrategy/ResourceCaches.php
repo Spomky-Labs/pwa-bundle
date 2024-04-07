@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\Dto\Url;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin;
@@ -31,6 +32,7 @@ final readonly class ResourceCaches implements HasCacheStrategiesInterface
      * @param iterable<MatchCallbackHandlerInterface> $matchCallbackHandlers
      */
     public function __construct(
+        private PreloadUrlsGeneratorManager $preloadUrlsGeneratorManager,
         ServiceWorker $serviceWorker,
         private SerializerInterface $serializer,
         #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
@@ -50,11 +52,10 @@ final readonly class ResourceCaches implements HasCacheStrategiesInterface
     {
         $strategies = [];
         foreach ($this->workbox->resourceCaches as $id => $resourceCache) {
-            $routes = $this->serializer->serialize($resourceCache->urls, 'json', [
+            $routes = $this->serializer->serialize($this->getUrls($resourceCache->urls), 'json', [
                 JsonEncode::OPTIONS => $this->jsonOptions,
             ]);
             $urls = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
-
             $cacheName = $resourceCache->cacheName ?? sprintf('page-cache-%d', $id);
 
             $plugins = [
@@ -103,5 +104,27 @@ final readonly class ResourceCaches implements HasCacheStrategiesInterface
         }
 
         return $matchCallback;
+    }
+
+    /**
+     * @param array<Url> $urls
+     * @return array<Url|string>
+     */
+    private function getUrls(array $urls): array
+    {
+        $result = [];
+        foreach ($urls as $url) {
+            if (str_starts_with($url->path, '@')) {
+                $generator = $this->preloadUrlsGeneratorManager->get(mb_substr($url->path, 1));
+                $list = $generator->generateUrls();
+                foreach ($list as $item) {
+                    $result[] = $item;
+                }
+            } else {
+                $result[] = $url;
+            }
+        }
+
+        return $result;
     }
 }

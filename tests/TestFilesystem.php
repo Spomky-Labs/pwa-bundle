@@ -8,9 +8,9 @@ use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use function dirname;
 
-final class TestFilesystem implements PublicAssetsFilesystemInterface
+final readonly class TestFilesystem implements PublicAssetsFilesystemInterface
 {
-    private readonly string $output;
+    private string $output;
 
     public function __construct(
         #[Autowire('%kernel.cache_dir%')]

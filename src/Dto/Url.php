@@ -18,4 +18,20 @@ final class Url
      * @var array<string, mixed>
      */
     public array $params = [];
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public static function create(
+        string $path,
+        array $params = [],
+        int $pathTypeReference = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): self {
+        $url = new self();
+        $url->path = $path;
+        $url->pathTypeReference = $pathTypeReference;
+        $url->params = $params;
+
+        return $url;
+    }
 }

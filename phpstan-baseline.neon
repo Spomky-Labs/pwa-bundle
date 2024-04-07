@@ -231,12 +231,7 @@ parameters:
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/PageCache.php
-
-		-
-			message: "#^PHPDoc tag @var for property SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache\\:\\:\\$cacheableResponseHeaders with type array\\<string, string\\>\\|null is not subtype of native type array\\.$#"
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache extends @final class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ResourceCache\\.$#"
 			count: 1
 			path: src/Dto/PageCache.php
 
@@ -259,6 +254,11 @@ parameters:
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\RelatedApplication has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/RelatedApplication.php
+
+		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ResourceCache has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/ResourceCache.php
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ScopeExtension has an uninitialized property \\$origin\\. Give it default value or assign it in the constructor\\.$#"
