@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
 use function count;
 use function in_array;
@@ -61,11 +62,12 @@ final class PwaCollector extends DataCollector
             'installable' => $this->isInstallable(),
             'output' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
         ];
-
-        dump($this->data);
     }
 
-    public function getData(): array
+    /**
+     * @return array<string, mixed>|Data
+     */
+    public function getData(): array|Data
     {
         return $this->data;
     }
@@ -94,7 +96,7 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @return array{status: bool, reasons: string[]}
+     * @return array{status: bool, reasons: array<string, bool>}
      */
     private function isInstallable(): array
     {
@@ -107,9 +109,7 @@ final class PwaCollector extends DataCollector
                 ['standalone', 'fullscreen', 'minimal-ui'],
                 true
             ),
-            'The manifest must have at least one icon' => $this->manifest->icons === null || count(
-                $this->manifest->icons
-            ) === 0,
+            'The manifest must have at least one icon' => count($this->manifest->icons) === 0,
             'The manifest must have the "prefer_related_applications" property set to a value other than "true"' => $this->manifest->preferRelatedApplications === true,
         ];
 
