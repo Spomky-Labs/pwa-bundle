@@ -12,6 +12,7 @@ use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
 use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
@@ -142,6 +143,7 @@ return static function (ContainerConfigurator $configurator): void {
             '$urls' => abstract_arg('urls'),
         ])
     ;
+    $container->set(ScreenshotSubscriber::class);
 
     if ($configurator->env() !== 'prod') {
         $container->set(PwaCollector::class)

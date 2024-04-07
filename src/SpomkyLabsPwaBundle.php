@@ -37,6 +37,8 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         if ($config['web_client'] !== null) {
             $builder->setAlias('pwa.web_client', $config['web_client']);
         }
+        $builder->setParameter('spomky_labs_pwa.screenshot_user_agent', $config['user_agent']);
+
         $serviceWorkerConfig = $config['serviceworker'];
         $manifestConfig = $config['manifest'];
         if ($serviceWorkerConfig['enabled'] === true && $manifestConfig['enabled'] === true) {
