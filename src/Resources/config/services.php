@@ -7,6 +7,7 @@ use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
+use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
@@ -28,8 +29,8 @@ use Symfony\Component\Panther\Client;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return static function (ContainerConfigurator $container): void {
-    $container = $container->services()
+return static function (ContainerConfigurator $configurator): void {
+    $container = $configurator->services()
         ->defaults()
         ->private()
         ->autoconfigure()
@@ -124,4 +125,13 @@ return static function (ContainerConfigurator $container): void {
         ->tag('spomky_labs_pwa.match_callback_handler')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
+
+    if ($configurator->env() !== 'prod') {
+        $container->set(PwaCollector::class)
+            ->tag('data_collector', [
+                'template' => '@SpomkyLabsPwa/Collector/template.html.twig',
+                'id' => 'pwa',
+            ])
+        ;
+    }
 };
