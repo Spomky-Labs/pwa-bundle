@@ -114,7 +114,7 @@ final class PwaCollector extends DataCollector
         ];
 
         return [
-            'status' => count(array_filter($reasons)) === 0,
+            'status' => count(array_filter($reasons, fn (bool $v): bool => $v)) === 0,
             'reasons' => $reasons,
         ];
     }
