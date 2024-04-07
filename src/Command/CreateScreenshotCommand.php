@@ -20,6 +20,7 @@ use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
+use function assert;
 use function count;
 
 #[AsCommand(
