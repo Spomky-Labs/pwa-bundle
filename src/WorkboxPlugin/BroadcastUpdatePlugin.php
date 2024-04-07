@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class BroadcastUpdatePlugin implements CachePluginInterface
+final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasDebugInterface
 {
     private const NAME = 'BroadcastUpdatePlugin';
 
@@ -43,5 +43,12 @@ final readonly class BroadcastUpdatePlugin implements CachePluginInterface
     public static function create(array $headersToCheck = []): static
     {
         return new self($headersToCheck);
+    }
+
+    public function getDebug(): array
+    {
+        return [
+            'headersToCheck' => $this->headersToCheck,
+        ];
     }
 }

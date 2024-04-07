@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle;
 
+use SpomkyLabs\PwaBundle\Attribute\PreloadUrlCompilerPass;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -19,6 +20,11 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
     public function configure(DefinitionConfigurator $definition): void
     {
         $definition->import('Resources/config/definition/*.php');
+    }
+
+    public function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new PreloadUrlCompilerPass());
     }
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void

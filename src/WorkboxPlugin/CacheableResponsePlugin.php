@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class CacheableResponsePlugin implements CachePluginInterface
+final readonly class CacheableResponsePlugin implements CachePluginInterface, HasDebugInterface
 {
     private const NAME = 'CacheableResponsePlugin';
 
@@ -48,5 +48,13 @@ final readonly class CacheableResponsePlugin implements CachePluginInterface
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    public function getDebug(): array
+    {
+        return [
+            'statuses' => $this->options['statuses'] ?? [],
+            'headers' => $this->options['headers'] ?? [],
+        ];
     }
 }

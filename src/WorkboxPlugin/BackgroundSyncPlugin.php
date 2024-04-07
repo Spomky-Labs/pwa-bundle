@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class BackgroundSyncPlugin implements CachePluginInterface
+final readonly class BackgroundSyncPlugin implements CachePluginInterface, HasDebugInterface
 {
     private const NAME = 'BackgroundSyncPlugin';
 
@@ -59,5 +59,15 @@ BACKGROUND_SYNC_RULE_STRATEGY;
         null|string $broadcastChannel
     ): static {
         return new self($queueName, $forceSyncFallback, $broadcastChannel, $maxRetentionTime);
+    }
+
+    public function getDebug(): array
+    {
+        return [
+            'queueName' => $this->queueName,
+            'forceSyncFallback' => $this->forceSyncFallback,
+            'broadcastChannel' => $this->broadcastChannel,
+            'maxRetentionTime' => $this->maxRetentionTime,
+        ];
     }
 }

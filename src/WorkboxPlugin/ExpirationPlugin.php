@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class ExpirationPlugin implements CachePluginInterface
+final readonly class ExpirationPlugin implements CachePluginInterface, HasDebugInterface
 {
     private const NAME = 'ExpirationPlugin';
 
@@ -34,5 +34,13 @@ final readonly class ExpirationPlugin implements CachePluginInterface
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    public function getDebug(): array
+    {
+        return [
+            'maxEntries' => $this->options['maxEntries'] ?? null,
+            'maxAgeSeconds' => $this->options['maxAgeSeconds'] ?? null,
+        ];
     }
 }

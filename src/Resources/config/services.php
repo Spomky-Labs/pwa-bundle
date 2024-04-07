@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
+use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorManager;
+use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
@@ -21,11 +23,14 @@ use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\WorkboxCompileEventListener;
+use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -126,6 +131,18 @@ return static function (ContainerConfigurator $configurator): void {
     ;
     $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
 
+    $container->set(PreloadUrlsGeneratorManager::class);
+    $container->instanceof(UrlGeneratorInterface::class)
+        ->tag('spomky_labs_pwa.preload_urls_generator')
+    ;
+    $container->set(PreloadUrlsTagGenerator::class)
+        ->abstract()
+        ->args([
+            '$alias' => abstract_arg('alias'),
+            '$urls' => abstract_arg('urls'),
+        ])
+    ;
+
     if ($configurator->env() !== 'prod') {
         $container->set(PwaCollector::class)
             ->tag('data_collector', [
@@ -133,5 +150,6 @@ return static function (ContainerConfigurator $configurator): void {
                 'id' => 'pwa',
             ])
         ;
+        $container->set(InstanceOfExtension::class);
     }
 };

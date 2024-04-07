@@ -5,19 +5,22 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use SpomkyLabs\PwaBundle\Tests\DummyImageProcessor;
+use SpomkyLabs\PwaBundle\Tests\DummyUrlsGenerator;
 use SpomkyLabs\PwaBundle\Tests\TestFilesystem;
 
 return static function (ContainerConfigurator $container) {
-    $container->services()
-        ->set(DummyImageProcessor::class);
-    $container->services()
-        ->set('asset_mapper.local_public_assets_filesystem', TestFilesystem::class)
+    $services = $container
+        ->services()
+        ->defaults()
+        ->autowire()
         ->autoconfigure()
-        ->autowire();
-
-    $container->services()
-        ->load('SpomkyLabs\\PwaBundle\\Tests\\Controller\\', __DIR__ . '/Controller/')
-        ->tag('controller.service_arguments')
+    ;
+    $services->set(DummyImageProcessor::class);
+    $services->set('asset_mapper.local_public_assets_filesystem', TestFilesystem::class);
+    $services->load('SpomkyLabs\\PwaBundle\\Tests\\Controller\\', __DIR__ . '/Controller/');
+    $services
+        ->set(DummyUrlsGenerator::class)
+        ->tag('spomky_labs_pwa.preload_urls_generator')
     ;
 
     $container->extension('framework', [
@@ -232,7 +235,7 @@ return static function (ContainerConfigurator $container) {
                         'strategy' => 'StaleWhileRevalidate',
                         'cache_name' => 'page-cache',
                         'broadcast' => true,
-                        'preload_urls' => ['privacy_policy', 'terms_of_service'],
+                        'preload_urls' => ['privacy_policy', 'terms_of_service', '@static-pages', '@widgets'],
                     ],
                 ],
                 'offline_fallback' => [

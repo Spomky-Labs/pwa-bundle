@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests;
 
-use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 
 /**
  * @internal
  */
-class DummyImageProcessor implements ImageProcessor
+class DummyImageProcessor implements ImageProcessorInterface
 {
     public function process(string $image, ?int $width, ?int $height, ?string $format): string
     {

@@ -4,44 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
-use Symfony\Component\Serializer\Attribute\SerializedName;
-
-final class PageCache extends Cache
+/**
+ * @deprecated since 1.2.0 and will be removed in 2.0.0. Use ResourceCache instead.
+ */
+final class PageCache extends ResourceCache
 {
-    #[SerializedName('match_callback')]
-    public string $matchCallback;
-
-    #[SerializedName('network_timeout')]
-    public int $networkTimeout = 3;
-
-    public string $strategy = 'NetworkFirst';
-
-    public bool $broadcast = false;
-
-    #[SerializedName('range_requests')]
-    public bool $rangeRequests = false;
-
-    /**
-     * @var int[]
-     */
-    #[SerializedName('cacheable_response_statuses')]
-    public array $cacheableResponseStatuses = [0, 200];
-
-    /**
-     * @var null|array<string, string>
-     */
-    #[SerializedName('cacheable_response_headers')]
-    public array $cacheableResponseHeaders = [];
-
-    /**
-     * @var array<string>
-     */
-    #[SerializedName('broadcast_headers')]
-    public array $broadcastHeaders = ['Content-Type', 'ETag', 'Last-Modified'];
-
-    /**
-     * @var array<Url>
-     */
-    #[SerializedName('preload_urls')]
-    public array $urls = [];
 }

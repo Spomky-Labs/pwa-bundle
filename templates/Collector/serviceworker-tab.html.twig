@@ -140,10 +140,19 @@
                 <span class="badge">{{ cachingStrategy.matchCallback }}</span><br>
                 {{ cachingStrategy.getMethod() ?? "GET" }}
             </td>
-            <td class="break-long-words">
-                {% for plugin in cachingStrategy.plugins %}
-                    {{ dump(plugin) }}
-                {% endfor %}
+            <td class="break-long-words font-normal">
+                {% if cachingStrategy.plugins|length == 0 %}
+                    None
+                {% else %}
+                    {% for plugin in cachingStrategy.plugins %}
+                        {% if plugin is instanceof('SpomkyLabs\\PwaBundle\\WorkboxPlugin\\HasDebugInterface') %}
+                            <h4><b>{{ plugin.getName() }}</b></h4>
+                            <pre style="line-height: 0.70rem;">{{ plugin.debug()|json_encode(constant('JSON_PRETTY_PRINT'))|nl2br }}</pre>
+                        {% else %}
+                            {{ dump(plugin) }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </td>
             <td class="break-long-words font-normal">
                 {% set preloadedUrls = cachingStrategy.preloadUrls|length %}
