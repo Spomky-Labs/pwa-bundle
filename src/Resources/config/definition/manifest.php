@@ -27,6 +27,10 @@ return static function (DefinitionConfigurator $definition): void {
                         ->info('The public URL of the manifest file.')
                         ->example('/site.manifest')
                     ->end()
+                    ->booleanNode('use_credentials')
+                        ->defaultTrue()
+                        ->info('Indicates whether the manifest should be fetched with credentials.')
+                    ->end()
                     ->scalarNode('background_color')
                         ->info(
                             'The background color of the application. It  should match the background-color CSS property in the sites stylesheet for a smooth transition between launching the web application and loading the site\'s content.'

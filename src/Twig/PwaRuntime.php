@@ -56,8 +56,12 @@ final readonly class PwaRuntime
     private function injectManifestFile(string $output): string
     {
         $url = $this->assetMapper->getPublicPath($this->manifestPublicUrl) ?? $this->manifestPublicUrl;
+        $useCredentials = '';
+        if ($this->manifest->useCredentials === true) {
+            $useCredentials = ' crossorigin="use-credentials"';
+        }
 
-        return $output . sprintf('%s<link rel="manifest" href="%s">', PHP_EOL, $url);
+        return $output . sprintf('%s<link rel="manifest"%s href="%s">', PHP_EOL, $useCredentials, $url);
     }
 
     private function injectThemeColor(string $output, bool $themeColor): string
