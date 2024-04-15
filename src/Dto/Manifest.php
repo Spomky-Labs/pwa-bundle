@@ -11,6 +11,9 @@ final class Manifest
 {
     use TranslatableTrait;
 
+    #[SerializedName('use_credentials')]
+    public bool $useCredentials = true;
+
     #[SerializedName('background_color')]
     public null|string $backgroundColor = null;
 
