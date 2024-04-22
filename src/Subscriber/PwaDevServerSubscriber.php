@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Subscriber;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\Event\NullEventDispatcher;
+use SpomkyLabs\PwaBundle\Event\PostManifestCompileEvent;
+use SpomkyLabs\PwaBundle\Event\PreManifestCompileEvent;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -31,6 +35,8 @@ use const JSON_UNESCAPED_UNICODE;
 
 final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 {
+    private EventDispatcherInterface $dispatcher;
+
     private string $manifestPublicUrl;
 
     private null|string $serviceWorkerPublicUrl;
@@ -55,7 +61,9 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         private null|Profiler $profiler,
         #[Autowire('%kernel.debug%')]
         bool $debug,
+        null|EventDispatcherInterface $dispatcher = null,
     ) {
+        $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $serviceWorkerPublicUrl = $serviceWorker->dest;
         $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
@@ -128,12 +136,17 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private function serveManifest(RequestEvent $event): void
     {
         $this->profiler?->disable();
-        $body = $this->serializer->serialize($this->manifest, 'json', $this->jsonOptions);
-        $response = new Response($body, Response::HTTP_OK, [
+        $manifest = clone $this->manifest;
+        $this->dispatcher->dispatch(new PreManifestCompileEvent($manifest));
+        $data = $this->serializer->serialize($manifest, 'json', $this->jsonOptions);
+        $postEvent = new PostManifestCompileEvent($manifest, $data);
+        $this->dispatcher->dispatch($postEvent);
+
+        $response = new Response($data, Response::HTTP_OK, [
             'Cache-Control' => 'public, max-age=604800, immutable',
             'Content-Type' => 'application/manifest+json',
             'X-Manifest-Dev' => true,
-            'Etag' => hash('xxh128', $body),
+            'Etag' => hash('xxh128', $data),
         ]);
 
         $event->setResponse($response);
