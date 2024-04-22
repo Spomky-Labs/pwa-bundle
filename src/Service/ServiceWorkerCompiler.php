@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
@@ -27,7 +26,6 @@ final readonly class ServiceWorkerCompiler
         private iterable $serviceworkerRules,
         #[Autowire('%kernel.debug%')]
         public bool $debug,
-        null|EventDispatcherInterface $dispatcher = null
     ) {
     }
 
