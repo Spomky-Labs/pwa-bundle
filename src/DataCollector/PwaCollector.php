@@ -9,7 +9,6 @@ use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,8 +36,6 @@ final class PwaCollector extends DataCollector
         private readonly iterable $cachingServices,
         private readonly Manifest $manifest,
         private readonly ServiceWorker $serviceWorker,
-        #[Autowire(param: 'spomky_labs_pwa.manifest.enabled')]
-        private readonly bool $manifestEnabled,
     ) {
     }
 
@@ -57,7 +54,7 @@ final class PwaCollector extends DataCollector
         }
         $this->data['serviceWorker'] = $this->serviceWorker;
         $this->data['manifest'] = [
-            'enabled' => $this->manifestEnabled,
+            'enabled' => $this->serviceWorker->enabled,
             'data' => $this->manifest,
             'installable' => $this->isInstallable(),
             'output' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
@@ -101,7 +98,7 @@ final class PwaCollector extends DataCollector
     private function isInstallable(): array
     {
         $reasons = [
-            'The manifest must be enabled' => ! $this->manifestEnabled,
+            'The manifest must be enabled' => ! $this->manifest->enabled,
             'The manifest must have a short name or a name' => $this->manifest->shortName === null && $this->manifest->name === null,
             'The manifest must have a start URL' => $this->manifest->startUrl === null,
             'The manifest must have a display value set to "standalone", "fullscreen" or "minimal-ui' => ! in_array(

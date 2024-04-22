@@ -34,8 +34,6 @@ final readonly class ManifestCompileEventListener
     public function __construct(
         private SerializerInterface $serializer,
         private Manifest $manifest,
-        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
-        private bool $manifestEnabled,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
@@ -60,7 +58,7 @@ final readonly class ManifestCompileEventListener
 
     public function __invoke(PreAssetsCompileEvent $event): void
     {
-        if (! $this->manifestEnabled) {
+        if (! $this->manifest->enabled) {
             return;
         }
         $manifest = clone $this->manifest;

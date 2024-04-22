@@ -20,10 +20,6 @@ final readonly class PwaRuntime
     private string $manifestPublicUrl;
 
     public function __construct(
-        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
-        private bool $manifestEnabled,
-        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
-        private bool $serviceWorkerEnabled,
         private AssetMapperInterface $assetMapper,
         private Manifest $manifest,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
@@ -42,10 +38,10 @@ final readonly class PwaRuntime
         array $swAttributes = []
     ): string {
         $output = '';
-        if ($this->manifestEnabled === true) {
+        if ($this->manifest->enabled === true) {
             $output = $this->injectManifestFile($output);
         }
-        if ($this->serviceWorkerEnabled === true) {
+        if ($this->manifest->serviceWorker?->enabled === true) {
             $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
         }
         $output = $this->injectIcons($output, $injectIcons);

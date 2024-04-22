@@ -18,8 +18,6 @@ final readonly class ServiceWorkerCompiler
      * @param iterable<ServiceWorkerRuleInterface> $serviceworkerRules
      */
     public function __construct(
-        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
-        private bool $serviceWorkerEnabled,
         private ServiceWorker $serviceWorker,
         private AssetMapperInterface $assetMapper,
         #[TaggedIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
@@ -31,7 +29,7 @@ final readonly class ServiceWorkerCompiler
 
     public function compile(): ?string
     {
-        if ($this->serviceWorkerEnabled === false) {
+        if ($this->serviceWorker->enabled === false) {
             return null;
         }
         $body = '';

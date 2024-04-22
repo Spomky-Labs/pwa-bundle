@@ -51,11 +51,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         private ServiceWorkerCompiler $serviceWorkerBuilder,
         private SerializerInterface $serializer,
         private Manifest $manifest,
-        ServiceWorker $serviceWorker,
-        #[Autowire('%spomky_labs_pwa.manifest.enabled%')]
-        private bool $manifestEnabled,
-        #[Autowire('%spomky_labs_pwa.sw.enabled%')]
-        private bool $serviceWorkerEnabled,
+        private ServiceWorker $serviceWorker,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         private null|Profiler $profiler,
@@ -97,13 +93,13 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             ->getPathInfo();
 
         switch (true) {
-            case $this->manifestEnabled === true && $pathInfo === $this->manifestPublicUrl:
+            case $this->manifest->enabled === true && $pathInfo === $this->manifestPublicUrl:
                 $this->serveManifest($event);
                 break;
-            case $this->serviceWorkerEnabled === true && $pathInfo === $this->serviceWorkerPublicUrl:
+            case $this->serviceWorker->enabled === true && $pathInfo === $this->serviceWorkerPublicUrl:
                 $this->serveServiceWorker($event);
                 break;
-            case $this->serviceWorkerEnabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
+            case $this->serviceWorker->enabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
                 $pathInfo,
                 $this->workboxPublicUrl
             ):
