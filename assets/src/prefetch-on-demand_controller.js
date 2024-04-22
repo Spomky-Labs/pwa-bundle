@@ -11,9 +11,9 @@ export default class extends Controller {
         }
 
         workbox.messageSW({
-            "type": "PREFETCH",
+            "type": "CACHE_URLS",
             "payload": {
-                "urls": params.urls
+                "urlsToCache": params.urls
             }
         });
     }
