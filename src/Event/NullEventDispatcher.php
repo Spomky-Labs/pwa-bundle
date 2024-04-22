@@ -8,8 +8,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 final readonly class NullEventDispatcher implements EventDispatcherInterface
 {
-    public function dispatch(object $event): void
+    public function dispatch(object $event): object
     {
-        // Do nothing
+        return $event;
     }
 }
