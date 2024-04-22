@@ -11,6 +11,8 @@ final class Manifest
 {
     use TranslatableTrait;
 
+    public bool $enabled = false;
+
     #[SerializedName('use_credentials')]
     public bool $useCredentials = true;
 
