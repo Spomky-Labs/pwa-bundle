@@ -20,16 +20,30 @@ return static function (DefinitionConfigurator $definition): void {
         ->children()
             ->arrayNode('manifest')
                 ->canBeEnabled()
+                ->validate()
+                   ->ifTrue(
+                       static fn (array $v) => count(
+                           $v['locales']
+                       ) !== 0 && ! str_contains((string) $v['public_url'], '{locale}')
+                   )
+                    ->thenInvalid(
+                        'When setting locales, the public URL "public_url" must contain the "{locale}" placeholder.'
+                    )
+                ->end()
                 ->children()
                     ->scalarNode('public_url')
                         ->defaultValue('/site.webmanifest')
                         ->cannotBeEmpty()
                         ->info('The public URL of the manifest file.')
-                        ->example('/site.manifest')
+                        ->example(['/site.manifest', '/site.{locale}.webmanifest'])
                     ->end()
                     ->booleanNode('use_credentials')
                         ->defaultTrue()
                         ->info('Indicates whether the manifest should be fetched with credentials.')
+                    ->end()
+                    ->arrayNode('locales')
+                        ->defaultValue([])
+                        ->scalarPrototype()->end()
                     ->end()
                     ->scalarNode('background_color')
                         ->info(
