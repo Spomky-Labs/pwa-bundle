@@ -22,9 +22,11 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use function assert;
 use function count;
+use function in_array;
 use function is_array;
 use function is_string;
 use function mb_strlen;
@@ -51,13 +53,13 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         private ServiceWorkerCompiler $serviceWorkerBuilder,
         private SerializerInterface $serializer,
         private Manifest $manifest,
-        private ServiceWorker $serviceWorker,
+        ServiceWorker $serviceWorker,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
         private null|Profiler $profiler,
         #[Autowire('%kernel.debug%')]
         bool $debug,
-        null|EventDispatcherInterface $dispatcher = null,
+        null|EventDispatcherInterface $dispatcher,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
@@ -74,7 +76,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $options = [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials', 'locales'],
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
         if ($debug === true) {
@@ -89,17 +91,28 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $pathInfo = $event->getRequest()
-            ->getPathInfo();
+        $request = $event->getRequest();
+        $pathInfo = $request->getPathInfo();
+        $localizedManifestPublicUrls = [];
+        foreach ($this->manifest->locales as $locale) {
+            $localizedManifestPublicUrls[$locale] = str_replace('{locale}', $locale, $this->manifestPublicUrl);
+        }
 
         switch (true) {
-            case $this->manifest->enabled === true && $pathInfo === $this->manifestPublicUrl:
+            case $this->manifest->enabled === true && in_array($pathInfo, $localizedManifestPublicUrls, true):
+                $locale = array_search($pathInfo, $localizedManifestPublicUrls, true);
+                assert(is_string($locale), 'Locale not found.');
+                $this->serveManifest($event, $locale);
+                break;
+            case $this->manifest->enabled === true && count(
+                $localizedManifestPublicUrls
+            ) === 0 && $pathInfo === $this->manifestPublicUrl:
                 $this->serveManifest($event);
                 break;
-            case $this->serviceWorker->enabled === true && $pathInfo === $this->serviceWorkerPublicUrl:
+            case $this->manifest->serviceWorker?->enabled === true && $pathInfo === $this->serviceWorkerPublicUrl:
                 $this->serveServiceWorker($event);
                 break;
-            case $this->serviceWorker->enabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
+            case $this->manifest->serviceWorker?->enabled === true && $this->workboxVersion !== null && $this->workboxPublicUrl !== null && str_starts_with(
                 $pathInfo,
                 $this->workboxPublicUrl
             ):
@@ -129,16 +142,23 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         ];
     }
 
-    private function serveManifest(RequestEvent $event): void
+    private function serveManifest(RequestEvent $event, null|string $locale = null): void
     {
         $this->profiler?->disable();
         $manifest = clone $this->manifest;
-        $this->dispatcher->dispatch(new PreManifestCompileEvent($manifest));
-        $data = $this->serializer->serialize($manifest, 'json', $this->jsonOptions);
+        $options = $this->jsonOptions;
+        if ($locale !== null) {
+            $options[TranslatableNormalizer::NORMALIZATION_LOCALE_KEY] = $locale;
+        }
+        $preEvent = new PreManifestCompileEvent($manifest);
+        $preEvent = $this->dispatcher->dispatch($preEvent);
+        assert($preEvent instanceof PreManifestCompileEvent);
+        $data = $this->serializer->serialize($preEvent->manifest, 'json', $options);
         $postEvent = new PostManifestCompileEvent($manifest, $data);
-        $this->dispatcher->dispatch($postEvent);
+        $postEvent = $this->dispatcher->dispatch($postEvent);
+        assert($postEvent instanceof PostManifestCompileEvent);
 
-        $response = new Response($data, Response::HTTP_OK, [
+        $response = new Response($postEvent->data, Response::HTTP_OK, [
             'Cache-Control' => 'public, max-age=604800, immutable',
             'Content-Type' => 'application/manifest+json',
             'X-Manifest-Dev' => true,

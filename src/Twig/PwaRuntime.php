@@ -35,11 +35,12 @@ final readonly class PwaRuntime
         bool $injectThemeColor = true,
         bool $injectIcons = true,
         bool $injectSW = true,
-        array $swAttributes = []
+        array $swAttributes = [],
+        null|string $locale = null,
     ): string {
         $output = '';
         if ($this->manifest->enabled === true) {
-            $output = $this->injectManifestFile($output);
+            $output = $this->injectManifestFile($output, $locale);
         }
         if ($this->manifest->serviceWorker?->enabled === true) {
             $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
@@ -49,15 +50,24 @@ final readonly class PwaRuntime
         return $this->injectThemeColor($output, $injectThemeColor);
     }
 
-    private function injectManifestFile(string $output): string
+    private function injectManifestFile(string $output, null|string $locale): string
     {
-        $url = $this->assetMapper->getPublicPath($this->manifestPublicUrl) ?? $this->manifestPublicUrl;
+        $manifestPublicUrl = $locale === null ? $this->manifestPublicUrl : str_replace(
+            '{locale}',
+            $locale,
+            $this->manifestPublicUrl
+        );
+        $url = $this->assetMapper->getPublicPath($manifestPublicUrl) ?? $manifestPublicUrl;
         $useCredentials = '';
         if ($this->manifest->useCredentials === true) {
             $useCredentials = ' crossorigin="use-credentials"';
         }
+        $hreflang = '';
+        if ($locale !== null) {
+            $hreflang = sprintf(' hreflang="%s"', mb_strtolower(str_replace('_', '-', $locale)));
+        }
 
-        return $output . sprintf('%s<link rel="manifest"%s href="%s">', PHP_EOL, $useCredentials, $url);
+        return $output . sprintf('%s<link rel="manifest" href="%s"%s%s>', PHP_EOL, $url, $useCredentials, $hreflang);
     }
 
     private function injectThemeColor(string $output, bool $themeColor): string

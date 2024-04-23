@@ -16,7 +16,10 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use function assert;
+use function count;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -40,14 +43,14 @@ final readonly class ManifestCompileEventListener
         private PublicAssetsFilesystemInterface $assetsFilesystem,
         #[Autowire('%kernel.debug%')]
         bool $debug,
-        null|EventDispatcherInterface $dispatcher = null,
+        null|EventDispatcherInterface $dispatcher,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $options = [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials', 'locales'],
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
         if ($debug === true) {
@@ -62,10 +65,33 @@ final readonly class ManifestCompileEventListener
             return;
         }
         $manifest = clone $this->manifest;
-        $this->dispatcher->dispatch(new PreManifestCompileEvent($manifest));
-        $data = $this->serializer->serialize($manifest, 'json', $this->jsonOptions);
+        if (count($this->manifest->locales) === 0) {
+            $this->compileManifest($manifest, null);
+        } else {
+            foreach ($this->manifest->locales as $locale) {
+                $this->compileManifest($manifest, $locale);
+            }
+        }
+    }
+
+    private function compileManifest(Manifest $manifest, null|string $locale): void
+    {
+        $preEvent = new PreManifestCompileEvent($manifest);
+        $preEvent = $this->dispatcher->dispatch($preEvent);
+        assert($preEvent instanceof PreManifestCompileEvent);
+
+        $options = $this->jsonOptions;
+        $manifestPublicUrl = $this->manifestPublicUrl;
+        if ($locale !== null) {
+            $options[TranslatableNormalizer::NORMALIZATION_LOCALE_KEY] = $locale;
+            $manifestPublicUrl = str_replace('{locale}', $locale, $this->manifestPublicUrl);
+        }
+        $data = $this->serializer->serialize($preEvent->manifest, 'json', $options);
+
         $postEvent = new PostManifestCompileEvent($manifest, $data);
-        $this->dispatcher->dispatch($postEvent);
-        $this->assetsFilesystem->write($this->manifestPublicUrl, $postEvent->data);
+        $postEvent = $this->dispatcher->dispatch($postEvent);
+        assert($postEvent instanceof PostManifestCompileEvent);
+
+        $this->assetsFilesystem->write($manifestPublicUrl, $postEvent->data);
     }
 }

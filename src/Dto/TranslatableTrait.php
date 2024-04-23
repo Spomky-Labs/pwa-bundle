@@ -21,9 +21,12 @@ trait TranslatableTrait
             return $data;
         }
         if (is_array($data)) {
-            return array_map(fn (string $value): TranslatableInterface => new TranslatableMessage($value), $data);
+            return array_map(
+                fn (string $value): TranslatableInterface => new TranslatableMessage($value, [], 'pwa'),
+                $data
+            );
         }
 
-        return new TranslatableMessage($data);
+        return new TranslatableMessage($data, [], 'pwa');
     }
 }
