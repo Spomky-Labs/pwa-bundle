@@ -49,6 +49,9 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 
     private array $jsonOptions;
 
+    /**
+     * @param array<string> $locales
+     */
     public function __construct(
         private ServiceWorkerCompiler $serviceWorkerBuilder,
         private SerializerInterface $serializer,
@@ -60,6 +63,8 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         #[Autowire('%kernel.debug%')]
         bool $debug,
         null|EventDispatcherInterface $dispatcher,
+        #[Autowire('%kernel.enabled_locales%')]
+        private array $locales,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
@@ -94,19 +99,24 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $pathInfo = $request->getPathInfo();
         $localizedManifestPublicUrls = [];
-        foreach ($this->manifest->locales as $locale) {
+        foreach ($this->locales as $locale) {
             $localizedManifestPublicUrls[$locale] = str_replace('{locale}', $locale, $this->manifestPublicUrl);
         }
 
         switch (true) {
-            case $this->manifest->enabled === true && in_array($pathInfo, $localizedManifestPublicUrls, true):
+            case $this->manifest->enabled === true && str_contains($this->manifestPublicUrl, '{locale}') && in_array(
+                $pathInfo,
+                $localizedManifestPublicUrls,
+                true
+            ):
                 $locale = array_search($pathInfo, $localizedManifestPublicUrls, true);
                 assert(is_string($locale), 'Locale not found.');
                 $this->serveManifest($event, $locale);
                 break;
-            case $this->manifest->enabled === true && count(
-                $localizedManifestPublicUrls
-            ) === 0 && $pathInfo === $this->manifestPublicUrl:
+            case $this->manifest->enabled === true && ! str_contains(
+                $this->manifestPublicUrl,
+                '{locale}'
+            ) && $pathInfo === $this->manifestPublicUrl:
                 $this->serveManifest($event);
                 break;
             case $this->manifest->serviceWorker?->enabled === true && $pathInfo === $this->serviceWorkerPublicUrl:

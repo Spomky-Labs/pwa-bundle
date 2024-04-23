@@ -62,11 +62,6 @@ final class Manifest
     public null|string $iarcRatingId = null;
 
     /**
-     * @var array<string>
-     */
-    public array $locales = [];
-
-    /**
      * @var array<ScopeExtension>
      */
     #[SerializedName('scope_extensions')]

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
+use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
+use function assert;
 
 /**
  * @internal
@@ -13,11 +15,13 @@ use Symfony\Component\Console\Tester\CommandTester;
 final class TakeScreenshotCommandTest extends AbstractPwaTestCase
 {
     #[Test]
+    #[MaximumDuration(1500)]
     public static function aScreenshotIsCorrectlyTake(): void
     {
         // Given
         $command = self::$application->find('pwa:create:screenshot');
         $commandTester = new CommandTester($command);
+        assert(self::$kernel !== null);
         $output = sprintf('%s/samples/screenshots/', self::$kernel->getCacheDir());
 
         // When

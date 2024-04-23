@@ -62,12 +62,8 @@ final readonly class PwaRuntime
         if ($this->manifest->useCredentials === true) {
             $useCredentials = ' crossorigin="use-credentials"';
         }
-        $hreflang = '';
-        if ($locale !== null) {
-            $hreflang = sprintf(' hreflang="%s"', mb_strtolower(str_replace('_', '-', $locale)));
-        }
 
-        return $output . sprintf('%s<link rel="manifest" href="%s"%s%s>', PHP_EOL, $url, $useCredentials, $hreflang);
+        return $output . sprintf('%s<link rel="manifest" href="%s"%s>', PHP_EOL, $url, $useCredentials);
     }
 
     private function injectThemeColor(string $output, bool $themeColor): string
