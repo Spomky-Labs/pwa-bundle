@@ -461,34 +461,9 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:denormalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/AssetNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/AssetNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:supportsDenormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/AssetNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\AssetNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/AssetNormalizer.php
-
-		-
 			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Normalizer/AssetNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/IconNormalizer.php
 
 		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, type\\?\\: string, purpose\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
@@ -496,22 +471,7 @@ parameters:
 			path: src/Normalizer/IconNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/IconNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ScreenshotNormalizer.php
-
-		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, form_factor\\?\\: string, label\\?\\: string, platform\\?\\: string, format\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
-			count: 1
-			path: src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Normalizer/ScreenshotNormalizer.php
 
@@ -521,29 +481,9 @@ parameters:
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) should return array\\{scope\\?\\: string, src\\: string, use_cache\\?\\: bool\\} but returns array\\<mixed\\>\\.$#"
 			count: 1
 			path: src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:normalize\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/UrlNormalizer.php
-
-		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\UrlNormalizer\\:\\:supportsNormalization\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Normalizer/UrlNormalizer.php
 
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
@@ -664,56 +604,6 @@ parameters:
 			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
 			count: 3
 			path: src/Resources/config/definition/service_worker.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:end\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/file_handlers.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/icons.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:beforeNormalization\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/launch_handler.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/protocol_handlers.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:append\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/related_applications.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/screenshots.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/shared_target.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/shortcuts.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/url_node.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\:\\:scalarNode\\(\\)\\.$#"
-			count: 1
-			path: src/Resources/config/definition/utils/widgets.php
 
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"

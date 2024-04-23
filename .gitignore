@@ -6,3 +6,6 @@ package-lock.json
 /composer.lock
 /vendor
 /.phpunit.cache/
+/drivers
+/public
+/.castor.stub.php

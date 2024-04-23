@@ -34,6 +34,9 @@ final readonly class ManifestCompileEventListener
 
     private array $jsonOptions;
 
+    /**
+     * @param array<string> $locales
+     */
     public function __construct(
         private SerializerInterface $serializer,
         private Manifest $manifest,
@@ -44,6 +47,8 @@ final readonly class ManifestCompileEventListener
         #[Autowire('%kernel.debug%')]
         bool $debug,
         null|EventDispatcherInterface $dispatcher,
+        #[Autowire('%kernel.enabled_locales%')]
+        private array $locales,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
@@ -65,10 +70,11 @@ final readonly class ManifestCompileEventListener
             return;
         }
         $manifest = clone $this->manifest;
-        if (count($this->manifest->locales) === 0) {
+
+        if (count($this->locales) === 0 || ! str_contains($this->manifestPublicUrl, '{locale}')) {
             $this->compileManifest($manifest, null);
         } else {
-            foreach ($this->manifest->locales as $locale) {
+            foreach ($this->locales as $locale) {
                 $this->compileManifest($manifest, $locale);
             }
         }

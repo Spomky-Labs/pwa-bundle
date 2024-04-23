@@ -27,8 +27,12 @@ return static function (ContainerConfigurator $container) {
         'test' => true,
         'secret' => 'test',
         'http_method_override' => true,
+        'handle_all_throwables' => true,
         'session' => [
             'storage_factory_id' => 'session.storage.factory.mock_file',
+            'cookie_secure' => 'auto',
+            'cookie_samesite' => 'lax',
+            'handler_id' => 'session.handler.native_file',
         ],
         'asset_mapper' => [
             'paths' => [
@@ -44,6 +48,9 @@ return static function (ContainerConfigurator $container) {
             'enabled' => true,
             'default_path' => '%kernel.project_dir%/tests/translations',
             'fallbacks' => ['en'],
+        ],
+        'php_errors' => [
+            'log' => true,
         ],
     ]);
     $container->extension('pwa', [

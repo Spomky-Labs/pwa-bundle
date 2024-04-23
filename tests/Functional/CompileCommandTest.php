@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
+use function assert;
 
 /**
  * @internal
@@ -13,11 +14,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 final class CompileCommandTest extends AbstractPwaTestCase
 {
     #[Test]
-    public static function aScreenshotIsCorrectlyTake(): void
+    public static function theFileAreCompiled(): void
     {
         // Given
         $command = self::$application->find('asset-map:compile');
         $commandTester = new CommandTester($command);
+        assert(self::$kernel !== null);
 
         // When
         $commandTester->execute([]);
