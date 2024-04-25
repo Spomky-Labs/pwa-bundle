@@ -2,53 +2,49 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Subscriber;
+namespace SpomkyLabs\PwaBundle\Service;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Event\NullEventDispatcher;
 use SpomkyLabs\PwaBundle\Event\PostManifestCompileEvent;
 use SpomkyLabs\PwaBundle\Event\PreManifestCompileEvent;
-use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
-use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use function assert;
-use function count;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-#[AsEventListener(PreAssetsCompileEvent::class)]
-final readonly class ManifestCompileEventListener
+final class ManifestCompiler implements FileCompilerInterface
 {
-    private EventDispatcherInterface $dispatcher;
+    private readonly EventDispatcherInterface $dispatcher;
 
-    private string $manifestPublicUrl;
+    private readonly string $manifestPublicUrl;
 
-    private array $jsonOptions;
+    /**
+     * @var array<string, mixed>
+     */
+    private readonly array $jsonOptions;
 
     /**
      * @param array<string> $locales
      */
     public function __construct(
-        private SerializerInterface $serializer,
-        private Manifest $manifest,
+        private readonly SerializerInterface $serializer,
+        private readonly Manifest $manifest,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
-        #[Autowire('@asset_mapper.local_public_assets_filesystem')]
-        private PublicAssetsFilesystemInterface $assetsFilesystem,
         #[Autowire('%kernel.debug%')]
         bool $debug,
         null|EventDispatcherInterface $dispatcher,
         #[Autowire('%kernel.enabled_locales%')]
-        private array $locales,
+        private readonly array $locales,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
@@ -64,24 +60,46 @@ final readonly class ManifestCompileEventListener
         $this->jsonOptions = $options;
     }
 
-    public function __invoke(PreAssetsCompileEvent $event): void
+    /**
+     * @return array<string>
+     */
+    public function supportedPublicUrls(): array
     {
-        if (! $this->manifest->enabled) {
-            return;
+        if ($this->manifest->enabled === false) {
+            return [];
         }
-        $manifest = clone $this->manifest;
 
-        if (count($this->locales) === 0 || ! str_contains($this->manifestPublicUrl, '{locale}')) {
-            $this->compileManifest($manifest, null);
-        } else {
-            foreach ($this->locales as $locale) {
-                $this->compileManifest($manifest, $locale);
-            }
+        if ($this->locales === []) {
+            return [$this->manifestPublicUrl];
         }
+
+        return array_map(
+            fn (string $locale) => str_replace('{locale}', $locale, $this->manifestPublicUrl),
+            $this->locales
+        );
     }
 
-    private function compileManifest(Manifest $manifest, null|string $locale): void
+    public function get(string $publicUrl): null|Data
     {
+        if ($this->manifest->enabled === false) {
+            return null;
+        }
+        if ($this->locales === []) {
+            return $this->compileManifest(null);
+        }
+
+        foreach ($this->locales as $locale) {
+            if ($publicUrl === str_replace('{locale}', $locale, $this->manifestPublicUrl)) {
+                return $this->compileManifest($locale);
+            }
+        }
+
+        return null;
+    }
+
+    private function compileManifest(null|string $locale): Data
+    {
+        $manifest = clone $this->manifest;
         $preEvent = new PreManifestCompileEvent($manifest);
         $preEvent = $this->dispatcher->dispatch($preEvent);
         assert($preEvent instanceof PreManifestCompileEvent);
@@ -98,6 +116,15 @@ final readonly class ManifestCompileEventListener
         $postEvent = $this->dispatcher->dispatch($postEvent);
         assert($postEvent instanceof PostManifestCompileEvent);
 
-        $this->assetsFilesystem->write($manifestPublicUrl, $postEvent->data);
+        return Data::create(
+            $manifestPublicUrl,
+            $postEvent->data,
+            [
+                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Content-Type' => 'application/manifest+json',
+                'X-Manifest-Dev' => true,
+                'Etag' => hash('xxh128', $data),
+            ]
+        );
     }
 }

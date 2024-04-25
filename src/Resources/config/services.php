@@ -16,14 +16,14 @@ use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
-use SpomkyLabs\PwaBundle\Subscriber\ManifestCompileEventListener;
+use SpomkyLabs\PwaBundle\Subscriber\FileCompileEventListener;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
-use SpomkyLabs\PwaBundle\Subscriber\ServiceWorkerCompileEventListener;
-use SpomkyLabs\PwaBundle\Subscriber\WorkboxCompileEventListener;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
@@ -43,6 +43,8 @@ return static function (ContainerConfigurator $configurator): void {
         ->autowire()
     ;
 
+    $container->instanceof(FileCompilerInterface::class)->tag('spomky_labs_pwa.compiler');
+
     /*** Manifest ***/
     $container->set(ManifestBuilder::class)
         ->args([
@@ -52,6 +54,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->set(Manifest::class)
         ->factory([service(ManifestBuilder::class), 'create'])
     ;
+    $container->set(ManifestCompiler::class);
 
     /*** Service Worker ***/
     $container->set(ServiceWorkerBuilder::class)
@@ -62,8 +65,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->set(ServiceWorker::class)
         ->factory([service(ServiceWorkerBuilder::class), 'create'])
     ;
-    $container->set(ServiceWorkerCompiler::class)
-    ;
+    $container->set(ServiceWorkerCompiler::class);
 
     /*** Commands ***/
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
@@ -96,11 +98,7 @@ return static function (ContainerConfigurator $configurator): void {
     }
 
     /*** Event Listeners and Subscribers ***/
-    $container->set(WorkboxCompileEventListener::class);
-    $container->set(ManifestCompileEventListener::class);
-    $container->set(ServiceWorkerCompileEventListener::class);
-    $container->set(ServiceWorkerCompiler::class);
-
+    $container->set(FileCompileEventListener::class);
     $container->set(PwaDevServerSubscriber::class)
         ->args([
             '$profiler' => service('profiler')
