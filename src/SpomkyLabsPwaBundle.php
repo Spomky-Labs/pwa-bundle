@@ -50,6 +50,9 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $builder->setParameter('spomky_labs_pwa.manifest.public_url', $config['manifest']['public_url'] ?? null);
         $builder->setParameter('spomky_labs_pwa.manifest.config', $manifestConfig);
 
+        /*** Favicons ***/
+        $builder->setParameter('spomky_labs_pwa.favicons.config', $config['favicons']);
+
         /*** Service Worker ***/
         $builder->setParameter('spomky_labs_pwa.sw.enabled', $config['serviceworker']['enabled']);
         $builder->setParameter('spomky_labs_pwa.sw.public_url', $config['serviceworker']['dest'] ?? null);
