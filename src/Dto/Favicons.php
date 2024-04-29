@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SpomkyLabs\PwaBundle\Dto;
+
+use Symfony\Component\Serializer\Attribute\SerializedName;
+
+final class Favicons
+{
+    public bool $enabled = false;
+
+    public Asset $src;
+
+    #[SerializedName('background_color')]
+    public null|string $backgroundColor = null;
+
+    #[SerializedName('safari_pinned_tab_color')]
+    public null|string $safariPinnedTabColor = null;
+
+    #[SerializedName('tile_color')]
+    public null|string $tileColor = null;
+
+    /**
+     * @var int<1, 50>|null
+     */
+    #[SerializedName('border_radius')]
+    public null|int $borderRadius = null;
+
+    /**
+     * @var int<1, 100>|null
+     */
+    #[SerializedName('image_scale')]
+    public null|int $imageScale = null;
+
+    #[SerializedName('only_high_resolution')]
+    public null|bool $onlyHighResolution = null;
+
+    #[SerializedName('only_tile_silhouette')]
+    public null|bool $onlyTileSilhouette = null;
+}

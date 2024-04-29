@@ -10,12 +10,15 @@ use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
 use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
+use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
+use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
@@ -55,6 +58,17 @@ return static function (ContainerConfigurator $configurator): void {
         ->factory([service(ManifestBuilder::class), 'create'])
     ;
     $container->set(ManifestCompiler::class);
+
+    /*** Favicons ***/
+    $container->set(FaviconsBuilder::class)
+        ->args([
+            '$config' => param('spomky_labs_pwa.favicons.config'),
+        ])
+    ;
+    $container->set(Favicons::class)
+        ->factory([service(FaviconsBuilder::class), 'create'])
+    ;
+    $container->set(FaviconsCompiler::class);
 
     /*** Service Worker ***/
     $container->set(ServiceWorkerBuilder::class)

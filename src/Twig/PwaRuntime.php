@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Twig;
 
 use InvalidArgumentException;
+use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -22,6 +24,8 @@ final readonly class PwaRuntime
     public function __construct(
         private AssetMapperInterface $assetMapper,
         private Manifest $manifest,
+        private Favicons $favicons,
+        private FaviconsCompiler $faviconsCompiler,
         #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
         string $manifestPublicUrl,
     ) {
@@ -34,6 +38,7 @@ final readonly class PwaRuntime
     public function load(
         bool $injectThemeColor = true,
         bool $injectIcons = true,
+        bool $injectFavicons = true,
         bool $injectSW = true,
         array $swAttributes = [],
         null|string $locale = null,
@@ -46,6 +51,7 @@ final readonly class PwaRuntime
             $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
         }
         $output = $this->injectIcons($output, $injectIcons);
+        $output = $this->injectFavicons($output, $injectFavicons);
 
         return $this->injectThemeColor($output, $injectThemeColor);
     }
@@ -210,5 +216,47 @@ SERVICE_WORKER;
         }
 
         return $attributeString;
+    }
+
+    private function injectFavicons(string $output, bool $injectFavicons): string
+    {
+        if ($this->favicons->enabled === false || $injectFavicons === false) {
+            return $output;
+        }
+
+        $files = $this->faviconsCompiler->getFiles();
+
+        $output .= PHP_EOL . '<link rel="icon" sizes="16x16" type="image/x-icon" href="/favicon.ico">';
+        foreach ([57, 60, 72, 76, 114, 120, 144, 152, 180] as $size) {
+            $output .= PHP_EOL . sprintf(
+                '<link rel="apple-touch-icon" type="image/png" sizes="%dx%d" href="%s">',
+                $size,
+                $size,
+                $files[sprintf('/favicons/icon-%dx%d.png', $size, $size)]->url
+            );
+        }
+        foreach ([16, 32, 48, 96, 192, 256, 384, 512] as $size) {
+            $output .= PHP_EOL . sprintf(
+                '<link rel="icon" type="image/png" sizes="%dx%d" href="%s">',
+                $size,
+                $size,
+                $files[sprintf('/favicons/icon-%dx%d.png', $size, $size)]->url
+            );
+        }
+        if ($this->favicons->tileColor !== null) {
+            $output .= PHP_EOL . sprintf(
+                '<meta name="msapplication-config" content="%s">',
+                $files['/favicons/browserconfig.xml']->url
+            );
+            $output .= PHP_EOL . sprintf(
+                '<meta name="msapplication-TileColor" content="%s">',
+                $this->favicons->tileColor
+            );
+        }
+
+        return $output . (PHP_EOL . sprintf(
+            '<meta name="msapplication-TileImage" content="%s">',
+            $files['/favicons/icon-144x144.png']->url
+        ));
     }
 }

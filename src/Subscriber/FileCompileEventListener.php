@@ -28,11 +28,7 @@ final readonly class FileCompileEventListener
     public function __invoke(PreAssetsCompileEvent $event): void
     {
         foreach ($this->fileCompilers as $fileCompiler) {
-            foreach ($fileCompiler->supportedPublicUrls() as $publicUrl) {
-                $data = $fileCompiler->get($publicUrl);
-                if ($data === null) {
-                    continue;
-                }
+            foreach ($fileCompiler->getFiles() as $data) {
                 $this->assetsFilesystem->write($data->url, $data->data);
             }
         }

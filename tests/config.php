@@ -55,6 +55,10 @@ return static function (ContainerConfigurator $container) {
     ]);
     $container->extension('pwa', [
         'image_processor' => DummyImageProcessor::class,
+        'favicons' => [
+            'enabled' => true,
+            'src' => 'pwa/1920x1920.svg',
+        ],
         'manifest' => [
             'enabled' => true,
             'background_color' => 'red',

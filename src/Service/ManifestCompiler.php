@@ -61,40 +61,21 @@ final class ManifestCompiler implements FileCompilerInterface
     }
 
     /**
-     * @return array<string>
+     * @return iterable<string, Data>
      */
-    public function supportedPublicUrls(): array
+    public function getFiles(): iterable
     {
         if ($this->manifest->enabled === false) {
             return [];
         }
 
         if ($this->locales === []) {
-            return [$this->manifestPublicUrl];
-        }
-
-        return array_map(
-            fn (string $locale) => str_replace('{locale}', $locale, $this->manifestPublicUrl),
-            $this->locales
-        );
-    }
-
-    public function get(string $publicUrl): null|Data
-    {
-        if ($this->manifest->enabled === false) {
-            return null;
-        }
-        if ($this->locales === []) {
-            return $this->compileManifest(null);
+            yield $this->manifestPublicUrl => $this->compileManifest(null);
         }
 
         foreach ($this->locales as $locale) {
-            if ($publicUrl === str_replace('{locale}', $locale, $this->manifestPublicUrl)) {
-                return $this->compileManifest($locale);
-            }
+            yield str_replace('{locale}', $locale, $this->manifestPublicUrl) => $this->compileManifest($locale);
         }
-
-        return null;
     }
 
     private function compileManifest(null|string $locale): Data
