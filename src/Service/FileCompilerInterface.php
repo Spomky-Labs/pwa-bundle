@@ -7,9 +7,7 @@ namespace SpomkyLabs\PwaBundle\Service;
 interface FileCompilerInterface
 {
     /**
-     * @return array<string>
+     * @return iterable<string, Data>
      */
-    public function supportedPublicUrls(): array;
-
-    public function get(string $publicUrl): null|Data;
+    public function getFiles(): iterable;
 }

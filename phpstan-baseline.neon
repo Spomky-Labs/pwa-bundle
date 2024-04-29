@@ -181,6 +181,11 @@ parameters:
 			path: src/Dto/BackgroundSync.php
 
 		-
+			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Favicons has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Dto/Favicons.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/File.php
@@ -441,13 +446,23 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: "#^Parameter \\#1 \\$dst_image of function imagecopyresampled expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagealphablending expects GdImage, GdImage\\|false given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
 			message: "#^Parameter \\#1 \\$image of function imagepng expects GdImage, GdImage\\|false given\\.$#"
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
 			message: "#^Parameter \\#1 \\$image of function imagesavealpha expects GdImage, GdImage\\|false given\\.$#"
-			count: 1
+			count: 2
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
@@ -484,6 +499,11 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) should return array\\{scope\\?\\: string, src\\: string, use_cache\\?\\: bool\\} but returns array\\<mixed\\>\\.$#"
 			count: 1
 			path: src/Normalizer/ServiceWorkerNormalizer.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src/Resources/config/definition/favicons.php
 
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
@@ -624,13 +644,3 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SpomkyLabsPwaBundle.php
-
-		-
-			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\ManifestCompileEventListener\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Subscriber/ManifestCompileEventListener.php
-
-		-
-			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Subscriber\\\\PwaDevServerSubscriber\\:\\:\\$jsonOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Subscriber/PwaDevServerSubscriber.php

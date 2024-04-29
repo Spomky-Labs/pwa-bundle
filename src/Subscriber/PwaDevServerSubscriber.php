@@ -13,7 +13,6 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
-use function in_array;
 
 final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
 {
@@ -36,10 +35,13 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $pathInfo = $request->getPathInfo();
         foreach ($this->fileCompilers as $fileCompiler) {
-            if (in_array($pathInfo, $fileCompiler->supportedPublicUrls(), true)) {
-                $data = $fileCompiler->get($pathInfo);
-                assert($data !== null);
+            $files = iterator_to_array($fileCompiler->getFiles());
+            foreach ($files as $data) {
+                if ($data->url !== $pathInfo) {
+                    continue;
+                }
                 $this->serveFile($event, $data);
+                return;
             }
         }
     }

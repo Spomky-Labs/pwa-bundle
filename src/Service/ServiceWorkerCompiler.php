@@ -47,24 +47,13 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
         }
     }
 
-    public function supportedPublicUrls(): array
+    /**
+     * @return iterable<string, Data>
+     */
+    public function getFiles(): iterable
     {
-        return [$this->serviceWorkerPublicUrl, ...$this->listWorkboxFiles()];
-    }
-
-    public function get(string $publicUrl): null|Data
-    {
-        if ($publicUrl === $this->serviceWorkerPublicUrl) {
-            return $this->compileSW();
-        }
-        if ($this->workboxPublicUrl === null) {
-            return null;
-        }
-        if (! str_starts_with($publicUrl, $this->workboxPublicUrl)) {
-            return null;
-        }
-
-        return $this->getWorkboxFile($publicUrl);
+        yield $this->serviceWorkerPublicUrl => $this->compileSW();
+        yield from $this->getWorkboxFiles();
     }
 
     private function compileSW(): Data
@@ -107,9 +96,9 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
     }
 
     /**
-     * @return array<string>
+     * @return iterable<string, Data>
      */
-    private function listWorkboxFiles(): array
+    private function getWorkboxFiles(): iterable
     {
         if ($this->serviceWorker->workbox->enabled === false) {
             return [];
@@ -120,7 +109,6 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
         $fileLocator = new FileLocator(__DIR__ . '/../Resources');
         $resourcePath = $fileLocator->locate(sprintf('workbox-v%s', $this->workboxVersion));
 
-        $publicUrls = [];
         $files = scandir($resourcePath);
         assert(is_array($files), 'Unable to list the files.');
         foreach ($files as $file) {
@@ -135,10 +123,13 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
             if (! is_file($path) || ! is_readable($path)) {
                 continue;
             }
-            $publicUrls[] = sprintf('%s/%s', $this->workboxPublicUrl, $file);
+            $publicUrl = sprintf('%s/%s', $this->workboxPublicUrl, $file);
+            $data = $this->getWorkboxFile($publicUrl);
+            if ($data === null) {
+                continue;
+            }
+            yield $publicUrl => $data;
         }
-
-        return $publicUrls;
     }
 
     private function getWorkboxFile(string $publicUrl): null|Data

@@ -9,12 +9,6 @@ use ImagickPixel;
 
 final readonly class ImagickImageProcessor implements ImageProcessorInterface
 {
-    public function __construct(
-        private int $filters = Imagick::FILTER_LANCZOS2,
-        private float $blur = 1,
-    ) {
-    }
-
     public function process(string $image, ?int $width, ?int $height, ?string $format): string
     {
         if ($width === null && $height === null) {
@@ -23,7 +17,17 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         $imagick = new Imagick();
         $imagick->readImageBlob($image);
         if ($width !== null && $height !== null) {
-            $imagick->resizeImage($width, $height, $this->filters, $this->blur, true);
+            if ($width === $height) {
+                $imagick->scaleImage($width, $height);
+            } else {
+                $imagick->scaleImage(min($width, $height), min($width, $height));
+                $imagick->extentImage(
+                    $width,
+                    $height,
+                    -($width - min($width, $height)) / 2,
+                    -($height - min($width, $height)) / 2
+                );
+            }
         }
         $imagick->setImageBackgroundColor(new ImagickPixel('transparent'));
         if ($format !== null) {

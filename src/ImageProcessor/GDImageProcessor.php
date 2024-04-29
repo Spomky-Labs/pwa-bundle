@@ -17,7 +17,15 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
         assert($image !== false);
         imagealphablending($image, true);
         if ($width !== null && $height !== null) {
-            $image = imagescale($image, $width, $height);
+            if ($width === $height) {
+                $image = imagescale($image, $width, $height);
+            } else {
+                $newImage = imagecreatetruecolor($width, $height);
+                imagealphablending($newImage, false);
+                imagesavealpha($newImage, true);
+                imagecopyresampled($newImage, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
+                $image = $newImage;
+            }
         }
         ob_start();
         imagesavealpha($image, true);
