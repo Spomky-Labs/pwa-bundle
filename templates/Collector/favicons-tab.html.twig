@@ -1,0 +1,116 @@
+<h3>General information</h3>
+<p>
+    Status:
+    {% if collector.data.favicons.enabled %}
+        <span class="status-badge status-success">enabled</span>
+    {% else %}
+        <span class="status-badge status-warning">disabled</span>
+    {% endif %}
+</p>
+<h3>Details</h3>
+<table>
+    <thead>
+    <tr>
+        <th scope="col" class="key">Key</th>
+        <th scope="col">Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Low resolution included?</td>
+        <td>
+            {% if collector.favicons.lowResolution %}
+                Yes, included sizes are:
+                <ul>
+                    <li>16x16 (ICO and PNG): basic favicons</li>
+                    <li>32x32 (PNG): basic favicon</li>
+                    <li>57x57, 72x72, 114x114 (PNG): prior iOS 6</li>
+                    <li>60x60, 76x76, 120x120, 152x152 (PNG): prior iOS 7</li>
+                    <li>180x180 (PNG): iOS 7+</li>
+                    <li>36x36, 48x48, 72x72, 96x96, 144x144, 256x256, 384x384, 192x192, 512x512 (PNG): all platforms/browsers</li>
+                </ul>
+            {% else %}
+                No, included sizes are:
+                <ul>
+                    <li>16x16 (ICO and PNG): basic favicons</li>
+                    <li>32x32 (PNG): basic favicon</li>
+                    <li>180x180 (PNG): iOS 7+</li>
+                    <li>192x192, 512x512 (PNG): all platforms/browsers</li>
+                </ul>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Image scale</td>
+        <td>
+            {% if collector.favicons.imageScale %}
+                {{ collector.favicons.imageScale }}%
+            {% else %}
+                n / a
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Tile color</td>
+        <td>
+            {% if collector.favicons.tileColor %}
+                Windows 8/10 tiles are enabled with color
+                {{ collector.favicons.tileColor }}
+                <span style="background-color: {{ collector.favicons.tileColor }}; padding: 0.25rem; color: {{ collector.favicons.tileColor }};">{{ collector.favicons.tileColor }}</span>
+                <br>
+                Note that this will add instructions to the HTML to enable the tile color (XML file provided, see below).
+                <br>
+                Also, the following sizes are served:
+                <ul>
+                    <li>70x70 (PNG)</li>
+                    <li>150x150 (PNG)</li>
+                    <li>310x150 (PNG)</li>
+                    <li>310x310 (PNG)</li>
+                </ul>
+            {% else %}
+                Windows 8/10 tiles not enabled
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Composed images</td>
+        <td>
+            {% if collector.favicons.backgroundColor %}
+                The composed images have a background color of
+                {{ collector.favicons.backgroundColor }}
+                <span style="background-color: {{ collector.favicons.backgroundColor }}; padding: 0.25rem; color: {{ collector.favicons.backgroundColor }};">{{ collector.favicons.backgroundColor }}</span>
+                {% if collector.favicons.borderRadius %}
+                    <br>
+                    And a border radius of
+                    {{ collector.favicons.borderRadius }}% (rounded corners). 50% is a circle.
+                {% endif %}
+            {% else %}
+                Composed images are transparent
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Safari pin tab color</td>
+        <td>
+            Not supported at the moment
+        </td>
+    </tr>
+    <tr>
+        <td>Tile silhouette only</td>
+        <td>
+            Not supported at the moment
+        </td>
+    </tr>
+    </tbody>
+</table>
+<h3>Generated files</h3>
+<ul>
+    {% for file in collector.faviconsFiles %}
+        <li>
+            <a href="{{ file.url }}">{{ file.url }}</a>
+            {% if file.html is not null %}
+                (will be included in the HTML)
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

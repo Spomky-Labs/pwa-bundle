@@ -6,9 +6,13 @@ namespace SpomkyLabs\PwaBundle\DataCollector;
 
 use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
+use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +24,7 @@ use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
 use function count;
 use function in_array;
+use function is_array;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -36,6 +41,10 @@ final class PwaCollector extends DataCollector
         private readonly iterable $cachingServices,
         private readonly Manifest $manifest,
         private readonly ServiceWorker $serviceWorker,
+        private readonly Favicons $favicons,
+        private readonly ManifestCompiler $manifestCompiler,
+        private readonly ServiceWorkerCompiler $serviceWorkerCompiler,
+        private readonly FaviconsCompiler $faviconsCompiler,
     ) {
     }
 
@@ -52,12 +61,28 @@ final class PwaCollector extends DataCollector
                 $this->data['cachingStrategies'][] = $cacheStrategy;
             }
         }
-        $this->data['serviceWorker'] = $this->serviceWorker;
+        $swFiles = $this->serviceWorkerCompiler->getFiles();
+        $swFiles = is_array($swFiles) ? $swFiles : iterator_to_array($swFiles);
+        $this->data['serviceWorker'] = [
+            'enabled' => $this->serviceWorker->enabled,
+            'data' => $this->serviceWorker,
+            'files' => $swFiles,
+        ];
+        $manifestFiles = $this->manifestCompiler->getFiles();
+        $manifestFiles = is_array($manifestFiles) ? $manifestFiles : iterator_to_array($manifestFiles);
         $this->data['manifest'] = [
             'enabled' => $this->serviceWorker->enabled,
             'data' => $this->manifest,
             'installable' => $this->isInstallable(),
             'output' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
+            'files' => $manifestFiles,
+        ];
+
+        $faviconsFiles = $this->faviconsCompiler->getFiles();
+        $this->data['favicons'] = [
+            'enabled' => $this->favicons->enabled,
+            'data' => $this->favicons,
+            'files' => $faviconsFiles,
         ];
     }
 
@@ -82,9 +107,43 @@ final class PwaCollector extends DataCollector
         return $this->data['manifest']['data'];
     }
 
+    /**
+     * @return array<string, Data>
+     */
+    public function getManifestFiles(): array
+    {
+        return $this->data['manifest']['files'];
+    }
+
+    public function getServiceWorker(): ServiceWorker
+    {
+        return $this->data['serviceWorker']['data'];
+    }
+
+    /**
+     * @return array<string, Data>
+     */
+    public function getServiceWorkerFiles(): array
+    {
+        return $this->data['serviceWorker']['files'];
+    }
+
     public function getWorkbox(): Workbox
     {
-        return $this->data['serviceWorker']->workbox;
+        return $this->data['serviceWorker']['data']->workbox;
+    }
+
+    public function getFavicons(): Favicons
+    {
+        return $this->data['favicons']['data'];
+    }
+
+    /**
+     * @return array<string, Data>
+     */
+    public function getFaviconsFiles(): array
+    {
+        return $this->data['favicons']['files'];
     }
 
     public function getName(): string

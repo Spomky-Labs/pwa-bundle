@@ -76,11 +76,6 @@ parameters:
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$mimeType of method Symfony\\\\Component\\\\Mime\\\\MimeTypes\\:\\:getExtensions\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Command/CreateIconsCommand.php
-
-		-
 			message: "#^Parameter \\#1 \\$source of method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsCommand\\:\\:getSourcePath\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateIconsCommand.php
@@ -91,18 +86,8 @@ parameters:
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateIconsCommand.php
-
-		-
-			message: "#^Parameter \\#5 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateIconsCommand.php
-
-		-
 			message: "#^Cannot cast mixed to int\\.$#"
-			count: 6
+			count: 2
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
@@ -126,32 +111,12 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Command/CreateScreenshotCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Command/CreateScreenshotCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$mimeType of method Symfony\\\\Component\\\\Mime\\\\MimeTypes\\:\\:getExtensions\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Command/CreateScreenshotCommand.php
-
-		-
 			message: "#^Parameter \\#2 \\$uri of method Symfony\\\\Component\\\\Panther\\\\Client\\:\\:request\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
 			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Command/CreateScreenshotCommand.php
-
-		-
-			message: "#^Parameter \\#4 \\$format of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string\\|null, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
@@ -446,34 +411,19 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Parameter \\#1 \\$dst_image of function imagecopyresampled expects GdImage, GdImage\\|false given\\.$#"
+			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
+			count: 3
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of function imagealphablending expects GdImage, GdImage\\|false given\\.$#"
+			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
 			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagepng expects GdImage, GdImage\\|false given\\.$#"
-			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagesavealpha expects GdImage, GdImage\\|false given\\.$#"
-			count: 2
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagesx expects GdImage, GdImage\\|false given\\.$#"
-			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagesy expects GdImage, GdImage\\|false given\\.$#"
-			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
+			path: src/ImageProcessor/ImagickImageProcessor.php
 
 		-
 			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
@@ -629,6 +579,11 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
 			count: 1
 			path: src/Resources/config/definition/web_client.php
+
+		-
+			message: "#^Cannot call method process\\(\\) on SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\|null\\.$#"
+			count: 1
+			path: src/Service/FaviconsCompiler.php
 
 		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"

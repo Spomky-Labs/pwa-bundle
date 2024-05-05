@@ -15,19 +15,19 @@
     <tbody>
     <tr>
         <td>Destination</td>
-        <td>{{ collector.data.serviceWorker.dest }}</td>
+        <td>{{ collector.serviceWorker.dest }}</td>
     </tr>
     <tr>
         <td>Scope</td>
-        <td>{{ collector.data.serviceWorker.scope }}</td>
+        <td>{{ collector.serviceWorker.scope }}</td>
     </tr>
     <tr>
         <td>Use Cache</td>
-        <td>{{ collector.data.serviceWorker.useCache ? 'Yes' : 'No' }}</td>
+        <td>{{ collector.serviceWorker.useCache ? 'Yes' : 'No' }}</td>
     </tr>
     <tr>
         <td>Skip Waiting</td>
-        <td>{{ collector.data.serviceWorker.skipWaiting ? 'Yes' : 'No' }}</td>
+        <td>{{ collector.serviceWorker.skipWaiting ? 'Yes' : 'No' }}</td>
     </tr>
 </table>
 <h3>Workbox</h3>
@@ -166,3 +166,14 @@
     {% endfor %}
     </tbody>
 </table>
+<h3>Generated files</h3>
+<ul>
+    {% for file in collector.serviceWorkerFiles %}
+        <li>
+            <a href="{{ file.url }}">{{ file.url }}</a>
+            {% if file.html is not null %}
+                (will be included in the HTML)
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

@@ -33,8 +33,8 @@ final class Favicons
     #[SerializedName('image_scale')]
     public null|int $imageScale = null;
 
-    #[SerializedName('only_high_resolution')]
-    public null|bool $onlyHighResolution = null;
+    #[SerializedName('low_resolution')]
+    public null|bool $lowResolution = null;
 
     #[SerializedName('only_tile_silhouette')]
     public null|bool $onlyTileSilhouette = null;

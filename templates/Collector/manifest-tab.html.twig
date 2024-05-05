@@ -37,26 +37,26 @@
     <tbody>
     <tr>
         <td>ID</td>
-        <td>{{ collector.getManifest().id }}</td>
+        <td>{{ collector.manifest.id }}</td>
     </tr>
     <tr>
         <td>Name</td>
-        <td>{{ collector.getManifest().name|trans }}</td>
+        <td>{{ collector.manifest.name|trans }}</td>
     </tr>
     <tr>
         <td>Short name</td>
-        <td>{{ collector.getManifest().shortName|trans }}</td>
+        <td>{{ collector.manifest.shortName|trans }}</td>
     </tr>
     <tr>
         <td>Description name</td>
-        <td>{{ collector.getManifest().description|trans }}</td>
+        <td>{{ collector.manifest.description|trans }}</td>
     </tr>
     <tr>
         <td>Theme color</td>
         <td>
-            {% if collector.getManifest().themeColor %}
-                {{ collector.getManifest().themeColor }}
-                <span style="background-color: {{ collector.getManifest().themeColor }}; padding: 0.25rem; color: {{ collector.getManifest().themeColor }};">{{ collector.getManifest().themeColor }}</span>
+            {% if collector.manifest.themeColor %}
+                {{ collector.manifest.themeColor }}
+                <span style="background-color: {{ collector.manifest.themeColor }}; padding: 0.25rem; color: {{ collector.manifest.themeColor }};">{{ collector.manifest.themeColor }}</span>
             {% else %}
                 n/a
             {% endif %}
@@ -65,9 +65,9 @@
     <tr>
         <td>Background color</td>
         <td>
-            {% if collector.getManifest().backgroundColor %}
-                {{ collector.getManifest().backgroundColor }}
-                <span style="background-color: {{ collector.getManifest().backgroundColor }}; padding: 0.25rem; color: {{ collector.getManifest().backgroundColor }};">{{ collector.getManifest().backgroundColor }}</span>
+            {% if collector.manifest.backgroundColor %}
+                {{ collector.manifest.backgroundColor }}
+                <span style="background-color: {{ collector.manifest.backgroundColor }}; padding: 0.25rem; color: {{ collector.manifest.backgroundColor }};">{{ collector.manifest.backgroundColor }}</span>
             {% else %}
                 n/a
             {% endif %}
@@ -75,28 +75,28 @@
     </tr>
     <tr>
         <td>Display</td>
-        <td>{{ collector.getManifest().display }}</td>
+        <td>{{ collector.manifest.display }}</td>
     </tr>
     <tr>
         <td>Orientation</td>
-        <td>{{ collector.getManifest().orientation }}</td>
+        <td>{{ collector.manifest.orientation }}</td>
     </tr>
     <tr>
         <td>Scope</td>
-        <td>{{ collector.getManifest().scope }}</td>
+        <td>{{ collector.manifest.scope }}</td>
     </tr>
     <tr>
         <td>Start URL</td>
-        <td>{{ collector.getManifest().startUrl }}</td>
+        <td>{{ collector.manifest.startUrl }}</td>
     </tr>
     <tr>
         <td>Categories</td>
         <td>
-            {% if collector.getManifest().categories|length == 0 %}
+            {% if collector.manifest.categories|length == 0 %}
                 <span class="badge">none</span>
             {% else %}
                 <ul>
-                    {% for category in collector.getManifest().categories %}
+                    {% for category in collector.manifest.categories %}
                         <li>{{ category|trans }}</li>
                     {% endfor %}
                 </ul>
@@ -117,7 +117,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for icon in collector.getManifest().icons %}
+        {% for icon in collector.manifest.icons %}
             <tr>
                 <td>{{ icon.src.src }}</td>
                 <td>{{ icon.getSizeList() }}</td>
@@ -142,7 +142,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for screenshot in collector.getManifest().screenshots %}
+        {% for screenshot in collector.manifest.screenshots %}
             <tr>
                 <td>
                     {{ screenshot.src.src }}<br>
@@ -168,3 +168,14 @@
 <div class="tab-content">
     <pre class="output">{{ collector.data.manifest.output|nl2br }}</pre>
 </div>
+<h3>Generated files</h3>
+<ul>
+    {% for file in collector.manifestFiles %}
+        <li>
+            <a href="{{ file.url }}">{{ file.url }}</a>
+            {% if file.html is not null %}
+                (will be included in the HTML)
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

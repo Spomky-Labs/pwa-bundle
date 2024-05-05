@@ -6,15 +6,19 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 
 return static function (DefinitionConfigurator $definition): void {
     $definition->rootNode()
-        ->beforeNormalization()
+        /*->beforeNormalization()
             ->ifTrue(
-                static fn (null|array $v): bool => $v !== null && isset($v['manifest']) && $v['manifest']['enabled'] === true && isset($v['favicons']) && $v['favicons']['enabled'] === true && isset($v['manifest']['theme_color'])
+                static fn (null|array $v): bool => $v !== null && isset($v['manifest']) && $v['manifest']['enabled'] === true && isset($v['favicons']) && $v['favicons']['enabled'] === true
             )
             ->then(static function (array $v): array {
+                if (isset($v['favicons']['background_color']) || ! isset($v['manifest']['theme_color'])) {
+                    return $v;
+                }
+
                 $v['favicons']['background_color'] = $v['manifest']['theme_color'];
                 return $v;
             })
-        ->end()
+        ->end()*/
         ->children()
             ->arrayNode('favicons')
                 ->canBeEnabled()
@@ -56,9 +60,9 @@ return static function (DefinitionConfigurator $definition): void {
                         ->defaultFalse()
                         ->info('Generate precomposed icons. Useful for old iOS devices.')
                     ->end()
-                    ->booleanNode('only_high_resolution')
-                        ->defaultTrue()
-                        ->info('Only high resolution icons.')
+                    ->booleanNode('low_resolution')
+                        ->defaultFalse()
+                        ->info('Include low resolution icons.')
                     ->end()
                     ->booleanNode('only_tile_silhouette')
                         ->defaultTrue()

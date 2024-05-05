@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,7 +18,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Yaml\Yaml;
-use function count;
 use function is_string;
 
 #[AsCommand(name: 'pwa:create:icons', description: 'Generate icons for your PWA')]
@@ -60,7 +60,7 @@ final class CreateIconsCommand extends Command
             'f',
             InputOption::VALUE_OPTIONAL,
             'The format of the icons',
-            null,
+            'png',
             ['png', 'jpg', 'webp']
         );
         $this->addArgument(
@@ -84,6 +84,10 @@ final class CreateIconsCommand extends Command
         $dest = rtrim((string) $input->getOption('output'), '/');
         $filename = $input->getOption('filename');
         $format = $input->getOption('format');
+        if (! is_string($format)) {
+            $io->error('The format must be a string.');
+            return self::FAILURE;
+        }
         $sizes = $input->getArgument('sizes');
 
         $sourcePath = $this->getSourcePath($source);
@@ -97,28 +101,13 @@ final class CreateIconsCommand extends Command
             $this->filesystem->mkdir($dest);
         }
 
-        $mime = MimeTypes::getDefault();
-        if ($format === null) {
-            $mimeType = $mime->guessMimeType($sourcePath);
-            $extensions = $mime->getExtensions($mimeType);
-            if (count($extensions) === 0) {
-                $io->error(sprintf('Unable to guess the extension for the mime type "%s".', $mimeType));
-                return self::FAILURE;
-            }
-            $format = current($extensions);
-        }
-
         $generatedIcons = [];
         foreach ($sizes as $size) {
             $size = (int) $size;
             $outputSize = $size === 0 ? 'any' : sprintf('%sx%s', $size, $size);
             $io->info(sprintf('Processing icon %s', $outputSize));
-            $tmp = $this->imageProcessor->process(
-                file_get_contents($sourcePath),
-                $size === 0 ? null : $size,
-                $size === 0 ? null : $size,
-                $format
-            );
+            $configuration = Configuration::create($size, $size, $format);
+            $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), null, null, null, $configuration);
             $filePath = sprintf('%s/%s-%s.%s', $dest, $filename, $outputSize, $format);
             $this->filesystem->dumpFile($filePath, $tmp);
             $asset = $this->assetMapper->getAssetFromSourcePath($filePath);
@@ -126,7 +115,7 @@ final class CreateIconsCommand extends Command
                 'src' => $asset === null ? $filePath : $asset->logicalPath,
                 'sizes' => [$size],
             ];
-            $destMimeType = $mime->guessMimeType($filePath);
+            $destMimeType = MimeTypes::getDefault()->guessMimeType($filePath);
             if ($destMimeType !== null) {
                 $config['type'] = $destMimeType;
             }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Command;
 
 use Facebook\WebDriver\WebDriverDimension;
+use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,7 +22,8 @@ use Symfony\Component\Panther\Client;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 use function assert;
-use function count;
+use function is_int;
+use function is_string;
 
 #[AsCommand(
     name: 'pwa:create:screenshot',
@@ -72,7 +74,7 @@ final class CreateScreenshotCommand extends Command
             'f',
             InputOption::VALUE_OPTIONAL,
             'The format of the screenshots',
-            null,
+            'png',
             ['png', 'jpg', 'webp']
         );
     }
@@ -91,20 +93,30 @@ final class CreateScreenshotCommand extends Command
         $height = $input->getOption('height');
         $width = $input->getOption('width');
         $format = $input->getOption('format');
+        if (! is_string($format)) {
+            $io->error('The format must be defined.');
+            return self::FAILURE;
+        }
 
         $client = $this->getClient();
         $crawler = $client->request('GET', $url);
 
         $tmpName = $this->filesystem
             ->tempnam('', 'pwa-');
+        if ($width !== null xor $height !== null) {
+            $io->error('If you define a width, you must define a height.');
+            return self::FAILURE;
+        }
         if ($width !== null && $height !== null) {
-            if ($width < 0 || $height < 0) {
+            $width = (int) $width;
+            $height = (int) $height;
+            if ($width <= 0 || $height <= 0) {
                 $io->error('Width and height must be positive integers.');
                 return self::FAILURE;
             }
             $client->manage()
                 ->window()
-                ->setSize(new WebDriverDimension((int) $width, (int) $height));
+                ->setSize(new WebDriverDimension($width, $height));
         }
         $client->manage()
             ->window()
@@ -118,38 +130,26 @@ final class CreateScreenshotCommand extends Command
             $title = null;
         }
 
-        if ($format !== null) {
-            $data = $this->imageProcessor->process(file_get_contents($tmpName), null, null, $format);
-            file_put_contents($tmpName, $data);
-        }
-        if ($width === null || $height === null) {
-            ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes(file_get_contents($tmpName));
-        }
+        $data = file_get_contents($tmpName);
+        assert(is_string($data));
+        ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($data);
+        assert(is_int($width));
+        assert(is_int($height));
+        $configuration = Configuration::create($width, $height, $format);
+        $data = $this->imageProcessor->process($data, null, null, null, $configuration);
+        file_put_contents($tmpName, $data);
 
-        $mime = MimeTypes::getDefault();
-        $mimeType = $mime->guessMimeType($tmpName);
-        $extensions = $mime->getExtensions($mimeType);
-        if (count($extensions) === 0) {
-            $io->error(sprintf('Unable to guess the extension for the mime type "%s".', $mimeType));
-            return self::FAILURE;
-        }
-        $sizes = '';
-        if ($width !== null && $height !== null) {
-            $sizes = sprintf('-%dx%d', (int) $width, (int) $height);
-        }
-
-        $format = current($extensions);
-        $filename = sprintf('%s/%s%s.%s', $dest, $input->getOption('filename'), $sizes, $format);
+        $filename = sprintf('%s/%s-%dx%d.%s', $dest, $input->getOption('filename'), $width, $height, $format);
 
         $this->filesystem->copy($tmpName, $filename, true);
         $this->filesystem->remove($tmpName);
         $asset = $this->assetMapper->getAssetFromSourcePath($filename);
-        $outputMimeType = $mime->guessMimeType($filename);
+        $outputMimeType = MimeTypes::getDefault()->guessMimeType($filename);
 
         $config = [
             'src' => $asset === null ? $filename : $asset->logicalPath,
-            'width' => (int) $width,
-            'height' => (int) $height,
+            'width' => $width,
+            'height' => $height,
             'reference' => $url,
         ];
         if ($outputMimeType !== null) {

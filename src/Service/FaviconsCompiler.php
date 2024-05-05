@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use SpomkyLabs\PwaBundle\Dto\Favicons;
+use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
@@ -41,30 +42,202 @@ final class FaviconsCompiler implements FileCompilerInterface
         }
         $asset = $this->assetMapper->getAsset($this->favicons->src->src);
         assert($asset !== null, 'The asset does not exist.');
-        $this->files = [
-            '/favicon.ico' => $this->processIcon($asset, '/favicon.ico', 16, 16, 'ico', 'image/x-icon'),
+        $this->files = [];
+        $sizes = [
+            //Always
+            [
+                'url' => '/favicon.ico',
+                'width' => 16,
+                'height' => 16,
+                'format' => 'ico',
+                'mimetype' => 'image/x-icon',
+                'rel' => 'icon',
+            ],
+            [
+                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'width' => 16,
+                'height' => 16,
+                'format' => 'png',
+                'mimetype' => 'image/png',
+                'rel' => 'icon',
+            ],
+            [
+                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'width' => 32,
+                'height' => 32,
+                'format' => 'png',
+                'mimetype' => 'image/png',
+                'rel' => 'icon',
+            ],
+            //High resolution iOS
+            [
+                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'width' => 180,
+                'height' => 180,
+                'format' => 'png',
+                'mimetype' => 'image/png',
+                'rel' => 'apple-touch-icon',
+            ],
+            //High resolution chrome
+            [
+                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'width' => 192,
+                'height' => 192,
+                'format' => 'png',
+                'mimetype' => 'image/png',
+                'rel' => 'icon',
+            ],
+            [
+                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'width' => 512,
+                'height' => 512,
+                'format' => 'png',
+                'mimetype' => 'image/png',
+                'rel' => 'icon',
+            ],
         ];
-        $sizes = [16, 32, 36, 48, 57, 60, 70, 72, 76, 96, 114, 120, 144, 150, 152, 180, 192, 194, 256, 310, 384, 512];
+        if ($this->favicons->lowResolution === true) {
+            $sizes = [
+                ...$sizes,
+                //Prior iOS 6
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 57,
+                    'height' => 57,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 72,
+                    'height' => 72,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 114,
+                    'height' => 114,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+
+                //Prior iOS 7
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 60,
+                    'height' => 60,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 76,
+                    'height' => 76,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 120,
+                    'height' => 120,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 152,
+                    'height' => 152,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-icon',
+                ],
+
+                //Other resolution
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 36,
+                    'height' => 36,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 48,
+                    'height' => 48,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 72,
+                    'height' => 72,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 96,
+                    'height' => 96,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 144,
+                    'height' => 144,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 256,
+                    'height' => 256,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+                [
+                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'width' => 384,
+                    'height' => 384,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'icon',
+                ],
+            ];
+        }
+
         foreach ($sizes as $size) {
-            $this->files[sprintf('/favicons/icon-%dx%d.png', $size, $size)] = $this->processIcon(
+            $configuration = Configuration::create(
+                $size['width'],
+                $size['height'],
+                $size['format'],
+                $this->favicons->backgroundColor,
+                $this->favicons->borderRadius,
+                $this->favicons->imageScale,
+            );
+            $this->files[sprintf($size['url'], $size['width'], $size['height'])] = $this->processIcon(
                 $asset,
-                sprintf('/favicons/icon-%dx%d.{hash}.png', $size, $size),
-                $size,
-                $size,
-                'png',
-                'image/png'
+                sprintf($size['url'], $size['width'], $size['height']),
+                $configuration,
+                $size['mimetype'],
+                $size['rel'],
             );
         }
         if ($this->favicons->tileColor !== null) {
-            $this->files['/favicons/icon-310x150.png'] = $this->processIcon(
-                $asset,
-                '/favicons/icon-310x150.{hash}.png',
-                310,
-                150,
-                'png',
-                'image/png'
-            );
-            $this->files['/favicons/browserconfig.xml'] = $this->processBrowserConfig();
+            $this->files = [...$this->files, ...$this->processBrowserConfig($asset)];
         }
 
         return $this->files;
@@ -73,54 +246,102 @@ final class FaviconsCompiler implements FileCompilerInterface
     private function processIcon(
         MappedAsset $asset,
         string $publicUrl,
-        int $width,
-        int $height,
-        string $format,
-        string $mimeType
+        Configuration $configuration,
+        string $mimeType,
+        null|string $rel,
     ): Data {
         $content = file_get_contents($asset->sourcePath);
         assert($content !== false);
         if ($this->debug === true) {
-            $hash = hash('xxh128', $content);
+            $data = $this->imageProcessor->process($content, null, null, null, $configuration);
+            $url = str_replace('{hash}', '', $publicUrl);
+            $html = $rel === null ? null : sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
+                $rel,
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $url
+            );
             return Data::create(
-                str_replace(['{hash}', '.png'], [$hash, '.svg'], $publicUrl),
-                $content,
+                $url,
+                $data,
                 [
                     'Cache-Control' => 'public, max-age=604800, immutable',
-                    'Content-Type' => 'image/svg+xml',
+                    'Content-Type' => $mimeType,
                     'X-Favicons-Dev' => true,
-                    'Etag' => $hash,
-                ]
+                ],
+                $html
             );
         }
         assert($this->imageProcessor !== null);
-        $data = $this->imageProcessor->process($content, $width, $height, $format);
+        $data = $this->imageProcessor->process($content, null, null, null, $configuration);
+        $url = str_replace('{hash}', hash('xxh128', $data), $publicUrl);
         return Data::create(
-            str_replace('{hash}', hash('xxh128', $data), $publicUrl),
+            $url,
             $data,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => $mimeType,
                 'X-Favicons-Dev' => true,
                 'Etag' => hash('xxh128', $data),
-            ]
+            ],
+            sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
+                $rel,
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $url
+            )
         );
     }
 
-    private function processBrowserConfig(): Data
+    /**
+     * @return array<Data>
+     */
+    private function processBrowserConfig(MappedAsset $asset): array
     {
-        $icon310x150 = $this->files['/favicons/icon-310x150.png'] ?? null;
-        $icon70x70 = $this->files['/favicons/icon-70x70.png'] ?? null;
-        $icon150x150 = $this->files['/favicons/icon-150x150.png'] ?? null;
-        $icon310x310 = $this->files['/favicons/icon-310x310.png'] ?? null;
-        assert($icon310x150 !== null);
-        assert($icon70x70 !== null);
-        assert($icon150x150 !== null);
-        assert($icon310x310 !== null);
+        $icon70x70 = $this->processIcon(
+            $asset,
+            '/favicons/icon-70x70.{hash}.png',
+            Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale),
+            'image/png',
+            null
+        );
+        $icon150x150 = $this->processIcon(
+            $asset,
+            '/favicons/icon-150x150.{hash}.png',
+            Configuration::create(150, 150, 'png', null, null, $this->favicons->imageScale),
+            'image/png',
+            null
+        );
+        $icon310x310 = $this->processIcon(
+            $asset,
+            '/favicons/icon-310x310.{hash}.png',
+            Configuration::create(310, 310, 'png', null, null, $this->favicons->imageScale),
+            'image/png',
+            null
+        );
+        $icon310x150 = $this->processIcon(
+            $asset,
+            '/favicons/icon-310x150.{hash}.png',
+            Configuration::create(310, 150, 'png', null, null, $this->favicons->imageScale),
+            'image/png',
+            null
+        );
+        $icon144x144 = $this->processIcon(
+            $asset,
+            '/favicons/icon-144x144.{hash}.png',
+            Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale),
+            'image/png',
+            null
+        );
+
         if ($this->favicons->tileColor === null) {
             $tileColor = '';
         } else {
-            $tileColor = sprintf(PHP_EOL . '            <TileColor>%s</TileColor>', $this->favicons->tileColor);
+            $tileColor = PHP_EOL . sprintf('            <TileColor>%s</TileColor>', $this->favicons->tileColor);
         }
 
         $content = <<<XML
@@ -136,16 +357,32 @@ final class FaviconsCompiler implements FileCompilerInterface
     </msapplication>
 </browserconfig>
 XML;
-        $hash = hash('xxh128', $content);
-        return Data::create(
-            sprintf('/favicons/browserconfig.%s.xml', $hash),
+        $hash = $this->debug === true ? '' : hash('xxh128', $content);
+        $url = sprintf('/favicons/browserconfig.%s.xml', $hash);
+        $browserConfig = Data::create(
+            $url,
             $content,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/xml',
                 'X-Favicons-Dev' => true,
                 'Etag' => $hash,
-            ]
+            ],
+            sprintf('<meta name="msapplication-config" content="%s">', $url)
         );
+
+        return [
+            $icon70x70,
+            $icon150x150,
+            $icon310x310,
+            $icon310x150,
+            Data::create(
+                $icon144x144->url,
+                $icon144x144->data,
+                $icon144x144->headers,
+                sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
+            ),
+            $browserConfig,
+        ];
     }
 }
