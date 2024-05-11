@@ -77,8 +77,25 @@ final readonly class PwaRuntime
         if ($this->manifest->themeColor === null || $themeColor === false) {
             return $output;
         }
+        $colors = [
+            'light' => [$this->manifest->themeColor],
+        ];
+        if ($this->manifest->darkThemeColor !== null) {
+            $colors['light'] = [
+                $this->manifest->themeColor,
+                'media' => ' media="(prefers-color-scheme: light)"',
+            ];
+            $colors['dark'] = [
+                $this->manifest->darkThemeColor,
+                'media' => ' media="(prefers-color-scheme: dark)"',
+            ];
+        }
+        foreach ($colors as $color) {
+            $media = $color['media'] ?? '';
+            $output .= sprintf('%s<meta name="theme-color" content="%s" %s>', PHP_EOL, $color[0], $media);
+        }
 
-        return $output . sprintf('%s<meta name="theme-color" content="%s">', PHP_EOL, $this->manifest->themeColor);
+        return $output;
     }
 
     /**

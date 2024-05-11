@@ -91,7 +91,13 @@ return static function (DefinitionConfigurator $definition): void {
                     ->example('https://example.com')
                 ->end()
                 ->scalarNode('theme_color')
-                    ->info('The theme color of the application.')
+                    ->info(
+                        'The theme color of the application. If a dark theme color is specified, the theme color will be used for the light theme.'
+                    )
+                    ->example('red')
+                ->end()
+                ->scalarNode('dark_theme_color')
+                    ->info('The dark theme color of the application.')
                     ->example('red')
                 ->end()
                 ->arrayNode('edge_side_panel')

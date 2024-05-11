@@ -55,6 +55,9 @@ final class Manifest
     #[SerializedName('theme_color')]
     public null|string $themeColor = null;
 
+    #[SerializedName('dark_theme_color')]
+    public null|string $darkThemeColor = null;
+
     #[SerializedName('edge_side_panel')]
     public null|EdgeSidePanel $edgeSidePanel = null;
 
