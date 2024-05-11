@@ -225,38 +225,25 @@ SERVICE_WORKER;
         }
 
         $files = $this->faviconsCompiler->getFiles();
+        foreach ($files as $file) {
+            if ($file->html === null) {
+                continue;
+            }
 
-        $output .= PHP_EOL . '<link rel="icon" sizes="16x16" type="image/x-icon" href="/favicon.ico">';
-        foreach ([57, 60, 72, 76, 114, 120, 144, 152, 180] as $size) {
-            $output .= PHP_EOL . sprintf(
-                '<link rel="apple-touch-icon" type="image/png" sizes="%dx%d" href="%s">',
-                $size,
-                $size,
-                $files[sprintf('/favicons/icon-%dx%d.png', $size, $size)]->url
-            );
+            $output .= PHP_EOL . $file->html;
         }
-        foreach ([16, 32, 48, 96, 192, 256, 384, 512] as $size) {
-            $output .= PHP_EOL . sprintf(
-                '<link rel="icon" type="image/png" sizes="%dx%d" href="%s">',
-                $size,
-                $size,
-                $files[sprintf('/favicons/icon-%dx%d.png', $size, $size)]->url
-            );
-        }
+
         if ($this->favicons->tileColor !== null) {
-            $output .= PHP_EOL . sprintf(
-                '<meta name="msapplication-config" content="%s">',
-                $files['/favicons/browserconfig.xml']->url
-            );
             $output .= PHP_EOL . sprintf(
                 '<meta name="msapplication-TileColor" content="%s">',
                 $this->favicons->tileColor
             );
+            /*$output .= PHP_EOL . sprintf(
+                '<meta name="msapplication-TileImage" content="%s">',
+                $files['/favicons/icon-144x144.png']->url
+            );*/
         }
 
-        return $output . (PHP_EOL . sprintf(
-            '<meta name="msapplication-TileImage" content="%s">',
-            $files['/favicons/icon-144x144.png']->url
-        ));
+        return $output;
     }
 }

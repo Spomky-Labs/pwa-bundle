@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests;
 
+use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use function assert;
 
@@ -12,8 +13,13 @@ use function assert;
  */
 class DummyImageProcessor implements ImageProcessorInterface
 {
-    public function process(string $image, ?int $width, ?int $height, ?string $format): string
-    {
+    public function process(
+        string $image,
+        ?int $width,
+        ?int $height,
+        ?string $format,
+        null|Configuration $configuration = null
+    ): string {
         $json = json_encode([
             'width' => $width,
             'height' => $height,

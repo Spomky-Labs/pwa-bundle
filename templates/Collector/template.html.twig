@@ -31,6 +31,14 @@
                 <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>
             {% endif %}
         </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Favicons</b>
+            {% if collector.data.favicons.enabled %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">Enabled</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>
+            {% endif %}
+        </div>
     {% endset %}
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
@@ -95,6 +103,12 @@
             <h3 class="tab-title">Service Worker</h3>
             <div class="tab-content">
                 {% include '@SpomkyLabsPwa/Collector/serviceworker-tab.html.twig' %}
+            </div>
+        </div>
+        <div class="tab">
+            <h3 class="tab-title">Favicons</h3>
+            <div class="tab-content">
+                {% include '@SpomkyLabsPwa/Collector/favicons-tab.html.twig' %}
             </div>
         </div>
     </div>

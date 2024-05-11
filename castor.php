@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Castor\Attribute\AsOption;
 
 use Castor\Attribute\AsTask;
 use function Castor\io;
@@ -57,9 +58,9 @@ function test(bool $coverageHtml = false, bool $coverageText = false, null|strin
 
 #[AsTask(description: 'Coding standards check')]
 function cs(
-    #[\Castor\Attribute\AsOption(description: 'Fix issues if possible')]
+    #[AsOption(description: 'Fix issues if possible')]
     bool $fix = false,
-    #[\Castor\Attribute\AsOption(description: 'Clear cache')]
+    #[AsOption(description: 'Clear cache')]
     bool $clearCache = false
 ): void {
     io()->title('Running coding standards check');
@@ -77,10 +78,16 @@ function cs(
 }
 
 #[AsTask(description: 'Running PHPStan')]
-function stan(): void
+function stan(
+    #[AsOption(description: 'Generate baseline')]
+    bool $baseline = false
+): void
 {
     io()->title('Running PHPStan');
     $command = ['php', 'vendor/bin/phpstan', 'analyse'];
+    if ($baseline) {
+        $command[] = '--generate-baseline';
+    }
     $environment = [
         'XDEBUG_MODE' => 'off',
     ];
@@ -119,7 +126,7 @@ function checkLicenses(
         io()->error('Cannot determine licenses');
         exit(1);
     }
-    $licenses = json_decode($result->getOutput(), true);
+    $licenses = json_decode((string) $result->getOutput(), true);
     $disallowed = array_filter(
         $licenses['dependencies'],
         static fn (array $info, $name) => ! in_array($name, $allowedExceptions, true)
@@ -161,9 +168,9 @@ function checkLicenses(
 
 #[AsTask(description: 'Run Rector')]
 function rector(
-    #[\Castor\Attribute\AsOption(description: 'Fix issues if possible')]
+    #[AsOption(description: 'Fix issues if possible')]
     bool $fix = false,
-    #[\Castor\Attribute\AsOption(description: 'Clear cache')]
+    #[AsOption(description: 'Clear cache')]
     bool $clearCache = false
 ): void {
     io()->title('Running Rector');
