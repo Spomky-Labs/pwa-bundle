@@ -26,7 +26,9 @@ return static function (RectorConfig $config): void {
         PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ]);
     $config->phpVersion(PhpVersion::PHP_82);
-    $config->paths([__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']);
+    $config->paths(
+        [__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/castor.php', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']
+    );
     $config->skip([
         RemoveEmptyClassMethodRector::class => [__DIR__ . '/tests/Controller/'],
     ]);
