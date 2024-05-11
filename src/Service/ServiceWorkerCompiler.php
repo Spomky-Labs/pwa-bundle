@@ -82,15 +82,17 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
 
     private function includeRootSW(): string
     {
-        if ($this->serviceWorker->src->src === '') {
+        $source = $this->serviceWorker->src;
+        if ($source === null) {
             return '';
         }
-        if (! str_starts_with($this->serviceWorker->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($this->serviceWorker->src->src);
+        if (! str_starts_with($source->src, '/')) {
+            $asset = $this->assetMapper->getAsset($source->src);
             assert($asset !== null, 'Unable to find service worker source asset');
             $body = $asset->content ?? file_get_contents($asset->sourcePath);
         } else {
-            $body = file_get_contents($this->serviceWorker->src->src);
+            assert(file_exists($source->src), 'Unable to find service worker source file');
+            $body = file_get_contents($source->src);
         }
         return is_string($body) ? $body : '';
     }

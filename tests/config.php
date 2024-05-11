@@ -236,7 +236,7 @@ return static function (ContainerConfigurator $container) {
         ],
         'serviceworker' => [
             'enabled' => true,
-            'src' => __DIR__ . '/sw.js',
+            //'src' => __DIR__ . '/sw.js',
             'scope' => '/',
             'use_cache' => true,
             'workbox' => [

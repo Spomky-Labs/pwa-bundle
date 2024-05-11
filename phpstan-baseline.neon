@@ -271,11 +271,6 @@ parameters:
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Dto/ServiceWorker.php
-
-		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$workbox\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/ServiceWorker.php
@@ -581,7 +576,37 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
+			message: "#^Call to function assert\\(\\) with true and 'The asset does not…' will always evaluate to true\\.$#"
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
 			message: "#^Cannot call method process\\(\\) on SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\|null\\.$#"
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:getFavicon\\(\\) should return string but returns string\\|false\\.$#"
+			count: 2
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: "#^Parameter \\#1 \\$asset of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processBrowserConfig\\(\\) expects SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset, string given\\.$#"
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processIcon\\(\\) expects string, SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset given\\.$#"
+			count: 5
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: "#^Parameter \\$asset of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processBrowserConfig\\(\\) has invalid type SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset\\.$#"
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#"
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 

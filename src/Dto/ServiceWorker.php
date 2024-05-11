@@ -10,7 +10,7 @@ final class ServiceWorker
 {
     public bool $enabled;
 
-    public Asset $src;
+    public null|Asset $src = null;
 
     public string $dest;
 

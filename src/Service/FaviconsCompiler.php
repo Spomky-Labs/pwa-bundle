@@ -8,7 +8,6 @@ use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use function assert;
 use const PHP_EOL;
@@ -40,7 +39,7 @@ final class FaviconsCompiler implements FileCompilerInterface
         if ($this->imageProcessor === null || $this->favicons->enabled === false) {
             return [];
         }
-        $asset = $this->assetMapper->getAsset($this->favicons->src->src);
+        $asset = $this->getFavicon();
         assert($asset !== null, 'The asset does not exist.');
         $this->files = [];
         $sizes = [
@@ -244,14 +243,12 @@ final class FaviconsCompiler implements FileCompilerInterface
     }
 
     private function processIcon(
-        MappedAsset $asset,
+        string $content,
         string $publicUrl,
         Configuration $configuration,
         string $mimeType,
         null|string $rel,
     ): Data {
-        $content = file_get_contents($asset->sourcePath);
-        assert($content !== false);
         if ($this->debug === true) {
             $data = $this->imageProcessor->process($content, null, null, null, $configuration);
             $url = str_replace('{hash}', '', $publicUrl);
@@ -384,5 +381,17 @@ XML;
             ),
             $browserConfig,
         ];
+    }
+
+    private function getFavicon(): string
+    {
+        $source = $this->favicons->src;
+        if (! str_starts_with($source->src, '/')) {
+            $asset = $this->assetMapper->getAsset($source->src);
+            assert($asset !== null, 'Unable to find the favicon source asset');
+            return $asset->content ?? file_get_contents($asset->sourcePath);
+        }
+        assert(file_exists($source->src), 'Unable to find the favicon source file');
+        return file_get_contents($source->src);
     }
 }
