@@ -67,6 +67,13 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
         ]];
+        yield 'Service Worker without source' => [
+            [
+                'pwa' => [
+                    'serviceworker' => null,
+                ],
+            ],
+        ];
         yield 'Complete configuration' => [[
             'pwa' => [
                 'image_processor' => DummyImageProcessor::class,
@@ -305,16 +312,6 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
             'The child config "src" under "pwa.favicons" must be configured: The source of the favicon. Shall be a SVG or large PNG.',
-        ];
-        yield 'No service worker source' => [
-            [
-                'pwa' => [
-                    'serviceworker' => [
-                        'enabled' => true,
-                    ],
-                ],
-            ],
-            'The child config "src" under "pwa.serviceworker" must be configured: The path to the service worker source file. Can be served by Asset Mapper.',
         ];
     }
 

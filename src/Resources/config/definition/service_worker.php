@@ -19,7 +19,6 @@ return static function (DefinitionConfigurator $definition): void {
             ->end()
             ->children()
                 ->scalarNode('src')
-                    ->isRequired()
                     ->info('The path to the service worker source file. Can be served by Asset Mapper.')
                     ->example('script/sw.js')
                 ->end()
