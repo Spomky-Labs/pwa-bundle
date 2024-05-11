@@ -6,19 +6,6 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 
 return static function (DefinitionConfigurator $definition): void {
     $definition->rootNode()
-        /*->beforeNormalization()
-            ->ifTrue(
-                static fn (null|array $v): bool => $v !== null && isset($v['manifest']) && $v['manifest']['enabled'] === true && isset($v['favicons']) && $v['favicons']['enabled'] === true
-            )
-            ->then(static function (array $v): array {
-                if (isset($v['favicons']['background_color']) || ! isset($v['manifest']['theme_color'])) {
-                    return $v;
-                }
-
-                $v['favicons']['background_color'] = $v['manifest']['theme_color'];
-                return $v;
-            })
-        ->end()*/
         ->children()
             ->arrayNode('favicons')
                 ->canBeEnabled()
