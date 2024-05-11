@@ -96,9 +96,19 @@
         </td>
     </tr>
     <tr>
-        <td>Tile silhouette only</td>
+        <td>Use silhouette</td>
         <td>
-            Not supported at the moment
+            {% if collector.favicons.useSilhouette %}
+                Yes, a silhouette is used for the following purpose(s):
+                <ul>
+                    <li>Windows 8/10 tiles</li>
+                {% if collector.favicons.safariPinnedTabColor %}
+                    <li>Apple touch icons (with Safari pinned tab color {{ collector.favicons.safariPinnedTabColor }} <span style="background-color: {{ collector.favicons.tileColor }}; padding: 0.25rem; color: {{ collector.favicons.tileColor }};">{{ collector.favicons.safariPinnedTabColor }}</span>)</li>
+                {% endif %}
+                </ul>
+            {% else %}
+                No, no silhouette is used
+            {% endif %}
         </td>
     </tr>
     </tbody>
