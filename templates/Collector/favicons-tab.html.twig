@@ -54,7 +54,12 @@
         <td>Tile color</td>
         <td>
             {% if collector.favicons.tileColor %}
-                Windows 8/10 tiles are enabled with color
+                {% if collector.favicons.useSilhouette %}
+                    A silhouette is used as
+                {% else %}
+                    The icon is used as
+                {% endif %}
+                Windows 8/10 tile with color
                 {{ collector.favicons.tileColor }}
                 <span style="background-color: {{ collector.favicons.tileColor }}; padding: 0.25rem; color: {{ collector.favicons.tileColor }};">{{ collector.favicons.tileColor }}</span>
                 <br>
@@ -90,24 +95,12 @@
         </td>
     </tr>
     <tr>
-        <td>Safari pin tab color</td>
+        <td>Safari pinned tab</td>
         <td>
-            Not supported at the moment
-        </td>
-    </tr>
-    <tr>
-        <td>Use silhouette</td>
-        <td>
-            {% if collector.favicons.useSilhouette %}
-                Yes, a silhouette is used for the following purpose(s):
-                <ul>
-                    <li>Windows 8/10 tiles</li>
-                {% if collector.favicons.safariPinnedTabColor %}
-                    <li>Apple touch icons (with Safari pinned tab color {{ collector.favicons.safariPinnedTabColor }} <span style="background-color: {{ collector.favicons.tileColor }}; padding: 0.25rem; color: {{ collector.favicons.tileColor }};">{{ collector.favicons.safariPinnedTabColor }}</span>)</li>
-                {% endif %}
-                </ul>
+            {% if collector.favicons.useSilhouette and collector.favicons.safariPinnedTabColor %}
+                Yes, a silhouette is used with the pinned tab color {{ collector.favicons.safariPinnedTabColor }} <span style="background-color: {{ collector.favicons.tileColor }}; padding: 0.25rem; color: {{ collector.favicons.tileColor }};">{{ collector.favicons.safariPinnedTabColor }}</span>
             {% else %}
-                No, no silhouette is used
+                No, no silhouette is used.
             {% endif %}
         </td>
     </tr>
