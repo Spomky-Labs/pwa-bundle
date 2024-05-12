@@ -41,6 +41,7 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
     private function createMainImage(string $image, Configuration $configuration): Imagick
     {
         $mainImage = new Imagick();
+        $mainImage->setBackgroundColor(new ImagickPixel('transparent'));
         $mainImage->readImageBlob($image);
         $mainImage->setImageBackgroundColor(new ImagickPixel('transparent'));
 

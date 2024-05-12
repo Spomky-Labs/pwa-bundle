@@ -36,6 +36,8 @@ final class Favicons
     #[SerializedName('low_resolution')]
     public null|bool $lowResolution = null;
 
-    #[SerializedName('only_tile_silhouette')]
-    public null|bool $onlyTileSilhouette = null;
+    #[SerializedName('use_silhouette')]
+    public null|bool $useSilhouette = null;
+
+    public null|string $potrace = null;
 }

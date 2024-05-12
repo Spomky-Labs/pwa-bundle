@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use RuntimeException;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use function assert;
 use const PHP_EOL;
 
@@ -53,7 +56,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'url' => '/favicons/icon-%sx%s.png',
                 'width' => 16,
                 'height' => 16,
                 'format' => 'png',
@@ -61,7 +64,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'url' => '/favicons/icon-%sx%s.png',
                 'width' => 32,
                 'height' => 32,
                 'format' => 'png',
@@ -70,7 +73,7 @@ final class FaviconsCompiler implements FileCompilerInterface
             ],
             //High resolution iOS
             [
-                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'url' => '/favicons/icon-%sx%s.png',
                 'width' => 180,
                 'height' => 180,
                 'format' => 'png',
@@ -79,7 +82,7 @@ final class FaviconsCompiler implements FileCompilerInterface
             ],
             //High resolution chrome
             [
-                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'url' => '/favicons/icon-%sx%s.png',
                 'width' => 192,
                 'height' => 192,
                 'format' => 'png',
@@ -87,7 +90,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%sx%s.{hash}.png',
+                'url' => '/favicons/icon-%sx%s.png',
                 'width' => 512,
                 'height' => 512,
                 'format' => 'png',
@@ -100,7 +103,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                 ...$sizes,
                 //Prior iOS 6
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 57,
                     'height' => 57,
                     'format' => 'png',
@@ -108,7 +111,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 72,
                     'height' => 72,
                     'format' => 'png',
@@ -116,7 +119,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 114,
                     'height' => 114,
                     'format' => 'png',
@@ -126,7 +129,7 @@ final class FaviconsCompiler implements FileCompilerInterface
 
                 //Prior iOS 7
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 60,
                     'height' => 60,
                     'format' => 'png',
@@ -134,7 +137,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 76,
                     'height' => 76,
                     'format' => 'png',
@@ -142,7 +145,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 120,
                     'height' => 120,
                     'format' => 'png',
@@ -150,7 +153,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 152,
                     'height' => 152,
                     'format' => 'png',
@@ -160,7 +163,7 @@ final class FaviconsCompiler implements FileCompilerInterface
 
                 //Other resolution
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 36,
                     'height' => 36,
                     'format' => 'png',
@@ -168,7 +171,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 48,
                     'height' => 48,
                     'format' => 'png',
@@ -176,7 +179,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 72,
                     'height' => 72,
                     'format' => 'png',
@@ -184,7 +187,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 96,
                     'height' => 96,
                     'format' => 'png',
@@ -192,7 +195,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 144,
                     'height' => 144,
                     'format' => 'png',
@@ -200,7 +203,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 256,
                     'height' => 256,
                     'format' => 'png',
@@ -208,7 +211,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%sx%s.{hash}.png',
+                    'url' => '/favicons/icon-%sx%s.png',
                     'width' => 384,
                     'height' => 384,
                     'format' => 'png',
@@ -238,6 +241,9 @@ final class FaviconsCompiler implements FileCompilerInterface
         if ($this->favicons->tileColor !== null) {
             $this->files = [...$this->files, ...$this->processBrowserConfig($asset)];
         }
+        if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
+            $this->files['/safari-pinned-tab.svg'] = $this->generateSafariPinnedTab($asset);
+        }
 
         return $this->files;
     }
@@ -251,17 +257,16 @@ final class FaviconsCompiler implements FileCompilerInterface
     ): Data {
         if ($this->debug === true) {
             $data = $this->imageProcessor->process($content, null, null, null, $configuration);
-            $url = str_replace('{hash}', '', $publicUrl);
             $html = $rel === null ? null : sprintf(
                 '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
                 $rel,
                 $configuration->width,
                 $configuration->height,
                 $mimeType,
-                $url
+                $publicUrl
             );
             return Data::create(
-                $url,
+                $publicUrl,
                 $data,
                 [
                     'Cache-Control' => 'public, max-age=604800, immutable',
@@ -273,9 +278,8 @@ final class FaviconsCompiler implements FileCompilerInterface
         }
         assert($this->imageProcessor !== null);
         $data = $this->imageProcessor->process($content, null, null, null, $configuration);
-        $url = str_replace('{hash}', hash('xxh128', $data), $publicUrl);
         return Data::create(
-            $url,
+            $publicUrl,
             $data,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
@@ -289,7 +293,7 @@ final class FaviconsCompiler implements FileCompilerInterface
                 $configuration->width,
                 $configuration->height,
                 $mimeType,
-                $url
+                $publicUrl
             )
         );
     }
@@ -297,39 +301,42 @@ final class FaviconsCompiler implements FileCompilerInterface
     /**
      * @return array<Data>
      */
-    private function processBrowserConfig(MappedAsset $asset): array
+    private function processBrowserConfig(string $asset): array
     {
+        if ($this->favicons->useSilhouette === true) {
+            $asset = $this->generateSilhouette($asset);
+        }
         $icon70x70 = $this->processIcon(
             $asset,
-            '/favicons/icon-70x70.{hash}.png',
+            '/favicons/icon-70x70.png',
             Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale),
             'image/png',
             null
         );
         $icon150x150 = $this->processIcon(
             $asset,
-            '/favicons/icon-150x150.{hash}.png',
+            '/favicons/icon-150x150.png',
             Configuration::create(150, 150, 'png', null, null, $this->favicons->imageScale),
             'image/png',
             null
         );
         $icon310x310 = $this->processIcon(
             $asset,
-            '/favicons/icon-310x310.{hash}.png',
+            '/favicons/icon-310x310.png',
             Configuration::create(310, 310, 'png', null, null, $this->favicons->imageScale),
             'image/png',
             null
         );
         $icon310x150 = $this->processIcon(
             $asset,
-            '/favicons/icon-310x150.{hash}.png',
+            '/favicons/icon-310x150.png',
             Configuration::create(310, 150, 'png', null, null, $this->favicons->imageScale),
             'image/png',
             null
         );
         $icon144x144 = $this->processIcon(
             $asset,
-            '/favicons/icon-144x144.{hash}.png',
+            '/favicons/icon-144x144.png',
             Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale),
             'image/png',
             null
@@ -354,8 +361,7 @@ final class FaviconsCompiler implements FileCompilerInterface
     </msapplication>
 </browserconfig>
 XML;
-        $hash = $this->debug === true ? '' : hash('xxh128', $content);
-        $url = sprintf('/favicons/browserconfig.%s.xml', $hash);
+        $url = '/favicons/browserconfig.xml';
         $browserConfig = Data::create(
             $url,
             $content,
@@ -363,7 +369,7 @@ XML;
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/xml',
                 'X-Favicons-Dev' => true,
-                'Etag' => $hash,
+                'Etag' => hash('xxh128', $content),
             ],
             sprintf('<meta name="msapplication-config" content="%s">', $url)
         );
@@ -393,5 +399,70 @@ XML;
         }
         assert(file_exists($source->src), 'Unable to find the favicon source file');
         return file_get_contents($source->src);
+    }
+
+    private function generateSafariPinnedTab(string $content): Data
+    {
+        $silhouette = $this->generateSilhouette($content);
+        $url = '/safari-pinned-tab.svg';
+
+        return Data::create(
+            $url,
+            $silhouette,
+            [
+                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Content-Type' => 'image/svg+xml',
+                'X-Favicons-Dev' => true,
+                'Etag' => hash('xxh128', $silhouette),
+            ],
+            sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)
+        );
+    }
+
+    private function generateSilhouette(string $asset): string
+    {
+        assert($this->imageProcessor !== null);
+        $bmp = $this->imageProcessor->process($asset, null, null, null, configuration: Configuration::create(
+            512,
+            512,
+            'bmp',
+            'white'
+        ));
+        $tempFile = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
+        assert($tempFile !== false, 'Unable to create a temporary file');
+        file_put_contents($tempFile, $bmp);
+        $tempOutput = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
+        assert($tempOutput !== false, 'Unable to create a temporary file');
+
+        $command = [
+            $this->favicons->potrace,
+            '--alphamax', '0',
+            '--opttolerance', '0',
+            '--turdsize', '0',
+            '--flat',
+            '--color', '#ffffff',
+            '--svg',
+            '-o',
+            $tempOutput,
+            $tempFile,
+        ];
+
+        $process = new Process($command);
+
+        try {
+            $result = $process->run();
+            if ($result !== 0) {
+                throw new RuntimeException('Unable to run potrace. Error: ' . $process->getErrorOutput());
+            }
+            $process->wait();
+        } catch (ProcessFailedException $exception) {
+            throw new RuntimeException('Unable to generate the Safari pinned tab icon.', 0, $exception);
+        }
+        $svg = file_get_contents($tempOutput);
+        assert($svg !== false, 'Unable to read the SVG file');
+        unlink($tempFile);
+        unlink($tempOutput);
+
+        return $svg;
     }
 }

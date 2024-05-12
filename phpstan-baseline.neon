@@ -581,21 +581,6 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: "#^Parameter \\#1 \\$asset of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processBrowserConfig\\(\\) expects SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset, string given\\.$#"
-			count: 1
-			path: src/Service/FaviconsCompiler.php
-
-		-
-			message: "#^Parameter \\#1 \\$content of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processIcon\\(\\) expects string, SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset given\\.$#"
-			count: 5
-			path: src/Service/FaviconsCompiler.php
-
-		-
-			message: "#^Parameter \\$asset of method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:processBrowserConfig\\(\\) has invalid type SpomkyLabs\\\\PwaBundle\\\\Service\\\\MappedAsset\\.$#"
-			count: 1
-			path: src/Service/FaviconsCompiler.php
-
-		-
 			message: "#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#"
 			count: 1
 			path: src/Service/FaviconsCompiler.php
