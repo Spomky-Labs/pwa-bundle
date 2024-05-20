@@ -29,7 +29,7 @@ final readonly class FileCompileEventListener
     {
         foreach ($this->fileCompilers as $fileCompiler) {
             foreach ($fileCompiler->getFiles() as $data) {
-                $this->assetsFilesystem->write($data->url, $data->data);
+                $this->assetsFilesystem->write($data->url, $data->getData());
             }
         }
     }

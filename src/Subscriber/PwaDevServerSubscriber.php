@@ -68,7 +68,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     private function serveFile(RequestEvent $event, Data $data): void
     {
         $this->profiler?->disable();
-        $response = new Response($data->data, Response::HTTP_OK, $data->headers);
+        $response = new Response($data->getData(), Response::HTTP_OK, $data->headers);
         $event->setResponse($response);
         $event->stopPropagation();
     }

@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
@@ -19,7 +20,7 @@ final class DevServerTest extends WebTestCase
         $client = static::createClient();
 
         // When
-        $client->request('GET', '/site.webmanifest');
+        $client->request(Request::METHOD_GET, '/site.webmanifest');
 
         // Then
         static::assertResponseIsSuccessful();
@@ -33,7 +34,7 @@ final class DevServerTest extends WebTestCase
         $client = static::createClient();
 
         // When
-        $client->request('GET', '/sw.js');
+        $client->request(Request::METHOD_GET, '/sw.js');
 
         // Then
         static::assertResponseIsSuccessful();

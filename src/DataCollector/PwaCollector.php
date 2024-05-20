@@ -82,7 +82,14 @@ final class PwaCollector extends DataCollector
         $this->data['favicons'] = [
             'enabled' => $this->favicons->enabled,
             'data' => $this->favicons,
-            'files' => $faviconsFiles,
+            'files' => array_map(
+                static fn (\SpomkyLabs\PwaBundle\Service\Data $data): array => [
+                    'url' => $data->url,
+                    'headers' => $data->headers,
+                    'html' => $data->html,
+                ],
+                $faviconsFiles
+            ),
         ];
     }
 
