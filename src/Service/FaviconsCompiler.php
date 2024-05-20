@@ -249,14 +249,14 @@ final class FaviconsCompiler implements FileCompilerInterface
     }
 
     private function processIcon(
-        string $content,
+        string $asset,
         string $publicUrl,
         Configuration $configuration,
         string $mimeType,
         null|string $rel,
     ): Data {
+        $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
         if ($this->debug === true) {
-            $data = $this->imageProcessor->process($content, null, null, null, $configuration);
             $html = $rel === null ? null : sprintf(
                 '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
                 $rel,
@@ -267,7 +267,7 @@ final class FaviconsCompiler implements FileCompilerInterface
             );
             return Data::create(
                 $publicUrl,
-                $data,
+                $closure,
                 [
                     'Cache-Control' => 'public, max-age=604800, immutable',
                     'Content-Type' => $mimeType,
@@ -277,15 +277,13 @@ final class FaviconsCompiler implements FileCompilerInterface
             );
         }
         assert($this->imageProcessor !== null);
-        $data = $this->imageProcessor->process($content, null, null, null, $configuration);
         return Data::create(
             $publicUrl,
-            $data,
+            $closure,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => $mimeType,
                 'X-Favicons-Dev' => true,
-                'Etag' => hash('xxh128', $data),
             ],
             sprintf(
                 '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
@@ -339,7 +337,7 @@ final class FaviconsCompiler implements FileCompilerInterface
             '/favicons/icon-144x144.png',
             Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale),
             'image/png',
-            null
+            null//'<meta name="msapplication-TileImage" content="/favicons/icon-144x144.png">'
         );
 
         if ($this->favicons->tileColor === null) {
@@ -381,7 +379,7 @@ XML;
             $icon310x150,
             Data::create(
                 $icon144x144->url,
-                $icon144x144->data,
+                $icon144x144->getRawData(),
                 $icon144x144->headers,
                 sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
             ),
