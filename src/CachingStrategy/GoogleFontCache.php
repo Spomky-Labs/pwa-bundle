@@ -4,29 +4,36 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 
-final readonly class GoogleFontCache implements HasCacheStrategiesInterface
+final class GoogleFontCache implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker,
     ) {
         $this->workbox = $serviceWorker->workbox;
+        $this->logger = new NullLogger();
     }
 
     public function getCacheStrategies(): array
     {
+        $this->logger->debug('Getting cache strategies for Google Fonts');
         $prefix = $this->workbox->googleFontCache->cachePrefix ?? '';
         if ($prefix !== '') {
             $prefix .= '-';
         }
 
-        return [
+        $strategies = [
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->googleFontCache->enabled,
                 true,
@@ -49,5 +56,15 @@ final readonly class GoogleFontCache implements HasCacheStrategiesInterface
                     ),
                 ),
         ];
+        $this->logger->debug('Google Fonts cache strategies', [
+            'strategies' => $strategies,
+        ]);
+
+        return $strategies;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

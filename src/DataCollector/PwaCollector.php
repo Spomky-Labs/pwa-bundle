@@ -69,7 +69,6 @@ final class PwaCollector extends DataCollector
             'files' => $swFiles,
         ];
         $manifestFiles = $this->manifestCompiler->getFiles();
-        $manifestFiles = is_array($manifestFiles) ? $manifestFiles : iterator_to_array($manifestFiles);
         $this->data['manifest'] = [
             'enabled' => $this->serviceWorker->enabled,
             'data' => $this->manifest,

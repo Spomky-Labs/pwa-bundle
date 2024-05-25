@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Service;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Event\NullEventDispatcher;
 use SpomkyLabs\PwaBundle\Event\PostManifestCompileEvent;
@@ -21,7 +23,7 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final class ManifestCompiler implements FileCompilerInterface
+final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
 {
     private readonly EventDispatcherInterface $dispatcher;
 
@@ -31,6 +33,13 @@ final class ManifestCompiler implements FileCompilerInterface
      * @var array<string, mixed>
      */
     private readonly array $jsonOptions;
+
+    private LoggerInterface $logger;
+
+    /**
+     * @var array<string, Data>
+     */
+    private null|array $files = null;
 
     /**
      * @param array<string> $locales
@@ -58,28 +67,54 @@ final class ManifestCompiler implements FileCompilerInterface
             $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;
+        $this->logger = new NullLogger();
     }
 
     /**
-     * @return iterable<string, Data>
+     * @return array<string, Data>
      */
-    public function getFiles(): iterable
+    public function getFiles(): array
     {
+        if ($this->files !== null) {
+            return $this->files;
+        }
+        $this->logger->debug('Compiling manifest files.', [
+            'manifest' => $this->manifest,
+        ]);
         if ($this->manifest->enabled === false) {
-            return [];
-        }
+            $this->logger->debug('Manifest is disabled. No file to compile.');
+            $this->files = [];
 
+            return $this->files;
+        }
+        $this->files = [];
         if ($this->locales === []) {
-            yield $this->manifestPublicUrl => $this->compileManifest(null);
+            $this->logger->debug('No locale defined. Compiling default manifest.');
+            $this->files[$this->manifestPublicUrl] = $this->compileManifest(null);
         }
-
         foreach ($this->locales as $locale) {
-            yield str_replace('{locale}', $locale, $this->manifestPublicUrl) => $this->compileManifest($locale);
+            $this->logger->debug('Compiling manifest for locale.', [
+                'locale' => $locale,
+            ]);
+            $this->files[str_replace('{locale}', $locale, $this->manifestPublicUrl)] = $this->compileManifest($locale);
         }
+        $this->logger->debug('Manifest files compiled.', [
+            'files' => $this->files,
+        ]);
+
+        return $this->files;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     private function compileManifest(null|string $locale): Data
     {
+        $this->logger->debug('Compiling manifest.', [
+            'locale' => $locale,
+        ]);
         $manifest = clone $this->manifest;
         $preEvent = new PreManifestCompileEvent($manifest);
         $preEvent = $this->dispatcher->dispatch($preEvent);

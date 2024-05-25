@@ -4,22 +4,29 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 
-final readonly class WorkboxImport implements ServiceWorkerRuleInterface
+final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
 {
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker
     ) {
         $this->workbox = $serviceWorker->workbox;
+        $this->logger = new NullLogger();
     }
 
     public function process(bool $debug = false): string
     {
         if ($this->workbox->enabled === false) {
+            $this->logger->debug('Workbox is disabled. The rule will not be applied.');
             return '';
         }
         $declaration = '';
@@ -68,6 +75,9 @@ IMPORT_CDN_STRATEGY;
 
 DEBUG_COMMENT;
         }
+        $this->logger->debug('Workbox import rule added.', [
+            'declaration' => $declaration,
+        ]);
 
         return $declaration;
     }
@@ -75,5 +85,10 @@ DEBUG_COMMENT;
     public static function getPriority(): int
     {
         return 1024;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

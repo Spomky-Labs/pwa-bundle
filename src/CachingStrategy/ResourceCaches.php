@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Url;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
@@ -22,21 +25,23 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class ResourceCaches implements HasCacheStrategiesInterface
+final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private int $jsonOptions;
+    private readonly int $jsonOptions;
 
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     /**
      * @param iterable<MatchCallbackHandlerInterface> $matchCallbackHandlers
      */
     public function __construct(
-        private PreloadUrlsGeneratorManager $preloadUrlsGeneratorManager,
+        private readonly PreloadUrlsGeneratorManager $preloadUrlsGeneratorManager,
         ServiceWorker $serviceWorker,
-        private SerializerInterface $serializer,
+        private readonly SerializerInterface $serializer,
         #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
-        private iterable $matchCallbackHandlers,
+        private readonly iterable $matchCallbackHandlers,
         #[Autowire('%kernel.debug%')]
         bool $debug,
     ) {
@@ -46,10 +51,12 @@ final readonly class ResourceCaches implements HasCacheStrategiesInterface
             $options |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;
+        $this->logger = new NullLogger();
     }
 
     public function getCacheStrategies(): array
     {
+        $this->logger->debug('Getting cache strategies for resources');
         $strategies = [];
         foreach ($this->workbox->resourceCaches as $id => $resourceCache) {
             $routes = $this->serializer->serialize($this->getUrls($resourceCache->urls), 'json', [
@@ -91,8 +98,16 @@ final readonly class ResourceCaches implements HasCacheStrategiesInterface
 
             $strategies[] = $strategy;
         }
+        $this->logger->debug('Resource cache strategies', [
+            'strategies' => $strategies,
+        ]);
 
         return $strategies;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     private function prepareMatchCallback(string $matchCallback): string

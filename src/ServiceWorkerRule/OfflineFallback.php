@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -15,20 +18,24 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class OfflineFallback implements ServiceWorkerRuleInterface
+final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterface
 {
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker,
-        private SerializerInterface $serializer,
+        private readonly SerializerInterface $serializer,
     ) {
         $this->workbox = $serviceWorker->workbox;
+        $this->logger = new NullLogger();
     }
 
     public function process(bool $debug = false): string
     {
         if ($this->workbox->enabled === false || ! isset($this->workbox->offlineFallback)) {
+            $this->logger->debug('Workbox is disabled or offline fallback is not set. The rule will not be applied.');
             return '';
         }
 
@@ -73,7 +80,16 @@ OFFLINE_FALLBACK_STRATEGY;
 
 DEBUG_COMMENT;
         }
+        $this->logger->debug('Offline fallback rule added.', [
+            'declaration' => $declaration,
+        ]);
+
         return $declaration;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**

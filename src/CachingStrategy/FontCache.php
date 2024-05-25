@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
@@ -18,16 +21,18 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class FontCache implements HasCacheStrategiesInterface
+final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private int $jsonOptions;
+    private readonly int $jsonOptions;
 
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker,
-        private AssetMapperInterface $assetMapper,
-        private SerializerInterface $serializer,
+        private readonly AssetMapperInterface $assetMapper,
+        private readonly SerializerInterface $serializer,
         #[Autowire('%kernel.debug%')]
         bool $debug,
     ) {
@@ -37,10 +42,12 @@ final readonly class FontCache implements HasCacheStrategiesInterface
             $options |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;
+        $this->logger = new NullLogger();
     }
 
     public function getCacheStrategies(): array
     {
+        $this->logger->debug('Getting cache strategies for fonts');
         $urls = json_decode($this->serializer->serialize($this->getFonts(), 'json', [
             JsonEncode::OPTIONS => $this->jsonOptions,
         ]), true);
@@ -64,8 +71,16 @@ final readonly class FontCache implements HasCacheStrategiesInterface
         if (count($urls) > 0) {
             $strategy = $strategy->withPreloadUrl(...$urls);
         }
+        $this->logger->debug('Font cache strategy', [
+            'strategy' => $strategy,
+        ]);
 
         return [$strategy];
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -79,6 +94,10 @@ final readonly class FontCache implements HasCacheStrategiesInterface
                 $fonts[] = $asset->publicPath;
             }
         }
+        $this->logger->debug('Preloading fonts', [
+            'fonts' => $fonts,
+        ]);
+
         return $fonts;
     }
 }

@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final readonly class ImageCache implements HasCacheStrategiesInterface
+final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private string $assetPublicPrefix;
+    private readonly string $assetPublicPrefix;
 
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker,
@@ -22,11 +27,12 @@ final readonly class ImageCache implements HasCacheStrategiesInterface
     ) {
         $this->workbox = $serviceWorker->workbox;
         $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
+        $this->logger = new NullLogger();
     }
 
     public function getCacheStrategies(): array
     {
-        return [
+        $strategies = [
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->imageCache->enabled,
                 true,
@@ -38,5 +44,15 @@ final readonly class ImageCache implements HasCacheStrategiesInterface
             )
                 ->withName($this->workbox->imageCache->cacheName ?? 'images'),
         ];
+        $this->logger->debug('Image cache strategies', [
+            'strategies' => $strategies,
+        ]);
+
+        return $strategies;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

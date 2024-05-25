@@ -53,6 +53,15 @@ return static function (ContainerConfigurator $container) {
             'log' => true,
         ],
     ]);
+    $container->extension('monolog', [
+        'handlers' => [
+            'main' => [
+                'type' => 'stream',
+                'path' => '%kernel.logs_dir%/%kernel.environment%.log',
+                'level' => 'debug',
+            ],
+        ],
+    ]);
     $container->extension('pwa', [
         'image_processor' => DummyImageProcessor::class,
         'favicons' => [

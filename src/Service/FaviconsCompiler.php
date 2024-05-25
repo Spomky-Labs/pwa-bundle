@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use RuntimeException;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
@@ -15,12 +17,14 @@ use Symfony\Component\Process\Process;
 use function assert;
 use const PHP_EOL;
 
-final class FaviconsCompiler implements FileCompilerInterface
+final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
     /**
      * @var null|array<string, Data>
      */
     private null|array $files = null;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         private readonly null|ImageProcessorInterface $imageProcessor,
@@ -29,6 +33,7 @@ final class FaviconsCompiler implements FileCompilerInterface
         #[Autowire('%kernel.debug%')]
         public readonly bool $debug,
     ) {
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -39,8 +44,14 @@ final class FaviconsCompiler implements FileCompilerInterface
         if ($this->files !== null) {
             return $this->files;
         }
+        $this->logger->debug('Compiling favicons.', [
+            'favicons' => $this->favicons,
+        ]);
         if ($this->imageProcessor === null || $this->favicons->enabled === false) {
-            return [];
+            $this->logger->debug('Favicons are disabled or no image processor is available.');
+            $this->files = [];
+
+            return $this->files;
         }
         [$asset, $hash] = $this->getFavicon();
         assert($asset !== null, 'The asset does not exist.');
@@ -241,14 +252,23 @@ final class FaviconsCompiler implements FileCompilerInterface
             );
         }
         if ($this->favicons->tileColor !== null) {
+            $this->logger->debug('Creating browserconfig.xml.');
             $this->files = [...$this->files, ...$this->processBrowserConfig($asset, $hash)];
         }
         if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
             $safariPinnedTab = $this->generateSafariPinnedTab($asset);
             $this->files[$safariPinnedTab->url] = $safariPinnedTab;
         }
+        $this->logger->debug('Favicons created.', [
+            'files' => $this->files,
+        ]);
 
         return $this->files;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     private function processIcon(
@@ -258,6 +278,12 @@ final class FaviconsCompiler implements FileCompilerInterface
         string $mimeType,
         null|string $rel,
     ): Data {
+        $this->logger->debug('Processing icon.', [
+            'publicUrl' => $publicUrl,
+            'configuration' => $configuration,
+            'mimeType' => $mimeType,
+            'rel' => $rel,
+        ]);
         $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
         if ($this->debug === true) {
             $html = $rel === null ? null : sprintf(
@@ -307,6 +333,7 @@ final class FaviconsCompiler implements FileCompilerInterface
         if ($this->favicons->useSilhouette === true) {
             $asset = $this->generateSilhouette($asset);
         }
+        $this->logger->debug('Processing browserconfig.xml.');
         $configuration = Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale);
         $hash = hash('xxh128', $hash . $configuration);
         $icon70x70 = $this->processIcon(
@@ -358,8 +385,10 @@ final class FaviconsCompiler implements FileCompilerInterface
         );
 
         if ($this->favicons->tileColor === null) {
+            $this->logger->debug('No tile color defined.');
             $tileColor = '';
         } else {
+            $this->logger->debug('Tile color defined.');
             $tileColor = PHP_EOL . sprintf('            <TileColor>%s</TileColor>', $this->favicons->tileColor);
         }
 
@@ -411,6 +440,9 @@ XML;
     private function getFavicon(): array
     {
         $source = $this->favicons->src;
+        $this->logger->debug('Favicons are enabled. Trying to get the asset.', [
+            'src' => $source,
+        ]);
         if (! str_starts_with($source->src, '/')) {
             $asset = $this->assetMapper->getAsset($source->src);
             assert($asset !== null, 'Unable to find the favicon source asset');

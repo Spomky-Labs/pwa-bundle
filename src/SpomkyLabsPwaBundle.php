@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle;
 
-use SpomkyLabs\PwaBundle\Attribute\PreloadUrlCompilerPass;
+use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
+use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -25,6 +26,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
     public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new PreloadUrlCompilerPass());
+        $container->addCompilerPass(new LoggerCompilerPass());
     }
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -43,6 +45,10 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $manifestConfig = $config['manifest'];
         if ($serviceWorkerConfig['enabled'] === true && $manifestConfig['enabled'] === true) {
             $manifestConfig['serviceworker'] = $serviceWorkerConfig;
+        }
+
+        if ($config['logger'] !== null) {
+            $builder->setAlias('spomky_labs_pwa.logger', $config['logger']);
         }
 
         /*** Manifest ***/
