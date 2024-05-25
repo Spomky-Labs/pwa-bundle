@@ -49,7 +49,7 @@ function getScreenshotsNode(string $info): ArrayNodeDefinition
         ->end()
         ->scalarNode('format')
         ->info('The format of the screenshot. Will convert the file if set.')
-        ->example(['image/jpg', 'image/png', 'image/webp'])
+        ->example(['jpg', 'png', 'webp'])
         ->end()
         ->scalarNode('reference')
             ->defaultNull()
