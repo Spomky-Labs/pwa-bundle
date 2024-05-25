@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
 use InvalidArgumentException;
+use Stringable;
 
-final readonly class Configuration
+final readonly class Configuration implements Stringable
 {
     public function __construct(
         public int $width,
@@ -19,6 +20,19 @@ final readonly class Configuration
         if ($this->borderRadius !== null && $this->backgroundColor === null) {
             throw new InvalidArgumentException('The background color must be set when the border radius is set');
         }
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%d%d%s%s%s%s',
+            $this->width,
+            $this->height,
+            $this->format,
+            $this->backgroundColor ?? '',
+            $this->borderRadius ?? '',
+            $this->imageScale ?? ''
+        );
     }
 
     public static function create(
