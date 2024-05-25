@@ -9,6 +9,7 @@ use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
+use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
@@ -17,6 +18,7 @@ use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
@@ -46,6 +48,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->autowire()
     ;
 
+    $container->instanceof(CanLogInterface::class)->tag(LoggerCompilerPass::TAG);
     $container->instanceof(FileCompilerInterface::class)->tag('spomky_labs_pwa.compiler');
 
     /*** Manifest ***/

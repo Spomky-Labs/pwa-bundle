@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -14,12 +17,15 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
-final readonly class WindowsWidgets implements ServiceWorkerRuleInterface
+final class WindowsWidgets implements ServiceWorkerRuleInterface, CanLogInterface
 {
+    private LoggerInterface $logger;
+
     public function __construct(
-        private Manifest $manifest,
-        private SerializerInterface $serializer
+        private readonly Manifest $manifest,
+        private readonly SerializerInterface $serializer
     ) {
+        $this->logger = new NullLogger();
     }
 
     public function process(bool $debug = false): string
@@ -115,8 +121,16 @@ OFFLINE_FALLBACK_STRATEGY;
 
 DEBUG_COMMENT;
         }
+        $this->logger->debug('Windows widgets rule added.', [
+            'declaration' => $declaration,
+        ]);
 
         return $declaration;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**

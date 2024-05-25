@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Tests;
 
 use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
@@ -25,7 +26,7 @@ final class AppKernel extends Kernel
      */
     public function registerBundles(): array
     {
-        return [new FrameworkBundle(), new SpomkyLabsPwaBundle()];
+        return [new FrameworkBundle(), new MonologBundle(), new SpomkyLabsPwaBundle()];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void

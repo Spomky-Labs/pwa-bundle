@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final readonly class ManifestCache implements HasCacheStrategiesInterface
+final class ManifestCache implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private string $manifestPublicUrl;
+    private readonly string $manifestPublicUrl;
 
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorker $serviceWorker,
@@ -21,11 +26,12 @@ final readonly class ManifestCache implements HasCacheStrategiesInterface
     ) {
         $this->workbox = $serviceWorker->workbox;
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
+        $this->logger = new NullLogger();
     }
 
     public function getCacheStrategies(): array
     {
-        return [
+        $strategies = [
             WorkboxCacheStrategy::create(
                 $this->workbox->enabled && $this->workbox->cacheManifest,
                 true,
@@ -34,5 +40,15 @@ final readonly class ManifestCache implements HasCacheStrategiesInterface
             )
                 ->withName('manifest'),
         ];
+        $this->logger->debug('Manifest cache strategies', [
+            'strategies' => $strategies,
+        ]);
+
+        return $strategies;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

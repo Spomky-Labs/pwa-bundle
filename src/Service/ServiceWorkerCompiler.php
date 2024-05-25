@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
@@ -16,24 +18,26 @@ use function in_array;
 use function is_array;
 use function is_string;
 
-final readonly class ServiceWorkerCompiler implements FileCompilerInterface
+final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterface
 {
-    private string $serviceWorkerPublicUrl;
+    private readonly string $serviceWorkerPublicUrl;
 
-    private null|string $workboxPublicUrl;
+    private readonly null|string $workboxPublicUrl;
 
-    private null|string $workboxVersion;
+    private readonly null|string $workboxVersion;
+
+    private LoggerInterface $logger;
 
     /**
      * @param iterable<ServiceWorkerRuleInterface> $serviceworkerRules
      */
     public function __construct(
-        private ServiceWorker $serviceWorker,
-        private AssetMapperInterface $assetMapper,
+        private readonly ServiceWorker $serviceWorker,
+        private readonly AssetMapperInterface $assetMapper,
         #[TaggedIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
-        private iterable $serviceworkerRules,
+        private readonly iterable $serviceworkerRules,
         #[Autowire('%kernel.debug%')]
-        public bool $debug,
+        public readonly bool $debug,
     ) {
         $serviceWorkerPublicUrl = $serviceWorker->dest;
         $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
@@ -45,6 +49,7 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
             $this->workboxVersion = null;
             $this->workboxPublicUrl = null;
         }
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -56,11 +61,20 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
         yield from $this->getWorkboxFiles();
     }
 
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
     private function compileSW(): Data
     {
+        $this->logger->debug('Service Worker compilation started.');
         $body = '';
 
         foreach ($this->serviceworkerRules as $rule) {
+            $this->logger->debug('Processing service worker rule.', [
+                'rule' => $rule::class,
+            ]);
             $ruleBody = $rule->process($this->debug);
             if ($this->debug === false) {
                 $ruleBody = trim($ruleBody);
@@ -68,6 +82,9 @@ final readonly class ServiceWorkerCompiler implements FileCompilerInterface
             $body .= $ruleBody;
         }
         $body .= $this->includeRootSW();
+        $this->logger->debug('Service Worker compilation completed.', [
+            'body' => $body,
+        ]);
 
         return Data::create(
             $this->serviceWorkerPublicUrl,

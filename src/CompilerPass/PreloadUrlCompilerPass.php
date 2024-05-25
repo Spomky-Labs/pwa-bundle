@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Attribute;
+namespace SpomkyLabs\PwaBundle\CompilerPass;
 
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
+use SpomkyLabs\PwaBundle\Attribute\PreloadUrl;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -17,6 +18,9 @@ use Throwable;
 use function array_key_exists;
 use function is_string;
 
+/**
+ * @internal
+ */
 final class PreloadUrlCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

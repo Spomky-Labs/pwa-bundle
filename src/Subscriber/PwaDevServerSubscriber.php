@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Subscriber;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\Data;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
@@ -14,16 +17,19 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 
-final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
+final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogInterface
 {
+    private LoggerInterface $logger;
+
     /**
      * @param iterable<FileCompilerInterface> $fileCompilers
      */
     public function __construct(
         #[TaggedIterator('spomky_labs_pwa.compiler')]
-        private iterable $fileCompilers,
-        private null|Profiler $profiler,
+        private readonly iterable $fileCompilers,
+        private readonly null|Profiler $profiler,
     ) {
+        $this->logger = new NullLogger();
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -35,11 +41,14 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $pathInfo = $request->getPathInfo();
         foreach ($this->fileCompilers as $fileCompiler) {
-            $files = iterator_to_array($fileCompiler->getFiles());
-            foreach ($files as $data) {
+            foreach ($fileCompiler->getFiles() as $data) {
                 if ($data->url !== $pathInfo) {
                     continue;
                 }
+                $this->logger->debug('PWA Dev Server file found.', [
+                    'url' => $data->url,
+                    'data' => $data,
+                ]);
                 $this->serveFile($event, $data);
                 return;
             }
@@ -50,7 +59,7 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
     {
         $headers = $event->getResponse()
 ->headers;
-        if ($headers->has('X-Manifest-Dev') || $headers->has('X-SW-Dev')) {
+        if ($headers->has('X-Manifest-Dev') || $headers->has('X-SW-Dev') || $headers->has('X-Favicons-Dev')) {
             $event->stopPropagation();
         }
     }
@@ -63,6 +72,11 @@ final readonly class PwaDevServerSubscriber implements EventSubscriberInterface
             // Highest priority possible to bypass all other listeners
             KernelEvents::RESPONSE => [['onKernelResponse', 2048]],
         ];
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     private function serveFile(RequestEvent $event, Data $data): void

@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
-final readonly class BackgroundSync implements HasCacheStrategiesInterface
+final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterface
 {
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     /**
      * @param iterable<MatchCallbackHandlerInterface> $matchCallbackHandlers
@@ -20,9 +25,10 @@ final readonly class BackgroundSync implements HasCacheStrategiesInterface
     public function __construct(
         ServiceWorker $serviceWorker,
         #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
-        private iterable $matchCallbackHandlers,
+        private readonly iterable $matchCallbackHandlers,
     ) {
         $this->workbox = $serviceWorker->workbox;
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -30,6 +36,7 @@ final readonly class BackgroundSync implements HasCacheStrategiesInterface
      */
     public function getCacheStrategies(): array
     {
+        $this->logger->debug('Getting cache strategies for background sync');
         $strategies = [];
         foreach ($this->workbox->backgroundSync as $sync) {
             $strategies[] = WorkboxCacheStrategy::create(
@@ -49,8 +56,16 @@ final readonly class BackgroundSync implements HasCacheStrategiesInterface
                 )
                 ->withMethod($sync->method);
         }
+        $this->logger->debug('Background sync strategies', [
+            'strategies' => $strategies,
+        ]);
 
         return $strategies;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     private function prepareMatchCallback(string $matchCallback): string

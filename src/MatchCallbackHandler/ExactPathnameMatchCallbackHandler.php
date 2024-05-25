@@ -4,8 +4,19 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\MatchCallbackHandler;
 
-final readonly class ExactPathnameMatchCallbackHandler implements MatchCallbackHandlerInterface
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+
+final class ExactPathnameMatchCallbackHandler implements MatchCallbackHandlerInterface, CanLogInterface
 {
+    private LoggerInterface $logger;
+
+    public function __construct()
+    {
+        $this->logger = new NullLogger();
+    }
+
     public function supports(string $matchCallback): bool
     {
         return str_starts_with($matchCallback, 'pathname:');
@@ -13,6 +24,15 @@ final readonly class ExactPathnameMatchCallbackHandler implements MatchCallbackH
 
     public function handle(string $matchCallback): string
     {
+        $this->logger->debug('Exact pathname match callback found.', [
+            'match_callback' => $matchCallback,
+        ]);
+
         return sprintf("({url}) => url.pathname === '%s'", trim(mb_substr($matchCallback, 9)));
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }
