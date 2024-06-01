@@ -128,7 +128,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for cachingStrategy in collector.cachingStrategies %}
+    {% for id, cachingStrategy in collector.cachingStrategies %}
         <tr>
             <td>{{ cachingStrategy.getName() }}</td>
             <td class="break-long-words font-normal">
@@ -163,6 +163,20 @@
                 {% endif %}
             </td>
         </tr>
+        {% if preloadedUrls > 0 %}
+            <tr>
+                <td colspan="5">
+                    <div>
+                        <a class="btn btn-link text-small sf-toggle sf-toggle-off" data-toggle-selector="#data-serialize-{{ id }}" data-toggle-alt-content="Hide preloaded URLs" data-toggle-original-content="Show preloaded URLs">
+                            Show preloaded URLs
+                        </a>
+                        <div id="data-serialize-{{ id }}" class="context sf-toggle-content sf-toggle-hidden">
+                            {{ dump(cachingStrategy.preloadUrls) }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>
