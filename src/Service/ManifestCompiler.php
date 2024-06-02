@@ -37,11 +37,6 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
     private LoggerInterface $logger;
 
     /**
-     * @var array<string, Data>
-     */
-    private null|array $files = null;
-
-    /**
      * @param array<string> $locales
      */
     public function __construct(
@@ -71,38 +66,30 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
     }
 
     /**
-     * @return array<string, Data>
+     * @return iterable<Data>
      */
-    public function getFiles(): array
+    public function getFiles(): iterable
     {
-        if ($this->files !== null) {
-            return $this->files;
-        }
         $this->logger->debug('Compiling manifest files.', [
             'manifest' => $this->manifest,
         ]);
         if ($this->manifest->enabled === false) {
             $this->logger->debug('Manifest is disabled. No file to compile.');
-            $this->files = [];
+            yield from [];
 
-            return $this->files;
+            return;
         }
-        $this->files = [];
         if ($this->locales === []) {
             $this->logger->debug('No locale defined. Compiling default manifest.');
-            $this->files[$this->manifestPublicUrl] = $this->compileManifest(null);
+            yield $this->compileManifest(null);
         }
         foreach ($this->locales as $locale) {
             $this->logger->debug('Compiling manifest for locale.', [
                 'locale' => $locale,
             ]);
-            $this->files[str_replace('{locale}', $locale, $this->manifestPublicUrl)] = $this->compileManifest($locale);
+            yield $this->compileManifest($locale);
         }
-        $this->logger->debug('Manifest files compiled.', [
-            'files' => $this->files,
-        ]);
-
-        return $this->files;
+        $this->logger->debug('Manifest files compiled.');
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -116,30 +103,35 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
             'locale' => $locale,
         ]);
         $manifest = clone $this->manifest;
-        $preEvent = new PreManifestCompileEvent($manifest);
-        $preEvent = $this->dispatcher->dispatch($preEvent);
-        assert($preEvent instanceof PreManifestCompileEvent);
-
-        $options = $this->jsonOptions;
         $manifestPublicUrl = $this->manifestPublicUrl;
         if ($locale !== null) {
-            $options[TranslatableNormalizer::NORMALIZATION_LOCALE_KEY] = $locale;
             $manifestPublicUrl = str_replace('{locale}', $locale, $this->manifestPublicUrl);
         }
-        $data = $this->serializer->serialize($preEvent->manifest, 'json', $options);
 
-        $postEvent = new PostManifestCompileEvent($manifest, $data);
-        $postEvent = $this->dispatcher->dispatch($postEvent);
-        assert($postEvent instanceof PostManifestCompileEvent);
+        $callback = function () use ($manifest, $locale): string {
+            $preEvent = new PreManifestCompileEvent($manifest);
+            $preEvent = $this->dispatcher->dispatch($preEvent);
+            assert($preEvent instanceof PreManifestCompileEvent);
+
+            $options = $this->jsonOptions;
+            if ($locale !== null) {
+                $options[TranslatableNormalizer::NORMALIZATION_LOCALE_KEY] = $locale;
+            }
+            $data = $this->serializer->serialize($preEvent->manifest, 'json', $options);
+            $postEvent = new PostManifestCompileEvent($manifest, $data);
+            $postEvent = $this->dispatcher->dispatch($postEvent);
+            assert($postEvent instanceof PostManifestCompileEvent);
+
+            return $postEvent->data;
+        };
 
         return Data::create(
             $manifestPublicUrl,
-            $postEvent->data,
+            $callback,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/manifest+json',
                 'X-Manifest-Dev' => true,
-                'Etag' => hash('xxh128', $data),
             ]
         );
     }
