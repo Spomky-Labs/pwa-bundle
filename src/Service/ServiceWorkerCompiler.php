@@ -53,11 +53,11 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<string, Data>
+     * @return iterable<Data>
      */
     public function getFiles(): iterable
     {
-        yield $this->serviceWorkerPublicUrl => $this->compileSW();
+        yield $this->compileSW();
         yield from $this->getWorkboxFiles();
     }
 
@@ -69,30 +69,33 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     private function compileSW(): Data
     {
         $this->logger->debug('Service Worker compilation started.');
-        $body = '';
+        $callback = function (): string {
+            $body = '';
 
-        foreach ($this->serviceworkerRules as $rule) {
-            $this->logger->debug('Processing service worker rule.', [
-                'rule' => $rule::class,
-            ]);
-            $ruleBody = $rule->process($this->debug);
-            if ($this->debug === false) {
-                $ruleBody = trim($ruleBody);
+            foreach ($this->serviceworkerRules as $rule) {
+                $this->logger->debug('Processing service worker rule.', [
+                    'rule' => $rule::class,
+                ]);
+                $ruleBody = $rule->process($this->debug);
+                if ($this->debug === false) {
+                    $ruleBody = trim($ruleBody);
+                }
+                $body .= $ruleBody;
             }
-            $body .= $ruleBody;
-        }
-        $body .= $this->includeRootSW();
-        $this->logger->debug('Service Worker compilation completed.', [
-            'body' => $body,
-        ]);
+            $body .= $this->includeRootSW();
+            $this->logger->debug('Service Worker compilation completed.', [
+                'body' => $body,
+            ]);
+
+            return $body;
+        };
 
         return Data::create(
             $this->serviceWorkerPublicUrl,
-            $body,
+            $callback,
             [
                 'Content-Type' => 'application/javascript',
                 'X-SW-Dev' => true,
-                'Etag' => hash('xxh128', $body),
             ]
         );
     }
@@ -115,7 +118,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<string, Data>
+     * @return iterable<Data>
      */
     private function getWorkboxFiles(): iterable
     {
@@ -147,7 +150,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             if ($data === null) {
                 continue;
             }
-            yield $publicUrl => $data;
+            yield $data;
         }
     }
 
@@ -171,16 +174,19 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             return null;
         }
 
-        $body = file_get_contents($resourcePath);
-        assert(is_string($body), 'Unable to load the file content.');
+        $callback = function () use ($resourcePath): string {
+            $body = file_get_contents($resourcePath);
+            assert(is_string($body), 'Unable to load the file content.');
+
+            return $body;
+        };
 
         return Data::create(
             $publicUrl,
-            $body,
+            $callback,
             [
                 'Content-Type' => 'application/javascript',
                 'X-SW-Dev' => true,
-                'Etag' => hash('xxh128', $body),
             ]
         );
     }

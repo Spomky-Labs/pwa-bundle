@@ -66,29 +66,24 @@ final class PwaCollector extends DataCollector
         $this->data['serviceWorker'] = [
             'enabled' => $this->serviceWorker->enabled,
             'data' => $this->serviceWorker,
-            'files' => $swFiles,
+            'files' => $this->dataToFiles($swFiles),
         ];
         $manifestFiles = $this->manifestCompiler->getFiles();
+        $manifestFiles = is_array($manifestFiles) ? $manifestFiles : iterator_to_array($manifestFiles);
         $this->data['manifest'] = [
             'enabled' => $this->serviceWorker->enabled,
             'data' => $this->manifest,
             'installable' => $this->isInstallable(),
             'output' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
-            'files' => $manifestFiles,
+            'files' => $this->dataToFiles($manifestFiles),
         ];
 
         $faviconsFiles = $this->faviconsCompiler->getFiles();
+        $faviconsFiles = is_array($faviconsFiles) ? $faviconsFiles : iterator_to_array($faviconsFiles);
         $this->data['favicons'] = [
             'enabled' => $this->favicons->enabled,
             'data' => $this->favicons,
-            'files' => array_map(
-                static fn (\SpomkyLabs\PwaBundle\Service\Data $data): array => [
-                    'url' => $data->url,
-                    'headers' => $data->headers,
-                    'html' => $data->html,
-                ],
-                $faviconsFiles
-            ),
+            'files' => $this->dataToFiles($faviconsFiles),
         ];
     }
 
@@ -155,6 +150,22 @@ final class PwaCollector extends DataCollector
     public function getName(): string
     {
         return 'pwa';
+    }
+
+    /**
+     * @param \SpomkyLabs\PwaBundle\Service\Data[] $data
+     * @return array{url: string, html: string|null, headers: array<string, string|bool>}[]
+     */
+    private function dataToFiles(array $data): array
+    {
+        return array_map(
+            static fn (\SpomkyLabs\PwaBundle\Service\Data $data): array => [
+                'url' => $data->url,
+                'headers' => $data->headers,
+                'html' => $data->html,
+            ],
+            $data
+        );
     }
 
     /**

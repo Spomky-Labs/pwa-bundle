@@ -19,11 +19,6 @@ use const PHP_EOL;
 
 final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
-    /**
-     * @var null|array<string, Data>
-     */
-    private null|array $files = null;
-
     private LoggerInterface $logger;
 
     public function __construct(
@@ -37,25 +32,21 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     }
 
     /**
-     * @return array<string, Data>
+     * @return iterable<Data>
      */
-    public function getFiles(): array
+    public function getFiles(): iterable
     {
-        if ($this->files !== null) {
-            return $this->files;
-        }
         $this->logger->debug('Compiling favicons.', [
             'favicons' => $this->favicons,
         ]);
         if ($this->imageProcessor === null || $this->favicons->enabled === false) {
             $this->logger->debug('Favicons are disabled or no image processor is available.');
-            $this->files = [];
+            yield from [];
 
-            return $this->files;
+            return;
         }
         [$asset, $hash] = $this->getFavicon();
         assert($asset !== null, 'The asset does not exist.');
-        $this->files = [];
         $sizes = [
             //Always
             [
@@ -243,27 +234,16 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             );
             $completeHash = hash('xxh128', $hash . $configuration);
             $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-            $this->files[$filename] = $this->processIcon(
-                $asset,
-                $filename,
-                $configuration,
-                $size['mimetype'],
-                $size['rel'],
-            );
+            yield $this->processIcon($asset, $filename, $configuration, $size['mimetype'], $size['rel']);
         }
         if ($this->favicons->tileColor !== null) {
             $this->logger->debug('Creating browserconfig.xml.');
-            $this->files = [...$this->files, ...$this->processBrowserConfig($asset, $hash)];
+            yield from $this->processBrowserConfig($asset, $hash);
         }
         if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
-            $safariPinnedTab = $this->generateSafariPinnedTab($asset);
-            $this->files[$safariPinnedTab->url] = $safariPinnedTab;
+            yield $this->generateSafariPinnedTab($asset, $hash);
         }
-        $this->logger->debug('Favicons created.', [
-            'files' => $this->files,
-        ]);
-
-        return $this->files;
+        $this->logger->debug('Favicons created.');
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -330,7 +310,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
      */
     private function processBrowserConfig(string $asset, string $hash): array
     {
-        if ($this->favicons->useSilhouette === true) {
+        if ($this->favicons->useSilhouette === true && $this->debug === false) {
             $asset = $this->generateSilhouette($asset);
         }
         $this->logger->debug('Processing browserconfig.xml.');
@@ -456,15 +436,14 @@ XML;
         return [$data, $hash];
     }
 
-    private function generateSafariPinnedTab(string $content): Data
+    private function generateSafariPinnedTab(string $content, string $hash): Data
     {
-        $silhouette = $this->generateSilhouette($content);
-        $hash = hash('xxh128', $silhouette);
+        $callback = fn (): string => $this->generateSilhouette($content);
         $url = sprintf('/safari-pinned-tab-%s.svg', $hash);
 
         return Data::create(
             $url,
-            $silhouette,
+            $callback,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'image/svg+xml',

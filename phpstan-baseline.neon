@@ -21,6 +21,11 @@ parameters:
 			path: src/CachingStrategy/AssetCache.php
 
 		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/CachingStrategy/BackgroundSync.php
+
+		-
 			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
 			count: 1
 			path: src/CachingStrategy/FontCache.php
@@ -34,6 +39,16 @@ parameters:
 			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
 			count: 2
 			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/CachingStrategy/PreloadUrlsGeneratorManager.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
 
 		-
 			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
@@ -119,6 +134,16 @@ parameters:
 			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/Command/ListCacheStrategiesCommand.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/DataCollector/PwaCollector.php
 
 		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$forceSyncFallback\\. Give it default value or assign it in the constructor\\.$#"
@@ -581,6 +606,16 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/Service/ServiceWorkerCompiler.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/ServiceWorkerRule/AppendCacheStrategies.php
+
+		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
 			count: 1
 			path: src/ServiceWorkerRule/AppendCacheStrategies.php
@@ -594,3 +629,13 @@ parameters:
 			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/Subscriber/FileCompileEventListener.php
+
+		-
+			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
+			count: 1
+			path: src/Subscriber/PwaDevServerSubscriber.php
