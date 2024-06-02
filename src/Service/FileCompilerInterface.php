@@ -7,7 +7,7 @@ namespace SpomkyLabs\PwaBundle\Service;
 interface FileCompilerInterface
 {
     /**
-     * @return iterable<string, Data>
+     * @return iterable<Data>
      */
     public function getFiles(): iterable;
 }
