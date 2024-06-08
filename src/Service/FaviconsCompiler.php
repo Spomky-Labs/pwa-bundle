@@ -32,7 +32,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     public function getFiles(): iterable
     {
@@ -234,14 +234,15 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             );
             $completeHash = hash('xxh128', $hash . $configuration);
             $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-            yield $this->processIcon($asset, $filename, $configuration, $size['mimetype'], $size['rel']);
+            yield $filename => $this->processIcon($asset, $filename, $configuration, $size['mimetype'], $size['rel']);
         }
         if ($this->favicons->tileColor !== null) {
             $this->logger->debug('Creating browserconfig.xml.');
             yield from $this->processBrowserConfig($asset, $hash);
         }
         if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
-            yield $this->generateSafariPinnedTab($asset, $hash);
+            $safariPinnedTab = $this->generateSafariPinnedTab($asset, $hash);
+            yield $safariPinnedTab->url => $safariPinnedTab;
         }
         $this->logger->debug('Favicons created.');
     }
@@ -400,17 +401,17 @@ XML;
         );
 
         return [
-            $icon70x70,
-            $icon150x150,
-            $icon310x310,
-            $icon310x150,
-            Data::create(
+            $icon70x70->url => $icon70x70,
+            $icon150x150->url => $icon150x150,
+            $icon310x310->url => $icon310x310,
+            $icon310x150->url => $icon310x150,
+            $icon144x144->url => Data::create(
                 $icon144x144->url,
                 $icon144x144->getRawData(),
                 $icon144x144->headers,
                 sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
             ),
-            $browserConfig,
+            $browserConfig->url => $browserConfig,
         ];
     }
 

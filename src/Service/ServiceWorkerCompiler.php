@@ -53,11 +53,12 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     public function getFiles(): iterable
     {
-        yield $this->compileSW();
+        $sw = $this->compileSW();
+        yield $sw->url => $sw;
         yield from $this->getWorkboxFiles();
     }
 
@@ -118,7 +119,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     private function getWorkboxFiles(): iterable
     {
@@ -150,7 +151,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             if ($data === null) {
                 continue;
             }
-            yield $data;
+            yield $data->url => $data;
         }
     }
 
