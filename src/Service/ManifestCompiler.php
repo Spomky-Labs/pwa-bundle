@@ -66,7 +66,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     public function getFiles(): iterable
     {
@@ -81,13 +81,15 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         }
         if ($this->locales === []) {
             $this->logger->debug('No locale defined. Compiling default manifest.');
-            yield $this->compileManifest(null);
+            $manifest = $this->compileManifest(null);
+            yield $manifest->url => $manifest;
         }
         foreach ($this->locales as $locale) {
             $this->logger->debug('Compiling manifest for locale.', [
                 'locale' => $locale,
             ]);
-            yield $this->compileManifest($locale);
+            $manifest = $this->compileManifest($locale);
+            yield $manifest->url => $manifest;
         }
         $this->logger->debug('Manifest files compiled.');
     }
