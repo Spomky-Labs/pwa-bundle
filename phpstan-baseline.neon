@@ -431,6 +431,21 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: "#^Parameter \\#2 \\$red of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#3 \\$green of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#4 \\$blue of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
 			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
 			count: 3
 			path: src/ImageProcessor/GDImageProcessor.php
@@ -639,3 +654,18 @@ parameters:
 			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
 			count: 1
 			path: src/Subscriber/PwaDevServerSubscriber.php
+
+		-
+			message: "#^Call to method getNonce\\(\\) on an unknown class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\.$#"
+			count: 1
+			path: src/Twig/PwaRuntime.php
+
+		-
+			message: "#^Parameter \\$cspListener of method SpomkyLabs\\\\PwaBundle\\\\Twig\\\\PwaRuntime\\:\\:__construct\\(\\) has invalid type Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\.$#"
+			count: 1
+			path: src/Twig/PwaRuntime.php
+
+		-
+			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Twig\\\\PwaRuntime\\:\\:\\$cspListener has unknown class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener as its type\\.$#"
+			count: 1
+			path: src/Twig/PwaRuntime.php
