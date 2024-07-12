@@ -9,7 +9,7 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\Data;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -25,7 +25,7 @@ final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogIn
      * @param iterable<FileCompilerInterface> $fileCompilers
      */
     public function __construct(
-        #[TaggedIterator('spomky_labs_pwa.compiler')]
+        #[AutowireIterator('spomky_labs_pwa.compiler')]
         private readonly iterable $fileCompilers,
         private readonly null|Profiler $profiler,
     ) {

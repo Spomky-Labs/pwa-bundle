@@ -16,7 +16,7 @@ use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\RangeRequestsPlugin;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\SerializerInterface;
 use function count;
@@ -40,7 +40,7 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
         private readonly PreloadUrlsGeneratorManager $preloadUrlsGeneratorManager,
         ServiceWorker $serviceWorker,
         private readonly SerializerInterface $serializer,
-        #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
+        #[AutowireIterator('spomky_labs_pwa.match_callback_handler')]
         private readonly iterable $matchCallbackHandlers,
         #[Autowire('%kernel.debug%')]
         bool $debug,

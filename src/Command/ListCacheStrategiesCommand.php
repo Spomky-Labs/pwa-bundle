@@ -14,7 +14,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Yaml\Yaml;
 use function count;
 
@@ -25,7 +25,7 @@ final class ListCacheStrategiesCommand extends Command
      * @param iterable<HasCacheStrategiesInterface> $services
      */
     public function __construct(
-        #[TaggedIterator('spomky_labs_pwa.cache_strategy')]
+        #[AutowireIterator('spomky_labs_pwa.cache_strategy')]
         private readonly iterable $services,
     ) {
         parent::__construct();
