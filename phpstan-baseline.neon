@@ -426,16 +426,6 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
-			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
-			count: 1
-			path: src/ImageProcessor/ImagickImageProcessor.php
-
-		-
 			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Normalizer/AssetNormalizer.php
