@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use const PHP_EOL;
 
 final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface
@@ -15,7 +15,7 @@ final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface
      * @param iterable<HasCacheStrategiesInterface> $cacheStrategies
      */
     public function __construct(
-        #[TaggedIterator('spomky_labs_pwa.cache_strategy')]
+        #[AutowireIterator('spomky_labs_pwa.cache_strategy')]
         private iterable $cacheStrategies,
         #[Autowire('%kernel.debug%')]
         public bool $debug,
