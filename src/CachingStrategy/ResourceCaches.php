@@ -42,7 +42,7 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
         private readonly SerializerInterface $serializer,
         #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
         private readonly iterable $matchCallbackHandlers,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
         $this->workbox = $serviceWorker->workbox;

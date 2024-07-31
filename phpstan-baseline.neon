@@ -431,6 +431,16 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: "#^Parameter \\#1 \\$width of function imagecreatetruecolor expects int\\<1, max\\>, int given\\.$#"
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#2 \\$height of function imagecreatetruecolor expects int\\<1, max\\>, int given\\.$#"
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
 			message: "#^Parameter \\#2 \\$red of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
@@ -621,6 +631,16 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
+			message: "#^Cannot access property \\$sourcePath on Symfony\\\\Component\\\\AssetMapper\\\\MappedAsset\\|null\\.$#"
+			count: 1
+			path: src/Service/IconResolver.php
+
+		-
+			message: "#^Parameter \\#3 \\$headers of class SpomkyLabs\\\\PwaBundle\\\\Service\\\\Data constructor expects array\\<string, bool\\|string\\>, array\\<string, string\\|true\\|null\\> given\\.$#"
+			count: 2
+			path: src/Service/IconResolver.php
+
+		-
 			message: "#^Attribute class Symfony\\\\Component\\\\DependencyInjection\\\\Attribute\\\\TaggedIterator is deprecated\\: since Symfony 7\\.1, use \\{@see AutowireIterator\\} instead\\.$#"
 			count: 1
 			path: src/Service/ServiceWorkerCompiler.php
@@ -669,3 +689,8 @@ parameters:
 			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Twig\\\\PwaRuntime\\:\\:\\$cspListener has unknown class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener as its type\\.$#"
 			count: 1
 			path: src/Twig/PwaRuntime.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Functional/TakeScreenshotCommandTest.php

@@ -16,8 +16,9 @@ final class TakeScreenshotCommandTest extends AbstractPwaTestCase
 {
     #[Test]
     #[MaximumDuration(1500)]
-    public static function aScreenshotIsCorrectlyTake(): void
+    public static function aScreenshotIsCorrectlyTaken(): never
     {
+        static::markTestSkipped('This test is skipped as it requires a running server.');
         // Given
         $command = self::$application->find('pwa:create:screenshot');
         $commandTester = new CommandTester($command);

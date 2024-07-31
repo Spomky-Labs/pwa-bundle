@@ -18,6 +18,17 @@ final class Icon
 
     public null|string $type = null;
 
+    public null|string $format = null;
+
+    #[SerializedName('border_radius')]
+    public null|int $borderRadius = null;
+
+    #[SerializedName('image_scale')]
+    public null|int $imageScale = null;
+
+    #[SerializedName('background_color')]
+    public null|string $backgroundColor = null;
+
     public null|string $purpose = null;
 
     #[SerializedName('sizes')]

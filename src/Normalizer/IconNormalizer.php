@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Icon;
-use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\AssetMapper\MappedAsset;
-use Symfony\Component\Mime\MimeTypes;
+use SpomkyLabs\PwaBundle\Service\IconResolver;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -18,7 +16,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     use NormalizerAwareTrait;
 
     public function __construct(
-        private readonly AssetMapperInterface $assetMapper,
+        private readonly IconResolver $iconResolver,
     ) {
     }
 
@@ -28,14 +26,11 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);
-        $imageType = $object->type;
-        if (! str_starts_with($object->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src->src);
-            $imageType = $this->getType($asset);
-        }
+        $icon = $this->iconResolver->getIcon($object);
+        $imageType = $this->iconResolver->getType($object->type, $icon->url);
 
         $result = [
-            'src' => $this->normalizer->normalize($object->src, $format, $context),
+            'src' => $icon->url,
             'sizes' => $object->getSizeList(),
             'type' => $imageType,
             'purpose' => $object->purpose,
@@ -62,15 +57,5 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         return [
             Icon::class => true,
         ];
-    }
-
-    private function getType(?MappedAsset $asset): ?string
-    {
-        if ($asset === null || ! class_exists(MimeTypes::class)) {
-            return null;
-        }
-
-        $mime = MimeTypes::getDefault();
-        return $mime->guessMimeType($asset->sourcePath);
     }
 }
