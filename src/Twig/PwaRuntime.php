@@ -28,7 +28,7 @@ final readonly class PwaRuntime
         private Manifest $manifest,
         private Favicons $favicons,
         private FaviconsCompiler $faviconsCompiler,
-        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
@@ -268,7 +268,7 @@ SERVICE_WORKER;
             );
             /*$output .= PHP_EOL . sprintf(
                 '<meta name="msapplication-TileImage" content="%s">',
-                $files['/favicons/icon-144x144.png']->url
+                $files['/pwa/icon-144x144.png']->url
             );*/
         }
 

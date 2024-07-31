@@ -17,7 +17,7 @@ final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface
     public function __construct(
         #[TaggedIterator('spomky_labs_pwa.cache_strategy')]
         private iterable $cacheStrategies,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         public bool $debug,
     ) {
     }

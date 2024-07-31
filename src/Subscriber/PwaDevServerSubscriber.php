@@ -59,7 +59,7 @@ final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogIn
     {
         $headers = $event->getResponse()
 ->headers;
-        if ($headers->has('X-Manifest-Dev') || $headers->has('X-SW-Dev') || $headers->has('X-Favicons-Dev')) {
+        if ($headers->has('X-Pwa-Dev')) {
             $event->stopPropagation();
         }
     }

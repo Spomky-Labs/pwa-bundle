@@ -18,10 +18,12 @@ use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
+use SpomkyLabs\PwaBundle\Service\ApplicationIconCompiler;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
+use SpomkyLabs\PwaBundle\Service\IconResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
@@ -72,6 +74,9 @@ return static function (ContainerConfigurator $configurator): void {
         ->factory([service(FaviconsBuilder::class), 'create'])
     ;
     $container->set(FaviconsCompiler::class);
+
+    $container->set(IconResolver::class);
+    $container->set(ApplicationIconCompiler::class);
 
     /*** Service Worker ***/
     $container->set(ServiceWorkerBuilder::class)

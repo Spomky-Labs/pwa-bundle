@@ -37,7 +37,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
         private readonly AssetMapperInterface $assetMapper,
         private readonly SerializerInterface $serializer,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
         $this->workbox = $serviceWorker->workbox;
