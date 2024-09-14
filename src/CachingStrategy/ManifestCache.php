@@ -10,6 +10,7 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use function sprintf;
 
 final class ManifestCache implements HasCacheStrategiesInterface, CanLogInterface
 {

@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
 use InvalidArgumentException;
 use Stringable;
+use function sprintf;
 
 final readonly class Configuration implements Stringable
 {

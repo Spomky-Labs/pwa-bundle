@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
+use function sprintf;
 
 final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {

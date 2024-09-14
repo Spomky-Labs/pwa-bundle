@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\Routing\RouterInterface;
+use function sprintf;
 
 final class RouteMatchCallbackHandler implements MatchCallbackHandlerInterface, CanLogInterface
 {
