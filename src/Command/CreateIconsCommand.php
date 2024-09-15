@@ -19,6 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Yaml\Yaml;
 use function is_string;
+use function sprintf;
 
 #[AsCommand(name: 'pwa:create:icons', description: 'Generate icons for your PWA')]
 final class CreateIconsCommand extends Command

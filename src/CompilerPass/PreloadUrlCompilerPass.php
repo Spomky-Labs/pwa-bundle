@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 use function array_key_exists;
 use function is_string;
+use function sprintf;
 
 /**
  * @internal

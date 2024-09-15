@@ -11,6 +11,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use function sprintf;
 
 final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
 {
