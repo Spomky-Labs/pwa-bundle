@@ -24,6 +24,7 @@ use Throwable;
 use function assert;
 use function is_int;
 use function is_string;
+use function sprintf;
 
 #[AsCommand(
     name: 'pwa:create:screenshot',
@@ -155,7 +156,7 @@ final class CreateScreenshotCommand extends Command
         if ($outputMimeType !== null) {
             $config['type'] = $outputMimeType;
         }
-        if ($title !== null && $title !== '') {
+        if ($title !== null) {
             $config['label'] = $title;
         }
         $io->success('Screenshot saved. You can now use it in your application configuration file.');

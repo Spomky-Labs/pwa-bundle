@@ -5,6 +5,27 @@
     "version": "1.0.0",
     "symfony": {
         "controllers": {
+            "backgroundsync-form": {
+                "main": "src/backgroundsync-form_controller.js",
+                "name": "pwa/backgroundsync-form",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "badge": {
+                "main": "src/badge_controller.js",
+                "name": "pwa/badge",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "battery": {
+                "main": "src/battery_controller.js",
+                "name": "pwa/battery",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "connection-status": {
                 "main": "src/connection-status_controller.js",
                 "name": "pwa/connection-status",
@@ -12,9 +33,58 @@
                 "fetch": "eager",
                 "enabled": true
             },
-            "backgroundsync-form": {
-                "main": "src/backgroundsync-form_controller.js",
-                "name": "pwa/backgroundsync-form",
+            "device-orientation": {
+                "main": "src/device-orientation_controller.js",
+                "name": "pwa/device-orientation",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "fullscreen": {
+                "main": "src/fullscreen_controller.js",
+                "name": "pwa/fullscreen",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "geolocation": {
+                "main": "src/geolocation_controller.js",
+                "name": "pwa/geolocation",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "install": {
+                "main": "src/install_controller.js",
+                "name": "pwa/install",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "prefetch-on-demand": {
+                "main": "src/prefetch-on-demand_controller.js",
+                "name": "pwa/prefetch-on-demand",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "presentation": {
+                "main": "src/presentation_controller.js",
+                "name": "pwa/presentation",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "receiver": {
+                "main": "src/receiver_controller.js",
+                "name": "pwa/receiver",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "share": {
+                "main": "src/share_controller.js",
+                "name": "pwa/share",
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
@@ -26,9 +96,9 @@
                 "fetch": "eager",
                 "enabled": true
             },
-            "prefetch-on-demand": {
-                "main": "src/prefetch-on-demand_controller.js",
-                "name": "pwa/prefetch-on-demand",
+            "vibration": {
+                "main": "src/vibration_controller.js",
+                "name": "pwa/vibration",
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true

@@ -46,7 +46,9 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
                 $pngData = ob_get_clean();
                 assert(is_string($pngData));
 
+                // @phpstan-ignore-next-line
                 echo pack('v3', 0, 1, 1);
+                // @phpstan-ignore-next-line
                 echo pack(
                     'C4v2V2',
                     $configuration->width,
@@ -58,6 +60,7 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
                     mb_strlen($pngData, '8bit'),
                     22
                 );
+                // @phpstan-ignore-next-line
                 echo $pngData;
                 break;
             default:
@@ -121,11 +124,10 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
         }
 
         /*if ($configuration->width === $configuration->height) {
-            $mainImage = imagescale($mainImage, $configuration->width, $configuration->height);
-            assert($mainImage !== false);
-
-            return $mainImage;
-        }*/
+         * $mainImage = imagescale($mainImage, $configuration->width, $configuration->height);
+         * assert($mainImage !== false);
+         * return $mainImage;
+         * }*/
 
         $srcWidth = imagesx($mainImage);
         $srcHeight = imagesy($mainImage);
