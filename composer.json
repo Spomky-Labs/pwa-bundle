@@ -64,7 +64,7 @@
         "phpunit/phpunit": "^10.1|^11.0",
         "rector/rector": "^1.0",
         "staabm/phpstan-todo-by": "^0.1.25",
-        "struggle-for-php/sfp-phpstan-psr-log": "^0.20.0 || ^0.21.0",
+        "struggle-for-php/sfp-phpstan-psr-log": "^0.20.0 || ^0.21.0 || ^0.22.0",
         "symfony/filesystem": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/mime": "^6.4|^7.0",
