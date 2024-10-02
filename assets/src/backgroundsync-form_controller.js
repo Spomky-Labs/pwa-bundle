@@ -5,13 +5,16 @@ import { Controller } from '@hotwired/stimulus';
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
     static values = {
-        params: { type: Object, default: {
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer'
-        }},
+        params: {
+            type: Object,
+            default: {
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer'
+            }
+        },
         headers: { type: Object, default: {} },
         redirection: { type: String, default: null },
     };
@@ -36,11 +39,11 @@ export default class extends Controller {
                 params.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 params.body = new URLSearchParams(new FormData(form));
             } else {
-                console.error('Unsupported form enctype');
+                // Unsupported form enctype
+                return;
             }
             params.method = form.method.toUpperCase();
             const response = await fetch(url, params);
-            console.log(new URLSearchParams(params.body).toString(), params, params.headers);
             if (response.redirected) {
                 window.location.assign(response.url);
                 return;

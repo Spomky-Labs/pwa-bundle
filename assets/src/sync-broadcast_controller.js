@@ -1,9 +1,9 @@
 'use strict';
 
-import { Controller } from '@hotwired/stimulus';
+import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
-export default class extends Controller {
+export default class extends AbstractController {
     static values = {
         channel: { type: String },
     };
@@ -23,10 +23,6 @@ export default class extends Controller {
         if (this.bc !== null) {
             this.bc.close();
         }
-    }
-
-    dispatchEvent = (name, payload) => {
-        this.dispatch(name, { detail: payload });
     }
 
     messageReceived = async (event) => {

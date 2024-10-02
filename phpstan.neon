@@ -7,6 +7,8 @@ parameters:
     checkGenericClassInNonGenericObjectType: true
     checkUninitializedProperties: true
     treatPhpDocTypesAsCertain: false
+    banned_code:
+        non_ignorable: false
     scanFiles:
         - vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
 includes:
