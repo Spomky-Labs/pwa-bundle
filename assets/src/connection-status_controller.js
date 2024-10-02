@@ -1,9 +1,9 @@
 'use strict';
 
-import { Controller } from '@hotwired/stimulus';
+import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
-export default class extends Controller {
+export default class extends AbstractController {
     static targets = ['message', 'attribute'];
     static values = {
         onlineMessage: { type: String, default: 'You are online.' },
@@ -36,9 +36,6 @@ export default class extends Controller {
                 message: this.offlineMessageValue,
             });
         });
-    }
-    dispatchEvent = (name, payload) => {
-        this.dispatch(name, { detail: payload });
     }
 
     statusChanged = (data) => {

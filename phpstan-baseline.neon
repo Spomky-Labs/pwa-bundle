@@ -456,11 +456,6 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
-			count: 3
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
 			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
 			count: 1
 			path: src/Normalizer/AssetNormalizer.php

@@ -17,6 +17,7 @@ use function array_key_exists;
 use function assert;
 use function count;
 use function is_array;
+use function sprintf;
 
 final readonly class IconResolver
 {
