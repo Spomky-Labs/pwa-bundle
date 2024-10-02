@@ -15,6 +15,7 @@ use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\MimeTypes;
 use function array_key_exists;
+use function sprintf;
 use const ENT_COMPAT;
 use const ENT_SUBSTITUTE;
 use const PHP_EOL;

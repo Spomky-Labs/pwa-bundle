@@ -1,9 +1,9 @@
 'use strict';
 
-import { Controller } from '@hotwired/stimulus';
+import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
-export default class extends Controller {
+export default class extends AbstractController {
     prefetch = async ({params}) => {
         const workbox = window.workbox;
         if (!workbox || !params.urls) {
@@ -20,9 +20,5 @@ export default class extends Controller {
             result === true ?'prefetched': 'error',
             {params}
         );
-    }
-
-    dispatchEvent = (name, payload) => {
-        this.dispatch(name, { detail: payload });
     }
 }
