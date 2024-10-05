@@ -31,16 +31,22 @@ export default class extends Controller {
         try {
             const params = this.paramsValue;
             params.headers = this.headersValue;
-            if (form.enctype === 'multipart/form-data') {
-                params.body = new FormData(form);
-            } else if (form.enctype === 'application/json') {
-                params.body = JSON.stringify(Object.fromEntries(new FormData(form)));
-            } else if (form.enctype === 'application/x-www-form-urlencoded') {
-                params.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                params.body = new URLSearchParams(new FormData(form));
-            } else {
-                // Unsupported form enctype
-                return;
+            switch (form.enctype) {
+                case 'multipart/form-data':
+                    params.headers['Content-Type'] = 'multipart/form-data';
+                    params.body = new FormData(form);
+                    break;
+                case 'application/json':
+                    params.headers['Content-Type'] = 'application/json';
+                    params.body = JSON.stringify(Object.fromEntries(new FormData(form)));
+                    break;
+                case 'application/x-www-form-urlencoded':
+                    params.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    params.body = (new URLSearchParams(new FormData(form))).toString();
+                    break;
+                default:
+                    console.error('Unknown form enctype');
+                    return;
             }
             params.method = form.method.toUpperCase();
             const response = await fetch(url, params);
