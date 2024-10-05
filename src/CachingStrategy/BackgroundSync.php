@@ -51,7 +51,11 @@ final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterfa
                         $sync->queueName,
                         $sync->maxRetentionTime,
                         $sync->forceSyncFallback,
-                        $sync->broadcastChannel
+                        $sync->broadcastChannel,
+                        $sync->errorOn4xx,
+                        $sync->errorOn5xx,
+                        $sync->expectRedirect,
+                        $sync->expectedStatusCodes,
                     ),
                 )
                 ->withMethod($sync->method);
