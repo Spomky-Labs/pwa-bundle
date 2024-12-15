@@ -13,7 +13,7 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
     /**
      * @return array{scope?: string, src: string, use_cache?: bool}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         assert($object instanceof ServiceWorker);
 
@@ -30,7 +30,7 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof ServiceWorker;
     }

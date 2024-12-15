@@ -28,7 +28,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
     /**
      * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         assert($object instanceof Screenshot);
         $asset = null;
@@ -55,7 +55,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Screenshot;
     }

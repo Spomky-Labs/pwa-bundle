@@ -23,7 +23,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     /**
      * @return array{src: string, sizes?: string, type?: string, purpose?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         assert($object instanceof Icon);
         $icon = $this->iconResolver->getIcon($object);
@@ -44,7 +44,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Icon;
     }

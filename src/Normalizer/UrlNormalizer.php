@@ -24,7 +24,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
     ) {
     }
 
-    public function normalize(mixed $object, string $format = null, array $context = []): string
+    public function normalize(mixed $object, ?string $format = null, array $context = []): string
     {
         assert($object instanceof Url);
 
@@ -48,7 +48,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
         }
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Url;
     }
