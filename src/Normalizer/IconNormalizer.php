@@ -25,13 +25,13 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
      */
     public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($object instanceof Icon);
-        $icon = $this->iconResolver->getIcon($object);
-        $imageType = $this->iconResolver->getType($object->type, $icon->url);
+        assert($data instanceof Icon);
+        $icon = $this->iconResolver->getIcon($data);
+        $imageType = $this->iconResolver->getType($data->type, $icon->url);
 
         $result = [
             'src' => $icon->url,
-            'sizes' => $object->getSizeList(),
+            'sizes' => $data->getSizeList(),
             'type' => $imageType,
             'purpose' => $data->purpose,
         ];
