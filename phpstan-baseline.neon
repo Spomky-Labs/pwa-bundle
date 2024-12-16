@@ -163,12 +163,6 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: src/Command/CreateScreenshotCommand.php
-
-		-
 			message: '#^Cannot access offset ''data'' on mixed\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
@@ -610,11 +604,6 @@ parameters:
 			message: '#^Parameter \#4 \$blue of function imagecolorallocate expects int\<0, 255\>, int given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: '#^Should not use node with type "Stmt_Echo", please change the code\.$#'
-			identifier: ekinoBannedCode.expression
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
@@ -1092,6 +1081,12 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
+			message: '#^Cannot call method addDefaultsIfNotSet\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
 			message: '#^Cannot call method append\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 6
@@ -1100,7 +1095,7 @@ parameters:
 		-
 			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 16
+			count: 17
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1118,7 +1113,7 @@ parameters:
 		-
 			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 8
+			count: 11
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1148,7 +1143,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultFalse\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 5
+			count: 6
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1160,7 +1155,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultTrue\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 3
+			count: 5
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1172,7 +1167,7 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 102
+			count: 107
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1202,7 +1197,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 64
+			count: 68
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1214,7 +1209,7 @@ parameters:
 		-
 			message: '#^Cannot call method integerPrototype\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1262,19 +1257,19 @@ parameters:
 		-
 			message: '#^Cannot call method treatFalseLike\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 10
+			count: 11
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method treatNullLike\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 10
+			count: 11
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method treatTrueLike\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 10
+			count: 11
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1320,6 +1315,12 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
+			message: '#^Return type \(iterable\<SpomkyLabs\\PwaBundle\\Service\\Data\>\) of method SpomkyLabs\\PwaBundle\\Service\\ApplicationIconCompiler\:\:getFiles\(\) should be covariant with return type \(iterable\<string, SpomkyLabs\\PwaBundle\\Service\\Data\>\) of method SpomkyLabs\\PwaBundle\\Service\\FileCompilerInterface\:\:getFiles\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: src/Service/ApplicationIconCompiler.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\Data\:\:getData\(\) should return string but returns mixed\.$#'
 			identifier: return.type
 			count: 1
@@ -1342,6 +1343,18 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Cannot access property \$sourcePath on Symfony\\Component\\AssetMapper\\MappedAsset\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Service/IconResolver.php
+
+		-
+			message: '#^Parameter \#3 \$headers of class SpomkyLabs\\PwaBundle\\Service\\Data constructor expects array\<string, bool\|string\>, array\<string, string\|true\|null\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/IconResolver.php
 
 		-
 			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
@@ -1396,3 +1409,9 @@ parameters:
 			identifier: argument.type
 			count: 8
 			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: tests/Functional/TakeScreenshotCommandTest.php
