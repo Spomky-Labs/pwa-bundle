@@ -615,7 +615,6 @@ parameters:
 		-
 			message: '#^Should not use node with type "Stmt_Echo", please change the code\.$#'
 			identifier: ekinoBannedCode.expression
-			count: 3
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-

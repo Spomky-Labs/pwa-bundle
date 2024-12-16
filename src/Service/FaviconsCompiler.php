@@ -26,7 +26,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         private readonly null|ImageProcessorInterface $imageProcessor,
         private readonly Favicons $favicons,
         private readonly AssetMapperInterface $assetMapper,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
         $this->logger = new NullLogger();
@@ -59,7 +59,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%dx%d-%s.png',
+                'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 16,
                 'height' => 16,
                 'format' => 'png',
@@ -67,7 +67,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%dx%d-%s.png',
+                'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 32,
                 'height' => 32,
                 'format' => 'png',
@@ -76,7 +76,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ],
             //High resolution iOS
             [
-                'url' => '/favicons/icon-%dx%d-%s.png',
+                'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 180,
                 'height' => 180,
                 'format' => 'png',
@@ -85,7 +85,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ],
             //High resolution chrome
             [
-                'url' => '/favicons/icon-%dx%d-%s.png',
+                'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 192,
                 'height' => 192,
                 'format' => 'png',
@@ -93,7 +93,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 'rel' => 'icon',
             ],
             [
-                'url' => '/favicons/icon-%dx%d-%s.png',
+                'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 512,
                 'height' => 512,
                 'format' => 'png',
@@ -106,7 +106,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 ...$sizes,
                 //Prior iOS 6
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 57,
                     'height' => 57,
                     'format' => 'png',
@@ -114,7 +114,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 72,
                     'height' => 72,
                     'format' => 'png',
@@ -122,7 +122,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 114,
                     'height' => 114,
                     'format' => 'png',
@@ -132,7 +132,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 
                 //Prior iOS 7
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 60,
                     'height' => 60,
                     'format' => 'png',
@@ -140,7 +140,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 76,
                     'height' => 76,
                     'format' => 'png',
@@ -148,7 +148,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 120,
                     'height' => 120,
                     'format' => 'png',
@@ -156,7 +156,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'apple-touch-icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 152,
                     'height' => 152,
                     'format' => 'png',
@@ -166,7 +166,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 
                 //Other resolution
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 36,
                     'height' => 36,
                     'format' => 'png',
@@ -174,7 +174,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 48,
                     'height' => 48,
                     'format' => 'png',
@@ -182,7 +182,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 72,
                     'height' => 72,
                     'format' => 'png',
@@ -190,7 +190,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 96,
                     'height' => 96,
                     'format' => 'png',
@@ -198,7 +198,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 144,
                     'height' => 144,
                     'format' => 'png',
@@ -206,7 +206,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 256,
                     'height' => 256,
                     'format' => 'png',
@@ -214,7 +214,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'rel' => 'icon',
                 ],
                 [
-                    'url' => '/favicons/icon-%dx%d-%s.png',
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 384,
                     'height' => 384,
                     'format' => 'png',
@@ -282,7 +282,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 [
                     'Cache-Control' => 'public, max-age=604800, immutable',
                     'Content-Type' => $mimeType,
-                    'X-Favicons-Dev' => true,
+                    'X-Pwa-Dev' => true,
                 ],
                 $html
             );
@@ -294,7 +294,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => $mimeType,
-                'X-Favicons-Dev' => true,
+                'X-Pwa-Dev' => true,
             ],
             sprintf(
                 '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
@@ -320,7 +320,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $hash = hash('xxh128', $hash . $configuration);
         $icon70x70 = $this->processIcon(
             $asset,
-            sprintf('/favicons/icon-%dx%d-%s.png', 70, 70, $hash),
+            sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
             $configuration,
             'image/png',
             null
@@ -330,7 +330,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $hash = hash('xxh128', $hash . $configuration);
         $icon150x150 = $this->processIcon(
             $asset,
-            sprintf('/favicons/icon-%dx%d-%s.png', 150, 150, $hash),
+            sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
             $configuration,
             'image/png',
             null
@@ -340,7 +340,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x310 = $this->processIcon(
             $asset,
-            sprintf('/favicons/icon-%dx%d-%s.png', 310, 310, $hash),
+            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
             $configuration,
             'image/png',
             null
@@ -350,7 +350,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x150 = $this->processIcon(
             $asset,
-            sprintf('/favicons/icon-%dx%d-%s.png', 310, 150, $hash),
+            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
             $configuration,
             'image/png',
             null
@@ -360,7 +360,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $hash = hash('xxh128', $hash . $configuration);
         $icon144x144 = $this->processIcon(
             $asset,
-            sprintf('/favicons/icon-%dx%d-%s.png', 144, 144, $hash),
+            sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
             $configuration,
             'image/png',
             null
@@ -388,14 +388,14 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 </browserconfig>
 XML;
         $browserConfigHash = hash('xxh128', $content);
-        $url = sprintf('/favicons/browserconfig-%s.xml', $browserConfigHash);
+        $url = sprintf('/pwa/browserconfig-%s.xml', $browserConfigHash);
         $browserConfig = Data::create(
             $url,
             $content,
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/xml',
-                'X-Favicons-Dev' => true,
+                'X-Pwa-Dev' => true,
                 'Etag' => hash('xxh128', $content),
             ],
             sprintf('<meta name="msapplication-config" content="%s">', $url)
@@ -441,7 +441,7 @@ XML;
     private function generateSafariPinnedTab(string $content, string $hash): Data
     {
         $callback = fn (): string => $this->generateSilhouette($content);
-        $url = sprintf('/safari-pinned-tab-%s.svg', $hash);
+        $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
 
         return Data::create(
             $url,
@@ -449,7 +449,7 @@ XML;
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'image/svg+xml',
-                'X-Favicons-Dev' => true,
+                'X-Pwa-Dev' => true,
                 'Etag' => $hash,
             ],
             sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)

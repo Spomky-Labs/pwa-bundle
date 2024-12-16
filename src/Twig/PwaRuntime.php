@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Twig;
 
 use InvalidArgumentException;
+use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
@@ -27,8 +28,10 @@ final readonly class PwaRuntime
         private Manifest $manifest,
         private Favicons $favicons,
         private FaviconsCompiler $faviconsCompiler,
-        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
+        #[Autowire(service: 'nelmio_security.csp_listener')]
+        private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
     }
@@ -123,7 +126,7 @@ final readonly class PwaRuntime
         if ($serviceWorker->workbox->enabled === true) {
             $workboxUrl = sprintf('%s%s', $serviceWorker->workbox->workboxPublicUrl, '/workbox-window.prod.mjs');
             $declaration = <<<SERVICE_WORKER
-<script type="module" {$scriptAttributes}>
+<script type="module"{$scriptAttributes}>
   import {Workbox} from '{$workboxUrl}';
   if ('serviceWorker' in navigator) {
     const wb = new Workbox('{$url}'{$registerOptions});
@@ -219,6 +222,13 @@ SERVICE_WORKER;
                 self::class
             ));
         }
+        if (! array_key_exists('nonce', $attributes) && $this->cspListener !== null) {
+            $nonce = $this->cspListener->getNonce('script');
+            $attributes['nonce'] = $nonce;
+        } elseif (array_key_exists('nonce', $attributes) && $attributes['nonce'] === false) {
+            unset($attributes['nonce']);
+        }
+
         foreach ($attributes as $name => $value) {
             $attributeString .= ' ';
             if ($value === true) {
@@ -258,7 +268,7 @@ SERVICE_WORKER;
             );
             /*$output .= PHP_EOL . sprintf(
                 '<meta name="msapplication-TileImage" content="%s">',
-                $files['/favicons/icon-144x144.png']->url
+                $files['/pwa/icon-144x144.png']->url
             );*/
         }
 

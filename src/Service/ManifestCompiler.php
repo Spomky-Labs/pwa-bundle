@@ -42,12 +42,12 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly Manifest $manifest,
-        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         bool $debug,
         null|EventDispatcherInterface $dispatcher,
-        #[Autowire('%kernel.enabled_locales%')]
+        #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
     ) {
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
@@ -133,7 +133,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
             [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/manifest+json',
-                'X-Manifest-Dev' => true,
+                'X-Pwa-Dev' => true,
             ]
         );
     }

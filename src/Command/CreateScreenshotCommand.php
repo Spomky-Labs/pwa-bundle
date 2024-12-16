@@ -35,7 +35,7 @@ final class CreateScreenshotCommand extends Command
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
-        #[Autowire('%kernel.project_dir%')]
+        #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
         private readonly null|ImageProcessorInterface $imageProcessor,
         #[Autowire('@pwa.web_client')]
@@ -156,7 +156,7 @@ final class CreateScreenshotCommand extends Command
         if ($outputMimeType !== null) {
             $config['type'] = $outputMimeType;
         }
-        if ($title !== null && $title !== '') {
+        if ($title !== null) {
             $config['label'] = $title;
         }
         $io->success('Screenshot saved. You can now use it in your application configuration file.');

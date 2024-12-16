@@ -14,6 +14,21 @@ final class BackgroundSync extends Cache
     #[SerializedName('match_callback')]
     public string $matchCallback;
 
+    #[SerializedName('error_on_4xx')]
+    public bool $errorOn4xx = false;
+
+    #[SerializedName('error_on_5xx')]
+    public bool $errorOn5xx = true;
+
+    #[SerializedName('expect_redirect')]
+    public bool $expectRedirect = false;
+
+    /**
+     * @var array<int>
+     */
+    #[SerializedName('expected_status_codes')]
+    public array $expectedStatusCodes = [];
+
     public string $method;
 
     #[SerializedName('max_retention_time')]

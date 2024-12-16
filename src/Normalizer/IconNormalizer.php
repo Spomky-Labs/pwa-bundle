@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Icon;
-use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\AssetMapper\MappedAsset;
-use Symfony\Component\Mime\MimeTypes;
+use SpomkyLabs\PwaBundle\Service\IconResolver;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -18,7 +16,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     use NormalizerAwareTrait;
 
     public function __construct(
-        private readonly AssetMapperInterface $assetMapper,
+        private readonly IconResolver $iconResolver,
     ) {
     }
 
@@ -27,16 +25,13 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
      */
     public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($data instanceof Icon);
-        $imageType = $data->type;
-        if (! str_starts_with($data->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($data->src->src);
-            $imageType = $this->getType($asset);
-        }
+        assert($object instanceof Icon);
+        $icon = $this->iconResolver->getIcon($object);
+        $imageType = $this->iconResolver->getType($object->type, $icon->url);
 
         $result = [
-            'src' => $this->normalizer->normalize($data->src, $format, $context),
-            'sizes' => $data->getSizeList(),
+            'src' => $icon->url,
+            'sizes' => $object->getSizeList(),
             'type' => $imageType,
             'purpose' => $data->purpose,
         ];
@@ -62,14 +57,5 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         return [
             Icon::class => true,
         ];
-    }
-
-    private function getType(?MappedAsset $asset): ?string
-    {
-        if ($asset === null || ! class_exists(MimeTypes::class)) {
-            return null;
-        }
-
-        return MimeTypes::getDefault()->guessMimeType($asset->sourcePath);
     }
 }

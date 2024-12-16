@@ -27,7 +27,7 @@ final class CreateIconsCommand extends Command
     public function __construct(
         private readonly AssetMapperInterface $assetMapper,
         private readonly Filesystem $filesystem,
-        #[Autowire('%kernel.project_dir%')]
+        #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
         private readonly null|ImageProcessorInterface $imageProcessor,
     ) {

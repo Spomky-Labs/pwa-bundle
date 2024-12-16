@@ -22,7 +22,7 @@ final class ManifestCache implements HasCacheStrategiesInterface, CanLogInterfac
 
     public function __construct(
         ServiceWorker $serviceWorker,
-        #[Autowire('%spomky_labs_pwa.manifest.public_url%')]
+        #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
     ) {
         $this->workbox = $serviceWorker->workbox;

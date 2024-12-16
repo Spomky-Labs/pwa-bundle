@@ -26,6 +26,10 @@ return static function (ContainerConfigurator $container) {
     $container->extension('framework', [
         'test' => true,
         'secret' => 'test',
+        'profiler' => [
+            'enabled' => true,
+            'collect' => false,
+        ],
         'http_method_override' => true,
         'handle_all_throwables' => true,
         'assets' => [

@@ -37,7 +37,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         private readonly AssetMapperInterface $assetMapper,
         #[AutowireIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
         private readonly iterable $serviceworkerRules,
-        #[Autowire('%kernel.debug%')]
+        #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
         $serviceWorkerPublicUrl = $serviceWorker->dest;
@@ -97,7 +97,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             $callback,
             [
                 'Content-Type' => 'application/javascript',
-                'X-SW-Dev' => true,
+                'X-Pwa-Dev' => true,
             ]
         );
     }
@@ -188,7 +188,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             $callback,
             [
                 'Content-Type' => 'application/javascript',
-                'X-SW-Dev' => true,
+                'X-Pwa-Dev' => true,
             ]
         );
     }
