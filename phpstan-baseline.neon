@@ -1,611 +1,1399 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
+			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
+			identifier: argument.unpackNonIterable
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withName\\(\\) expects string, string\\|null given\\.$#"
+			message: '#^Parameter \#1 \$name of method SpomkyLabs\\PwaBundle\\CachingStrategy\\WorkboxCacheStrategy\:\:withName\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
+			message: '#^Parameter \#1 \$preloadUrl of method SpomkyLabs\\PwaBundle\\CachingStrategy\\WorkboxCacheStrategy\:\:withPreloadUrl\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/AssetCache.php
 
 		-
-			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
+			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
+			identifier: argument.unpackNonIterable
 			count: 1
 			path: src/CachingStrategy/FontCache.php
 
 		-
-			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
+			message: '#^Parameter \#1 \$preloadUrl of method SpomkyLabs\\PwaBundle\\CachingStrategy\\WorkboxCacheStrategy\:\:withPreloadUrl\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/FontCache.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/CachingStrategy/FontCache.php
 
 		-
-			message: "#^Only iterables can be unpacked, mixed given in argument \\#1\\.$#"
+			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
+			identifier: argument.unpackNonIterable
 			count: 1
 			path: src/CachingStrategy/ResourceCaches.php
 
 		-
-			message: "#^Parameter \\#1 \\$preloadUrl of method SpomkyLabs\\\\PwaBundle\\\\CachingStrategy\\\\WorkboxCacheStrategy\\:\\:withPreloadUrl\\(\\) expects string, mixed given\\.$#"
+			message: '#^Parameter \#1 \$headersToCheck of static method SpomkyLabs\\PwaBundle\\WorkboxPlugin\\BroadcastUpdatePlugin\:\:create\(\) expects array\<string, string\>, array\<string\> given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/ResourceCaches.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			message: '#^Parameter \#1 \$preloadUrl of method SpomkyLabs\\PwaBundle\\CachingStrategy\\WorkboxCacheStrategy\:\:withPreloadUrl\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/CachingStrategy/ResourceCaches.php
 
 		-
-			message: "#^Part \\$this\\-\\>options\\['networkTimeoutSeconds'\\] \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
+			message: '#^Part \$this\-\>options\[''networkTimeoutSeconds''\] \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
 			count: 1
 			path: src/CachingStrategy/WorkboxCacheStrategy.php
 
 		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Cannot cast mixed to int\\.$#"
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Cannot cast mixed to string\\.$#"
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:process\\(\\) expects string, string\\|false given\\.$#"
+			message: '#^Parameter \#1 \$image of method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\:\:process\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$source of method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateIconsCommand\\:\\:getSourcePath\\(\\) expects string, mixed given\\.$#"
+			message: '#^Parameter \#1 \$source of method SpomkyLabs\\PwaBundle\\Command\\CreateIconsCommand\:\:getSourcePath\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/CreateIconsCommand.php
 
 		-
-			message: "#^Cannot cast mixed to int\\.$#"
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
 			count: 2
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Cannot cast mixed to string\\.$#"
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
 			count: 2
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Command\\\\CreateScreenshotCommand\\:\\:getDefaultArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:getAvailablePort\(\) should return int but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:getDefaultArguments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, mixed given\.$#'
+			identifier: if.condNotBoolean
 			count: 3
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#2 \\$uri of method Symfony\\\\Component\\\\Panther\\\\Client\\:\\:request\\(\\) expects string, mixed given\\.$#"
+			message: '#^Parameter \#2 \$uri of method Symfony\\Component\\Panther\\Client\:\:request\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$forceSyncFallback\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Parameter \$arguments of static method Symfony\\Component\\Panther\\Client\:\:createChromeClient\(\) expects array\<string\>\|null, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cannot access offset ''data'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Cannot access offset ''files'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Cannot access property \$workbox on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getCachingStrategies\(\) should return array\<SpomkyLabs\\PwaBundle\\CachingStrategy\\CacheStrategyInterface\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getData\(\) should return array\<string, mixed\>\|Symfony\\Component\\VarDumper\\Cloner\\Data but returns array\|Symfony\\Component\\VarDumper\\Cloner\\Data\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getFavicons\(\) should return SpomkyLabs\\PwaBundle\\Dto\\Favicons but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getFaviconsFiles\(\) should return array\<string, Symfony\\Component\\VarDumper\\Cloner\\Data\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getManifest\(\) should return SpomkyLabs\\PwaBundle\\Dto\\Manifest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getManifestFiles\(\) should return array\<string, Symfony\\Component\\VarDumper\\Cloner\\Data\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getServiceWorker\(\) should return SpomkyLabs\\PwaBundle\\Dto\\ServiceWorker but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getServiceWorkerFiles\(\) should return array\<string, Symfony\\Component\\VarDumper\\Cloner\\Data\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getWorkbox\(\) should return SpomkyLabs\\PwaBundle\\Dto\\Workbox but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$forceSyncFallback\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$matchCallback\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$maxRetentionTime\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$maxRetentionTime\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$method\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$method\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$queueName\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$queueName\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/BackgroundSync.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Favicons has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Favicons has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Favicons.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\File has an uninitialized property \$accept\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/File.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\File has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\File has an uninitialized property \$name\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/File.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\FileHandler has an uninitialized property \\$accept\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\FileHandler has an uninitialized property \$accept\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/FileHandler.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\FileHandler has an uninitialized property \\$action\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\FileHandler has an uninitialized property \$action\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/FileHandler.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\GoogleFontCache has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\GoogleFontCache has an uninitialized property \$enabled\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/GoogleFontCache.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Icon has an uninitialized property \\$sizeList\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Icon has an uninitialized property \$sizeList\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Icon.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Icon has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Icon has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Icon.php
 
 		-
-			message: "#^Property SpomkyLabs\\\\PwaBundle\\\\Dto\\\\LaunchHandler\\:\\:\\$clientMode type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SpomkyLabs\\PwaBundle\\Dto\\LaunchHandler\:\:\$clientMode type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Dto/LaunchHandler.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getCategories\\(\\) should return array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\> but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getCategories\(\) should return array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\> but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getDescription\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getShortName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Manifest\\:\\:getStartUrl\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getStartUrl\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Manifest.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\PageCache extends @final class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ResourceCache\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\PageCache extends @final class SpomkyLabs\\PwaBundle\\Dto\\ResourceCache\.$#'
+			identifier: class.extendsFinalByPhpDoc
 			count: 1
 			path: src/Dto/PageCache.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$protocol\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ProtocolHandler has an uninitialized property \$protocol\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ProtocolHandler.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ProtocolHandler has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ProtocolHandler has an uninitialized property \$url\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ProtocolHandler.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\RelatedApplication has an uninitialized property \\$platform\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\RelatedApplication has an uninitialized property \$platform\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/RelatedApplication.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\RelatedApplication has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\RelatedApplication has an uninitialized property \$url\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/RelatedApplication.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ResourceCache has an uninitialized property \\$matchCallback\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ResourceCache has an uninitialized property \$matchCallback\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ResourceCache.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ScopeExtension has an uninitialized property \\$origin\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ScopeExtension has an uninitialized property \$origin\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ScopeExtension.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Screenshot has an uninitialized property \\$src\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Screenshot has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Screenshot.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Screenshot\\:\\:getLabel\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Screenshot\:\:getLabel\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Screenshot.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$dest\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ServiceWorker has an uninitialized property \$dest\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ServiceWorker has an uninitialized property \$enabled\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ServiceWorker has an uninitialized property \\$workbox\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ServiceWorker has an uninitialized property \$workbox\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ServiceWorker.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTarget has an uninitialized property \\$action\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ShareTarget has an uninitialized property \$action\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/ShareTarget.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTargetParameters\\:\\:getText\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\ShareTargetParameters\:\:getText\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/ShareTargetParameters.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\ShareTargetParameters\\:\\:getTitle\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\ShareTargetParameters\:\:getTitle\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/ShareTargetParameters.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Shortcut has an uninitialized property \$name\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Shortcut.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut has an uninitialized property \\$url\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Shortcut has an uninitialized property \$url\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Shortcut.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getDescription\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Shortcut.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Shortcut.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Shortcut\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getShortName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Shortcut.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Url has an uninitialized property \\$path\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Url has an uninitialized property \$path\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Url.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget has an uninitialized property \\$adaptativeCardTemplate\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Widget has an uninitialized property \$adaptativeCardTemplate\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Widget has an uninitialized property \$name\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getDescription\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getDescription\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Widget\\:\\:getShortName\\(\\) should return string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null but returns array\\<string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\>\\|string\\|Symfony\\\\Contracts\\\\Translation\\\\TranslatableInterface\\|null\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getShortName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Dto/Widget.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$assetCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$assetCache\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$cacheManifest\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$cacheManifest\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$enabled\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$enabled\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$fontCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$fontCache\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$googleFontCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$googleFontCache\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$imageCache\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$imageCache\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$offlineFallback\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$offlineFallback\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$resourceCaches\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$resourceCaches\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$useCDN\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$useCDN\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$version\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$version\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\Workbox has an uninitialized property \\$workboxPublicUrl\\. Give it default value or assign it in the constructor\\.$#"
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Workbox has an uninitialized property \$workboxPublicUrl\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
 			count: 1
 			path: src/Dto/Workbox.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\GDImageProcessor\\:\\:process\\(\\) should return string but returns string\\|false\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\GDImageProcessor\:\:process\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Parameter \\#2 \\$red of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			message: '#^Parameter \#1 \$width of function imagecreatetruecolor expects int\<1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: '#^Parameter \#2 \$height of function imagecreatetruecolor expects int\<1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: '#^Parameter \#2 \$red of function imagecolorallocate expects int\<0, 255\>, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Parameter \\#3 \\$green of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			message: '#^Parameter \#3 \$green of function imagecolorallocate expects int\<0, 255\>, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Parameter \\#4 \\$blue of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
+			message: '#^Parameter \#4 \$blue of function imagecolorallocate expects int\<0, 255\>, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
+			message: '#^Should not use node with type "Stmt_Echo", please change the code\.$#'
+			identifier: ekinoBannedCode.expression
 			count: 3
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"
+			message: '#^PHPDoc tag @return with type array\<string, string\> is incompatible with native type string\.$#'
+			identifier: return.phpDocType
 			count: 1
 			path: src/Normalizer/AssetNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\IconNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, type\\?\\: string, purpose\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\IconNormalizer\:\:normalize\(\) should return array\{src\: string, sizes\?\: string, type\?\: string, purpose\?\: string\} but returns array\<mixed\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Normalizer/IconNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ScreenshotNormalizer\\:\\:normalize\\(\\) should return array\\{src\\: string, sizes\\?\\: string, form_factor\\?\\: string, label\\?\\: string, platform\\?\\: string, format\\?\\: string\\} but returns array\\<mixed\\>\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ScreenshotNormalizer\:\:normalize\(\) should return array\{src\: string, sizes\?\: string, form_factor\?\: string, label\?\: string, platform\?\: string, format\?\: string\} but returns array\<mixed\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
-			message: "#^Parameter \\#1 \\$image of method SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\:\\:getSizes\\(\\) expects string, string\\|false given\\.$#"
+			message: '#^Parameter \#1 \$image of method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\:\:getSizes\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Normalizer\\\\ServiceWorkerNormalizer\\:\\:normalize\\(\\) should return array\\{scope\\?\\: string, src\\: string, use_cache\\?\\: bool\\} but returns array\\<mixed\\>\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ServiceWorkerNormalizer\:\:normalize\(\) should return array\{scope\?\: string, src\: string, use_cache\?\: bool\} but returns array\<mixed\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Normalizer/ServiceWorkerNormalizer.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/favicons.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method canBeEnabled\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method children\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method defaultFalse\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 13
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method example\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 9
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method integerNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method max\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method min\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/image_processor.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: '#^Cannot call method example\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/image_processor.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/logging.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/logging.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/logging.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/logging.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/logging.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/manifest.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Cannot call method append\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 9
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method arrayPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method canBeEnabled\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method cannotBeEmpty\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method children\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method defaultTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 32
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method example\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 18
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 24
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method integerNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 17
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method scalarPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/path_type_reference.php
 
 		-
-			message: "#^Anonymous function should return array but returns mixed\\.$#"
+			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method example\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method ifNotInArray\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method integerNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method setDeprecated\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method thenInvalid\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Cannot call method validate\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/path_type_reference.php
+
+		-
+			message: '#^Anonymous function should return array but returns mixed\.$#'
+			identifier: return.type
 			count: 8
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access an offset on mixed\\.$#"
+			message: '#^Cannot access an offset on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'asset_cache' on mixed\\.$#"
+			message: '#^Cannot access offset ''asset_cache'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'asset_cache_name' on mixed\\.$#"
+			message: '#^Cannot access offset ''asset_cache_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'font_cache' on mixed\\.$#"
+			message: '#^Cannot access offset ''font_cache'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'font_cache_name' on mixed\\.$#"
+			message: '#^Cannot access offset ''font_cache_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'font_regex' on mixed\\.$#"
+			message: '#^Cannot access offset ''font_regex'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'image_cache' on mixed\\.$#"
+			message: '#^Cannot access offset ''image_cache'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'image_cache_name' on mixed\\.$#"
+			message: '#^Cannot access offset ''image_cache_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'image_regex' on mixed\\.$#"
+			message: '#^Cannot access offset ''image_regex'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'max_font_age' on mixed\\.$#"
+			message: '#^Cannot access offset ''max_font_age'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'max_font_cache…' on mixed\\.$#"
+			message: '#^Cannot access offset ''max_font_cache_entries'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'max_image_age' on mixed\\.$#"
+			message: '#^Cannot access offset ''max_image_age'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'max_image_cache…' on mixed\\.$#"
+			message: '#^Cannot access offset ''max_image_cache_entries'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'network_timeout…' on mixed\\.$#"
+			message: '#^Cannot access offset ''network_timeout_seconds'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'page_cache_name' on mixed\\.$#"
+			message: '#^Cannot access offset ''page_cache_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'resource_caches' on mixed\\.$#"
+			message: '#^Cannot access offset ''resource_caches'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'static_regex' on mixed\\.$#"
+			message: '#^Cannot access offset ''static_regex'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Cannot access offset 'warm_cache_urls' on mixed\\.$#"
+			message: '#^Cannot access offset ''warm_cache_urls'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
+			message: '#^Cannot call method append\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 16
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method arrayPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method beforeNormalization\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 7
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 8
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method canBeDisabled\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method canBeEnabled\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method cannotBeEmpty\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method children\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 11
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method defaultFalse\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method defaultTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
 			count: 3
 			path: src/Resources/config/definition/service_worker.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 36
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 102
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method example\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 33
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method ifNotInArray\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method ifString\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method ifTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 64
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method integerNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 11
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method integerPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method prototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 37
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method scalarPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method setDeprecated\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 17
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method then\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 7
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method thenInvalid\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method treatFalseLike\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 10
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method treatNullLike\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 10
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method treatTrueLike\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 10
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Cannot call method validate\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 3
+			path: src/Resources/config/definition/service_worker.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Resources/config/definition/web_client.php
 
 		-
-			message: "#^Cannot call method process\\(\\) on SpomkyLabs\\\\PwaBundle\\\\ImageProcessor\\\\ImageProcessorInterface\\|null\\.$#"
+			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/web_client.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/Resources/config/definition/web_client.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/web_client.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Resources/config/definition/web_client.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\Data\:\:getData\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/Data.php
+
+		-
+			message: '#^Property SpomkyLabs\\PwaBundle\\Service\\Data\:\:\$data \(Closure\|string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/Data.php
+
+		-
+			message: '#^Cannot call method process\(\) on SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\|null\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\Service\\\\FaviconsCompiler\\:\\:getFavicon\\(\\) should return array\\{string, string\\} but returns array\\{string\\|false, string\\}\\.$#"
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFavicon\(\) should return array\{string, string\} but returns array\{string\|false, string\}\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ServiceWorkerRule/AppendCacheStrategies.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#"
+			message: '#^Strict comparison using \=\=\= between int\<1, max\> and 0 will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: src/ServiceWorkerRule/OfflineFallback.php
 
 		-
-			message: "#^Method SpomkyLabs\\\\PwaBundle\\\\SpomkyLabsPwaBundle\\:\\:loadExtension\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			message: '#^Cannot access offset ''dest'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Cannot access offset ''enabled'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Cannot access offset ''public_url'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Cannot access offset ''serviceworker'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\SpomkyLabsPwaBundle\:\:loadExtension\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Parameter \#2 \$id of method Symfony\\Component\\DependencyInjection\\ContainerBuilder\:\:setAlias\(\) expects string\|Symfony\\Component\\DependencyInjection\\Alias, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Parameter \#2 \$value of method Symfony\\Component\\DependencyInjection\\Container\:\:setParameter\(\) expects array\|bool\|float\|int\|string\|UnitEnum\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 8
 			path: src/SpomkyLabsPwaBundle.php

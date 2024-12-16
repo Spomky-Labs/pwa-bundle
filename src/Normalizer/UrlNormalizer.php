@@ -24,31 +24,31 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
     ) {
     }
 
-    public function normalize(mixed $object, string $format = null, array $context = []): string
+    public function normalize(mixed $data, ?string $format = null, array $context = []): string
     {
-        assert($object instanceof Url);
+        assert($data instanceof Url);
 
         // If the path is a valid URL, we return it directly
-        if (str_starts_with($object->path, '/') && filter_var($object->path, FILTER_VALIDATE_URL) !== false) {
-            return $object->path;
+        if (str_starts_with($data->path, '/') && filter_var($data->path, FILTER_VALIDATE_URL) !== false) {
+            return $data->path;
         }
 
         // If the path is an asset, we return the public path
-        $asset = $this->assetMapper->getAsset($object->path);
+        $asset = $this->assetMapper->getAsset($data->path);
         if ($asset !== null) {
             return $asset->publicPath;
         }
 
         // Otherwise, we try to generate the URL
         try {
-            return $this->router->generate($object->path, $object->params, $object->pathTypeReference);
+            return $this->router->generate($data->path, $data->params, $data->pathTypeReference);
         } catch (Throwable) {
             // If the URL cannot be generated, we return the path as is
-            return $object->path;
+            return $data->path;
         }
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Url;
     }

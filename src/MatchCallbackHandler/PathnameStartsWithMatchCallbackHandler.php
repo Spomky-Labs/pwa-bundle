@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\MatchCallbackHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use function sprintf;
 
 final class PathnameStartsWithMatchCallbackHandler implements MatchCallbackHandlerInterface, CanLogInterface
 {

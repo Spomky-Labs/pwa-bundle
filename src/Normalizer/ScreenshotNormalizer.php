@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use function assert;
+use function sprintf;
 
 final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
@@ -27,23 +28,23 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
     /**
      * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($object instanceof Screenshot);
+        assert($data instanceof Screenshot);
         $asset = null;
-        $imageType = $object->type;
-        if ($imageType === null && ! str_starts_with($object->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src->src);
+        $imageType = $data->type;
+        if ($imageType === null && ! str_starts_with($data->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($data->src->src);
             $imageType = $this->getType($asset);
         }
-        ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($object, $asset);
+        ['sizes' => $sizes, 'formFactor' => $formFactor] = $this->getSizes($data, $asset);
 
         $result = [
-            'src' => $this->normalizer->normalize($object->src, $format, $context),
+            'src' => $this->normalizer->normalize($data->src, $format, $context),
             'sizes' => $sizes,
             'form_factor' => $formFactor,
-            'label' => $object->label,
-            'platform' => $object->platform,
+            'label' => $data->label,
+            'platform' => $data->platform,
             'format' => $imageType,
         ];
 
@@ -54,7 +55,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Screenshot;
     }

@@ -121,11 +121,10 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
         }
 
         /*if ($configuration->width === $configuration->height) {
-            $mainImage = imagescale($mainImage, $configuration->width, $configuration->height);
-            assert($mainImage !== false);
-
-            return $mainImage;
-        }*/
+         * $mainImage = imagescale($mainImage, $configuration->width, $configuration->height);
+         * assert($mainImage !== false);
+         * return $mainImage;
+         * }*/
 
         $srcWidth = imagesx($mainImage);
         $srcHeight = imagesy($mainImage);

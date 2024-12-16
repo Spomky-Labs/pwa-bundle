@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
+use function sprintf;
+
 final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasDebugInterface
 {
     private const NAME = 'BroadcastUpdatePlugin';

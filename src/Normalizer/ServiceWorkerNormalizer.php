@@ -13,14 +13,14 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
     /**
      * @return array{scope?: string, src: string, use_cache?: bool}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($object instanceof ServiceWorker);
+        assert($data instanceof ServiceWorker);
 
         $result = [
-            'src' => '/' . trim($object->dest, '/'),
-            'scope' => $object->scope,
-            'use_cache' => $object->useCache,
+            'src' => '/' . trim($data->dest, '/'),
+            'scope' => $data->scope,
+            'use_cache' => $data->useCache,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -30,7 +30,7 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof ServiceWorker;
     }

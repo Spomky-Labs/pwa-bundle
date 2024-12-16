@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Tests;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use function dirname;
+use function sprintf;
 
 final readonly class TestFilesystem implements PublicAssetsFilesystemInterface
 {

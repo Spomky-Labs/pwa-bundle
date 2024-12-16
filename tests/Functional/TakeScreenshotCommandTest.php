@@ -8,6 +8,7 @@ use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
 use function assert;
+use function sprintf;
 
 /**
  * @internal
