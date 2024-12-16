@@ -32,6 +32,9 @@ return static function (ContainerConfigurator $container) {
         ],
         'http_method_override' => true,
         'handle_all_throwables' => true,
+        'assets' => [
+            'enabled' => true,
+        ],
         'session' => [
             'storage_factory_id' => 'session.storage.factory.mock_file',
             'cookie_secure' => 'auto',

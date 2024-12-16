@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use function array_key_exists;
 use function sprintf;
 
@@ -25,7 +25,7 @@ final class PreloadUrlsGeneratorManager implements CanLogInterface
      * @param PreloadUrlsGeneratorInterface[] $generators
      */
     public function __construct(
-        #[TaggedIterator('spomky_labs_pwa.preload_urls_generator')]
+        #[AutowireIterator('spomky_labs_pwa.preload_urls_generator')]
         iterable $generators
     ) {
         $this->logger = new NullLogger();

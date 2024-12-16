@@ -11,7 +11,7 @@ use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(PreAssetsCompileEvent::class)]
@@ -23,7 +23,7 @@ final class FileCompileEventListener implements CanLogInterface
      * @param iterable<FileCompilerInterface> $fileCompilers
      */
     public function __construct(
-        #[TaggedIterator('spomky_labs_pwa.compiler')]
+        #[AutowireIterator('spomky_labs_pwa.compiler')]
         private readonly iterable $fileCompilers,
         #[Autowire('@asset_mapper.local_public_assets_filesystem')]
         private readonly PublicAssetsFilesystemInterface $assetsFilesystem,

@@ -94,7 +94,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
     {
         $assets = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
-            if (preg_match($this->workbox->assetCache->regex, $asset->sourcePath) === 1) {
+            if (preg_match($this->workbox->assetCache->regex, $asset->publicPath) === 1) {
                 $assets[] = $asset->publicPath;
             }
         }

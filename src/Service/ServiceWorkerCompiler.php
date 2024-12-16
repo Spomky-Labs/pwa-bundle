@@ -11,7 +11,7 @@ use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use function assert;
 use function count;
 use function in_array;
@@ -35,7 +35,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     public function __construct(
         private readonly ServiceWorker $serviceWorker,
         private readonly AssetMapperInterface $assetMapper,
-        #[TaggedIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
+        #[AutowireIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
         private readonly iterable $serviceworkerRules,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
@@ -54,11 +54,12 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     public function getFiles(): iterable
     {
-        yield $this->compileSW();
+        $sw = $this->compileSW();
+        yield $sw->url => $sw;
         yield from $this->getWorkboxFiles();
     }
 
@@ -119,7 +120,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     private function getWorkboxFiles(): iterable
     {
@@ -151,7 +152,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             if ($data === null) {
                 continue;
             }
-            yield $data;
+            yield $data->url => $data;
         }
     }
 

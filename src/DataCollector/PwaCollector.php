@@ -13,7 +13,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -37,7 +37,7 @@ final class PwaCollector extends DataCollector
      */
     public function __construct(
         private readonly SerializerInterface $serializer,
-        #[TaggedIterator('spomky_labs_pwa.cache_strategy')]
+        #[AutowireIterator('spomky_labs_pwa.cache_strategy')]
         private readonly iterable $cachingServices,
         private readonly Manifest $manifest,
         private readonly ServiceWorker $serviceWorker,
@@ -48,7 +48,7 @@ final class PwaCollector extends DataCollector
     ) {
     }
 
-    public function collect(Request $request, Response $response, Throwable $exception = null): void
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
         $jsonOptions = [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,

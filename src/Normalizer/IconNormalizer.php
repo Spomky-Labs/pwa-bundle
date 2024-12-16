@@ -23,17 +23,17 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     /**
      * @return array{src: string, sizes?: string, type?: string, purpose?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($object instanceof Icon);
-        $icon = $this->iconResolver->getIcon($object);
-        $imageType = $this->iconResolver->getType($object->type, $icon->url);
+        assert($data instanceof Icon);
+        $icon = $this->iconResolver->getIcon($data);
+        $imageType = $this->iconResolver->getType($data->type, $icon->url);
 
         $result = [
             'src' => $icon->url,
-            'sizes' => $object->getSizeList(),
+            'sizes' => $data->getSizeList(),
             'type' => $imageType,
-            'purpose' => $object->purpose,
+            'purpose' => $data->purpose,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -44,7 +44,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Icon;
     }

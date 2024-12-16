@@ -11,7 +11,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterface
 {
@@ -24,7 +24,7 @@ final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterfa
      */
     public function __construct(
         ServiceWorker $serviceWorker,
-        #[TaggedIterator('spomky_labs_pwa.match_callback_handler')]
+        #[AutowireIterator('spomky_labs_pwa.match_callback_handler')]
         private readonly iterable $matchCallbackHandlers,
     ) {
         $this->workbox = $serviceWorker->workbox;
