@@ -121,6 +121,11 @@ parameters:
 			path: src/Command/CreateScreenshotCommand.php
 
 		-
+			message: "#^Strict comparison using \\!\\=\\= between non\\-empty\\-string and '' will always evaluate to true\\.$#"
+			count: 1
+			path: src/Command/CreateScreenshotCommand.php
+
+		-
 			message: "#^Class SpomkyLabs\\\\PwaBundle\\\\Dto\\\\BackgroundSync has an uninitialized property \\$forceSyncFallback\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Dto/BackgroundSync.php
@@ -406,6 +411,16 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: "#^Parameter \\#1 \\$width of function imagecreatetruecolor expects int\\<1, max\\>, int given\\.$#"
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Parameter \\#2 \\$height of function imagecreatetruecolor expects int\\<1, max\\>, int given\\.$#"
+			count: 2
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
 			message: "#^Parameter \\#2 \\$red of function imagecolorallocate expects int\\<0, 255\\>, int given\\.$#"
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
@@ -424,6 +439,16 @@ parameters:
 			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
 			count: 3
 			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: "#^Since spomky\\-labs/pwa\\-bundle 1\\.2\\.0\\: The \"format\", \"width\" and \"height\" parameters are deprecated and will be removed in 2\\.0\\.0\\. Please use \"configuration\" instead\\.\\.$#"
+			count: 1
+			path: src/ImageProcessor/ImagickImageProcessor.php
 
 		-
 			message: "#^PHPDoc tag @return with type array\\<string, string\\> is incompatible with native type string\\.$#"

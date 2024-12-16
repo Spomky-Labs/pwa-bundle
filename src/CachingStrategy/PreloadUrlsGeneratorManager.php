@@ -10,6 +10,7 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use function array_key_exists;
+use function sprintf;
 
 final class PreloadUrlsGeneratorManager implements CanLogInterface
 {

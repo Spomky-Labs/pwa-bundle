@@ -21,29 +21,29 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
     /**
      * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): string
+    public function normalize(mixed $data, ?string $format = null, array $context = []): string
     {
-        assert($object instanceof Asset);
+        assert($data instanceof Asset);
         $url = null;
-        if (! str_starts_with($object->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src);
+        if (! str_starts_with($data->src, '/')) {
+            $asset = $this->assetMapper->getAsset($data->src);
             $url = $asset?->publicPath;
         }
         if ($url === null) {
-            $url = $object->src;
+            $url = $data->src;
         }
 
         return $url;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         assert(is_string($data));
 
         return Asset::create($data);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Asset;
     }
@@ -51,7 +51,7 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
     public function supportsDenormalization(
         mixed $data,
         string $type,
-        string $format = null,
+        ?string $format = null,
         array $context = []
     ): bool {
         return $type === Asset::class;

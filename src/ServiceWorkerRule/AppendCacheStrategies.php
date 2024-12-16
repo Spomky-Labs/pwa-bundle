@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use function sprintf;
 use const PHP_EOL;
 
 final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface

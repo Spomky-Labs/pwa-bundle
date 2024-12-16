@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use function assert;
+use function sprintf;
 use const PHP_EOL;
 
 final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface

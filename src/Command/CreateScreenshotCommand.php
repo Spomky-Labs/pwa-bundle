@@ -24,6 +24,7 @@ use Throwable;
 use function assert;
 use function is_int;
 use function is_string;
+use function sprintf;
 
 #[AsCommand(
     name: 'pwa:create:screenshot',

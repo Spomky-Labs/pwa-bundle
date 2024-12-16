@@ -25,20 +25,20 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
     /**
      * @return array{src: string, sizes?: string, type?: string, purpose?: string}
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        assert($object instanceof Icon);
-        $imageType = $object->type;
-        if (! str_starts_with($object->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($object->src->src);
+        assert($data instanceof Icon);
+        $imageType = $data->type;
+        if (! str_starts_with($data->src->src, '/')) {
+            $asset = $this->assetMapper->getAsset($data->src->src);
             $imageType = $this->getType($asset);
         }
 
         $result = [
-            'src' => $this->normalizer->normalize($object->src, $format, $context),
-            'sizes' => $object->getSizeList(),
+            'src' => $this->normalizer->normalize($data->src, $format, $context),
+            'sizes' => $data->getSizeList(),
             'type' => $imageType,
-            'purpose' => $object->purpose,
+            'purpose' => $data->purpose,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -49,7 +49,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         return $cleanup($result);
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Icon;
     }
@@ -70,7 +70,6 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
             return null;
         }
 
-        $mime = MimeTypes::getDefault();
-        return $mime->guessMimeType($asset->sourcePath);
+        return MimeTypes::getDefault()->guessMimeType($asset->sourcePath);
     }
 }
