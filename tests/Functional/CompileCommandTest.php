@@ -43,8 +43,6 @@ final class CompileCommandTest extends AbstractPwaTestCase
         static::assertFileExists(
             self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/915x412-YUHoCJZ.svg'
         );
-        static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/1920x1920-hiy4m6N.svg'
-        );
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/assets/pwa/1920x1920-hiy4m6N.svg');
     }
 }

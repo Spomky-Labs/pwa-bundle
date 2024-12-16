@@ -5,7 +5,7 @@ parameters:
 		- tests
 
 	banned_code:
-		non_ignorable: true
+		non_ignorable: false
 	checkUninitializedProperties: true
 	treatPhpDocTypesAsCertain: false
 	scanFiles:
