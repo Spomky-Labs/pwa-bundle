@@ -29,22 +29,22 @@ final class CompileCommandTest extends AbstractPwaTestCase
         static::assertFileExists(self::$kernel->getCacheDir() . '/output/site.webmanifest');
         static::assertFileExists(self::$kernel->getCacheDir() . '/output/sw.js');
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/360x800-86e5e530cd7674b4f1137a418b6d0264.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/360x800-huXlMM1.svg'
         );
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/390x844-3f5c4bdccd303b49c95aa4344651c7e2.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/390x844-P1xL3M0.svg'
         );
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/600x400-a6d84c84616946feb5f92f8ca0ae4047.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/600x400-pthMhGF.svg'
         );
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/780x360-5bf5dc07ede9d26a9b2e9dc9f53d1959.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/780x360-W_XcB-3.svg'
         );
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/915x412-6141e808964c20e880f141190100d6e6.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/screenshots/915x412-YUHoCJZ.svg'
         );
         static::assertFileExists(
-            self::$kernel->getCacheDir() . '/output/assets/pwa/1920x1920-862cb89ba358ac021badfbe32a89bbfb.svg'
+            self::$kernel->getCacheDir() . '/output/assets/pwa/1920x1920-hiy4m6N.svg'
         );
     }
 }
