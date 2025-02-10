@@ -30,6 +30,6 @@ export default class extends AbstractController {
         this.remainingTargets.forEach((element) => {
             element.innerHTML = data.remaining;
         });
-        this.dispatchEvent('status-changed', { detail: data });
+        this.dispatchEvent('sync-broadcast:status-changed', { detail: data });
     }
 }

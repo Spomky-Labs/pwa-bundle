@@ -40,4 +40,6 @@ final class Favicons
     public null|bool $useSilhouette = null;
 
     public null|string $potrace = null;
+
+    public bool $monochrome = false;
 }

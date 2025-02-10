@@ -105,8 +105,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
             return null;
         }
 
-        $mime = MimeTypes::getDefault();
-        return $mime->guessMimeType($asset->sourcePath);
+        return MimeTypes::getDefault()->guessMimeType($asset->sourcePath);
     }
 
     private function getFormFactor(?int $width, ?int $height): ?string

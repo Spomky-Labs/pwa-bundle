@@ -19,6 +19,13 @@ return static function (DefinitionConfigurator $definition): void {
     $definition->rootNode()
         ->children()
             ->arrayNode('manifest')
+                ->beforeNormalization()
+                    ->ifTrue(static fn (mixed $v): bool => array_key_exists('icons', $v) && is_array($v['icons']))
+                    ->then(static function (array $v): array {
+                        $v['icons'] = expandIcons($v['icons'] ?? []);
+                        return $v;
+                    })
+                ->end()
                 ->canBeEnabled()
                 ->children()
                     ->scalarNode('public_url')

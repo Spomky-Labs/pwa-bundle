@@ -46,35 +46,25 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         $mainImage->setImageBackgroundColor(new ImagickPixel('transparent'));
 
         if ($configuration->imageScale !== null) {
-            $width = $mainImage->getImageWidth();
-            $height = $mainImage->getImageHeight();
-            $newWidth = (int) ($width * $configuration->imageScale / 100);
-            $newHeight = (int) ($height * $configuration->imageScale / 100);
-            $widthCenter = (int) (-($width - $newWidth) / 2);
-            $heightCenter = (int) (-($height - $newHeight) / 2);
-
-            $mainImage->scaleImage($newWidth, $newHeight);
-            $mainImage->extentImage($width, $height, $widthCenter, $heightCenter);
+            $this->resizeImageWithScale($mainImage, $configuration->imageScale);
         }
 
-        if ($configuration->width === $configuration->height) {
-            $mainImage->scaleImage($configuration->width, $configuration->height);
+        // Resize image with new size to best fit the configuration
+        $mainImage->scaleImage($configuration->width, $configuration->height, true);
 
-            return $mainImage;
+        $background = new Imagick();
+        $background->newImage($configuration->width, $configuration->height, new ImagickPixel('transparent'));
+        $background->compositeImage(
+            $mainImage,
+            Imagick::COMPOSITE_OVER,
+            (int) (($configuration->width - $mainImage->getImageWidth()) / 2),
+            (int) (($configuration->height - $mainImage->getImageHeight()) / 2)
+        );
+        if ($configuration->monochrome) {
+            $background->setImageType(Imagick::IMGTYPE_GRAYSCALEMATTE);
         }
 
-        $mainImage->scaleImage(
-            min($configuration->width, $configuration->height),
-            min($configuration->width, $configuration->height)
-        );
-        $mainImage->extentImage(
-            $configuration->width,
-            $configuration->height,
-            -($configuration->width - min($configuration->width, $configuration->height)) / 2,
-            -($configuration->height - min($configuration->width, $configuration->height)) / 2
-        );
-
-        return $mainImage;
+        return $background;
     }
 
     private function createBackground(Configuration $configuration): Imagick
@@ -110,5 +100,20 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         $background->drawImage($rectangle);
 
         return $background;
+    }
+
+    private function resizeImageWithScale(Imagick $image, float|int $imageScale): void
+    {
+        $imageWidth = $image->getImageWidth();
+        $imageHeight = $image->getImageHeight();
+        $newWidth = (int) ($imageWidth * $imageScale / 100);
+        $newHeight = (int) ($imageHeight * $imageScale / 100);
+
+        $this->resizeImageWithNewSize($image, $newWidth, $newHeight);
+    }
+
+    private function resizeImageWithNewSize(Imagick $image, int $newWidth, int $newHeight): void
+    {
+        $image->scaleImage($newWidth, $newHeight, true);
     }
 }

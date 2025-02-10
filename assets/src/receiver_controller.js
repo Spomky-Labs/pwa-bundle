@@ -6,22 +6,28 @@ import AbstractController from './abstract_controller.js';
 export default class extends AbstractController {
     async connect() {
         if (!navigator.presentation.receiver) {
+            return;
         }
-        const connections = await navigator.presentation.receiver.connections;
-        connections.connections.map(connection => addConnection(connection));
-        connections.addEventListener(
-            'connectionavailable',
+        const list = await navigator.presentation.receiver.connectionList;
+        list.connections.map((connection) => this.addConnection(connection));
+    }
+
+    addConnection(connection) {
+        connection.addEventListener(
+            'message',
             (event) => {
-                const connection = event.connection;
-                connection.addEventListener(
-                    'message',
-                    (event) => this.dispatchEvent('message', {message: event.data})
-                );
-                connection.addEventListener(
-                    'close',
-                    () => this.dispatchEvent('close')
-                );
+                const data = JSON.parse(event.data);
+                this.dispatchEvent('receiver:message', {data});
             }
+        );
+
+        connection.addEventListener(
+            'close',
+            (event) => this.dispatchEvent('receiver:close', {
+                connectionId: connection.connectionId,
+                reason: event.reason,
+                message: event.message
+            })
         );
     }
 }

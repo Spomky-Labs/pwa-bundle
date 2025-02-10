@@ -5,6 +5,25 @@ declare(strict_types=1);
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
+function expandIcons(array $icons): array
+{
+    $expandedIcons = [];
+    foreach ($icons as $icon) {
+        if (! array_key_exists('sizes', $icon) || ! is_array($icon['sizes'])) {
+            $expandedIcons[] = $icon;
+            continue;
+        }
+
+        foreach ($icon['sizes'] as $size) {
+            $expandedIcon = $icon;
+            $expandedIcon['sizes'] = [$size];
+            $expandedIcons[] = $expandedIcon;
+        }
+    }
+
+    return $expandedIcons;
+}
+
 function getIconsNode(string $info): ArrayNodeDefinition
 {
     $treeBuilder = new TreeBuilder('icons');
@@ -17,9 +36,9 @@ function getIconsNode(string $info): ArrayNodeDefinition
         ->arrayPrototype()
         ->beforeNormalization()
             ->ifString()
-                ->then(static fn (string $v): array => [
-                    'src' => $v,
-                ])
+            ->then(static fn (string $v): array => [
+                'src' => $v,
+            ])
         ->end()
         ->children()
             ->scalarNode('src')
