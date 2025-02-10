@@ -13,7 +13,7 @@ export default class extends AbstractController {
         }
 
         navigator.geolocation.getCurrentPosition(
-            (position) => {this.dispatchEvent('geolocation:position', {latitude: position.coords.latitude, longitude: position.coords.longitude});},
+            (position) => {this.dispatchEvent('geolocation:position', {position});},
             (error) => {this.dispatchEvent('geolocation:error', {error: error});},
             params
         );
@@ -29,8 +29,8 @@ export default class extends AbstractController {
         }
 
         this.watchId = navigator.geolocation.watchPosition(
-            (position) => {this.dispatchEvent('geolocation:position', {latitude: position.coords.latitude, longitude: position.coords.longitude});},
-            (error) => {this.dispatchEvent('geolocation:error', {error: error});},
+            (position) => {this.dispatchEvent('geolocation:position', {position});},
+            (error) => {this.dispatchEvent('geolocation:error', {error});},
             params
         );
     }

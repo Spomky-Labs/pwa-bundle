@@ -41,8 +41,7 @@ export default class extends AbstractController {
         if (!this.connection) {
             return;
         }
-        const {message} = params;
-        this.connection.send(message);
+        this.connection.send(JSON.stringify(params));
     }
 
     terminate = () => {

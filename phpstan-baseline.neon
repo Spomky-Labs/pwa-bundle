@@ -25,6 +25,30 @@ parameters:
 			path: src/CachingStrategy/AssetCache.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\AssetCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/AssetCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\AssetCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/AssetCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\BackgroundSync\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/BackgroundSync.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\BackgroundSync\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/BackgroundSync.php
+
+		-
 			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
 			identifier: argument.unpackNonIterable
 			count: 1
@@ -41,6 +65,72 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\FontCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\FontCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/FontCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\GoogleFontCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/GoogleFontCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\GoogleFontCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/GoogleFontCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ImageCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ImageCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ImageCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ImageCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ManifestCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ManifestCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ManifestCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ManifestCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\PreloadUrlsGeneratorManager\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/PreloadUrlsGeneratorManager.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\PreloadUrlsGeneratorManager\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/PreloadUrlsGeneratorManager.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\PreloadUrlsTagGenerator\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/PreloadUrlsTagGenerator.php
 
 		-
 			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
@@ -67,8 +157,26 @@ parameters:
 			path: src/CachingStrategy/ResourceCaches.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ResourceCaches\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ResourceCaches\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/CachingStrategy/ResourceCaches.php
+
+		-
 			message: '#^Part \$this\-\>options\[''networkTimeoutSeconds''\] \(mixed\) of encapsed string cannot be cast to string\.$#'
 			identifier: encapsedStringPart.nonString
+			count: 1
+			path: src/CachingStrategy/WorkboxCacheStrategy.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\WorkboxCacheStrategy\:\:getMethod$#'
+			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/CachingStrategy/WorkboxCacheStrategy.php
 
@@ -235,6 +343,66 @@ parameters:
 			path: src/DataCollector/PwaCollector.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getCachingStrategies$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getData$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getFavicons$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getFaviconsFiles$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getManifest$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getManifestFiles$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getServiceWorker$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getServiceWorkerFiles$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getWorkbox$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/DataCollector/PwaCollector.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$forceSyncFallback\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
@@ -349,6 +517,36 @@ parameters:
 			path: src/Dto/Manifest.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getCategories$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getDescription$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getName$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getShortName$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getStartUrl$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Manifest.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\PageCache extends @final class SpomkyLabs\\PwaBundle\\Dto\\ResourceCache\.$#'
 			identifier: class.extendsFinalByPhpDoc
 			count: 1
@@ -403,6 +601,12 @@ parameters:
 			path: src/Dto/Screenshot.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Screenshot\:\:getLabel$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Screenshot.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ServiceWorker has an uninitialized property \$dest\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
@@ -439,6 +643,18 @@ parameters:
 			path: src/Dto/ShareTargetParameters.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\ShareTargetParameters\:\:getText$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/ShareTargetParameters.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\ShareTargetParameters\:\:getTitle$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/ShareTargetParameters.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Shortcut has an uninitialized property \$name\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
@@ -465,6 +681,24 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getShortName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getDescription$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getName$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Shortcut.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Shortcut\:\:getShortName$#'
+			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Dto/Shortcut.php
 
@@ -501,6 +735,24 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getShortName\(\) should return string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null but returns array\<string\|Symfony\\Contracts\\Translation\\TranslatableInterface\>\|string\|Symfony\\Contracts\\Translation\\TranslatableInterface\|null\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getDescription$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getName$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Dto/Widget.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Dto\\Widget\:\:getShortName$#'
+			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Dto/Widget.php
 
@@ -607,14 +859,110 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\DestinationMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/DestinationMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\DestinationMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/DestinationMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\ExactPathnameMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/ExactPathnameMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\ExactPathnameMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/ExactPathnameMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\NavigationMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/NavigationMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\NavigationMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/NavigationMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\OriginMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/OriginMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\OriginMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/OriginMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\PathnameEndsWithMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/PathnameEndsWithMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\PathnameEndsWithMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/PathnameEndsWithMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\PathnameStartsWithMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/PathnameStartsWithMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\PathnameStartsWithMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/PathnameStartsWithMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\RouteMatchCallbackHandler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/RouteMatchCallbackHandler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\RouteMatchCallbackHandler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/MatchCallbackHandler/RouteMatchCallbackHandler.php
+
+		-
 			message: '#^PHPDoc tag @return with type array\<string, string\> is incompatible with native type string\.$#'
 			identifier: return.phpDocType
 			count: 1
 			path: src/Normalizer/AssetNormalizer.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Normalizer\\AssetNormalizer\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Normalizer/AssetNormalizer.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\IconNormalizer\:\:normalize\(\) should return array\{src\: string, sizes\?\: string, type\?\: string, purpose\?\: string\} but returns array\<mixed\>\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Normalizer/IconNormalizer.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Normalizer\\IconNormalizer\:\:__construct$#'
+			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Normalizer/IconNormalizer.php
 
@@ -631,10 +979,22 @@ parameters:
 			path: src/Normalizer/ScreenshotNormalizer.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Normalizer\\ScreenshotNormalizer\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Normalizer/ScreenshotNormalizer.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ServiceWorkerNormalizer\:\:normalize\(\) should return array\{scope\?\: string, src\: string, use_cache\?\: bool\} but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Normalizer/ServiceWorkerNormalizer.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Normalizer\\UrlNormalizer\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Normalizer/UrlNormalizer.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
@@ -651,7 +1011,7 @@ parameters:
 		-
 			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 2
+			count: 3
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -669,7 +1029,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultFalse\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -687,7 +1047,7 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 13
+			count: 14
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -699,7 +1059,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 9
+			count: 10
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -823,6 +1183,12 @@ parameters:
 			path: src/Resources/config/definition/manifest.php
 
 		-
+			message: '#^Cannot call method beforeNormalization\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
 			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 2
@@ -861,13 +1227,19 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 32
+			count: 33
 			path: src/Resources/config/definition/manifest.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 18
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method ifTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
 			path: src/Resources/config/definition/manifest.php
 
 		-
@@ -898,6 +1270,24 @@ parameters:
 			message: '#^Cannot call method scalarPrototype\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 2
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Cannot call method then\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Parameter \#1 \$icons of function expandIcons expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Resources/config/definition/manifest.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
 			path: src/Resources/config/definition/manifest.php
 
 		-
@@ -1285,6 +1675,24 @@ parameters:
 			path: src/Resources/config/definition/service_worker.php
 
 		-
+			message: '#^Function expandIcons\(\) has parameter \$icons with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Resources/config/definition/utils/icons.php
+
+		-
+			message: '#^Function expandIcons\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Resources/config/definition/utils/icons.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Resources/config/definition/utils/icons.php
+
+		-
 			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -1321,7 +1729,19 @@ parameters:
 			path: src/Service/ApplicationIconCompiler.php
 
 		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\Data\:\:getData\(\) should return string but returns mixed\.$#'
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ApplicationIconCompiler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ApplicationIconCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\CanLogInterface\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/CanLogInterface.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\Data\:\:getData\(\) should return string but returns Closure\|string\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Service/Data.php
@@ -1333,6 +1753,24 @@ parameters:
 			path: src/Service/Data.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FaviconsBuilder\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FaviconsBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FaviconsBuilder\:\:create$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FaviconsBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FaviconsBuilder\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FaviconsBuilder.php
+
+		-
 			message: '#^Cannot call method process\(\) on SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1341,6 +1779,18 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFavicon\(\) should return array\{string, string\} but returns array\{string\|false, string\}\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 
@@ -1357,16 +1807,142 @@ parameters:
 			path: src/Service/IconResolver.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\IconResolver\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/IconResolver.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ManifestBuilder\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ManifestBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ManifestBuilder\:\:create$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ManifestBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ManifestCompiler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ManifestCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ManifestCompiler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ManifestCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ServiceWorkerBuilder\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ServiceWorkerBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ServiceWorkerBuilder\:\:create$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ServiceWorkerBuilder.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ServiceWorkerCompiler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ServiceWorkerCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\ServiceWorkerCompiler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/ServiceWorkerCompiler.php
+
+		-
 			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/ServiceWorkerRule/AppendCacheStrategies.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\AppendCacheStrategies\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/AppendCacheStrategies.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\ClearCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/ClearCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\ClearCache\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/ClearCache.php
+
+		-
 			message: '#^Strict comparison using \=\=\= between int\<1, max\> and 0 will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 1
 			path: src/ServiceWorkerRule/OfflineFallback.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\OfflineFallback\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/OfflineFallback.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\OfflineFallback\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/OfflineFallback.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\SkipWaiting\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/SkipWaiting.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\SkipWaiting\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/SkipWaiting.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WindowsWidgets\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WindowsWidgets.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WindowsWidgets\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WindowsWidgets.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxImport\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WorkboxImport.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxImport\:\:getPriority$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WorkboxImport.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxImport\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WorkboxImport.php
 
 		-
 			message: '#^Cannot access offset ''dest'' on mixed\.$#'
@@ -1411,7 +1987,61 @@ parameters:
 			path: src/SpomkyLabsPwaBundle.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Twig/PwaRuntime.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:load$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Twig/PwaRuntime.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\BackgroundSyncPlugin\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/BackgroundSyncPlugin.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\BroadcastUpdatePlugin\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/BroadcastUpdatePlugin.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\CacheableResponsePlugin\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/CacheableResponsePlugin.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\ExpirationPlugin\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/ExpirationPlugin.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\HasDebugInterface\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/HasDebugInterface.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\RangeRequestsPlugin\:\:getDebug$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/WorkboxPlugin/RangeRequestsPlugin.php
+
+		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
 			count: 1
 			path: tests/Functional/TakeScreenshotCommandTest.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Tests\\TestFilesystem\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: tests/TestFilesystem.php

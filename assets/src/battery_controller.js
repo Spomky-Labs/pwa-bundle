@@ -18,7 +18,7 @@ export default class extends AbstractController {
     }
     update = async ({counter}) => {
         await navigator.setAppBadge(counter);
-        this.dispatchEvent('badge:updated', { counter });
+        this.dispatchEvent('battery:updated', { counter });
     }
 
     updateChargeInfo = async (battery) => {

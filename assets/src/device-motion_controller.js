@@ -21,16 +21,16 @@ export default class extends AbstractController {
             };
         };
 
-        const dispatchOrientationEvent = (event) => {
-            this.dispatchEvent('device:orientation', {
-                absolute: event.absolute,
-                alpha: event.alpha,
-                beta: event.beta,
-                gamma: event.gamma,
+        const dispatchMotionEvent = (event) => {
+            this.dispatchEvent('device:motion', {
+                acceleration: event.acceleration,
+                accelerationIncludingGravity: event.accelerationIncludingGravity,
+                rotationRate: event.rotationRate,
+                interval: event.interval,
             });
         };
 
-        const throttledDispatch = throttle(dispatchOrientationEvent.bind(this), this.throttleValue);
-        window.addEventListener('deviceorientation', throttledDispatch, true);
+        const throttledDispatch = throttle(dispatchMotionEvent.bind(this), this.throttleValue);
+        window.addEventListener('devicemotion', throttledDispatch, true);
     }
 }

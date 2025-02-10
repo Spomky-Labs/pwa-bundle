@@ -33,6 +33,13 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "device-motion": {
+                "main": "src/device-motion_controller.js",
+                "name": "pwa/device-motion",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "device-orientation": {
                 "main": "src/device-orientation_controller.js",
                 "name": "pwa/device-orientation",
@@ -57,6 +64,13 @@
             "install": {
                 "main": "src/install_controller.js",
                 "name": "pwa/install",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "network-information": {
+                "main": "src/network-information_controller.js",
+                "name": "pwa/network-information",
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
@@ -89,9 +103,23 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "speech-synthesis": {
+                "main": "src/speech-synthesis_controller.js",
+                "name": "pwa/speech-synthesis",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "sync-broadcast": {
                 "main": "src/sync-broadcast_controller.js",
                 "name": "pwa/sync-broadcast",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "touch": {
+                "main": "src/touch_controller.js",
+                "name": "pwa/touch",
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true

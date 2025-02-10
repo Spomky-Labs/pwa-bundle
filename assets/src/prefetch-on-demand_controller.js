@@ -17,7 +17,7 @@ export default class extends AbstractController {
             }
         });
         this.dispatchEvent(
-            result === true ?'prefetched': 'error',
+            result === true ?'prefetch:prefetched': 'prefetch:error',
             {params}
         );
     }

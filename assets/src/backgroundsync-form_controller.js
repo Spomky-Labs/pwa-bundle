@@ -1,9 +1,9 @@
 'use strict';
 
-import { Controller } from '@hotwired/stimulus';
+import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
-export default class extends Controller {
+export default class extends AbstractController {
     static values = {
         params: {
             type: Object,

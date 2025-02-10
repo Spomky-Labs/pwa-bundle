@@ -68,7 +68,8 @@ final readonly class IconResolver
             $icon->format ?? $asset->publicExtension,
             $icon->backgroundColor,
             $icon->borderRadius,
-            $icon->imageScale
+            $icon->imageScale,
+            str_contains($icon->purpose ?? '', 'monochrome'),
         );
         $format = $icon->format ?? $asset->publicExtension;
         $hash = hash(
@@ -80,7 +81,7 @@ final readonly class IconResolver
                 $format,
                 $size,
                 $icon->purpose ?? '',
-                $icon->type ?? ''
+                $icon->type ?? '',
             )
         );
         $url = sprintf('/pwa/icon-%s.%s', $hash, $format);

@@ -232,6 +232,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 $this->favicons->backgroundColor,
                 $this->favicons->borderRadius,
                 $this->favicons->imageScale,
+                $this->favicons->monochrome
             );
             $completeHash = hash('xxh128', $hash . $configuration);
             $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
