@@ -403,6 +403,18 @@ parameters:
 			path: src/DataCollector/PwaCollector.php
 
 		-
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch has an uninitialized property \$cacheName\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: src/Dto/BackgroundFetch.php
+
+		-
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch has an uninitialized property \$enabled\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: src/Dto/BackgroundFetch.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\BackgroundSync has an uninitialized property \$forceSyncFallback\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
@@ -1479,13 +1491,13 @@ parameters:
 		-
 			message: '#^Cannot call method append\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 6
+			count: 8
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 17
+			count: 18
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1515,7 +1527,7 @@ parameters:
 		-
 			message: '#^Cannot call method canBeEnabled\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1527,7 +1539,7 @@ parameters:
 		-
 			message: '#^Cannot call method children\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 11
+			count: 12
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1539,7 +1551,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 6
+			count: 8
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1557,13 +1569,13 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 107
+			count: 112
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 33
+			count: 36
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1587,7 +1599,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 68
+			count: 71
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1605,7 +1617,7 @@ parameters:
 		-
 			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 5
+			count: 6
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1617,7 +1629,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 37
+			count: 40
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1871,6 +1883,54 @@ parameters:
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/ServiceWorkerRule/AppendCacheStrategies.php
+
+		-
+			message: '#^Cannot access property \$cacheName on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Cannot access property \$enabled on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Cannot access property \$failureMessage on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Cannot access property \$progressUrl on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Cannot access property \$successMessage on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Cannot access property \$successUrl on SpomkyLabs\\PwaBundle\\Dto\\BackgroundFetch\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\BackgroundFetchCache\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\BackgroundFetchCache\:\:getPriority$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/BackgroundFetchCache.php
 
 		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\ClearCache\:\:__construct$#'

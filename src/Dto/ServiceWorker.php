@@ -23,4 +23,7 @@ final class ServiceWorker
     public bool $skipWaiting = false;
 
     public Workbox $workbox;
+
+    #[SerializedName('background_fetch')]
+    public null|BackgroundFetch $backgroundFetch = null;
 }
