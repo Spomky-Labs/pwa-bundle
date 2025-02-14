@@ -5,6 +5,13 @@
     "version": "1.0.0",
     "symfony": {
         "controllers": {
+            "backgroundfetch": {
+                "main": "src/backgroundfetch_controller.js",
+                "name": "pwa/backgroundfetch",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "backgroundsync-form": {
                 "main": "src/backgroundsync-form_controller.js",
                 "name": "pwa/backgroundsync-form",
