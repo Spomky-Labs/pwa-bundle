@@ -46,7 +46,7 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         $mainImage->setImageBackgroundColor(new ImagickPixel('transparent'));
 
         if ($configuration->imageScale !== null) {
-            $this->resizeImageWithScale($mainImage, $configuration->imageScale);
+            $mainImage = $this->resizeImageWithScale($mainImage, $configuration->imageScale);
         }
 
         // Resize image with new size to best fit the configuration
@@ -102,18 +102,22 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         return $background;
     }
 
-    private function resizeImageWithScale(Imagick $image, float|int $imageScale): void
+    private function resizeImageWithScale(Imagick $image, float|int $imageScale): Imagick
     {
         $imageWidth = $image->getImageWidth();
         $imageHeight = $image->getImageHeight();
         $newWidth = (int) ($imageWidth * $imageScale / 100);
         $newHeight = (int) ($imageHeight * $imageScale / 100);
-
-        $this->resizeImageWithNewSize($image, $newWidth, $newHeight);
-    }
-
-    private function resizeImageWithNewSize(Imagick $image, int $newWidth, int $newHeight): void
-    {
         $image->scaleImage($newWidth, $newHeight, true);
+
+        $mainImage = new Imagick();
+        $x = (int) (($imageWidth - $newWidth) / 2);
+        $y = (int) (($imageHeight - $newHeight) / 2);
+        $mainImage->newImage($imageWidth, $imageHeight, new ImagickPixel('transparent'));
+        $mainImage->setBackgroundColor(new ImagickPixel('transparent'));
+        $mainImage->setImageBackgroundColor(new ImagickPixel('transparent'));
+        $mainImage->compositeImage($image, Imagick::COMPOSITE_OVER, $x, $y);
+        $mainImage->setImageFormat($image->getImageFormat());
+        return $mainImage;
     }
 }
