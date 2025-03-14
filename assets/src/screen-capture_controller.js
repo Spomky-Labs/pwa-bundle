@@ -17,10 +17,16 @@ export default class extends AbstractController {
     capture = async({params}) => {
         try {
             this._checkScreenCaptureSupported();
-            const stream = await navigator.mediaDevices.getDisplayMedia({
+            const options = {
                 video: params.videoConstraints ?? true,
                 audio: params.audioConstraints ?? false,
-            });
+                monitorTypeSurfaces: params.monitorTypeSurfaces ?? undefined,
+                preferCurrentTab: params.preferCurrentTab ?? undefined,
+                selfBrowserSurface: params.selfBrowserSurface ?? undefined,
+                surfaceSwitching: params.surfaceSwitching ?? undefined,
+                systemAudio: params.systemAudio ?? undefined,
+            };
+            const stream = await navigator.mediaDevices.getDisplayMedia(options);
             const tracks = stream.getTracks();
             if (tracks.length === 0) {
                 throw "No tracks found";
