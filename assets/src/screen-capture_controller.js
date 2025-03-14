@@ -4,6 +4,8 @@ import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
+    static targets = ['destination', 'download'];
+
     getSupportedConstraints = async() => {
         try {
             this._checkSupported();
@@ -15,8 +17,15 @@ export default class extends AbstractController {
     }
 
     capture = async({params}) => {
+        this.downloadTargets.forEach((target) => {
+            target.setAttribute('hidden', '');
+        });
         try {
             this._checkScreenCaptureSupported();
+            const controller = new CaptureController();
+            if (params.focusBehavior) {
+                controller.setFocusBehavior(params.focusBehavior);
+            }
             const options = {
                 video: params.videoConstraints ?? true,
                 audio: params.audioConstraints ?? false,
@@ -25,6 +34,7 @@ export default class extends AbstractController {
                 selfBrowserSurface: params.selfBrowserSurface ?? undefined,
                 surfaceSwitching: params.surfaceSwitching ?? undefined,
                 systemAudio: params.systemAudio ?? undefined,
+                controller
             };
             const stream = await navigator.mediaDevices.getDisplayMedia(options);
             const tracks = stream.getTracks();
@@ -33,24 +43,31 @@ export default class extends AbstractController {
             }
             tracks.forEach((track) => {
                 track.addEventListener('ended', () => {
+                    this.dispatchEvent('pwa:screen-capture:track:ended', track);
                     window.recorder.stop();
                 });
             })
 
-            const chunks = [];
             window.recorder = new MediaRecorder(stream);
-            window.recorder.addEventListener('dataavailable', (event) => {
-                if (event.data.size <= 0) {
-                    return;
-                }
-                chunks.push(event.data);
-            })
-
-            window.recorder.addEventListener('stop', () => {
-                const file = new File(chunks, 'video.mp4', {type: 'video/mp4'});
-                const exportUrl  = URL.createObjectURL(file);
-                this.dispatchEvent('pwa:screen-capture:available', {exportUrl});
-            });
+            if (this.downloadTargets.length !== 0) {
+                const chunks = [];
+                window.recorder.addEventListener('dataavailable', (event) => {
+                    if (event.data.size <= 0) {
+                        return;
+                    }
+                    chunks.push(event.data);
+                });
+                window.recorder.addEventListener('stop', () => {
+                    const file = new File(chunks, 'video.mp4', {type: 'video/mp4'});
+                    const exportUrl  = URL.createObjectURL(file);
+                    this.dispatchEvent('pwa:screen-capture:available', {exportUrl});
+                    this.downloadTargets.forEach((target) => {
+                        target.href = exportUrl;
+                        target.download = 'video.mp4';
+                        target.removeAttribute('hidden');
+                    });
+                });
+            }
             window.recorder.addEventListener('start', () => {
                 const info = tracks.map((track) => {
                     return {
@@ -60,6 +77,17 @@ export default class extends AbstractController {
                 });
                 this.dispatchEvent('pwa:screen-capture:started', info);
             });
+            window.recorder.addEventListener('stop', () => {
+                stream.getTracks().forEach(track => track.stop());
+                this.destinationTargets.forEach((target) => {
+                    target.srcObject = null;
+                    target.setAttribute('hidden');
+                })
+            });
+            this.destinationTargets.forEach((target) => {
+                target.removeAttribute('hidden');
+                target.srcObject = new MediaStream(stream.getTracks());
+            })
 
             window.recorder.start();
         } catch (error) {
