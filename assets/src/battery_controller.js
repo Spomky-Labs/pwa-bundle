@@ -18,19 +18,19 @@ export default class extends AbstractController {
     }
     update = async ({counter}) => {
         await navigator.setAppBadge(counter);
-        this.dispatchEvent('battery:updated', { counter });
+        this.dispatchEvent('pwa:battery:updated', { counter });
     }
 
     updateChargeInfo = async (battery) => {
-        this.dispatchEvent('battery:charge', { charging: battery.charging });
+        this.dispatchEvent('pwa:battery:charge', { charging: battery.charging });
     }
     updateLevelInfo = async (battery) => {
-        this.dispatchEvent('battery:level', { level: battery.level });
+        this.dispatchEvent('pwa:battery:level', { level: battery.level });
     }
     updateChargingInfo = async (battery) => {
-        this.dispatchEvent('battery:chargingtime', { chargingTime: battery.chargingTime });
+        this.dispatchEvent('pwa:battery:chargingtime', { chargingTime: battery.chargingTime });
     }
     updateDischargingInfo = async (battery) => {
-        this.dispatchEvent('battery:dischargingtime', { dischargingTime: battery.dischargingTime });
+        this.dispatchEvent('pwa:battery:dischargingtime', { dischargingTime: battery.dischargingTime });
     }
 }

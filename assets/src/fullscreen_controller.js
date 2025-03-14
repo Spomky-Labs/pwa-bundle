@@ -6,13 +6,13 @@ import AbstractController from './abstract_controller.js';
 export default class extends AbstractController {
     connect () {
         document.addEventListener("fullscreenchange", () => {
-            this.dispatchEvent('fullscreen:change', {
+            this.dispatchEvent('pwa:fullscreen:change', {
                 fullscreen: document.fullscreenElement !== null,
                 element: document.fullscreenElement
             });
         });
         document.addEventListener("fullscreenerror", () => {
-            this.dispatchEvent('fullscreen:error', {
+            this.dispatchEvent('pwa:fullscreen:error', {
                 element: document.fullscreenElement
             });
         });

@@ -6,11 +6,11 @@ import AbstractController from './abstract_controller.js';
 export default class extends AbstractController {
     update = async ({counter}) => {
         await navigator.setAppBadge(counter);
-        this.dispatchEvent('badge:updated', { counter });
+        this.dispatchEvent('pwa:badge:updated', { counter });
     }
 
     clear = async () => {
         await navigator.clearAppBadge();
-        this.dispatchEvent('badge:cleared');
+        this.dispatchEvent('pwa:badge:cleared');
     }
 }

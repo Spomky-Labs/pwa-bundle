@@ -26,9 +26,9 @@ export default class extends AbstractController {
         for (let i = 0; i < changedTouches.length; i++) {
             const idx = this.ongoingTouchIndexById(changedTouches[i].identifier);
             this.ongoingTouches.splice(idx, 1);
-            this.dispatchEvent('touch:ended', { touch: changedTouches[i], bubbles: true });
+            this.dispatchEvent('pwa:touch:ended', { touch: changedTouches[i], bubbles: true });
         }
-        this.dispatchEvent('touch:updated', { touches: this.ongoingTouches, bubbles: true });
+        this.dispatchEvent('pwa:touch:updated', { touches: this.ongoingTouches, bubbles: true });
     }
 
     onTouchCancel = (event) => {
@@ -37,9 +37,9 @@ export default class extends AbstractController {
         for (let i = 0; i < changedTouches.length; i++) {
             const idx = this.ongoingTouchIndexById(changedTouches[i].identifier);
             this.ongoingTouches.splice(idx, 1);
-            this.dispatchEvent('touch:cancelled', { touch: changedTouches[i], bubbles: true });
+            this.dispatchEvent('pwa:touch:cancelled', { touch: changedTouches[i], bubbles: true });
         }
-        this.dispatchEvent('touch:updated', { touches: this.ongoingTouches, bubbles: true });
+        this.dispatchEvent('pwa:touch:updated', { touches: this.ongoingTouches, bubbles: true });
     }
 
     onTouchMove = (event) => {
@@ -48,9 +48,9 @@ export default class extends AbstractController {
         for (let i = 0; i < changedTouches.length; i++) {
             const idx = this.ongoingTouchIndexById(changedTouches[i].identifier);
             this.ongoingTouches.splice(idx, 1, this.copyTouch(changedTouches[i]))
-            this.dispatchEvent('touch:moved', { touch: changedTouches[i], bubbles: true });
+            this.dispatchEvent('pwa:touch:moved', { touch: changedTouches[i], bubbles: true });
         }
-        this.dispatchEvent('touch:updated', { touches: this.ongoingTouches, bubbles: true });
+        this.dispatchEvent('pwa:touch:updated', { touches: this.ongoingTouches, bubbles: true });
     }
 
     onTouchStart = (event) => {
@@ -58,9 +58,9 @@ export default class extends AbstractController {
         const {changedTouches} = event;
         for (let i = 0; i < changedTouches.length; i++) {
             this.ongoingTouches.push(this.copyTouch(changedTouches[i]));
-            this.dispatchEvent('touch:started', { touch: changedTouches[i], bubbles: true });
+            this.dispatchEvent('pwa:touch:started', { touch: changedTouches[i], bubbles: true });
         }
-        this.dispatchEvent('touch:updated', { touches: this.ongoingTouches, bubbles: true });
+        this.dispatchEvent('pwa:touch:updated', { touches: this.ongoingTouches, bubbles: true });
     }
 
     ongoingTouchIndexById = (idToFind) => {

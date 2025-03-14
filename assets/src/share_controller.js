@@ -16,7 +16,7 @@ export default class extends AbstractController {
                 return;
             }
             await navigator.share(data);
-            this.dispatchEvent('share:success', {data});
+            this.dispatchEvent('pwa:share:success', {data});
         } catch (error) {
             console.error("Error sharing", {error});
         }

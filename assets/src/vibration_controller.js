@@ -13,7 +13,7 @@ export default class extends AbstractController {
             return;
         }
         await navigator.vibrate(sequence);
-        this.dispatchEvent('vibration:triggered', { sequence });
+        this.dispatchEvent('pwa:vibration:triggered', { sequence });
     }
 
     persistent = async ({params}) => {
@@ -40,6 +40,6 @@ export default class extends AbstractController {
         }
         clearInterval(this.vibrateInterval);
         this.vibrateInterval = null;
-        this.dispatchEvent('vibration:stopped');
+        this.dispatchEvent('pwa:vibration:stopped');
     }
 }

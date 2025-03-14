@@ -22,7 +22,7 @@ export default class extends AbstractController {
         };
 
         const dispatchOrientationEvent = (event) => {
-            this.dispatchEvent('device:orientation', {
+            this.dispatchEvent('pwa:device:orientation', {
                 absolute: event.absolute,
                 alpha: event.alpha,
                 beta: event.beta,
