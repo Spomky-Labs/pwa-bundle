@@ -13,9 +13,9 @@ export default class extends AbstractController {
     async connect() {
         this.request = new PresentationRequest(this.urlsValue);
         const availability = await this.request.getAvailability();
-        this.dispatchEvent('presentation:availability:changed', { availability });
+        this.dispatchEvent('pwa:presentation:availability:changed', { availability });
         availability.onchange = () => {
-            this.dispatchEvent('presentation:availability:changed', { availability });
+            this.dispatchEvent('pwa:presentation:availability:changed', { availability });
         }
     }
 
@@ -53,7 +53,7 @@ export default class extends AbstractController {
         this.connection.terminate();
         this.connection = null;
         localStorage.removeItem('presentation_connection_id');
-        this.dispatchEvent('presentation:terminated', {id});
+        this.dispatchEvent('pwa:presentation:terminated', {id});
     }
 
     setConnection(connection) {
@@ -63,6 +63,6 @@ export default class extends AbstractController {
 
         this.connection = connection;
         localStorage.setItem('presentation_connection_id', connection.id);
-        this.dispatchEvent('presentation:started', {id: connection.id});
+        this.dispatchEvent('pwa:presentation:started', {id: connection.id});
     }
 }

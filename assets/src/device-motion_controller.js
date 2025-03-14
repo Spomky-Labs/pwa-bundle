@@ -22,7 +22,7 @@ export default class extends AbstractController {
         };
 
         const dispatchMotionEvent = (event) => {
-            this.dispatchEvent('device:motion', {
+            this.dispatchEvent('pwa:device:motion', {
                 acceleration: event.acceleration,
                 accelerationIncludingGravity: event.accelerationIncludingGravity,
                 rotationRate: event.rotationRate,

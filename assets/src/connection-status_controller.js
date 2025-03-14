@@ -11,7 +11,7 @@ export default class extends AbstractController {
     };
 
     connect = () => {
-        this.dispatchEvent('connection-status:connect', {});
+        this.dispatchEvent('pwa:connection-status:connect', {});
         if (navigator.onLine) {
             this.statusChanged({
                 status: 'ONLINE',
@@ -45,6 +45,6 @@ export default class extends AbstractController {
         this.attributeTargets.forEach((element) => {
             element.setAttribute('data-connection-status', data.status);
         });
-        this.dispatchEvent('connection-status:changed', { detail: data });
+        this.dispatchEvent('pwa:connection-status:changed', { detail: data });
     }
 }

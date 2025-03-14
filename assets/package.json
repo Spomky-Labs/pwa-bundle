@@ -103,6 +103,13 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "screen-capture": {
+                "main": "src/screen-capture_controller.js",
+                "name": "pwa/screen-capture",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "speech-synthesis": {
                 "main": "src/speech-synthesis_controller.js",
                 "name": "pwa/speech-synthesis",

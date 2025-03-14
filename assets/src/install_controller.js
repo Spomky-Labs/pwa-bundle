@@ -25,6 +25,7 @@ export default class extends AbstractController {
             this.disableInstallTargets();
         } else {
             this.dispatchEvent('install:cancelled');
+            this.dispatchEvent('pwa:install:cancelled');
         }
     }
 
