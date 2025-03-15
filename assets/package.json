@@ -82,6 +82,13 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "picture-in-picture": {
+                "main": "src/picture-in-picture_controller.js",
+                "name": "pwa/picture-in-picture",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "presentation": {
                 "main": "src/presentation_controller.js",
                 "name": "pwa/presentation",
