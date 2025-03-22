@@ -1,24 +1,25 @@
 'use strict';
 
-import { getComponent } from '@symfony/ux-live-component';
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     component = null;
+
     async initialize() {
+        this.component = await this.loadLiveComponent();
+    }
+
+    async loadLiveComponent() {
         try {
-            this.component = await getComponent(this.element);
-        } catch (e) {
+            const module = await import('@symfony/ux-live-component');
+            return await module.getComponent(this.element);
+        } catch {
+            return null;
         }
     }
 
-    dispatchEvent = (name, payload) => {
-        if  (payload === undefined) {
-            payload = {};
-        }
+    dispatchEvent = (name, payload = {}) => {
         this.dispatch(name, { detail: payload, bubbles: true });
-        if (this.component) {
-            this.component.emit(name, payload);
-        }
+        this.component?.emit?.(name, payload);
     }
 }
