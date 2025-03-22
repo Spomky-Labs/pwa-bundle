@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use function assert;
+use function is_string;
 use function sprintf;
 use const PHP_EOL;
 
@@ -101,6 +102,155 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 'rel' => 'icon',
             ],
         ];
+
+        if ($this->favicons->useStartImage === true) {
+            $sizes = [
+                ...$sizes,
+                //Portrait
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 640,
+                    'height' => 1136,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 750,
+                    'height' => 1294,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1242,
+                    'height' => 2148,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1125,
+                    'height' => 2436,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1536,
+                    'height' => 2048,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1668,
+                    'height' => 2224,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2048,
+                    'height' => 2732,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 40,
+                    'media' => '(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                //Landscape
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1136,
+                    'height' => 640,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 1294,
+                    'height' => 750,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2148,
+                    'height' => 1242,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2436,
+                    'height' => 1125,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2048,
+                    'height' => 1536,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2224,
+                    'height' => 1668,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                [
+                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'width' => 2732,
+                    'height' => 2048,
+                    'format' => 'png',
+                    'mimetype' => 'image/png',
+                    'rel' => 'apple-touch-startup-image',
+                    'imageScale' => 30,
+                    'media' => '(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+            ];
+        }
+
         if ($this->favicons->lowResolution === true) {
             $sizes = [
                 ...$sizes,
@@ -231,12 +381,19 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 $size['format'],
                 $this->favicons->backgroundColor,
                 $this->favicons->borderRadius,
-                $this->favicons->imageScale,
+                $size['imageScale'] ?? $this->favicons->imageScale,
                 $this->favicons->monochrome
             );
             $completeHash = hash('xxh128', $hash . $configuration);
             $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-            yield $filename => $this->processIcon($asset, $filename, $configuration, $size['mimetype'], $size['rel']);
+            yield $filename => $this->processIcon(
+                $asset,
+                $filename,
+                $configuration,
+                $size['mimetype'],
+                $size['rel'],
+                $size['media'] ?? null
+            );
         }
         if ($this->favicons->tileColor !== null) {
             $this->logger->debug('Creating browserconfig.xml.');
@@ -260,22 +417,25 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         Configuration $configuration,
         string $mimeType,
         null|string $rel,
+        null|string $media = null,
     ): Data {
         $this->logger->debug('Processing icon.', [
             'publicUrl' => $publicUrl,
             'configuration' => $configuration,
             'mimeType' => $mimeType,
             'rel' => $rel,
+            'media' => $media,
         ]);
         $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
         if ($this->debug === true) {
             $html = $rel === null ? null : sprintf(
-                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
                 $rel,
                 $configuration->width,
                 $configuration->height,
                 $mimeType,
-                $publicUrl
+                $publicUrl,
+                is_string($media) ? sprintf(' media="%s"', $media) : ''
             );
             return Data::create(
                 $publicUrl,

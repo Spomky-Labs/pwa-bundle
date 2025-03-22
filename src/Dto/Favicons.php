@@ -39,6 +39,9 @@ final class Favicons
     #[SerializedName('use_silhouette')]
     public null|bool $useSilhouette = null;
 
+    #[SerializedName('use_start_image')]
+    public null|bool $useStartImage = null;
+
     public null|string $potrace = null;
 
     public bool $monochrome = false;
