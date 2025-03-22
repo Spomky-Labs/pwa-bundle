@@ -108,7 +108,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 ...$sizes,
                 //Portrait
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 640,
                     'height' => 1136,
                     'format' => 'png',
@@ -118,7 +118,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 750,
                     'height' => 1294,
                     'format' => 'png',
@@ -128,7 +128,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1242,
                     'height' => 2148,
                     'format' => 'png',
@@ -138,7 +138,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1125,
                     'height' => 2436,
                     'format' => 'png',
@@ -148,7 +148,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1536,
                     'height' => 2048,
                     'format' => 'png',
@@ -158,7 +158,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1668,
                     'height' => 2224,
                     'format' => 'png',
@@ -168,7 +168,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2048,
                     'height' => 2732,
                     'format' => 'png',
@@ -179,7 +179,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 ],
                 //Landscape
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1136,
                     'height' => 640,
                     'format' => 'png',
@@ -189,7 +189,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 1294,
                     'height' => 750,
                     'format' => 'png',
@@ -199,7 +199,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2148,
                     'height' => 1242,
                     'format' => 'png',
@@ -209,7 +209,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2436,
                     'height' => 1125,
                     'format' => 'png',
@@ -219,7 +219,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2048,
                     'height' => 1536,
                     'format' => 'png',
@@ -229,7 +229,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2224,
                     'height' => 1668,
                     'format' => 'png',
@@ -239,7 +239,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     'media' => '(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'url' => '/pwa/favicon-%dx%d-%s.png',
+                    'url' => '/pwa/start-image-%dx%d-%s.png',
                     'width' => 2732,
                     'height' => 2048,
                     'format' => 'png',
