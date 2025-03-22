@@ -53,6 +53,10 @@ return static function (DefinitionConfigurator $definition): void {
                             'Use only the silhouette of the icon. Applicable for macOS Safari and Windows 8+. Requires potrace to be installed.'
                         )
                     ->end()
+                    ->booleanNode('use_start_image')
+                        ->defaultTrue()
+                        ->info('Use the icon as a start image for the iOS splash screen.')
+                    ->end()
                     ->booleanNode('monochrome')
                         ->defaultFalse()
                         ->info('Use a monochrome icon.')
