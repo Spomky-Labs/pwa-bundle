@@ -979,6 +979,18 @@ parameters:
 			path: src/Normalizer/IconNormalizer.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ProtocolHandlerNormalizer\:\:normalize\(\) should return array\{protocol\: string, url\: string\} but returns array\{protocol\: string, url\: array\<mixed\>\|ArrayObject\<\(int\|string\), mixed\>\|bool\|float\|int\|string\|null\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Normalizer/ProtocolHandlerNormalizer.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, array\<mixed\>\|ArrayObject\<\(int\|string\), mixed\>\|bool\|float\|int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Normalizer/ProtocolHandlerNormalizer.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ScreenshotNormalizer\:\:normalize\(\) should return array\{src\: string, sizes\?\: string, form_factor\?\: string, label\?\: string, platform\?\: string, format\?\: string\} but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
