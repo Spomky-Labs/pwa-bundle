@@ -1023,7 +1023,7 @@ parameters:
 		-
 			message: '#^Cannot call method booleanNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 3
+			count: 4
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1051,6 +1051,12 @@ parameters:
 			path: src/Resources/config/definition/favicons.php
 
 		-
+			message: '#^Cannot call method defaultTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Resources/config/definition/favicons.php
+
+		-
 			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1059,7 +1065,7 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 14
+			count: 15
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1071,7 +1077,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 10
+			count: 11
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1791,6 +1797,18 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFavicon\(\) should return array\{string, string\} but returns array\{string\|false, string\}\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, 16\|30\|32\|36\|40\|48\|57\|60\|72\|76\|96\|114\|120\|144\|152\|180\|192\|256\|384\|512\|640\|750\|1125\|1136\|1242\|1294\|1536\|1668\|2048\|2148\|2224\|2436\|2732\|''\(device\-width\:…''\|''\(min\-device\-width\:…''\|''/favicon\.ico''\|''/pwa/favicon\-%%dx%%d\-…''\|''apple\-touch\-icon''\|''apple\-touch\-startup…''\|''ico''\|''icon''\|''image/png''\|''image/x\-icon''\|''png''\> on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Parameter \#6 \$media of method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:processIcon\(\) expects string\|null, int\|string\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 

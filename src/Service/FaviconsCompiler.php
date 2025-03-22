@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use function assert;
+use function is_string;
 use function sprintf;
 use const PHP_EOL;
 
@@ -434,7 +435,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 $configuration->height,
                 $mimeType,
                 $publicUrl,
-                $media === null ? '' : sprintf(' media="%s"', $media)
+                is_string($media) ? sprintf(' media="%s"', $media) : ''
             );
             return Data::create(
                 $publicUrl,
