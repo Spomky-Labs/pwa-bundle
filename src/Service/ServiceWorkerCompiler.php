@@ -41,11 +41,11 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         public readonly bool $debug,
     ) {
         $serviceWorkerPublicUrl = $serviceWorker->dest;
-        $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
-        if ($serviceWorker->workbox->enabled === true) {
+        $this->serviceWorkerPublicUrl = '/' . mb_trim($serviceWorkerPublicUrl, '/');
+        if ($serviceWorker->enabled === true && $serviceWorker->workbox->enabled === true) {
             $this->workboxVersion = $serviceWorker->workbox->version;
             $workboxPublicUrl = $serviceWorker->workbox->workboxPublicUrl;
-            $this->workboxPublicUrl = '/' . trim($workboxPublicUrl, '/');
+            $this->workboxPublicUrl = '/' . mb_trim($workboxPublicUrl, '/');
         } else {
             $this->workboxVersion = null;
             $this->workboxPublicUrl = null;
@@ -58,6 +58,10 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
      */
     public function getFiles(): iterable
     {
+        if ($this->serviceWorker->enabled === false) {
+            yield from [];
+            return;
+        }
         $sw = $this->compileSW();
         yield $sw->url => $sw;
         yield from $this->getWorkboxFiles();
@@ -80,7 +84,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
                 ]);
                 $ruleBody = $rule->process($this->debug);
                 if ($this->debug === false) {
-                    $ruleBody = trim($ruleBody);
+                    $ruleBody = mb_trim($ruleBody);
                 }
                 $body .= $ruleBody;
             }
