@@ -43,7 +43,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
         try {
             $params = [
                 '_locale' => $context['translatable_normalization_locale'] ?? null,
-                ...$data->params
+                ...$data->params,
             ];
 
             return $this->router->generate($data->path, $params, $data->pathTypeReference);
