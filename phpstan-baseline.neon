@@ -1813,7 +1813,7 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, 16\|30\|32\|36\|40\|48\|57\|60\|72\|76\|96\|114\|120\|144\|152\|180\|192\|256\|384\|512\|640\|750\|1125\|1136\|1242\|1294\|1536\|1668\|2048\|2148\|2224\|2436\|2732\|''\(device\-width\:…''\|''\(min\-device\-width\:…''\|''/favicon\.ico''\|''/pwa/favicon\-%%dx%%d\-…''\|''apple\-touch\-icon''\|''apple\-touch\-startup…''\|''ico''\|''icon''\|''image/png''\|''image/x\-icon''\|''png''\> on left side of \?\? does not exist\.$#'
+			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, 16\|30\|32\|36\|40\|48\|57\|60\|72\|76\|96\|114\|120\|144\|152\|180\|192\|256\|384\|512\|640\|750\|1125\|1136\|1242\|1294\|1536\|1668\|2048\|2148\|2224\|2436\|2732\|''\(device\-width\:…''\|''\(min\-device\-width\:…''\|''/favicon\.ico''\|''/pwa/favicon\-%%dx%%d\-…''\|''/pwa/start\-image\-…''\|''apple\-touch\-icon''\|''apple\-touch\-startup…''\|''ico''\|''icon''\|''image/png''\|''image/x\-icon''\|''png''\> on left side of \?\? does not exist\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Service/FaviconsCompiler.php
