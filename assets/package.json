@@ -47,6 +47,13 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "file-handling": {
+                "main": "src/file-handling_controller.js",
+                "name": "pwa/file-handling",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "fullscreen": {
                 "main": "src/fullscreen_controller.js",
                 "name": "pwa/fullscreen",
