@@ -4,7 +4,7 @@ import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
-    static targets = ['destination', 'download'];
+    static targets = ['destination', 'download', 'element', 'region'];
 
     getSupportedConstraints = async() => {
         try {
@@ -47,6 +47,20 @@ export default class extends AbstractController {
                     window.recorder.stop();
                 });
             })
+            const videoTracks = tracks.filter((track) => track.kind === 'video');
+            console.log(
+                videoTracks,
+                this.hasElementTarget,
+                this.hasRegionTarget
+            );
+            if (this.hasElementTarget) {
+                const restrictionTarget = await RestrictionTarget.fromElement(this.elementTarget);
+                await videoTracks[0].restrictTo(restrictionTarget);
+            }
+            if (this.hasRegionTarget) {
+                const cropTarget = await CropTarget.fromElement(this.regionTarget);
+                await videoTracks[0].cropTo(cropTarget);
+            }
 
             window.recorder = new MediaRecorder(stream);
             if (this.downloadTargets.length !== 0) {
