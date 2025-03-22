@@ -41,7 +41,12 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
 
         // Otherwise, we try to generate the URL
         try {
-            return $this->router->generate($data->path, $data->params, $data->pathTypeReference);
+            $params = [
+                '_locale' => $context['translatable_normalization_locale'] ?? null,
+                ...$data->params
+            ];
+
+            return $this->router->generate($data->path, $params, $data->pathTypeReference);
         } catch (Throwable) {
             // If the URL cannot be generated, we return the path as is
             return $data->path;
