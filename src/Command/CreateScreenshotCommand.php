@@ -28,7 +28,7 @@ use function sprintf;
 
 #[AsCommand(
     name: 'pwa:create:screenshot',
-    description: 'Take a screenshot of the application store it in your asset folder'
+    description: '[DEPRECATED] Take a screenshot of the application store it in your asset folder'
 )]
 final class CreateScreenshotCommand extends Command
 {

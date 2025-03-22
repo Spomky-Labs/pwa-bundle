@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Yaml\Yaml;
 use function count;
 
-#[AsCommand(name: 'pwa:cache:list-strategies', description: 'List the available cache strategies',)]
+#[AsCommand(name: 'pwa:cache:list-strategies', description: 'List the available cache strategies')]
 final class ListCacheStrategiesCommand extends Command
 {
     /**
