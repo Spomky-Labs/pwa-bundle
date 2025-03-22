@@ -823,6 +823,18 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventSubscriber\\ScreenshotSubscriber\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventSubscriber/ScreenshotSubscriber.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventSubscriber\\ScreenshotSubscriber\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventSubscriber/ScreenshotSubscriber.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\GDImageProcessor\:\:process\(\) should return string but returns string\|false\.$#'
 			identifier: return.type
 			count: 1
@@ -1985,6 +1997,18 @@ parameters:
 			identifier: argument.type
 			count: 8
 			path: src/SpomkyLabsPwaBundle.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Subscriber\\PwaDevServerSubscriber\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Subscriber/PwaDevServerSubscriber.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Subscriber\\PwaDevServerSubscriber\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Subscriber/PwaDevServerSubscriber.php
 
 		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:__construct$#'
