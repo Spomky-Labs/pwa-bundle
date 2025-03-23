@@ -1717,10 +1717,16 @@ parameters:
 			path: src/Resources/config/definition/utils/icons.php
 
 		-
+			message: '#^Parameter \#1 \$icons of function expandIcons expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Resources/config/definition/utils/shortcuts.php
+
+		-
 			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Resources/config/definition/utils/icons.php
+			path: src/Resources/config/definition/utils/shortcuts.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
