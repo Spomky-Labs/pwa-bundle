@@ -151,6 +151,13 @@
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": true
+            },
+            "wake-lock": {
+                "main": "src/wake-lock_controller.js",
+                "name": "pwa/wake-lock",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
             }
         },
         "importmap": {
