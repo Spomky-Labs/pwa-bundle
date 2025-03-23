@@ -16,6 +16,13 @@ function setupShortcuts(): ArrayNodeDefinition
         ->treatNullLike([])
         ->info('The shortcuts of the application.')
         ->arrayPrototype()
+            ->beforeNormalization()
+                ->ifTrue(static fn (mixed $v): bool => array_key_exists('icons', $v) && is_array($v['icons']))
+                ->then(static function (array $v): array {
+                    $v['icons'] = expandIcons($v['icons'] ?? []);
+                    return $v;
+                })
+            ->end()
             ->children()
                 ->scalarNode('name')
                     ->isRequired()

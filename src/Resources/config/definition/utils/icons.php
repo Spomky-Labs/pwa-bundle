@@ -9,6 +9,11 @@ function expandIcons(array $icons): array
 {
     $expandedIcons = [];
     foreach ($icons as $icon) {
+        if (! is_array($icon)) {
+            $icon = [
+                'src' => $icon,
+            ];
+        }
         if (! array_key_exists('sizes', $icon) || ! is_array($icon['sizes'])) {
             $expandedIcons[] = $icon;
             continue;
