@@ -90,7 +90,7 @@ final class CreateScreenshotCommand extends Command
         }
 
         $url = $input->getArgument('url');
-        $dest = mb_rtrim((string) $input->getOption('output'), '/');
+        $dest = rtrim((string) $input->getOption('output'), '/');
         $height = $input->getOption('height');
         $width = $input->getOption('width');
         $format = $input->getOption('format');

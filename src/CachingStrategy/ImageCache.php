@@ -27,7 +27,7 @@ final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
     ) {
         $this->workbox = $serviceWorker->workbox;
-        $this->assetPublicPrefix = mb_rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
+        $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $this->logger = new NullLogger();
     }
 

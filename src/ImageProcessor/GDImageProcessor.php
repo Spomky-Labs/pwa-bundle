@@ -179,7 +179,7 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
             return $background;
         }
 
-        $hex = mb_ltrim($configuration->backgroundColor, '#');
+        $hex = ltrim($configuration->backgroundColor, '#');
         $r = (int) hexdec(mb_substr($hex, 0, 2));
         $g = (int) hexdec(mb_substr($hex, 2, 2));
         $b = (int) hexdec(mb_substr($hex, 4, 2));

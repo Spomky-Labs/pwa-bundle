@@ -904,18 +904,6 @@ parameters:
 			path: src/ImageProcessor/GDImageProcessor.php
 
 		-
-			message: '#^Since spomky\-labs/pwa\-bundle 1\.2\.0\: The "format", "width" and "height" parameters are deprecated and will be removed in 2\.0\.0\. Please use "configuration" instead\.\.$#'
-			identifier: todoBy.sfDeprecation
-			count: 1
-			path: src/ImageProcessor/GDImageProcessor.php
-
-		-
-			message: '#^Since spomky\-labs/pwa\-bundle 1\.2\.0\: The "format", "width" and "height" parameters are deprecated and will be removed in 2\.0\.0\. Please use "configuration" instead\.\.$#'
-			identifier: todoBy.sfDeprecation
-			count: 1
-			path: src/ImageProcessor/ImagickImageProcessor.php
-
-		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\DestinationMatchCallbackHandler\:\:__construct$#'
 			identifier: shipmonk.deadMethod
 			count: 1
@@ -2138,9 +2126,3 @@ parameters:
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/WorkboxPlugin/HasDebugInterface.php
-
-		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\WorkboxPlugin\\RangeRequestsPlugin\:\:getDebug$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/WorkboxPlugin/RangeRequestsPlugin.php

@@ -82,7 +82,7 @@ final class CreateIconsCommand extends Command
         }
 
         $source = $input->getArgument('source');
-        $dest = mb_rtrim((string) $input->getOption('output'), '/');
+        $dest = rtrim((string) $input->getOption('output'), '/');
         $filename = $input->getOption('filename');
         $format = $input->getOption('format');
         if (! is_string($format)) {
