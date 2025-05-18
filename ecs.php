@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\Alias\MbStrFunctionsFixer;
 use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
 use PhpCsFixer\Fixer\ClassNotation\ProtectedToPrivateFixer;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
@@ -26,7 +25,6 @@ use PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer;
 use PhpCsFixer\Fixer\Strict\StrictComparisonFixer;
 use PhpCsFixer\Fixer\Strict\StrictParamFixer;
 use PhpCsFixer\Fixer\Whitespace\ArrayIndentationFixer;
-use PhpCsFixer\Fixer\Whitespace\CompactNullableTypehintFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
@@ -56,11 +54,9 @@ return static function (ECSConfig $config) use ($header): void {
     $config->rule(ProtectedToPrivateFixer::class);
     $config->rule(DeclareStrictTypesFixer::class);
     $config->rule(NativeConstantInvocationFixer::class);
-    $config->rule(MbStrFunctionsFixer::class);
     $config->rule(LinebreakAfterOpeningTagFixer::class);
     $config->rule(CombineConsecutiveIssetsFixer::class);
     $config->rule(CombineConsecutiveUnsetsFixer::class);
-    $config->rule(CompactNullableTypehintFixer::class);
     $config->rule(NoSuperfluousElseifFixer::class);
     $config->rule(NoSuperfluousPhpdocTagsFixer::class);
     $config->rule(PhpdocTrimConsecutiveBlankLineSeparationFixer::class);

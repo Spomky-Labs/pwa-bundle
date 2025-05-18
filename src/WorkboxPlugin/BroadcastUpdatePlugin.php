@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
 use function sprintf;
+use const JSON_THROW_ON_ERROR;
 
 final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasDebugInterface
 {
@@ -18,9 +19,8 @@ final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasD
     /**
      * @param array<string> $headersToCheck
      */
-    public function __construct(
-        array $headersToCheck = []
-    ) {
+    public function __construct(array $headersToCheck = [])
+    {
         $this->headersToCheck = $headersToCheck === [] ? ['Content-Type', 'ETag', 'Last-Modified'] : $headersToCheck;
     }
 
@@ -35,7 +35,7 @@ final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasD
             'new workbox.broadcastUpdate.BroadcastUpdatePlugin(%s)',
             json_encode([
                 'headersToCheck' => $this->headersToCheck,
-            ], $jsonOptions)
+            ], JSON_THROW_ON_ERROR | $jsonOptions)
         );
     }
 

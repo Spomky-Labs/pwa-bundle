@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\Subscriber;
+namespace SpomkyLabs\PwaBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -10,14 +10,13 @@ use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\Data;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 
-final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogInterface
+final class PwaDevServerListener implements CanLogInterface
 {
     private LoggerInterface $logger;
 
@@ -32,6 +31,7 @@ final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogIn
         $this->logger = new NullLogger();
     }
 
+    #[AsEventListener(priority: 35)]
     public function onKernelRequest(RequestEvent $event): void
     {
         if (! $event->isMainRequest()) {
@@ -55,6 +55,7 @@ final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogIn
         }
     }
 
+    #[AsEventListener(priority: 1024)]
     public function onKernelResponse(ResponseEvent $event): void
     {
         $headers = $event->getResponse()
@@ -62,16 +63,6 @@ final class PwaDevServerSubscriber implements EventSubscriberInterface, CanLogIn
         if ($headers->has('X-Pwa-Dev')) {
             $event->stopPropagation();
         }
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            // priority higher than RouterListener
-            KernelEvents::REQUEST => [['onKernelRequest', 35]],
-            // Highest priority possible to bypass all other listeners
-            KernelEvents::RESPONSE => [['onKernelResponse', 2048]],
-        ];
     }
 
     public function setLogger(LoggerInterface $logger): void

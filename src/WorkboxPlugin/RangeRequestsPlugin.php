@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-final readonly class RangeRequestsPlugin implements CachePluginInterface, HasDebugInterface
+final readonly class RangeRequestsPlugin implements CachePluginInterface
 {
     private const NAME = 'RangeRequestsPlugin';
 
@@ -21,10 +21,5 @@ final readonly class RangeRequestsPlugin implements CachePluginInterface, HasDeb
     public function getName(): string
     {
         return self::NAME;
-    }
-
-    public function getDebug(): array
-    {
-        return [];
     }
 }

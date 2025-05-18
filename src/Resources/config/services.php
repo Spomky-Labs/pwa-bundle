@@ -6,6 +6,7 @@ use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorManager;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
+use SpomkyLabs\PwaBundle\Command\CompileCommand;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
@@ -14,7 +15,9 @@ use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use SpomkyLabs\PwaBundle\EventSubscriber\ScreenshotSubscriber;
+use SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener;
+use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
+use SpomkyLabs\PwaBundle\EventListener\ScreenshotListener;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
@@ -22,6 +25,7 @@ use SpomkyLabs\PwaBundle\Service\ApplicationIconCompiler;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\FileCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use SpomkyLabs\PwaBundle\Service\IconResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
@@ -29,8 +33,6 @@ use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
-use SpomkyLabs\PwaBundle\Subscriber\FileCompileEventListener;
-use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
@@ -90,6 +92,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->set(ServiceWorkerCompiler::class);
 
     /*** Commands ***/
+    $container->set(CompileCommand::class);
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
         $container->set(CreateScreenshotCommand::class);
     }
@@ -120,13 +123,13 @@ return static function (ContainerConfigurator $configurator): void {
     }
 
     /*** Event Listeners and Subscribers ***/
+    $container->set(FileCompiler::class);
     $container->set(FileCompileEventListener::class);
-    $container->set(PwaDevServerSubscriber::class)
+    $container->set(PwaDevServerListener::class)
         ->args([
             '$profiler' => service('profiler')
                 ->nullOnInvalid(),
         ])
-        ->tag('kernel.event_subscriber')
     ;
 
     $container->set(PwaExtension::class)
@@ -163,7 +166,7 @@ return static function (ContainerConfigurator $configurator): void {
             '$urls' => abstract_arg('urls'),
         ])
     ;
-    $container->set(ScreenshotSubscriber::class);
+    $container->set(ScreenshotListener::class);
 
     if ($configurator->env() !== 'prod') {
         $container->set(PwaCollector::class)
