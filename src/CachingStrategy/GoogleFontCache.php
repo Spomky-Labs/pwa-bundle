@@ -18,9 +18,8 @@ final class GoogleFontCache implements HasCacheStrategiesInterface, CanLogInterf
 
     private LoggerInterface $logger;
 
-    public function __construct(
-        ServiceWorker $serviceWorker,
-    ) {
+    public function __construct(ServiceWorker $serviceWorker)
+    {
         $this->workbox = $serviceWorker->workbox;
         $this->logger = new NullLogger();
     }

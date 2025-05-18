@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace SpomkyLabs\PwaBundle\EventSubscriber;
+namespace SpomkyLabs\PwaBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 
-final class ScreenshotSubscriber implements EventSubscriberInterface, CanLogInterface
+final class ScreenshotListener implements CanLogInterface
 {
     private LoggerInterface $logger;
 
@@ -25,16 +25,10 @@ final class ScreenshotSubscriber implements EventSubscriberInterface, CanLogInte
         $this->logger = new NullLogger();
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            RequestEvent::class => 'onRequest',
-        ];
-    }
-
+    #[AsEventListener()]
     public function onRequest(RequestEvent $event): void
     {
-        if (! $event->isMainRequest() || $this->profiler === null) {
+        if ($this->profiler === null || ! $event->isMainRequest()) {
             return;
         }
         $this->logger->debug('Checking user agent.');

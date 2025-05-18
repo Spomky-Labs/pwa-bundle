@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Attribute\\PreloadUrl\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Attribute/PreloadUrl.php
+
+		-
 			message: '#^Only iterables can be unpacked, mixed given in argument \#1\.$#'
 			identifier: argument.unpackNonIterable
 			count: 1
@@ -823,16 +829,43 @@ parameters:
 			path: src/Dto/Workbox.php
 
 		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\EventSubscriber\\ScreenshotSubscriber\:\:__construct$#'
-			identifier: shipmonk.deadMethod
+			message: '''
+				#^Property \$resourceCaches references deprecated class SpomkyLabs\\PwaBundle\\Dto\\PageCache in its type\:
+				since 1\.2\.0 and will be removed in 2\.0\.0\. Use ResourceCache instead\.$#
+			'''
+			identifier: property.deprecatedClass
 			count: 1
-			path: src/EventSubscriber/ScreenshotSubscriber.php
+			path: src/Dto/Workbox.php
 
 		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\EventSubscriber\\ScreenshotSubscriber\:\:setLogger$#'
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventListener\\FileCompileEventListener\:\:__construct$#'
 			identifier: shipmonk.deadMethod
 			count: 1
-			path: src/EventSubscriber/ScreenshotSubscriber.php
+			path: src/EventListener/FileCompileEventListener.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventListener\\PwaDevServerListener\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventListener/PwaDevServerListener.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventListener\\PwaDevServerListener\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventListener/PwaDevServerListener.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventListener\\ScreenshotListener\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventListener/ScreenshotListener.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\EventListener\\ScreenshotListener\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/EventListener/ScreenshotListener.php
 
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\GDImageProcessor\:\:process\(\) should return string but returns string\|false\.$#'
@@ -869,6 +902,18 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: '#^Since spomky\-labs/pwa\-bundle 1\.2\.0\: The "format", "width" and "height" parameters are deprecated and will be removed in 2\.0\.0\. Please use "configuration" instead\.\.$#'
+			identifier: todoBy.sfDeprecation
+			count: 1
+			path: src/ImageProcessor/GDImageProcessor.php
+
+		-
+			message: '#^Since spomky\-labs/pwa\-bundle 1\.2\.0\: The "format", "width" and "height" parameters are deprecated and will be removed in 2\.0\.0\. Please use "configuration" instead\.\.$#'
+			identifier: todoBy.sfDeprecation
+			count: 1
+			path: src/ImageProcessor/ImagickImageProcessor.php
 
 		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\DestinationMatchCallbackHandler\:\:__construct$#'
@@ -1759,6 +1804,12 @@ parameters:
 			path: src/Resources/config/definition/web_client.php
 
 		-
+			message: '#^Access to constant TAG of internal class SpomkyLabs\\PwaBundle\\CompilerPass\\LoggerCompilerPass from outside its root namespace SpomkyLabs\.$#'
+			identifier: classConstant.internalClass
+			count: 1
+			path: src/Resources/config/services.php
+
+		-
 			message: '#^Return type \(iterable\<SpomkyLabs\\PwaBundle\\Service\\Data\>\) of method SpomkyLabs\\PwaBundle\\Service\\ApplicationIconCompiler\:\:getFiles\(\) should be covariant with return type \(iterable\<string, SpomkyLabs\\PwaBundle\\Service\\Data\>\) of method SpomkyLabs\\PwaBundle\\Service\\FileCompilerInterface\:\:getFiles\(\)$#'
 			identifier: method.childReturnType
 			count: 1
@@ -1819,7 +1870,7 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, 16\|30\|32\|36\|40\|48\|57\|60\|72\|76\|96\|114\|120\|144\|152\|180\|192\|256\|384\|512\|640\|750\|1125\|1136\|1242\|1294\|1536\|1668\|2048\|2148\|2224\|2436\|2732\|''\(device\-width\:…''\|''\(min\-device\-width\:…''\|''/favicon\.ico''\|''/pwa/favicon\-%%dx%%d\-…''\|''/pwa/start\-image\-…''\|''apple\-touch\-icon''\|''apple\-touch\-startup…''\|''ico''\|''icon''\|''image/png''\|''image/x\-icon''\|''png''\> on left side of \?\? does not exist\.$#'
+			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, int\|\(literal\-string&non\-falsy\-string\)\> on left side of \?\? does not exist\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Service/FaviconsCompiler.php
@@ -1841,6 +1892,18 @@ parameters:
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FileCompiler\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FileCompiler.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\Service\\FileCompiler\:\:setLogger$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/Service/FileCompiler.php
 
 		-
 			message: '#^Cannot access property \$sourcePath on Symfony\\Component\\AssetMapper\\MappedAsset\|null\.$#'
@@ -2035,18 +2098,6 @@ parameters:
 			path: src/SpomkyLabsPwaBundle.php
 
 		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\Subscriber\\PwaDevServerSubscriber\:\:__construct$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/Subscriber/PwaDevServerSubscriber.php
-
-		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\Subscriber\\PwaDevServerSubscriber\:\:setLogger$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/Subscriber/PwaDevServerSubscriber.php
-
-		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:__construct$#'
 			identifier: shipmonk.deadMethod
 			count: 1
@@ -2093,15 +2144,3 @@ parameters:
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/WorkboxPlugin/RangeRequestsPlugin.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: tests/Functional/TakeScreenshotCommandTest.php
-
-		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\Tests\\TestFilesystem\:\:__construct$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: tests/TestFilesystem.php

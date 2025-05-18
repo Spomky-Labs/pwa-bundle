@@ -6,8 +6,8 @@ namespace SpomkyLabs\PwaBundle;
 
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
+use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
-use SpomkyLabs\PwaBundle\Subscriber\PwaDevServerSubscriber;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -65,7 +65,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $builder->setParameter('spomky_labs_pwa.sw.config', $serviceWorkerConfig);
 
         if (! in_array($builder->getParameter('kernel.environment'), ['dev', 'test'], true)) {
-            $builder->removeDefinition(PwaDevServerSubscriber::class);
+            $builder->removeDefinition(PwaDevServerListener::class);
         }
     }
 

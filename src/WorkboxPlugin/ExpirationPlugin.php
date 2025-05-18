@@ -25,7 +25,7 @@ final readonly class ExpirationPlugin implements CachePluginInterface, HasDebugI
 
     public function render(int $jsonOptions = 0): string
     {
-        return sprintf('new workbox.expiration.ExpirationPlugin(%s)', json_encode($this->options, $jsonOptions));
+        return sprintf('new workbox.expiration.ExpirationPlugin(%s)', json_encode($this->options, JSON_THROW_ON_ERROR | $jsonOptions));
     }
 
     public static function create(null|int $maxEntries, null|int $maxAgeSeconds): static
