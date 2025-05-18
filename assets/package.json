@@ -33,6 +33,13 @@
                 "fetch": "eager",
                 "enabled": true
             },
+            "contact": {
+                "main": "src/contact_controller.js",
+                "name": "pwa/contact",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            },
             "device-motion": {
                 "main": "src/device-motion_controller.js",
                 "name": "pwa/device-motion",
