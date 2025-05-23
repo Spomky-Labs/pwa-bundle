@@ -7,16 +7,17 @@ export default class extends AbstractController {
     static values = {
         channel: { type: String },
     };
-    static targets = ['remaining'];
 
     bc = null;
 
     connect = () => {
         if (!this.channelValue) {
-            throw new Error('The channel value is required.');
+            this.dispatchEvent('error', { reason: 'No channel provided.' });
+            return
         }
         this.bc = new BroadcastChannel(this.channelValue);
         this.bc.onmessage = this.messageReceived;
+        this.bc.postMessage({ type: 'status-request' });
     }
 
     disconnect = () => {
@@ -25,11 +26,11 @@ export default class extends AbstractController {
         }
     }
 
+    replay = () => {
+        this.bc.postMessage({ type: 'replay-request' });
+    }
+
     messageReceived = async (event) => {
-        const data = event.data;
-        this.remainingTargets.forEach((element) => {
-            element.innerHTML = data.remaining;
-        });
-        this.dispatchEvent('pwa:sync-broadcast:status-changed', { detail: data });
+        this.dispatchEvent('status-changed', event.data);
     }
 }

@@ -59,7 +59,9 @@ final class ListCacheStrategiesCommand extends Command
                 $strategy->matchCallback,
                 $strategy->isEnabled() ? 'Yes' : 'No',
                 $strategy->needsWorkbox() ? 'Yes' : 'No',
-                Yaml::dump(array_map(fn (CachePluginInterface $v): string => $v->getName(), $strategy->getPlugins())),
+                Yaml::dump(
+                    array_map(static fn (CachePluginInterface $v): string => $v->getName(), $strategy->getPlugins())
+                ),
                 count($strategy->getPreloadUrls()),
                 Yaml::dump($strategy->getOptions()),
             ]);
