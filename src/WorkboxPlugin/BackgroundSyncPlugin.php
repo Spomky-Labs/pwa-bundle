@@ -44,7 +44,44 @@ QUEUE_DECLARATION;
                 ->prepend('bc_')
                 ->toString();
             $queueDeclaration .= <<< QUEUE_DECLARATION
+
 const {$bcId} = new BroadcastChannel('{$this->broadcastChannel}');
+
+const {$pluginId}_replayQueueWithProgress = async (queue, bc, name) => {
+  let entry;
+  let index = 0;
+  let successCount = 0;
+  let failureCount = 0;
+
+  const total = (await queue.getAll()).length;
+
+  while (entry = await queue.shiftRequest()) {
+    try {
+      await fetch(entry.request.clone());
+      successCount++;
+    } catch (error) {
+      failureCount++;
+      await queue.unshiftRequest(entry);
+      throw error;
+    } finally {
+      const remaining = (await queue.getAll()).length;
+      bc.postMessage({
+        name,
+        replaying: true,
+        remaining
+      });
+    }
+  }
+
+  const remaining = (await queue.getAll()).length;
+  bc.postMessage({
+    name,
+    replayed: true,
+    remaining,
+    successCount,
+    failureCount
+  });
+};
 {$bcId}.onmessage = async (event) => {
   if (event.data?.type === 'status-request') {
     const entries = await {$queueId}.getAll();
@@ -53,9 +90,7 @@ const {$bcId} = new BroadcastChannel('{$this->broadcastChannel}');
 
   if (event.data?.type === 'replay-request') {
     try {
-      await {$queueId}.replayRequests();
-      const entries = await {$queueId}.getAll();
-      {$bcId}.postMessage({ name: '{$this->queueName}', replayed: true, remaining: entries.length });
+      await {$pluginId}_replayQueueWithProgress({$queueId}, {$bcId}, '{$this->queueName}');
     } catch (error) {
       const entries = await {$queueId}.getAll();
       {$bcId}.postMessage({ name: '{$this->queueName}', replayed: false, remaining: entries.length, error: error.message });
@@ -70,13 +105,7 @@ const {$pluginId} = {
     {$bcId}.postMessage({ name: '{$this->queueName}', remaining: entries.length });
   },
   onSync: async () => {
-    try {
-      await {$queueId}.replayRequests();
-    } catch (e) {
-    } finally {
-      const entries = await {$queueId}.getAll();
-      {$bcId}.postMessage({ name: '{$this->queueName}', remaining: entries.length });
-    }
+    await {$pluginId}_replayQueueWithProgress({$queueId}, {$bcId}, '{$this->queueName}');
   }
 };
 
