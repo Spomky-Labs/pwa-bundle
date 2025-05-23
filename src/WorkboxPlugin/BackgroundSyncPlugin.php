@@ -4,24 +4,18 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-use function count;
+use LogicException;
+use function Symfony\Component\String\u;
 
-final readonly class BackgroundSyncPlugin implements CachePluginInterface, HasDebugInterface
+final readonly class BackgroundSyncPlugin implements CachePluginInterface, HasBodyInterface, HasDebugInterface
 {
     private const NAME = 'BackgroundSyncPlugin';
 
-    /**
-     * @param array<int> $expectedStatusCodes
-     */
     public function __construct(
         public string $queueName,
         public bool $forceSyncFallback,
         public null|string $broadcastChannel,
         public int $maxRetentionTime,
-        public bool $errorOn4xx = false,
-        public bool $errorOn5xx = true,
-        public bool $expectRedirect = false,
-        public array $expectedStatusCodes = [],
     ) {
     }
 
@@ -30,64 +24,89 @@ final readonly class BackgroundSyncPlugin implements CachePluginInterface, HasDe
         return self::NAME;
     }
 
-    public function render(int $jsonOptions = 0): string
+    public function renderBody(string $pluginId, int $jsonOptions = 0): string
     {
-        $forceSyncFallback = $this->forceSyncFallback === true ? 'true' : 'false';
-        $broadcastChannelSection = '';
+        $queueId = u($this->queueName)
+            ->snake()
+            ->prepend('queue_')
+            ->toString();
+        $forceSyncFallback = $this->forceSyncFallback ? 'true' : 'false';
+        $queueDeclaration = <<< QUEUE_DECLARATION
+const {$queueId} = new workbox.backgroundSync.Queue('{$this->queueName}', {
+  maxRetentionTime: {$this->maxRetentionTime},
+  forceSyncFallback: {$forceSyncFallback},
+});
+
+QUEUE_DECLARATION;
         if ($this->broadcastChannel !== null) {
-            $broadcastChannelSection = <<<BROADCAST_CHANNEL
-, "onSync": async ({queue}) => {
+            $bcId = u($this->broadcastChannel)
+                ->snake()
+                ->prepend('bc_')
+                ->toString();
+            $queueDeclaration .= <<< QUEUE_DECLARATION
+const {$bcId} = new BroadcastChannel('{$this->broadcastChannel}');
+{$bcId}.onmessage = async (event) => {
+  if (event.data?.type === 'status-request') {
+    const entries = await {$queueId}.getAll();
+    {$bcId}.postMessage({ name: '{$this->queueName}', remaining: entries.length });
+  }
+
+  if (event.data?.type === 'replay-request') {
     try {
-        await queue.replayRequests();
+      await {$queueId}.replayRequests();
+      const entries = await {$queueId}.getAll();
+      {$bcId}.postMessage({ name: '{$this->queueName}', replayed: true, remaining: entries.length });
     } catch (error) {
-        // Failed to replay one or more requests
-    } finally {
-        remainingRequests = await queue.getAll();
-        const bc = new BroadcastChannel('{$this->broadcastChannel}');
-        bc.postMessage({name: '{$this->queueName}', remaining: remainingRequests.length});
-        bc.close();
+      const entries = await {$queueId}.getAll();
+      {$bcId}.postMessage({ name: '{$this->queueName}', replayed: false, remaining: entries.length, error: error.message });
     }
-}
-BROADCAST_CHANNEL;
+  }
+};
+
+const {$pluginId} = {
+  fetchDidFail: async ({ request }) => {
+    await {$queueId}.pushRequest({ request });
+    const entries = await {$queueId}.getAll();
+    {$bcId}.postMessage({ name: '{$this->queueName}', remaining: entries.length });
+  },
+  onSync: async () => {
+    try {
+      await {$queueId}.replayRequests();
+    } catch (e) {
+    } finally {
+      const entries = await {$queueId}.getAll();
+      {$bcId}.postMessage({ name: '{$this->queueName}', remaining: entries.length });
+    }
+  }
+};
+
+QUEUE_DECLARATION;
+        } else {
+            $queueDeclaration .= <<< QUEUE_DECLARATION
+const {$pluginId} = {
+  fetchDidFail: async ({ request }) => {
+    await {$queueId}.pushRequest({ request });
+  }
+};
+
+QUEUE_DECLARATION;
         }
 
-        $errorOn4xx = $this->getErrorOn4xx();
-        $errorOn5xx = $this->getErrorOn5xx();
-        $expectRedirect = $this->getExpectRedirect();
-        $expectedStatusCodes = $this->getExpectedSuccessStatusCodes();
-
-        $declaration = <<<BACKGROUND_SYNC_RULE_STRATEGY
-
-        {$errorOn4xx}{$errorOn5xx}{$expectRedirect}{$expectedStatusCodes}new workbox.backgroundSync.BackgroundSyncPlugin('{$this->queueName}',{"maxRetentionTime": {$this->maxRetentionTime}, "forceSyncFallback": {$forceSyncFallback}{$broadcastChannelSection}})
-
-BACKGROUND_SYNC_RULE_STRATEGY;
-
-        return trim($declaration);
+        return $queueDeclaration;
     }
 
-    /**
-     * @param array<int> $expectedStatusCodes
-     */
+    public function render(int $jsonOptions = 0): string
+    {
+        throw new LogicException('Should never be called as the plugin uses a body.');
+    }
+
     public static function create(
         string $queueName,
         int $maxRetentionTime,
         bool $forceSyncFallback,
         null|string $broadcastChannel,
-        bool $errorOn4xx = false,
-        bool $errorOn5xx = true,
-        bool $expectRedirect = false,
-        array $expectedStatusCodes = [],
     ): static {
-        return new self(
-            $queueName,
-            $forceSyncFallback,
-            $broadcastChannel,
-            $maxRetentionTime,
-            $errorOn4xx,
-            $errorOn5xx,
-            $expectRedirect,
-            $expectedStatusCodes,
-        );
+        return new self($queueName, $forceSyncFallback, $broadcastChannel, $maxRetentionTime);
     }
 
     public function getDebug(): array
@@ -97,52 +116,6 @@ BACKGROUND_SYNC_RULE_STRATEGY;
             'forceSyncFallback' => $this->forceSyncFallback,
             'broadcastChannel' => $this->broadcastChannel,
             'maxRetentionTime' => $this->maxRetentionTime,
-            'errorOn4xx' => $this->errorOn4xx,
-            'errorOn5xx' => $this->errorOn5xx,
-            'expectRedirect' => $this->expectRedirect,
-            'expectedSuccessStatusCodes' => $this->expectedStatusCodes,
         ];
-    }
-
-    private function getErrorOn4xx(): string
-    {
-        if ($this->errorOn5xx === false) {
-            return '';
-        }
-
-        return $this->getErrorOn(400);
-    }
-
-    private function getErrorOn5xx(): string
-    {
-        if ($this->errorOn5xx === false) {
-            return '';
-        }
-
-        return $this->getErrorOn(500);
-    }
-
-    private function getErrorOn(int $statusCode): string
-    {
-        return "{fetchDidSucceed: ({response}) => {if (response.status >= {$statusCode}) {throw new Error('Server error.');}return response;}},";
-    }
-
-    private function getExpectedSuccessStatusCodes(): string
-    {
-        if (count($this->expectedStatusCodes) === 0) {
-            return '';
-        }
-        $codes = implode(',', $this->expectedStatusCodes);
-
-        return "{fetchDidSucceed: ({response}) => {if (! [{$codes}].includes(response.status)) {throw new Error('Unexpected response status code. Expected one of [{$codes}]. Got ' + response.status);}return response;}},";
-    }
-
-    private function getExpectRedirect(): string
-    {
-        if ($this->expectRedirect === false) {
-            return '';
-        }
-
-        return "{fetchDidSucceed: ({response}) => {if (response.type !== 'opaqueredirect' || response.redirect !== true) {throw new Error('Expected a redirect response.');}return response;}},";
     }
 }

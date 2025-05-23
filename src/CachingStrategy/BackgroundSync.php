@@ -11,7 +11,11 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectErrorOnRangePlugin;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectRedirectResponsePlugin;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectStatusCodesPlugin;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use function count;
 
 final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterface
 {
@@ -39,7 +43,7 @@ final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterfa
         $this->logger->debug('Getting cache strategies for background sync');
         $strategies = [];
         foreach ($this->workbox->backgroundSync as $sync) {
-            $strategies[] = WorkboxCacheStrategy::create(
+            $strategy = WorkboxCacheStrategy::create(
                 $this->workbox->enabled,
                 true,
                 CacheStrategyInterface::STRATEGY_NETWORK_ONLY,
@@ -52,13 +56,23 @@ final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterfa
                         $sync->maxRetentionTime,
                         $sync->forceSyncFallback,
                         $sync->broadcastChannel,
-                        $sync->errorOn4xx,
-                        $sync->errorOn5xx,
-                        $sync->expectRedirect,
-                        $sync->expectedStatusCodes,
                     ),
                 )
                 ->withMethod($sync->method);
+            if ($sync->errorOn4xx) {
+                $strategy->withPlugin(ExpectErrorOnRangePlugin::create(400, 499));
+            }
+            if ($sync->errorOn5xx) {
+                $strategy->withPlugin(ExpectErrorOnRangePlugin::create(500, 599));
+            }
+            if ($sync->expectRedirect) {
+                $strategy->withPlugin(ExpectRedirectResponsePlugin::create());
+            }
+            if (count($sync->expectedStatusCodes) !== 0) {
+                $strategy->withPlugin(ExpectStatusCodesPlugin::create($sync->expectedStatusCodes));
+            }
+
+            $strategies[] = $strategy;
         }
         $this->logger->debug('Background sync strategies', [
             'strategies' => $strategies,

@@ -28,7 +28,7 @@ export default class extends AbstractController {
         event.preventDefault();
 
         const url = form.action;
-        const redirectTo = this.redirectionValue || url;
+        const redirectTo = this.redirectionValue;
         try {
             const params = this.paramsValue;
             params.headers = this.headersValue;

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePluginInterface;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\HasBodyInterface;
 use function in_array;
 use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
+use const PHP_EOL;
 
 final class WorkboxCacheStrategy implements CacheStrategyInterface
 {
@@ -66,7 +68,7 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
 
     public function withPlugin(CachePluginInterface $plugin, CachePluginInterface ...$plugins): static
     {
-        $this->plugins = array_merge([$plugin], $plugins);
+        $this->plugins = [...$this->plugins, $plugin, ...$plugins];
         return $this;
     }
 
@@ -122,10 +124,25 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
         if ($this->strategy !== self::STRATEGY_NETWORK_ONLY) {
             $cacheName = sprintf("cacheName: '%s',", $this->getName() ?? $cacheObjectName);
         }
-        $plugins = sprintf('[%s]', implode(', ', array_map(
-            fn (CachePluginInterface $plugin) => $plugin->render($jsonOptions),
-            $this->plugins
-        )));
+
+        $plugins = [];
+        foreach ($this->plugins as $id => $plugin) {
+            $pluginId = sprintf('plugin_%s_%d', $cacheObjectName, $id);
+            if ($plugin instanceof HasBodyInterface) {
+                $plugins[] = [
+                    'list' => $pluginId,
+                    'body' => $plugin->renderBody($pluginId, $jsonOptions),
+                ];
+            } else {
+                $plugins[] = [
+                    'list' => $plugin->render($jsonOptions),
+                    'body' => '',
+                ];
+            }
+        }
+        $pluginsIds = implode(', ', array_map(static fn (array $plugin) => $plugin['list'], $plugins));
+        $pluginBody = implode(PHP_EOL . PHP_EOL, array_map(static fn (array $plugin) => $plugin['body'], $plugins));
+
         $method = $this->method !== null ? ",'{$this->method}'" : '';
 
         $declaration = '';
@@ -149,8 +166,10 @@ DEBUG_STATEMENT;
         }
 
         $declaration .= <<<ROUTE_REGISTRATION
+{$pluginBody}
+
 const {$cacheObjectName} = new workbox.strategies.{$this->strategy}({
-  {$timeout}{$cacheName}plugins: {$plugins}
+  {$timeout}{$cacheName}plugins: [{$pluginsIds}]
 });
 workbox.routing.registerRoute({$this->matchCallback},{$cacheObjectName}{$method});
 
