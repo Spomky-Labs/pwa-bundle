@@ -138,13 +138,6 @@
                 "fetch": "eager",
                 "enabled": true
             },
-            "sync-broadcast": {
-                "main": "src/sync-broadcast_controller.js",
-                "name": "pwa/sync-broadcast",
-                "webpackMode": "eager",
-                "fetch": "eager",
-                "enabled": true
-            },
             "touch": {
                 "main": "src/touch_controller.js",
                 "name": "pwa/touch",
