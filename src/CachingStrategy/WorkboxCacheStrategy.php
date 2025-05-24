@@ -176,19 +176,11 @@ workbox.routing.registerRoute({$this->matchCallback},{$cacheObjectName}{$method}
 ROUTE_REGISTRATION;
 
         if ($this->preloadUrls !== []) {
-            $fontUrls = json_encode($this->preloadUrls, $jsonOptions);
+            $urls = json_encode($this->preloadUrls, $jsonOptions);
             $declaration .= <<<ASSET_CACHE_RULE_PRELOAD
 self.addEventListener('install', event => {
-  const done = {$fontUrls}.map(
-    path =>
-      {$cacheObjectName}.handleAll({
-        event,
-        request: new Request(path),
-      })[1]
-  );
-  event.waitUntil(Promise.all(done));
+  event.waitUntil(precacheResources({$cacheObjectName}, {$urls}, event));
 });
-
 
 ASSET_CACHE_RULE_PRELOAD;
         }
