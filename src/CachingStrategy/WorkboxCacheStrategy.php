@@ -178,9 +178,7 @@ ROUTE_REGISTRATION;
         if ($this->preloadUrls !== []) {
             $urls = json_encode($this->preloadUrls, $jsonOptions);
             $declaration .= <<<ASSET_CACHE_RULE_PRELOAD
-self.addEventListener('install', event => {
-  event.waitUntil(precacheResources({$cacheObjectName}, {$urls}, event));
-});
+registerInstallTask((event) => precacheResources({$cacheObjectName}, {$urls}, event));
 
 ASSET_CACHE_RULE_PRELOAD;
         }

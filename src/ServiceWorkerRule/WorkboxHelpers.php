@@ -29,13 +29,15 @@ function registerCacheFirst(routeMatchFn, cacheName, plugins = []) {
 }
 
 function precacheResources(strategy, resourceList, event) {
-  const preload = resourceList.map(path =>
+  if (!(event instanceof ExtendableEvent)) {
+    throw new Error("precacheResources needs a valid ExtendableEvent");
+  }
+  return Promise.all(resourceList.map(path =>
     strategy.handleAll({
       event,
       request: new Request(path),
     })[1]
-  );
-  return Promise.all(preload);
+  ));
 }
 
 function createBackgroundSyncPlugin(queueName, maxRetentionTime = 2880, forceSyncFallback = false) {
@@ -116,6 +118,38 @@ function createBackgroundSyncPluginWithBroadcast(queueName, channelName, maxRete
   };
 }
 
+const installTasks = [];
+function registerInstallTask(callback, priority = 100) {
+  installTasks.push({
+    callback: (event) => {
+      const result = callback(event);
+      if (!result?.then) console.warn("Install task did not return a Promise");
+      return result;
+    },
+    priority,
+  });
+}
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    installTasks
+      .sort((a, b) => a.priority - b.priority)
+      .reduce(
+        (chain, task) => chain.then(() => task.callback(event)),
+        Promise.resolve()
+      )
+  );
+});
+
+function statusGuard(min, max) {
+  return {
+    fetchDidSucceed: ({ response }) => {
+      if (response.status >= min && response.status <= max) {
+        throw new Error(`Server error: \${response.status}`);
+      }
+      return response;
+    }
+  };
+}
 CUSTOM_HELPERS;
     }
 
