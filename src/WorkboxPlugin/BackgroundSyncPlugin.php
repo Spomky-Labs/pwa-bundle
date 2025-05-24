@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
 use LogicException;
-use function Symfony\Component\String\u;
 
 final readonly class BackgroundSyncPlugin implements CachePluginInterface, HasBodyInterface, HasDebugInterface
 {
