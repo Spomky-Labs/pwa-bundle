@@ -38,9 +38,7 @@ DEBUG_COMMENT;
         }
 
         $declaration .= <<<SKIP_WAITING
-self.addEventListener("install", function (event) {
-  event.waitUntil(self.skipWaiting());
-});
+registerInstallTask(() => self.skipWaiting(), 5);
 self.addEventListener("activate", function (event) {
   event.waitUntil(self.clients.claim());
 });

@@ -48,16 +48,9 @@ DEBUG_COMMENT;
         }
 
         $declaration .= <<<CLEAR_CACHE
-self.addEventListener("install", function (event) {
-    event.waitUntil(caches.keys().then(function (cacheNames) {
-            return Promise.all(
-                cacheNames.map(function (cacheName) {
-                    return caches.delete(cacheName);
-                })
-            );
-        })
-    );
-});
+registerInstallTask(() =>
+  caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+, 0);
 
 CLEAR_CACHE;
 

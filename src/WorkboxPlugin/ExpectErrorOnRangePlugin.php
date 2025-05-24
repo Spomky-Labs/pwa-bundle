@@ -14,7 +14,7 @@ final readonly class ExpectErrorOnRangePlugin implements CachePluginInterface
 
     public function render(int $jsonOptions = 0): string
     {
-        return "{fetchDidSucceed: ({response}) => {if (response.status >= {$this->minCode} && response.status <= {$this->maxCode}) {throw new Error('Server error.');}return response;}}";
+        return "statusGuard({$this->minCode}, {$this->maxCode})";
     }
 
     public static function create(int $minCode, int $maxCode): self
