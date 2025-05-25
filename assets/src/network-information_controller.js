@@ -11,7 +11,6 @@ export default class extends Controller {
 
   updateConnectionStatus = () => {
     const connection = navigator.connection;
-    console.log({bubble: true, details: connection});
-    this.dispatch('pwa:network-information:change', {bubble: true, details: {connection}});
+    this.dispatch('change', {bubble: true, details: {connection}});
   }
 }

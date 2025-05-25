@@ -10,19 +10,20 @@ export default class extends AbstractController {
 
     async connect() {
         if (typeof DeviceMotionEvent === 'undefined') {
-            this.dispatchEvent('pwa:device:motion:unavailable');
+            this.dispatchEvent('unavailable');
             return;
         }
         if (typeof DeviceMotionEvent.requestPermission === 'function') {
             try {
                 const permissionState = await DeviceMotionEvent.requestPermission();
                 if (permissionState === 'granted') {
+                    this.dispatchEvent('permission-granted')
                     window.addEventListener('devicemotion', this.dispatchMotionEvent, true);
                 } else {
-                    this.dispatchEvent('pwa:device:motion:permission:denied')
+                    this.dispatchEvent('permission-denied')
                 }
             } catch (error) {
-                this.dispatchEvent('pwa:device:motion:permission:denied')
+                this.dispatchEvent('permission-denied')
             }
         } else {
             window.addEventListener('devicemotion', this.dispatchMotionEvent, true);
@@ -35,7 +36,7 @@ export default class extends AbstractController {
     }
 
     dispatchMotionEvent = (event) => {
-        this.dispatchEvent('pwa:device:motion', {
+        this.dispatchEvent('updated', {
             acceleration: {
                 x: event.acceleration.x,
                 y: event.acceleration.y,

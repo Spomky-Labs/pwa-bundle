@@ -4,40 +4,63 @@ import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
-    static targets = ['install'];
-    installPrompt = null;
+    deferredPrompt = null;
+    isInstalled = false;
 
-    async connect() {
-        this.disableInstallTargets();
-        window.addEventListener("beforeinstallprompt", async (event) => {
-            event.preventDefault();
-            this.installPrompt = event;
-            this.enableInstallTargets();
-        });
+    _handleBeforeInstallPrompt = (event) => {
+        event.preventDefault();
+        this.deferredPrompt = event;
+        this.isInstalled = false;
+        this.dispatchEvent('not-installed');
+    };
+
+    _handleAppInstalled = () => {
+        this.isInstalled = true;
+        this.deferredPrompt = null;
+        this.dispatchEvent('installed');
+    };
+
+    connect() {
+        window.addEventListener('beforeinstallprompt', this._handleBeforeInstallPrompt);
+        window.addEventListener('appinstalled', this._handleAppInstalled, { once: true });
+        const displayModes = ['fullscreen', 'minimal-ui', 'window-controls-overlay'];
+        const isStandaloneDisplay = displayModes.some(mode =>
+            window.matchMedia(`(display-mode: ${mode})`).matches
+        );
+
+        const isStandalone =
+            isStandaloneDisplay ||
+            window.navigator.standalone === true ||
+            window.self === window.top;
+
+        if (isStandalone) {
+            this.isInstalled = true;
+            this.dispatchEvent('installed');
+        } else {
+            this.dispatchEvent('not-installed');
+        }
+    }
+
+    disconnect() {
+        window.removeEventListener('beforeinstallprompt', this._handleBeforeInstallPrompt);
     }
 
     async install() {
-        if (!this.installPrompt) {
+        if (!this.deferredPrompt) {
             return;
         }
-        const result = await this.installPrompt.prompt();
-        if (result.outcome === 'accepted') {
-            this.disableInstallTargets();
-        } else {
-            this.dispatchEvent('install:cancelled');
-            this.dispatchEvent('pwa:install:cancelled');
+
+        this.dispatchEvent('installing');
+
+        try {
+            const result = await this.deferredPrompt.prompt();
+            this.deferredPrompt = null;
+
+            if (result.outcome !== 'accepted') {
+                this.dispatchEvent('cancelled');
+            }
+        } catch (e) {
+            this.dispatchEvent('cancelled');
         }
-    }
-
-    enableInstallTargets() {
-        this.installTargets.forEach((installElement) => {
-            installElement.removeAttribute("hidden");
-        });
-    }
-
-    disableInstallTargets() {
-        this.installTargets.forEach((installElement) => {
-            installElement.setAttribute("hidden", "");
-        });
     }
 }

@@ -17,14 +17,14 @@
                 "name": "pwa/badge",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "battery": {
                 "main": "src/battery_controller.js",
                 "name": "pwa/battery",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "connection-status": {
                 "main": "src/connection-status_controller.js",
@@ -38,56 +38,56 @@
                 "name": "pwa/contact",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "device-motion": {
                 "main": "src/device-motion_controller.js",
                 "name": "pwa/device-motion",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "device-orientation": {
                 "main": "src/device-orientation_controller.js",
                 "name": "pwa/device-orientation",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "file-handling": {
                 "main": "src/file-handling_controller.js",
                 "name": "pwa/file-handling",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "fullscreen": {
                 "main": "src/fullscreen_controller.js",
                 "name": "pwa/fullscreen",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "geolocation": {
                 "main": "src/geolocation_controller.js",
                 "name": "pwa/geolocation",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "install": {
                 "main": "src/install_controller.js",
                 "name": "pwa/install",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "network-information": {
                 "main": "src/network-information_controller.js",
                 "name": "pwa/network-information",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "prefetch-on-demand": {
                 "main": "src/prefetch-on-demand_controller.js",
@@ -101,41 +101,41 @@
                 "name": "pwa/picture-in-picture",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "presentation": {
                 "main": "src/presentation_controller.js",
                 "name": "pwa/presentation",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "receiver": {
                 "main": "src/receiver_controller.js",
                 "name": "pwa/receiver",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "share": {
                 "main": "src/share_controller.js",
                 "name": "pwa/share",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "capture": {
                 "main": "src/capture_controller.js",
                 "name": "pwa/capture",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "speech-synthesis": {
                 "main": "src/speech-synthesis_controller.js",
                 "name": "pwa/speech-synthesis",
                 "webpackMode": "eager",
-                "fetch": "eager",
+                "fetch": "false",
                 "enabled": true
             },
             "touch": {
@@ -143,21 +143,21 @@
                 "name": "pwa/touch",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "vibration": {
                 "main": "src/vibration_controller.js",
                 "name": "pwa/vibration",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "wake-lock": {
                 "main": "src/wake-lock_controller.js",
                 "name": "pwa/wake-lock",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             }
         },
         "importmap": {

@@ -8,20 +8,20 @@ export default class extends AbstractController {
 
     locate({params}) {
         if (!navigator.geolocation) {
-            this.dispatchEvent('pwa:geolocation:unsupported');
+            this.dispatchEvent('unsupported');
             return;
         }
 
         navigator.geolocation.getCurrentPosition(
-            (position) => {this.dispatchEvent('pwa:geolocation:position', {position});},
-            (error) => {this.dispatchEvent('pwa:geolocation:error', {error: error});},
+            (position) => {this.dispatchEvent('position', {position});},
+            (error) => {this.dispatchEvent('error', {error: error});},
             params
         );
     }
 
     watch({params}) {
         if (!navigator.geolocation) {
-            this.dispatchEvent('pwa:geolocation:unsupported');
+            this.dispatchEvent('unsupported');
             return;
         }
         if (this.watchId) {
@@ -29,8 +29,8 @@ export default class extends AbstractController {
         }
 
         this.watchId = navigator.geolocation.watchPosition(
-            (position) => {this.dispatchEvent('pwa:geolocation:position', {position});},
-            (error) => {this.dispatchEvent('pwa:geolocation:error', {error});},
+            (position) => {this.dispatchEvent('position', {position});},
+            (error) => {this.dispatchEvent('error', {error});},
             params
         );
     }
@@ -42,6 +42,6 @@ export default class extends AbstractController {
 
         navigator.geolocation.clearWatch(this.watchId);
         this.watchId = null;
-        this.dispatchEvent('pwa:geolocation:watch:cleared');
+        this.dispatchEvent('watch:cleared');
     }
 }
