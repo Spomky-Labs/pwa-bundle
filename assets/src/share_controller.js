@@ -7,18 +7,18 @@ export default class extends AbstractController {
     async share({params}) {
         const {data} = params;
         if (!data) {
-            console.error("No data provided");
+            this.dispatchEvent('error', {data, error: 'No data provided.'});
             return;
         }
         try {
             if (!navigator.canShare || !navigator.canShare(data)) {
-                console.error("Cannot share data");
+                this.dispatchEvent('error', {data, error: 'Cannot share data.'});
                 return;
             }
             await navigator.share(data);
-            this.dispatchEvent('pwa:share:success', {data});
+            this.dispatchEvent('success', {data});
         } catch (error) {
-            console.error("Error sharing", {error});
+            this.dispatchEvent('error', {data, error});
         }
     }
 }

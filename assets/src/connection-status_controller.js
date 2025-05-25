@@ -46,5 +46,6 @@ export default class extends AbstractController {
             element.setAttribute('data-connection-status', data.status);
         });
         this.dispatchEvent('pwa:connection-status:changed', { detail: data });
+        this.dispatchEvent('changed', { detail: data });
     }
 }

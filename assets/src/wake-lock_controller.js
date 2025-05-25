@@ -14,28 +14,49 @@ export default class extends AbstractController {
             this.lock();
             document.addEventListener('visibilitychange', this._handleVisibilityChange);
         }
+        this.status();
+    }
+
+    disconnect() {
+        document.removeEventListener('visibilitychange', this._handleVisibilityChange);
+        this.release();
     }
 
     async lock() {
+        if (!('wakeLock' in navigator) || this.wakeLock) {
+            return;
+        }
+
         this.wakeLock = await navigator.wakeLock.request('screen');
         this.wakeLock.addEventListener('release', () => {
-            this.dispatchEvent('pwa:wake-lock:released');
+            this.dispatchEvent('updated', {wakeLock: null});
             this.wakeLock = null;
         });
-        this.dispatchEvent('pwa:wake-lock:active', {wakeLock: this.wakeLock});
+        this.dispatchEvent('updated', {wakeLock: this.wakeLock});
     }
 
     async release() {
         if (this.wakeLock) {
             this.wakeLock.release();
+            this.wakeLock = null;
         }
+    }
+
+    async toggle() {
+        if (this.wakeLock) {
+            await this.release();
+        } else {
+            await this.lock();
+        }
+    }
+
+    async status() {
+        this.dispatchEvent('updated', {wakeLock: this.wakeLock || null});
     }
 
     _handleVisibilityChange = async () => {
         if (document.visibilityState === 'visible') {
-            setTimeout(async () => {
-                await this.lock();
-            }, 1000);
+            setTimeout(async () => await this.lock(), 1000);
         }
     };
 }

@@ -11,7 +11,7 @@ export default class extends AbstractController {
         window.launchQueue.setConsumer((launchParams) => {
             launchParams.files.forEach(async (file) => {
                 const data = URL.createObjectURL(await file.getFile());
-                this.dispatchEvent('pwa:file:selected', {data});
+                this.dispatchEvent('selected', {data});
             });
         });
     }

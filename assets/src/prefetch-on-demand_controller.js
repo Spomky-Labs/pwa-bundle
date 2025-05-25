@@ -17,11 +17,7 @@ export default class extends AbstractController {
             }
         });
         this.dispatchEvent(
-            result === true ?'prefetch:prefetched': 'prefetch:error',
-            {params}
-        );
-        this.dispatchEvent(
-            result === true ?'pwa:prefetch:prefetched': 'pwa:prefetch:error',
+            result === true ?'prefetched': 'error',
             {params}
         );
     }

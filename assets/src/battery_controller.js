@@ -4,33 +4,38 @@ import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
+    battery = null;
+
+    _onBatteryChange = () => this.dispatchBatteryInfo();
+
     async connect() {
-        const battery = await navigator.getBattery();
-        battery.addEventListener('chargingchange', () => this.updateChargeInfo(battery));
-        battery.addEventListener('levelchange', () => this.updateLevelInfo(battery));
-        battery.addEventListener('chargingtimechange', () => this.updateChargingInfo(battery));
-        battery.addEventListener('dischargingtimechange', () => this.updateDischargingInfo(battery));
+        this.battery = await navigator.getBattery();
 
-        await this.updateChargeInfo(battery);
-        await this.updateLevelInfo(battery);
-        await this.updateChargingInfo(battery);
-        await this.updateDischargingInfo(battery);
-    }
-    update = async ({counter}) => {
-        await navigator.setAppBadge(counter);
-        this.dispatchEvent('pwa:battery:updated', { counter });
+        this.battery.addEventListener('chargingchange', this._onBatteryChange);
+        this.battery.addEventListener('levelchange', this._onBatteryChange);
+        this.battery.addEventListener('chargingtimechange', this._onBatteryChange);
+        this.battery.addEventListener('dischargingtimechange', this._onBatteryChange);
+
+        this.dispatchBatteryInfo();
     }
 
-    updateChargeInfo = async (battery) => {
-        this.dispatchEvent('pwa:battery:charge', { charging: battery.charging });
+    disconnect() {
+        if (!this.battery) return;
+
+        this.battery.removeEventListener('chargingchange', this._onBatteryChange);
+        this.battery.removeEventListener('levelchange', this._onBatteryChange);
+        this.battery.removeEventListener('chargingtimechange', this._onBatteryChange);
+        this.battery.removeEventListener('dischargingtimechange', this._onBatteryChange);
     }
-    updateLevelInfo = async (battery) => {
-        this.dispatchEvent('pwa:battery:level', { level: battery.level });
-    }
-    updateChargingInfo = async (battery) => {
-        this.dispatchEvent('pwa:battery:chargingtime', { chargingTime: battery.chargingTime });
-    }
-    updateDischargingInfo = async (battery) => {
-        this.dispatchEvent('pwa:battery:dischargingtime', { dischargingTime: battery.dischargingTime });
+
+    dispatchBatteryInfo() {
+        if (!this.battery) return;
+        const { charging, level, chargingTime, dischargingTime } = this.battery;
+        this.dispatchEvent('updated', {
+            charging,
+            level,
+            chargingTime,
+            dischargingTime
+        });
     }
 }

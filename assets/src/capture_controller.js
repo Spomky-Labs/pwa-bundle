@@ -4,16 +4,31 @@ import AbstractController from './abstract_controller.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
-    static targets = ['destination', 'download', 'element', 'region'];
+    static targets = ['element', 'region'];
     stream = null;
+    recorder = null;
+
+    disconnect() {
+        this.stop();
+    }
+
+    record(timeSlice = 1000) {
+        if (this.recorder && this.recorder.state === 'inactive') {
+            this.recorder.start(timeSlice);
+        }
+    }
+
+    isRecording() {
+        return this.recorder?.state === 'recording';
+    }
 
     getSupportedConstraints = async() => {
         try {
             this._checkCaptureSupported();
             const constraints = navigator.mediaDevices.getSupportedConstraints();
-            this.dispatchEvent('pwa:capture:constraints', {constraints});
+            this.dispatchEvent('constraints', {constraints});
         } catch (error) {
-            this.dispatchEvent('pwa:capture:error', {error});
+            this.dispatchEvent('error', {error});
         }
     }
 
@@ -21,30 +36,28 @@ export default class extends AbstractController {
         try {
             this._checkMediaSupported();
             const devices = await navigator.mediaDevices.enumerateDevices();
-            this.dispatchEvent('pwa:capture:devices', {devices});
+            this.dispatchEvent('devices', {devices});
         } catch (error) {
-            this.dispatchEvent('pwa:capture:error', {error});
+            this.dispatchEvent('error', {error});
         }
     }
 
     media = async({params}) => {
-        this._hideDownload();
         try {
+            this.stop();
             this._checkMediaSupported();
-            this._ensureStopped();
-            this.stream = await navigator.mediaDevices.getUserMedia(params.contraints ?? {audio: true, video: true});
+            this.stream = await navigator.mediaDevices.getUserMedia(params.constraints ?? {audio: true, video: true});
             this._prepareTracks();
             this._broadcast();
         } catch (error) {
-            this.dispatchEvent('pwa:capture:error', {error});
+            this.dispatchEvent('error', {error});
         }
     }
 
     capture = async({params}) => {
-        this._hideDownload();
         try {
+            this.stop();
             this._checkCaptureSupported();
-            this._ensureStopped();
             const controller = new CaptureController();
             if (params.focusBehavior) {
                 controller.setFocusBehavior(params.focusBehavior);
@@ -62,14 +75,14 @@ export default class extends AbstractController {
             this.stream = await navigator.mediaDevices.getDisplayMedia(options);
             this._prepareTracks();
             if (this.hasElementTarget) {
-                this.restrictToElement({target: this.elementTarget});
+                await this.restrictToElement({target: this.elementTarget});
             }
             if (this.hasRegionTarget) {
-                this.restrictToRegion({target: this.regionTarget});
+                await this.restrictToRegion({target: this.regionTarget});
             }
             this._broadcast();
         } catch (error) {
-            this.dispatchEvent('pwa:capture:error', {error});
+            this.dispatchEvent('error', {error});
         }
     }
 
@@ -91,102 +104,64 @@ export default class extends AbstractController {
 
     _checkCaptureSupported = () => {
         if (!navigator.mediaDevices.getDisplayMedia) {
-            throw "Your device does not support the Screen Capture API";
+            throw new Error("Your device does not support the Screen Capture API");
         }
     }
 
-    stop = async () => {
-        this._ensureStopped();
-        this._hideDestination();
+    stop = () => {
+        if (this.recorder && this.recorder.state !== 'inactive') {
+            this.recorder.stop(); // Ne pas nettoyer ici, attendre l'événement
+            return;
+        }
+
+        this._cleanUp();
+    }
+
+    _cleanUp = () => {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
+
+        this.recorder = null;
+        this.dispatchEvent('recorder:stop');
     }
 
     _checkMediaSupported = () => {
         if (!navigator.mediaDevices.getUserMedia) {
-            throw "Your device does not support the User Media API";
+            throw new Error("Your device does not support the User Media API");
         }
-    }
-
-    _showDestination = () => {
-        this.destinationTargets.forEach((target) => {
-            target.removeAttribute('hidden');
-            target.srcObject = new MediaStream(this.stream.getTracks());
-        })
-    }
-
-    _hideDestination = () => {
-        this.destinationTargets.forEach((target) => {
-            target.srcObject = null;
-            target.setAttribute('hidden');
-        })
-    }
-
-    _showDownload = (exportUrl) => {
-        this.downloadTargets.forEach((target) => {
-            target.href = exportUrl;
-            target.download = 'video.mp4';
-            target.removeAttribute('hidden');
-        });
-    }
-
-    _hideDownload = () => {
-        this.downloadTargets.forEach((target) => {
-            target.setAttribute('hidden', '');
-        });
     }
 
     _broadcast = () => {
-        window.recorder = new MediaRecorder(this.stream);
-        if (this.downloadTargets.length !== 0) {
-            const chunks = [];
-            window.recorder.addEventListener('dataavailable', (event) => {
-                if (event.data.size <= 0) {
-                    return;
-                }
-                chunks.push(event.data);
-            });
-            window.recorder.addEventListener('stop', () => {
-                const file = new File(chunks, 'video.mp4', {type: 'video/mp4'});
-                const exportUrl  = URL.createObjectURL(file);
-                this.dispatchEvent('pwa:capture:available', {exportUrl});
-                this._showDownload(exportUrl);
-            });
-        }
-        window.recorder.addEventListener('start', () => {
-            const info = tracks.map((track) => {
+        this.recorder = new MediaRecorder(this.stream);
+        this.recorder.addEventListener('dataavailable', (event) => {
+            this.dispatchEvent('recorder:data', {data: event.data});
+        });
+        this.recorder.addEventListener('start', () => {
+            const info = this.stream.getTracks().map((track) => {
                 return {
                     capabilities: track.getCapabilities(),
                     settings: track.getSettings()
                 };
             });
-            this.dispatchEvent('pwa:capture:started', info);
+            this.dispatchEvent('recorder:start', {stream: this.stream});
         });
-        window.recorder.addEventListener('stop', () => {
-            this.stream.getTracks().forEach(track => track.stop());
-            this._hideDestination();
-        });
-        this._showDestination();
+        this.recorder.addEventListener('stop', () => this._cleanUp());
 
-        window.recorder.start();
+        this.recorder.start();
     }
 
     _prepareTracks = () => {
         const tracks = this.stream.getTracks();
         if (tracks.length === 0) {
-            throw "No tracks found";
+            throw new Error("No tracks found");
         }
         tracks.forEach((track) => {
             track.addEventListener('ended', () => {
-                this.dispatchEvent('pwa:capture:track:ended', track);
-                window.recorder.stop();
+                this.dispatchEvent('track:ended', track);
+                this.recorder.stop();
             });
         });
-    }
-
-    _ensureStopped = () => {
-        if (this.stream === null) {
-            return;
-        }
-        this.stream.getTracks().forEach(track => track.stop());
-        this.stream = null;
     }
 }

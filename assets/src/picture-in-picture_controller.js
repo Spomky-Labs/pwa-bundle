@@ -10,16 +10,15 @@ export default class extends AbstractController {
 
     connect = () => {
         if (!"documentPictureInPicture" in window) {
-            this.dispatchEvent('pwa:pip:unsupported')
+            this.dispatchEvent('unsupported')
             return;
         }
-        this.dispatchEvent('pwa:pip:supported');
+        this.dispatchEvent('supported');
         window.documentPictureInPicture.addEventListener("enter", (event) => {
-            this.dispatchEvent('pwa:pip:enter', {pipWindow: event.window});
+            this.dispatchEvent('enter', {pipWindow: event.window});
         });
         this.floatingElement = this.floatingTarget ?? this.containerTarget.firstElementChild;
         this.previousElement = this.floatingElement.previousElementSibling;
-        console.log(this.previousElement);
     }
 
     toggle = async ({params}) => {
@@ -35,7 +34,7 @@ export default class extends AbstractController {
 
         pipWindow.addEventListener("pagehide", () => {
             this.restoreFloatingElement();
-            this.dispatchEvent('pwa:pip:exit');
+            this.dispatchEvent('exit');
         });
 
         if (params.propagateStyle ?? true) {
@@ -57,10 +56,8 @@ export default class extends AbstractController {
 
     restoreFloatingElement = () => {
         if (this.previousElement === null) {
-            console.log("On place this.floatingElement au début du conteneur");
             this.containerTarget.prepend(this.floatingElement);
         } else {
-            console.log("On place this.floatingElement juste après this.previousElement");
             this.previousElement.after(this.floatingElement);
         }
     }

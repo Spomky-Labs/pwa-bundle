@@ -17,13 +17,13 @@ export default class extends AbstractController {
             'message',
             (event) => {
                 const data = JSON.parse(event.data);
-                this.dispatchEvent('pwa:receiver:message', {data});
+                this.dispatchEvent('message', {data});
             }
         );
 
         connection.addEventListener(
             'close',
-            (event) => this.dispatchEvent('pwa:receiver:close', {
+            (event) => this.dispatchEvent('close', {
                 connectionId: connection.connectionId,
                 reason: event.reason,
                 message: event.message
