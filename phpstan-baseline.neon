@@ -109,18 +109,6 @@ parameters:
 			path: src/CachingStrategy/ImageCache.php
 
 		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ManifestCache\:\:__construct$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/CachingStrategy/ManifestCache.php
-
-		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\ManifestCache\:\:setLogger$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/CachingStrategy/ManifestCache.php
-
-		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\CachingStrategy\\PreloadUrlsGeneratorManager\:\:__construct$#'
 			identifier: shipmonk.deadMethod
 			count: 1
@@ -1614,19 +1602,19 @@ parameters:
 		-
 			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 36
+			count: 37
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 107
+			count: 108
 			path: src/Resources/config/definition/service_worker.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 33
+			count: 34
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1650,7 +1638,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 68
+			count: 69
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1680,7 +1668,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 37
+			count: 38
 			path: src/Resources/config/definition/service_worker.php
 
 		-
@@ -1986,7 +1974,7 @@ parameters:
 		-
 			message: '#^Strict comparison using \=\=\= between int\<1, max\> and 0 will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
-			count: 1
+			count: 2
 			path: src/ServiceWorkerRule/OfflineFallback.php
 
 		-
@@ -2024,6 +2012,18 @@ parameters:
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/ServiceWorkerRule/WindowsWidgets.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxHelpers\:\:__construct$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WorkboxHelpers.php
+
+		-
+			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxHelpers\:\:getPriority$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: src/ServiceWorkerRule/WorkboxHelpers.php
 
 		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\ServiceWorkerRule\\WorkboxImport\:\:__construct$#'
@@ -2087,12 +2087,6 @@ parameters:
 
 		-
 			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:__construct$#'
-			identifier: shipmonk.deadMethod
-			count: 1
-			path: src/Twig/PwaRuntime.php
-
-		-
-			message: '#^Unused SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:load$#'
 			identifier: shipmonk.deadMethod
 			count: 1
 			path: src/Twig/PwaRuntime.php
