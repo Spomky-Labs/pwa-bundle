@@ -39,6 +39,7 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
             return '';
         }
 
+        $cacheName = $this->workbox->offlineFallback->cacheName ?? 'offline';
         $options = [
             'pageFallback' => $this->workbox->offlineFallback->pageFallback,
             'imageFallback' => $this->workbox->offlineFallback->imageFallback,
@@ -48,7 +49,12 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
         if (count($options) === 0) {
             return '';
         }
-        $options = count($options) === 0 ? '' : $this->serializer->serialize(
+        $urls = count($options) === 0 ? '' : $this->serializer->serialize(
+            array_values($options),
+            'json',
+            $this->serializerOptions($debug)
+        );
+        $fallbacks = count($options) === 0 ? '' : $this->serializer->serialize(
             $options,
             'json',
             $this->serializerOptions($debug)
@@ -67,7 +73,28 @@ DEBUG_COMMENT;
 
         $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
-workbox.recipes.offlineFallback({$options});
+registerInstallTask(() => {
+  return caches.open('{$cacheName}').then(cache =>
+    cache.addAll({$urls})
+  );
+}, 10);
+workbox.routing.setCatchHandler(async ({ request }) => {
+  const dest = request.destination;
+  const cache = await caches.open('{$cacheName}');
+  const fallbacks = {$fallbacks};
+
+  if (dest === 'document' && fallbacks.pageFallback) {
+    return await cache.match(fallbacks.pageFallback) ?? Response.error();
+  }
+  if (dest === 'image' && fallbacks.imageFallback) {
+    return await cache.match(fallbacks.imageFallback) ?? Response.error();
+  }
+  if (dest === 'font' && fallbacks.fontFallback) {
+    return await cache.match(fallbacks.fontFallback) ?? Response.error();
+  }
+
+  return Response.error();
+});
 
 OFFLINE_FALLBACK_STRATEGY;
 
