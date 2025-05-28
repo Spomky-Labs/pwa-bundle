@@ -12,8 +12,14 @@ final class Favicons
 
     public Asset $src;
 
+    #[SerializedName('src_dark')]
+    public ?Asset $srcDark = null;
+
     #[SerializedName('background_color')]
     public null|string $backgroundColor = null;
+
+    #[SerializedName('background_color_dark')]
+    public null|string $backgroundColorDark = null;
 
     #[SerializedName('safari_pinned_tab_color')]
     public null|string $safariPinnedTabColor = null;
