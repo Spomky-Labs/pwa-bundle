@@ -25,7 +25,7 @@
         </div>
         <div class="sf-toolbar-info-piece">
             <b>└&nbsp;Workbox</b>
-            {% if collector.workbox.enabled %}
+            {% if collector.data.serviceWorker.enabled and collector.workbox.enabled %}
                 <span class="sf-toolbar-status sf-toolbar-status-green">Enabled</span>
             {% else %}
                 <span class="sf-toolbar-status sf-toolbar-status-yellow">Disabled</span>

@@ -114,7 +114,9 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         }
         if (! str_starts_with($source->src, '/')) {
             $asset = $this->assetMapper->getAsset($source->src);
-            assert($asset !== null, 'Unable to find service worker source asset');
+            if ($asset === null) {
+                return '';
+            }
             $body = $asset->content ?? file_get_contents($asset->sourcePath);
         } else {
             assert(file_exists($source->src), 'Unable to find service worker source file');
