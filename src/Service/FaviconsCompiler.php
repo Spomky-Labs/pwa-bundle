@@ -79,7 +79,18 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-                $media = $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null);
+                $media = $size['media'] ?? null;
+                if ($this->favicons->srcDark !== null) {
+                    if ($media !== null) {
+                        $media = sprintf(
+                            '(%s) and %s',
+                            $media,
+                            $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null)
+                        );
+                    } else {
+                        $media = $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null);
+                    }
+                }
 
                 yield $filename => $this->processIcon(
                     $asset,
