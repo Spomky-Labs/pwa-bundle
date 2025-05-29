@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Service;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
+use SpomkyLabs\PwaBundle\Dto\Asset;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
@@ -43,12 +44,338 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         ]);
         if ($this->imageProcessor === null || $this->favicons->enabled === false) {
             $this->logger->debug('Favicons are disabled or no image processor is available.');
-            yield from [];
-
-            return;
+            return [];
         }
-        [$asset, $hash] = $this->getFavicon();
-        assert($asset !== null, 'The asset does not exist.');
+
+        $faviconSources = [
+            'light' => [
+                'asset' => $this->favicons->src,
+                'media' => null,
+            ],
+        ];
+
+        if ($this->favicons->srcDark !== null) {
+            $faviconSources['dark'] = [
+                'asset' => $this->favicons->srcDark,
+                'media' => '(prefers-color-scheme: dark)',
+            ];
+        }
+
+        $sizes = $this->getFaviconSizes();
+
+        foreach ($faviconSources as $mode => $sourceInfo) {
+            $asset = $this->getFaviconAsset($sourceInfo['asset']);
+            $hash = hash('xxh128', $asset);
+
+            foreach ($sizes as $size) {
+                $configuration = Configuration::create(
+                    $size['width'],
+                    $size['height'],
+                    $size['format'],
+                    $mode === 'light' ? $this->favicons->backgroundColor : $this->favicons->backgroundColorDark,
+                    $this->favicons->borderRadius,
+                    $size['imageScale'] ?? $this->favicons->imageScale,
+                    $this->favicons->monochrome
+                );
+                $completeHash = hash('xxh128', $hash . $configuration);
+                $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
+                $media = $size['media'] ?? null;
+                if ($this->favicons->srcDark !== null) {
+                    if ($media !== null) {
+                        $media = sprintf(
+                            '(%s) and %s',
+                            $media,
+                            $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null)
+                        );
+                    } else {
+                        $media = $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null);
+                    }
+                }
+
+                yield $filename => $this->processIcon(
+                    $asset,
+                    $filename,
+                    $configuration,
+                    $size['mimetype'],
+                    $size['rel'],
+                    $media
+                );
+            }
+        }
+
+        if ($this->favicons->tileColor !== null) {
+            $this->logger->debug('Creating browserconfig.xml.');
+            yield from $this->processBrowserConfig(
+                $this->getFaviconAsset($this->favicons->src),
+                hash('xxh128', $this->getFaviconAsset($this->favicons->src))
+            );
+        }
+
+        if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
+            $hash = hash('xxh128', $this->getFaviconAsset($this->favicons->src));
+            $safariPinnedTab = $this->generateSafariPinnedTab($this->getFaviconAsset($this->favicons->src), $hash);
+            yield $safariPinnedTab->url => $safariPinnedTab;
+        }
+
+        $this->logger->debug('Favicons created.');
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    private function processIcon(
+        string $asset,
+        string $publicUrl,
+        Configuration $configuration,
+        string $mimeType,
+        null|string $rel,
+        null|string $media = null,
+    ): Data {
+        $this->logger->debug('Processing icon.', [
+            'publicUrl' => $publicUrl,
+            'configuration' => $configuration,
+            'mimeType' => $mimeType,
+            'rel' => $rel,
+            'media' => $media,
+        ]);
+        $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
+        if ($this->debug === true) {
+            $html = $rel === null ? null : sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
+                $rel,
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $publicUrl,
+                is_string($media) ? sprintf(' media="%s"', $media) : ''
+            );
+            return Data::create(
+                $publicUrl,
+                $closure,
+                [
+                    'Cache-Control' => 'public, max-age=604800, immutable',
+                    'Content-Type' => $mimeType,
+                    'X-Pwa-Dev' => true,
+                ],
+                $html
+            );
+        }
+        assert($this->imageProcessor !== null);
+        return Data::create(
+            $publicUrl,
+            $closure,
+            [
+                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Content-Type' => $mimeType,
+                'X-Pwa-Dev' => true,
+            ],
+            sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
+                $rel,
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $publicUrl
+            )
+        );
+    }
+
+    /**
+     * @return array<Data>
+     */
+    private function processBrowserConfig(string $asset, string $hash): array
+    {
+        if ($this->favicons->useSilhouette === true && $this->debug === false) {
+            $asset = $this->generateSilhouette($asset);
+        }
+        $this->logger->debug('Processing browserconfig.xml.');
+        $configuration = Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale);
+        $hash = hash('xxh128', $hash . $configuration);
+        $icon70x70 = $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
+            $configuration,
+            'image/png',
+            null
+        );
+
+        $configuration = Configuration::create(150, 150, 'png', null, null, $this->favicons->imageScale);
+        $hash = hash('xxh128', $hash . $configuration);
+        $icon150x150 = $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
+            $configuration,
+            'image/png',
+            null
+        );
+
+        $configuration = Configuration::create(310, 310, 'png', null, null, $this->favicons->imageScale);
+        $hash = hash('xxh128', $hash . $configuration);
+        $icon310x310 = $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
+            $configuration,
+            'image/png',
+            null
+        );
+
+        $configuration = Configuration::create(310, 150, 'png', null, null, $this->favicons->imageScale);
+        $hash = hash('xxh128', $hash . $configuration);
+        $icon310x150 = $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
+            $configuration,
+            'image/png',
+            null
+        );
+
+        $configuration = Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale);
+        $hash = hash('xxh128', $hash . $configuration);
+        $icon144x144 = $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
+            $configuration,
+            'image/png',
+            null
+        );
+
+        if ($this->favicons->tileColor === null) {
+            $this->logger->debug('No tile color defined.');
+            $tileColor = '';
+        } else {
+            $this->logger->debug('Tile color defined.');
+            $tileColor = PHP_EOL . sprintf('            <TileColor>%s</TileColor>', $this->favicons->tileColor);
+        }
+
+        $content = <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo src="{$icon70x70->url}"/>
+            <square150x150logo src="{$icon150x150->url}"/>
+            <square310x310logo src="{$icon310x310->url}"/>
+            <wide310x150logo src="{$icon310x150->url}"/>{$tileColor}
+        </tile>
+    </msapplication>
+</browserconfig>
+XML;
+        $browserConfigHash = hash('xxh128', $content);
+        $url = sprintf('/pwa/browserconfig-%s.xml', $browserConfigHash);
+        $browserConfig = Data::create(
+            $url,
+            $content,
+            [
+                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Content-Type' => 'application/xml',
+                'X-Pwa-Dev' => true,
+                'Etag' => hash('xxh128', $content),
+            ],
+            sprintf('<meta name="msapplication-config" content="%s">', $url)
+        );
+
+        return [
+            $icon70x70->url => $icon70x70,
+            $icon150x150->url => $icon150x150,
+            $icon310x310->url => $icon310x310,
+            $icon310x150->url => $icon310x150,
+            $icon144x144->url => Data::create(
+                $icon144x144->url,
+                $icon144x144->getRawData(),
+                $icon144x144->headers,
+                sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
+            ),
+            $browserConfig->url => $browserConfig,
+        ];
+    }
+
+    private function generateSafariPinnedTab(string $content, string $hash): Data
+    {
+        $callback = fn (): string => $this->generateSilhouette($content);
+        $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
+
+        return Data::create(
+            $url,
+            $callback,
+            [
+                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Content-Type' => 'image/svg+xml',
+                'X-Pwa-Dev' => true,
+                'Etag' => $hash,
+            ],
+            sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)
+        );
+    }
+
+    private function generateSilhouette(string $asset): string
+    {
+        assert($this->imageProcessor !== null);
+        $bmp = $this->imageProcessor->process($asset, null, null, null, configuration: Configuration::create(
+            512,
+            512,
+            'bmp',
+            'white'
+        ));
+        $tempFile = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
+        assert($tempFile !== false, 'Unable to create a temporary file');
+        file_put_contents($tempFile, $bmp);
+        $tempOutput = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
+        assert($tempOutput !== false, 'Unable to create a temporary file');
+
+        $command = [
+            $this->favicons->potrace,
+            '--alphamax', '0',
+            '--opttolerance', '0',
+            '--turdsize', '0',
+            '--flat',
+            '--color', '#ffffff',
+            '--svg',
+            '-o',
+            $tempOutput,
+            $tempFile,
+        ];
+
+        $process = new Process($command);
+
+        try {
+            $result = $process->run();
+            if ($result !== 0) {
+                throw new RuntimeException('Unable to run potrace. Error: ' . $process->getErrorOutput());
+            }
+            $process->wait();
+        } catch (ProcessFailedException $exception) {
+            throw new RuntimeException('Unable to generate the Safari pinned tab icon.', 0, $exception);
+        }
+        $svg = file_get_contents($tempOutput);
+        assert($svg !== false, 'Unable to read the SVG file');
+        unlink($tempFile);
+        unlink($tempOutput);
+
+        return $svg;
+    }
+
+    private function getFaviconAsset(Asset $source): string
+    {
+        if (! str_starts_with($source->src, '/')) {
+            $asset = $this->assetMapper->getAsset($source->src);
+            assert($asset !== null, 'Unable to find the favicon source asset');
+            return $asset->content ?? file_get_contents($asset->sourcePath);
+        }
+
+        assert(file_exists($source->src), 'Unable to find the favicon source file');
+        $data = file_get_contents($source->src);
+        assert($data !== false, 'Unable to read the favicon source file');
+
+        return $data;
+    }
+
+    /**
+     * @return array{url: string, width: int, height: int, format: string, mimetype: string, rel: string}[]
+     */
+    private function getFaviconSizes(): array
+    {
         $sizes = [
             //Always
             [
@@ -374,293 +701,6 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ];
         }
 
-        foreach ($sizes as $size) {
-            $configuration = Configuration::create(
-                $size['width'],
-                $size['height'],
-                $size['format'],
-                $this->favicons->backgroundColor,
-                $this->favicons->borderRadius,
-                $size['imageScale'] ?? $this->favicons->imageScale,
-                $this->favicons->monochrome
-            );
-            $completeHash = hash('xxh128', $hash . $configuration);
-            $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-            yield $filename => $this->processIcon(
-                $asset,
-                $filename,
-                $configuration,
-                $size['mimetype'],
-                $size['rel'],
-                $size['media'] ?? null
-            );
-        }
-        if ($this->favicons->tileColor !== null) {
-            $this->logger->debug('Creating browserconfig.xml.');
-            yield from $this->processBrowserConfig($asset, $hash);
-        }
-        if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
-            $safariPinnedTab = $this->generateSafariPinnedTab($asset, $hash);
-            yield $safariPinnedTab->url => $safariPinnedTab;
-        }
-        $this->logger->debug('Favicons created.');
-    }
-
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    private function processIcon(
-        string $asset,
-        string $publicUrl,
-        Configuration $configuration,
-        string $mimeType,
-        null|string $rel,
-        null|string $media = null,
-    ): Data {
-        $this->logger->debug('Processing icon.', [
-            'publicUrl' => $publicUrl,
-            'configuration' => $configuration,
-            'mimeType' => $mimeType,
-            'rel' => $rel,
-            'media' => $media,
-        ]);
-        $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
-        if ($this->debug === true) {
-            $html = $rel === null ? null : sprintf(
-                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
-                $rel,
-                $configuration->width,
-                $configuration->height,
-                $mimeType,
-                $publicUrl,
-                is_string($media) ? sprintf(' media="%s"', $media) : ''
-            );
-            return Data::create(
-                $publicUrl,
-                $closure,
-                [
-                    'Cache-Control' => 'public, max-age=604800, immutable',
-                    'Content-Type' => $mimeType,
-                    'X-Pwa-Dev' => true,
-                ],
-                $html
-            );
-        }
-        assert($this->imageProcessor !== null);
-        return Data::create(
-            $publicUrl,
-            $closure,
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => $mimeType,
-                'X-Pwa-Dev' => true,
-            ],
-            sprintf(
-                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
-                $rel,
-                $configuration->width,
-                $configuration->height,
-                $mimeType,
-                $publicUrl
-            )
-        );
-    }
-
-    /**
-     * @return array<Data>
-     */
-    private function processBrowserConfig(string $asset, string $hash): array
-    {
-        if ($this->favicons->useSilhouette === true && $this->debug === false) {
-            $asset = $this->generateSilhouette($asset);
-        }
-        $this->logger->debug('Processing browserconfig.xml.');
-        $configuration = Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale);
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon70x70 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(150, 150, 'png', null, null, $this->favicons->imageScale);
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon150x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(310, 310, 'png', null, null, $this->favicons->imageScale);
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x310 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(310, 150, 'png', null, null, $this->favicons->imageScale);
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale);
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon144x144 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        if ($this->favicons->tileColor === null) {
-            $this->logger->debug('No tile color defined.');
-            $tileColor = '';
-        } else {
-            $this->logger->debug('Tile color defined.');
-            $tileColor = PHP_EOL . sprintf('            <TileColor>%s</TileColor>', $this->favicons->tileColor);
-        }
-
-        $content = <<<XML
-<?xml version="1.0" encoding="utf-8"?>
-<browserconfig>
-    <msapplication>
-        <tile>
-            <square70x70logo src="{$icon70x70->url}"/>
-            <square150x150logo src="{$icon150x150->url}"/>
-            <square310x310logo src="{$icon310x310->url}"/>
-            <wide310x150logo src="{$icon310x150->url}"/>{$tileColor}
-        </tile>
-    </msapplication>
-</browserconfig>
-XML;
-        $browserConfigHash = hash('xxh128', $content);
-        $url = sprintf('/pwa/browserconfig-%s.xml', $browserConfigHash);
-        $browserConfig = Data::create(
-            $url,
-            $content,
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => 'application/xml',
-                'X-Pwa-Dev' => true,
-                'Etag' => hash('xxh128', $content),
-            ],
-            sprintf('<meta name="msapplication-config" content="%s">', $url)
-        );
-
-        return [
-            $icon70x70->url => $icon70x70,
-            $icon150x150->url => $icon150x150,
-            $icon310x310->url => $icon310x310,
-            $icon310x150->url => $icon310x150,
-            $icon144x144->url => Data::create(
-                $icon144x144->url,
-                $icon144x144->getRawData(),
-                $icon144x144->headers,
-                sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
-            ),
-            $browserConfig->url => $browserConfig,
-        ];
-    }
-
-    /**
-     * @return array{0: string, 1: string}
-     */
-    private function getFavicon(): array
-    {
-        $source = $this->favicons->src;
-        $this->logger->debug('Favicons are enabled. Trying to get the asset.', [
-            'src' => $source,
-        ]);
-        if (! str_starts_with($source->src, '/')) {
-            $asset = $this->assetMapper->getAsset($source->src);
-            assert($asset !== null, 'Unable to find the favicon source asset');
-            return [$asset->content ?? file_get_contents($asset->sourcePath), $asset->digest];
-        }
-        assert(file_exists($source->src), 'Unable to find the favicon source file');
-        $data = file_get_contents($source->src);
-        assert($data !== false, 'Unable to read the favicon source file');
-        $hash = hash('xxh128', $data);
-
-        return [$data, $hash];
-    }
-
-    private function generateSafariPinnedTab(string $content, string $hash): Data
-    {
-        $callback = fn (): string => $this->generateSilhouette($content);
-        $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
-
-        return Data::create(
-            $url,
-            $callback,
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => 'image/svg+xml',
-                'X-Pwa-Dev' => true,
-                'Etag' => $hash,
-            ],
-            sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)
-        );
-    }
-
-    private function generateSilhouette(string $asset): string
-    {
-        assert($this->imageProcessor !== null);
-        $bmp = $this->imageProcessor->process($asset, null, null, null, configuration: Configuration::create(
-            512,
-            512,
-            'bmp',
-            'white'
-        ));
-        $tempFile = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
-        assert($tempFile !== false, 'Unable to create a temporary file');
-        file_put_contents($tempFile, $bmp);
-        $tempOutput = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
-        assert($tempOutput !== false, 'Unable to create a temporary file');
-
-        $command = [
-            $this->favicons->potrace,
-            '--alphamax', '0',
-            '--opttolerance', '0',
-            '--turdsize', '0',
-            '--flat',
-            '--color', '#ffffff',
-            '--svg',
-            '-o',
-            $tempOutput,
-            $tempFile,
-        ];
-
-        $process = new Process($command);
-
-        try {
-            $result = $process->run();
-            if ($result !== 0) {
-                throw new RuntimeException('Unable to run potrace. Error: ' . $process->getErrorOutput());
-            }
-            $process->wait();
-        } catch (ProcessFailedException $exception) {
-            throw new RuntimeException('Unable to generate the Safari pinned tab icon.', 0, $exception);
-        }
-        $svg = file_get_contents($tempOutput);
-        assert($svg !== false, 'Unable to read the SVG file');
-        unlink($tempFile);
-        unlink($tempOutput);
-
-        return $svg;
+        return $sizes;
     }
 }
