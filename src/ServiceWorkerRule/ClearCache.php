@@ -49,7 +49,13 @@ DEBUG_COMMENT;
 
         $declaration .= <<<CLEAR_CACHE
 registerInstallTask(() =>
-  caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+  caches.keys().then(keys =>
+    Promise.all(
+      keys
+        .filter(k => usedCacheNames.has(k))
+        .map(k => caches.delete(k))
+    )
+  )
 , 0);
 
 CLEAR_CACHE;
