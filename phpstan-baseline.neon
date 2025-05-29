@@ -1080,7 +1080,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 6
+			count: 8
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1098,19 +1098,19 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 15
+			count: 17
 			path: src/Resources/config/definition/favicons.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 3
+			count: 4
 			path: src/Resources/config/definition/favicons.php
 
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 11
+			count: 13
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1140,7 +1140,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 5
+			count: 7
 			path: src/Resources/config/definition/favicons.php
 
 		-
@@ -1840,21 +1840,15 @@ parameters:
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFavicon\(\) should return array\{string, string\} but returns array\{string\|false, string\}\.$#'
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFaviconAsset\(\) should return string but returns string\|false\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Service/FaviconsCompiler.php
 
 		-
-			message: '#^Offset ''imageScale'' on non\-empty\-array\<literal\-string&non\-falsy\-string, int\|\(literal\-string&non\-falsy\-string\)\> on left side of \?\? does not exist\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: src/Service/FaviconsCompiler.php
-
-		-
-			message: '#^Parameter \#6 \$media of method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:processIcon\(\) expects string\|null, int\|string\|null given\.$#'
-			identifier: argument.type
-			count: 1
+			message: '#^Strict comparison using \!\=\= between SpomkyLabs\\PwaBundle\\Dto\\Asset and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
 			path: src/Service/FaviconsCompiler.php
 
 		-
