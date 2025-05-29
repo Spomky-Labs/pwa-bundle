@@ -150,11 +150,18 @@ function statusGuard(min, max) {
     }
   };
 }
+
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
+
+const usedCacheNames = new Set();
+function registerCacheName(name) {
+  usedCacheNames.add(name);
+  return name;
+}
 CUSTOM_HELPERS;
     }
 

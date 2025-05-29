@@ -74,7 +74,7 @@ DEBUG_COMMENT;
         $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 registerInstallTask(() => {
-  return caches.open('{$cacheName}').then(cache =>
+  return caches.open(registerCacheName('{$cacheName}')).then(cache =>
     cache.addAll({$urls})
   );
 }, 10);

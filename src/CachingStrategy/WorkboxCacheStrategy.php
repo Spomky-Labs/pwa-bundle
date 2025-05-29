@@ -122,7 +122,7 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
         }
         $cacheName = '';
         if ($this->strategy !== self::STRATEGY_NETWORK_ONLY) {
-            $cacheName = sprintf("cacheName: '%s',", $this->getName() ?? $cacheObjectName);
+            $cacheName = sprintf("cacheName: registerCacheName('%s'),", $this->getName() ?? $cacheObjectName);
         }
 
         $plugins = [];
