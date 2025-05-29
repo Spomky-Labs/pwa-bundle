@@ -129,10 +129,29 @@ final readonly class PwaRuntime
             $declaration = <<<SERVICE_WORKER
 <script type="module"{$scriptAttributes}>
   import {Workbox} from '{$workboxUrl}';
+
   if ('serviceWorker' in navigator) {
     const wb = new Workbox('{$url}'{$registerOptions});
-    wb.register();
-    window.workbox = wb;
+
+    wb.addEventListener('waiting', () => {
+      const event = new CustomEvent('sw:update-available', { detail: { wb } });
+      window.dispatchEvent(event);
+    });
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload();
+        refreshing = true;
+      }
+    });
+
+    try {
+      await wb.register();
+      window.workbox = wb;
+    } catch (e) {
+      console.error('SW registration failed', e);
+    }
   }
 </script>
 SERVICE_WORKER;
