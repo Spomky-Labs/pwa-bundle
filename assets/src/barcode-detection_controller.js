@@ -37,6 +37,7 @@ export default class extends AbstractController {
         const target = event.params.target || event.target || null;
         if(!target) {
             this.dispatchEvent('error', {error: 'Invalid target'})
+            return;
         }
 
         const barcodes = await this.barcodeDetector.detect(target);
