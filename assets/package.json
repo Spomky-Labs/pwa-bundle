@@ -165,6 +165,13 @@
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": false
+            },
+            "web-push": {
+                "main": "src/web-push_controller.js",
+                "name": "pwa/web-push",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
             }
         },
         "importmap": {

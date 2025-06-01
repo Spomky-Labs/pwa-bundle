@@ -286,6 +286,63 @@ self.addEventListener('backgroundfetchfail', (event) => {
   event.waitUntil(runBackgroundFetchTasks('fail', event));
 });
 
+
+const pushTasks = [];
+function registerPushTask(callback) {
+  pushTasks.push(callback);
+}
+self.addEventListener('push', (event) => {
+    if (!(self.Notification && self.Notification.permission === 'granted')) {
+        return;
+    }
+    event.waitUntil(
+      pushTasks.reduce(
+        (chain, task) => chain.then(() => task(event)),
+        Promise.resolve()
+      )
+    );
+});
+
+const notificationActionHandlers = new Map();
+function registerNotificationAction(actionName, handler) {
+  notificationActionHandlers.set(actionName, handler);
+}
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const action = event.action || "";
+
+  const handler = notificationActionHandlers.get(action);
+  if (typeof handler === 'function') {
+    event.waitUntil(Promise.resolve(handler(event)));
+  }
+});
+const structuredPushNotificationSupport = (event) => {
+  const {data} = event;
+  const sendNotification = response => {
+    const {title, options} = JSON.parse(response);
+    return self.registration.showNotification(title, options);
+  };
+
+  if (data) {
+    const message = data.text();
+    event.waitUntil(sendNotification(message));
+  }
+}
+function simplePushNotificationSupport(event) {
+  const { data } = event;
+
+  if (!data) return;
+
+  const message = data.text();
+  const sendNotification = (text) => {
+    return self.registration.showNotification('Notification', {
+      body: text
+    });
+  };
+
+  event.waitUntil(sendNotification(message));
+}
+
 CUSTOM_HELPERS;
     }
 
