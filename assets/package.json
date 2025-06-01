@@ -5,6 +5,13 @@
     "version": "1.0.0",
     "symfony": {
         "controllers": {
+            "background-fetch": {
+                "main": "src/background-fetch_controller.js",
+                "name": "pwa/background-fetch",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
+            },
             "backgroundsync-form": {
                 "main": "src/backgroundsync-form_controller.js",
                 "name": "pwa/backgroundsync-form",
@@ -161,13 +168,16 @@
             }
         },
         "importmap": {
-            "@hotwired/stimulus": "^3.0.0"
+            "@hotwired/stimulus": "^3.0.0",
+            "idb": "^8.0"
         }
     },
     "peerDependencies": {
-        "@hotwired/stimulus": "^3.0.0"
+        "@hotwired/stimulus": "^3.0.0",
+        "idb": "^8.0"
     },
     "devDependencies": {
-        "@hotwired/stimulus": "^3.0.0"
+        "@hotwired/stimulus": "^3.0.0",
+        "idb": "^8.0"
     }
 }

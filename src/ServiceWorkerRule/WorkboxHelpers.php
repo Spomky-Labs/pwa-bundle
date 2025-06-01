@@ -118,6 +118,20 @@ function createBackgroundSyncPluginWithBroadcast(queueName, channelName, maxRete
   };
 }
 
+const messageTasks = [];
+function registerMessageTask(callback) {
+  messageTasks.push(callback);
+}
+
+self.addEventListener('message', (event) => {
+  event.waitUntil(
+    messageTasks.reduce(
+      (chain, task) => chain.then(() => task(event)),
+      Promise.resolve()
+    )
+  );
+});
+
 const installTasks = [];
 function registerInstallTask(callback, priority = 100) {
   installTasks.push({
@@ -151,9 +165,9 @@ function statusGuard(min, max) {
   };
 }
 
-self.addEventListener('message', (event) => {
+registerMessageTask(async (event) => {
   if (event.data?.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+    await self.skipWaiting();
   }
 });
 
@@ -162,6 +176,116 @@ function registerCacheName(name) {
   usedCacheNames.add(name);
   return name;
 }
+
+async function openBackgroundFetchDatabase() {
+  return await self.idb.openDB('{$this->workbox->backgroundFetch->dbName}', 1, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains('files')) {
+        db.createObjectStore('files', { keyPath: 'id' });
+      }
+
+      if (!db.objectStoreNames.contains('chunks')) {
+        const store = db.createObjectStore('chunks', { keyPath: ['id', 'index'] });
+        store.createIndex('by-id', 'id');
+      } else {
+        const store = db.transaction.objectStore('chunks');
+        if (!Array.from(store.indexNames).includes('by-id')) {
+          store.createIndex('by-id', 'id');
+        }
+      }
+    }
+  });
+}
+
+const bgFetchMetadata = new Map();
+const bgFetchChannel = new BroadcastChannel('bg-fetch');
+bgFetchChannel.onmessage = async (event) => {
+  const { type, id, meta } = event.data || {};
+
+  switch (type) {
+    case 'register-meta':
+      bgFetchMetadata.set(id, meta);
+      break;
+
+    case 'get-meta':
+      const metadata = bgFetchMetadata.get(id) || null;
+      bgFetchChannel.postMessage({ type: 'meta-response', id, metadata });
+      break;
+
+    case 'clear-meta':
+      bgFetchMetadata.delete(id);
+      break;
+      
+    case 'list-stored-files':
+      {
+        const db = await openBackgroundFetchDatabase();
+        const files = await db.getAll('files');
+        bgFetchChannel.postMessage({ type: 'stored-files', files });
+        break;
+      }
+    
+    case 'delete-stored-file':
+      {
+        const name = event.data.name;
+        const db = await openBackgroundFetchDatabase();
+        const allFiles = await db.getAll('files');
+        const target = allFiles.find(f => f.name === name);
+        if (target) {
+          await db.delete('files', target.id);
+          let index = 0;
+          while (await db.get('chunks', [target.id, index])) {
+            await db.delete('chunks', [target.id, index++]);
+          }
+        }
+        break;
+      }
+  }
+};
+
+const backgroundFetchTasks = {
+  click: [],
+  success: [],
+  fail: [],
+};
+function registerBackgroundFetchTask(type, callback, priority = 100) {
+  if (!backgroundFetchTasks[type]) {
+    throw new Error(`Unknown background fetch event type: \${type}`);
+  }
+
+  backgroundFetchTasks[type].push({
+    callback: (event) => {
+      const result = callback(event);
+      if (!result?.then) {
+        console.warn(`[\${type}] task did not return a Promise`);
+      }
+      return result;
+    },
+    priority,
+  });
+}
+
+function runBackgroundFetchTasks(type, event) {
+  const tasks = backgroundFetchTasks[type] ?? [];
+  return tasks
+    .sort((a, b) => a.priority - b.priority)
+    .reduce(
+      (chain, task) => chain.then(() => task.callback(event)),
+      Promise.resolve()
+    );
+}
+
+self.addEventListener('backgroundfetchclick', (event) => {
+  event.waitUntil(runBackgroundFetchTasks('click', event));
+});
+
+self.addEventListener('backgroundfetchsuccess', (event) => {
+  event.waitUntil(runBackgroundFetchTasks('success', event));
+});
+
+self.addEventListener('backgroundfetchfail', (event) => {
+  event.waitUntil(runBackgroundFetchTasks('fail', event));
+});
+
 CUSTOM_HELPERS;
     }
 

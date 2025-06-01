@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class ServiceWorker
 {
-    public bool $enabled;
+    public bool $enabled = false;
 
     public null|Asset $src = null;
 
