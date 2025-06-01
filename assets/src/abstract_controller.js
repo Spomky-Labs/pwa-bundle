@@ -19,7 +19,6 @@ export default class extends Controller {
     }
 
     dispatchEvent = (name, payload = {}) => {
-        console.error(name, payload);
         this.dispatch(name, { detail: payload, bubbles: true });
         this.component?.emit?.(name, payload);
     }

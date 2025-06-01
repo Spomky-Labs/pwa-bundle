@@ -18,6 +18,9 @@ final class Workbox
     #[SerializedName('workbox_public_url')]
     public string $workboxPublicUrl;
 
+    #[SerializedName('idb_public_url')]
+    public string $indexDBPublicUrl;
+
     #[SerializedName('cache_manifest')]
     public bool $cacheManifest;
 
@@ -50,4 +53,7 @@ final class Workbox
 
     #[SerializedName('clear_cache')]
     public bool $clearCache = true;
+
+    #[SerializedName('background_fetch')]
+    public null|BackgroundFetch $backgroundFetch = null;
 }

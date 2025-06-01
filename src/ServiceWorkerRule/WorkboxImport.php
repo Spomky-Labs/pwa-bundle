@@ -49,9 +49,11 @@ DEBUG_COMMENT;
             }
             $declaration .= <<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->version}/workbox-sw.js');
+importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
 IMPORT_CDN_STRATEGY;
         } else {
-            $publicUrl = '/' . trim($this->workbox->workboxPublicUrl, '/');
+            $workboxPublicUrl = '/' . trim($this->workbox->workboxPublicUrl, '/');
+            $idbPublicUrl = '/' . trim($this->workbox->indexDBPublicUrl, '/');
             if ($debug === true) {
                 $declaration .= <<<DEBUG_COMMENT
 // Import from public URL
@@ -60,8 +62,9 @@ IMPORT_CDN_STRATEGY;
 DEBUG_COMMENT;
             }
             $declaration .= <<<IMPORT_CDN_STRATEGY
-importScripts('{$publicUrl}/workbox-sw.js');
-workbox.setConfig({modulePathPrefix: '{$publicUrl}'});
+importScripts('{$workboxPublicUrl}/workbox-sw.js');
+importScripts('{$idbPublicUrl}/umd.js');
+workbox.setConfig({modulePathPrefix: '{$workboxPublicUrl}'});
 
 IMPORT_CDN_STRATEGY;
         }

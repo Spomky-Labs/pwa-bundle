@@ -27,6 +27,8 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
 
     private readonly null|string $workboxVersion;
 
+    private readonly null|string $idbPublicUrl;
+
     private LoggerInterface $logger;
 
     /**
@@ -44,11 +46,12 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
         if ($serviceWorker->enabled === true && $serviceWorker->workbox->enabled === true) {
             $this->workboxVersion = $serviceWorker->workbox->version;
-            $workboxPublicUrl = $serviceWorker->workbox->workboxPublicUrl;
-            $this->workboxPublicUrl = '/' . trim($workboxPublicUrl, '/');
+            $this->workboxPublicUrl = '/' . trim($serviceWorker->workbox->workboxPublicUrl, '/');
+            $this->idbPublicUrl = '/' . trim($serviceWorker->workbox->indexDBPublicUrl, '/');
         } else {
             $this->workboxVersion = null;
             $this->workboxPublicUrl = null;
+            $this->idbPublicUrl = null;
         }
         $this->logger = new NullLogger();
     }
@@ -65,6 +68,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         $sw = $this->compileSW();
         yield $sw->url => $sw;
         yield from $this->getWorkboxFiles();
+        yield from $this->getIndexDBFiles();
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -145,7 +149,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             if (in_array($file, ['.', '..'], true)) {
                 continue;
             }
-            if (str_contains($file, '.dev.') && $this->debug === false) {
+            if ($this->debug === false && str_contains($file, '.dev.')) {
                 continue;
             }
             $path = sprintf('%s/%s', $resourcePath, $file);
@@ -162,11 +166,85 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         }
     }
 
+    /**
+     * @return iterable<string, Data>
+     */
+    private function getIndexDBFiles(): iterable
+    {
+        if ($this->serviceWorker->workbox->enabled === false) {
+            return [];
+        }
+        if ($this->serviceWorker->workbox->useCDN === true) {
+            return [];
+        }
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources');
+        $resourcePath = $fileLocator->locate('idb');
+
+        $files = scandir($resourcePath);
+        assert(is_array($files), 'Unable to list the files.');
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'], true)) {
+                continue;
+            }
+            if ($this->debug === false && str_contains($file, '.dev.')) {
+                continue;
+            }
+            $path = sprintf('%s/%s', $resourcePath, $file);
+
+            if (! is_file($path) || ! is_readable($path)) {
+                continue;
+            }
+            $publicUrl = sprintf('%s/%s', $this->idbPublicUrl, $file);
+            $data = $this->getIndexDBFile($publicUrl);
+            if ($data === null) {
+                continue;
+            }
+            yield $data->url => $data;
+        }
+    }
+
     private function getWorkboxFile(string $publicUrl): null|Data
     {
         $asset = mb_substr($publicUrl, mb_strlen((string) $this->workboxPublicUrl));
         $fileLocator = new FileLocator(__DIR__ . '/../Resources');
         $resource = sprintf('workbox-v%s%s', $this->workboxVersion, $asset);
+        $resourcePath = $fileLocator->locate($resource, null, false);
+        if (is_array($resourcePath)) {
+            if (count($resourcePath) === 1) {
+                $resourcePath = $resourcePath[0];
+            } else {
+                return null;
+            }
+        }
+        if (! is_string($resourcePath)) {
+            return null;
+        }
+        if (! is_file($resourcePath) || ! is_readable($resourcePath)) {
+            return null;
+        }
+
+        $callback = function () use ($resourcePath): string {
+            $body = file_get_contents($resourcePath);
+            assert(is_string($body), 'Unable to load the file content.');
+
+            return $body;
+        };
+
+        return Data::create(
+            $publicUrl,
+            $callback,
+            [
+                'Content-Type' => 'application/javascript',
+                'X-Pwa-Dev' => true,
+            ]
+        );
+    }
+
+    private function getIndexDBFile(string $publicUrl): null|Data
+    {
+        $asset = mb_substr($publicUrl, mb_strlen((string) $this->idbPublicUrl));
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources');
+        $resource = sprintf('idb%s', $asset);
         $resourcePath = $fileLocator->locate($resource, null, false);
         if (is_array($resourcePath)) {
             if (count($resourcePath) === 1) {
