@@ -127,11 +127,12 @@ registerBackgroundFetchTask('success', async (event) => {
 
 BACKGROUND_FETCH_CACHE;
 
-            $failureMessage = $this->workbox->backgroundFetch->failureMessage ?? '{title} ❌';
-            if ($failureMessage !== '' && $failureMessage !== null) {
-                $failureMessage = $this->translator->trans($failureMessage, [], 'pwa');
-            }
-            $declaration .= <<<BACKGROUND_FETCH_CACHE
+        $failureMessage = $this->workbox->backgroundFetch->failureMessage ?? '{title} ❌';
+        if ($failureMessage !== '' && $failureMessage !== null) {
+            $failureMessage = $this->translator->trans($failureMessage, [], 'pwa');
+        }
+
+        return $declaration . <<<BACKGROUND_FETCH_CACHE
 registerBackgroundFetchTask('fail', async (event) => {
   const registration = event.registration;
 
@@ -154,7 +155,5 @@ registerBackgroundFetchTask('fail', async (event) => {
 });
 
 BACKGROUND_FETCH_CACHE;
-
-        return $declaration;
     }
 }

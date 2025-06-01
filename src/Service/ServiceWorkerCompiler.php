@@ -186,7 +186,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             if (in_array($file, ['.', '..'], true)) {
                 continue;
             }
-            if ( $this->debug === false && str_contains($file, '.dev.')) {
+            if ($this->debug === false && str_contains($file, '.dev.')) {
                 continue;
             }
             $path = sprintf('%s/%s', $resourcePath, $file);
