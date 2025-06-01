@@ -26,6 +26,13 @@
                 "fetch": "eager",
                 "enabled": false
             },
+            "barcode-detection": {
+                "main": "src/barcode-detection_controller.js",
+                "name": "pwa/barcode-detection",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
+            },
             "battery": {
                 "main": "src/battery_controller.js",
                 "name": "pwa/battery",
