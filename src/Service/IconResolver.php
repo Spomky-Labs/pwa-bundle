@@ -140,9 +140,10 @@ final readonly class IconResolver
                 false,
             );
         }
-        $asset = $this->assetMapper->getAsset($asset->src);
-        assert($asset instanceof MappedAsset, sprintf('Invalid asset "%s"', $asset->sourcePath));
+        $mappedAsset = $this->assetMapper->getAsset($asset->src);
+        assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));
+        assert($mappedAsset instanceof MappedAsset, sprintf('Invalid asset "%s"', $mappedAsset->sourcePath));
 
-        return $asset;
+        return $mappedAsset;
     }
 }
