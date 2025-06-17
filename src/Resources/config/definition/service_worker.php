@@ -137,7 +137,7 @@ return static function (DefinitionConfigurator $definition): void {
                             ->info('Whether to cache the manifest file.')
                         ->end()
                         ->scalarNode('version')
-                            ->defaultValue('7.0.0')
+                            ->defaultValue('7.3.0')
                             ->info('The version of workbox. When using local files, the version shall be "7.0.0."')
                         ->end()
                         ->scalarNode('workbox_public_url')
