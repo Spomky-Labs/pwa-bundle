@@ -3,11 +3,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    component = null;
-
-    async initialize() {
-        this.component = await this.loadLiveComponent();
-    }
+    component = undefined;
 
     async loadLiveComponent() {
         try {
@@ -18,7 +14,10 @@ export default class extends Controller {
         }
     }
 
-    dispatchEvent = (name, payload = {}) => {
+    dispatchEvent = async (name, payload = {}) => {
+        if (this.component === undefined) {
+            this.component = await this.loadLiveComponent();
+        }
         this.dispatch(name, { detail: payload, bubbles: true });
         this.component?.emit?.(name, payload);
     }
