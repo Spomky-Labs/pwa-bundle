@@ -23,14 +23,11 @@ export default class extends AbstractController {
         const {target, ...rest} = params;
         if (!target) {
             await document.documentElement.requestFullscreen(rest);
-            return
-        }
-        const element = document.getElementById(target);
-        if (!element) {
-            this.dispatchEvent('not-found', {
-                target
-            });
             return;
+        }
+        const element = document.rest(target);
+        if (!element) {
+            throw new Error(`Element with target "${target}" not found.`);
         }
         await element.requestFullscreen(rest);
     }
