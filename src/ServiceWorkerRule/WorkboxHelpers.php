@@ -310,10 +310,20 @@ function registerNotificationAction(actionName, handler) {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const action = event.action || "";
+  const promises = [];
 
-  const handler = notificationActionHandlers.get(action);
-  if (typeof handler === 'function') {
-    event.waitUntil(Promise.resolve(handler(event)));
+  const specificHandler = notificationActionHandlers.get(action);
+  if (typeof specificHandler === 'function') {
+    promises.push(Promise.resolve(specificHandler(event)));
+  }
+
+  const wildcardHandler = notificationActionHandlers.get('*');
+  if (typeof wildcardHandler === 'function') {
+    promises.push(Promise.resolve(wildcardHandler(event)));
+  }
+
+  if (promises.length > 0) {
+    event.waitUntil(Promise.all(promises));
   }
 });
 const structuredPushNotificationSupport = (event) => {

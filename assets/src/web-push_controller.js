@@ -20,7 +20,7 @@ export default class extends AbstractController {
             return;
         }
 
-        this.dispatchEvent('subscribed', {subscription});
+        this._dispatchSubscription(subscription);
     }
 
     async subscribe() {
@@ -29,10 +29,10 @@ export default class extends AbstractController {
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
             const subscription = await serviceWorkerRegistration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(this.applicationServerKeyValue),
+                applicationServerKey: this._urlBase64ToUint8Array(this.applicationServerKeyValue),
             });
             if (subscription) {
-                this.dispatchEvent('subscribed', {subscription});
+                this._dispatchSubscription(subscription);
             }
         } catch (error) {
             if (Notification.permission === 'denied') {
@@ -79,7 +79,7 @@ export default class extends AbstractController {
         throw new Error('Unknown permission');
     }
 
-    urlBase64ToUint8Array(base64String) {
+    _urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
 
@@ -90,5 +90,17 @@ export default class extends AbstractController {
             outputArray[i] = rawData.charCodeAt(i);
         }
         return outputArray;
+    }
+
+    _dispatchSubscription(subscription) {
+        const supportedContentEncodings = PushManager.supportedContentEncodings || ['aesgcm'];
+        console.warn({
+            supportedContentEncodings,
+            ...subscription.toJSON(),
+        })
+        this.dispatchEvent('subscribed', {
+            supportedContentEncodings,
+            ...subscription.toJSON(),
+        });
     }
 }
