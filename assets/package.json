@@ -131,13 +131,6 @@
                 "fetch": "eager",
                 "enabled": false
             },
-            "share": {
-                "main": "src/share_controller.js",
-                "name": "pwa/share",
-                "webpackMode": "eager",
-                "fetch": "eager",
-                "enabled": false
-            },
             "capture": {
                 "main": "src/capture_controller.js",
                 "name": "pwa/capture",
@@ -179,6 +172,13 @@
                 "webpackMode": "eager",
                 "fetch": "eager",
                 "enabled": false
+            },
+            "web-share": {
+              "main": "src/web-share_controller.js",
+              "name": "pwa/web-share",
+              "webpackMode": "eager",
+              "fetch": "eager",
+              "enabled": false
             }
         },
         "importmap": {
