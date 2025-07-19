@@ -17,7 +17,6 @@ export default class extends Controller {
       .filter((voice) => params.type === 'distant' ? voice.localService === false : true)
       .filter((voice) => params.type === 'local' ? voice.localService === true : true)
     ;
-    console.log(voices);
 
     return voices;
   }

@@ -25,7 +25,7 @@ export default class extends AbstractController {
             await document.documentElement.requestFullscreen(rest);
             return;
         }
-        const element = document.rest(target);
+        const element = document.querySelector(target);
         if (!element) {
             throw new Error(`Element with target "${target}" not found.`);
         }

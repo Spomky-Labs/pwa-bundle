@@ -94,10 +94,6 @@ export default class extends AbstractController {
 
     _dispatchSubscription(subscription) {
         const supportedContentEncodings = PushManager.supportedContentEncodings || ['aesgcm'];
-        console.warn({
-            supportedContentEncodings,
-            ...subscription.toJSON(),
-        })
         this.dispatchEvent('subscribed', {
             supportedContentEncodings,
             ...subscription.toJSON(),

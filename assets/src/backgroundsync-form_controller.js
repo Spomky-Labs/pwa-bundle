@@ -108,7 +108,6 @@ export default class extends AbstractController {
 
     _onMessage(event) {
         const {remaining} = event;
-        console.warn('BackgroundSyncFormController received message:', event);
         if (Number.isInteger(remaining)) {
             this.dispatchEvent('status', { remaining });
         }
