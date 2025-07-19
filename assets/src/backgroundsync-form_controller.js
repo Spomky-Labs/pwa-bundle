@@ -1,6 +1,7 @@
 'use strict';
 
 import AbstractController from './abstract_controller.js';
+import { signJWT } from './jwt_signer.js';
 
 /* stimulusFetch: 'lazy' */
 export default class extends AbstractController {
@@ -17,6 +18,8 @@ export default class extends AbstractController {
         },
         headers: { type: Object, default: {} },
         redirection: { type: String, default: null },
+        authenticating: { type: Boolean, default: false },
+        keyIdIndex: { type: String, default: 'default' },
     };
 
     send = async (event) => {
@@ -50,6 +53,16 @@ export default class extends AbstractController {
                     return;
             }
             params.method = (form.method || 'GET').toUpperCase();
+            if (this.authenticatingValue === true) {
+                const keyIdIndex = this.keyIdIndexValue;
+                const jwt = await signJWT(keyIdIndex);
+                if (jwt) {
+                    params.headers['Authorization'] = `Bearer ${jwt}`;
+                } else {
+                    this.dispatchEvent('auth-missing-key', { keyIdIndex });
+                    return;
+                }
+            }
             this.dispatchEvent('before:send', { url, params });
             const response = await fetch(url, params);
             this.dispatchEvent('after:send', { url, params, response });
