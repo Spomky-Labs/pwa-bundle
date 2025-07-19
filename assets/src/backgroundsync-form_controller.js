@@ -20,7 +20,25 @@ export default class extends AbstractController {
         redirection: { type: String, default: null },
         authenticating: { type: Boolean, default: false },
         keyIdIndex: { type: String, default: 'default' },
+        bcChannel: { type: String },
     };
+
+    bc = null;
+
+    connect = () => {
+        if (!this.channelValue) {
+            return
+        }
+        this.bc = new BroadcastChannel(this.channelValue);
+        this.bc.onmessage = (event) => this._onMessage(event.data);
+        this.bc.postMessage({ type: 'status-request' });
+    }
+
+    disconnect = () => {
+        if (this.bc !== null) {
+            this.bc.close();
+        }
+    }
 
     send = async (event) => {
         const form = this.element;
@@ -78,6 +96,21 @@ export default class extends AbstractController {
             if (redirectTo) {
                 window.location.assign(redirectTo);
             }
+        }
+    }
+
+    replay = () => {
+        if (this.bc === null) {
+            return;
+        }
+        this.bc.postMessage({ type: 'replay-request' });
+    }
+
+    _onMessage(event) {
+        const {remaining} = event;
+        console.warn('BackgroundSyncFormController received message:', event);
+        if (Number.isInteger(remaining)) {
+            this.dispatchEvent('status', { remaining });
         }
     }
 }
