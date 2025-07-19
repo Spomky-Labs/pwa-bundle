@@ -29,10 +29,10 @@ export default class extends AbstractController {
 
         this.wakeLock = await navigator.wakeLock.request('screen');
         this.wakeLock.addEventListener('release', () => {
-            this.dispatchEvent('updated', {wakeLock: null});
             this.wakeLock = null;
+            this._dispatchUpdate(this.wakeLock);
         });
-        this.dispatchEvent('updated', {wakeLock: this.wakeLock});
+        this._dispatchUpdate(this.wakeLock);
     }
 
     async release() {
@@ -51,7 +51,7 @@ export default class extends AbstractController {
     }
 
     async status() {
-        this.dispatchEvent('updated', {wakeLock: this.wakeLock || null});
+        this._dispatchUpdate(this.wakeLock);
     }
 
     _handleVisibilityChange = async () => {
@@ -59,4 +59,12 @@ export default class extends AbstractController {
             setTimeout(async () => await this.lock(), 1000);
         }
     };
+
+    _dispatchUpdate(wakeLock) {
+        if (!wakeLock) {
+            this.dispatchEvent('updated', {wakeLock: null});
+            return;
+        }
+        this.dispatchEvent('updated', {wakeLock: {type: this.wakeLock.type, released: this.wakeLock.released}});
+    }
 }
