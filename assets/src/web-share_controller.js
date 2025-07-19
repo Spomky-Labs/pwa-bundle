@@ -6,7 +6,6 @@ import AbstractController from './abstract_controller.js';
 export default class extends AbstractController {
     async share({params}) {
         const { data } = params;
-        console.error('Web Share API Controller', data);
         if (!data || typeof data !== 'object') {
             console.error('Data must be an object.');
             return;
@@ -42,7 +41,6 @@ export default class extends AbstractController {
                 return;
             }
         }
-        console.error('Web Share API is not supported in this browser.', shareData);
 
         try {
             if (!navigator.canShare(shareData)) {
