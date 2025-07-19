@@ -2,12 +2,27 @@
 
 import { get } from 'idb-keyval';
 
+const computeJwkThumbprint = async (jwk) => {
+    const canonical = {
+        crv: jwk.crv,
+        kty: jwk.kty,
+        x: jwk.x,
+        y: jwk.y
+    };
+
+    const encoder = new TextEncoder();
+    const data = encoder.encode(JSON.stringify(canonical));
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    const b64 = btoa(String.fromCharCode(...new Uint8Array(hash)));
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
 const base64url = (input) =>
     btoa(typeof input === 'string' ? input : JSON.stringify(input))
         .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-export const signJWT = async (kid) => {
-    const keyData = await get(`auth-key:${kid}`);
+export const signJWT = async (keyIndex) => {
+    const keyData = await get(`auth-key:${keyIndex}`);
     if (!keyData || !keyData.privateJwk) return null;
 
     const privateKey = await crypto.subtle.importKey(
@@ -17,7 +32,7 @@ export const signJWT = async (kid) => {
         false,
         ['sign']
     );
-
+    const kid = await computeJwkThumbprint(keyData.publicJwk);
     const iat = Math.floor(Date.now() / 1000);
     const nonce = crypto.getRandomValues(new Uint8Array(12));
     const nonceB64 = btoa(String.fromCharCode(...nonce))
