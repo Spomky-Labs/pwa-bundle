@@ -1876,8 +1876,20 @@ parameters:
 			path: src/Service/FileCompiler.php
 
 		-
-			message: '#^Cannot access property \$sourcePath on Symfony\\Component\\AssetMapper\\MappedAsset\|null\.$#'
-			identifier: property.nonObject
+			message: '#^Call to function assert\(\) with true and string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Service/IconResolver.php
+
+		-
+			message: '#^Instanceof between Symfony\\Component\\AssetMapper\\MappedAsset and Symfony\\Component\\AssetMapper\\MappedAsset will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Service/IconResolver.php
+
+		-
+			message: '#^Parameter \#1 \$assertion of function assert expects bool\|string, Symfony\\Component\\AssetMapper\\MappedAsset\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Service/IconResolver.php
 
