@@ -6,40 +6,32 @@ import AbstractController from './abstract_controller.js';
 export default class extends AbstractController {
     vibrateInterval = null;
 
-    vibrate = async ({params}) => {
-        const { sequence } = params;
-        if (!sequence) {
-            console.error('Vibration sequence is required.');
+    vibrate = async ({ params }) => {
+        const { pattern, interval } = params;
+
+        if (!pattern) {
+            console.error('Vibration pattern is required.');
             return;
         }
-        await navigator.vibrate(sequence);
-        this.dispatchEvent('triggered', { sequence });
+
+        this.stop();
+
+        this.dispatchEvent('triggered', { pattern, interval: interval ?? null });
+        await navigator.vibrate(pattern);
+
+        if (interval) {
+            this.vibrateInterval = setInterval(async () => {
+                this.dispatchEvent('triggered', { pattern, interval });
+                await navigator.vibrate(pattern);
+            }, interval);
+        }
     }
 
-    persistent = async ({params}) => {
+    stop = () => {
         if (this.vibrateInterval !== null) {
-            this.stop();
+            clearInterval(this.vibrateInterval);
+            this.vibrateInterval = null;
+            this.dispatchEvent('stopped');
         }
-        const { sequence, duration } = params;
-        if (!sequence) {
-            console.error('Vibration sequence is required.');
-            return;
-        }
-        if (!duration) {
-            console.error('Vibration duration is required.');
-            return;
-        }
-        this.vibrateInterval = setInterval(() => {
-            startVibrate(sequence);
-        }, duration);
-    }
-
-    stop = async () => {
-        if (this.vibrateInterval === null) {
-            return;
-        }
-        clearInterval(this.vibrateInterval);
-        this.vibrateInterval = null;
-        this.dispatchEvent('stopped');
     }
 }
