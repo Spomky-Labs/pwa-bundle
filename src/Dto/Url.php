@@ -9,15 +9,16 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Url
 {
-    public string $path;
-
-    #[SerializedName('path_type_reference')]
-    public int $pathTypeReference = UrlGeneratorInterface::ABSOLUTE_PATH;
-
     /**
-     * @var array<string, mixed>
+     * @param array<string, mixed> $params
      */
-    public array $params = [];
+    public function __construct(
+        public string $path,
+        #[SerializedName('path_type_reference')]
+        public int $pathTypeReference = UrlGeneratorInterface::ABSOLUTE_PATH,
+        public array $params = [],
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $params
@@ -27,11 +28,6 @@ final class Url
         array $params = [],
         int $pathTypeReference = UrlGeneratorInterface::ABSOLUTE_PATH
     ): self {
-        $url = new self();
-        $url->path = $path;
-        $url->pathTypeReference = $pathTypeReference;
-        $url->params = $params;
-
-        return $url;
+        return new self($path, $pathTypeReference, $params);
     }
 }

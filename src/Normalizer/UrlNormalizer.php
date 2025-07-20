@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use SpomkyLabs\PwaBundle\Dto\Url;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -19,7 +19,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
     use NormalizerAwareTrait;
 
     public function __construct(
-        private readonly RouterInterface $router,
+        private readonly UrlGeneratorInterface $urlGenerator,
         private readonly AssetMapperInterface $assetMapper,
     ) {
     }
@@ -45,7 +45,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
                 '_locale' => $context['translatable_normalization_locale'] ?? null,
                 ...$data->params,
             ];
-            return $this->router->generate($data->path, $params, $data->pathTypeReference);
+            return $this->urlGenerator->generate($data->path, $params, $data->pathTypeReference);
         } catch (Throwable) {
             // If the URL cannot be generated, we return the path as is
             return $data->path;

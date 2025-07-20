@@ -691,12 +691,6 @@ parameters:
 			path: src/Dto/Shortcut.php
 
 		-
-			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Url has an uninitialized property \$path\. Give it default value or assign it in the constructor\.$#'
-			identifier: property.uninitialized
-			count: 1
-			path: src/Dto/Url.php
-
-		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Widget has an uninitialized property \$adaptativeCardTemplate\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
