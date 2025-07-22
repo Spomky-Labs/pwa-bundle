@@ -928,6 +928,12 @@ parameters:
 			path: ../src/Event/PreManifestCompileEvent.php
 
 		-
+			message: '#^Constructor in SpomkyLabs\\PwaBundle\\EventListener\\FileCompileEventListener has parameter \$enabled with default value\.$#'
+			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/EventListener/FileCompileEventListener.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\EventListener\\PwaDevServerListener\:\:__construct\(\) has parameter \$profiler with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1

@@ -1,19 +1,28 @@
 {
-    "source": {
-        "directories": [
-            "src"
-        ]
+  "source": {
+    "directories": ["src"],
+    "excludes": [
+      "src/Kernel.php",
+      "src/DependencyInjection",
+      "src/Event",
+      "src/Twig"
+    ]
+  },
+  "logs": {
+    "text": "infection.log"
+  },
+  "mutators": {
+    "@default": true,
+
+    "MBString": {
+      "settings": {
+        "mb_substr": false,
+        "mb_strlen": false
+      }
     },
-    "logs": {
-        "text": "infection.log"
-    },
-    "mutators": {
-        "@default": true,
-        "MBString": {
-            "settings": {
-                "mb_substr": false,
-                "mb_strlen": false
-            }
-        }
-    }
+
+    "PublicVisibility": false,
+    "For_": false
+  },
+  "timeout": 10
 }

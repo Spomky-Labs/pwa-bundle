@@ -14,7 +14,7 @@ final readonly class FileCompileEventListener
     public function __construct(
         private FileCompiler $fileCompiler,
         #[Autowire(param: 'spomky_labs_pwa.asset_compiler')]
-        private bool $enabled,
+        private bool $enabled = true,
     ) {
     }
 
