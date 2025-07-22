@@ -1,0 +1,18 @@
+deptrac:
+    paths:
+        - ./../src
+    layers:
+        - name: 'library'
+          collectors:
+              - type: 'directory'
+                value: 'src/.*'
+        - name: 'vendors'
+          collectors:
+              - { type: classLike, value: '^Facebook\\' }
+              - { type: classLike, value: '^Nelmio\\' }
+              - { type: classLike, value: '^Symfony\\' }
+              - { type: classLike, value: '^Twig\\' }
+              - { type: classLike, value: '^Psr\\' }
+    ruleset:
+        library:
+            - 'vendors'
