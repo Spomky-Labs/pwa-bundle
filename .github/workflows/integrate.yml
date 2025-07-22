@@ -195,7 +195,7 @@ jobs:
       - name: Execute Infection
         run: |
           infection \
-            --coverage=.ci-tools/coverage \
+            --coverage=coverage \
             --min-msi=35 \
             --min-covered-msi=80 \
             --threads=max \
