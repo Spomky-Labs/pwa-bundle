@@ -155,6 +155,14 @@ jobs:
       - name: Run PHPUnit
         run: phpunit --coverage-xml .ci-tools/coverage  --log-junit=.ci-tools/coverage/junit.xml --configuration .ci-tools/phpunit.xml.dist
 
+      - name: Save PHPUnit coverage
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .ci-tools/.phpunit.cache
+            .ci-tools/coverage
+          key: phpunit-coverage-${{ hashFiles('composer.lock') }}
+
   exported_files:
     name: "9️⃣ Exported files"
     needs: [byte_level]
@@ -192,6 +200,15 @@ jobs:
         with:
           path: .phpunit.cache
           key: phpunit-cache-${{ hashFiles('composer.lock') }}
+
+      - name: Restore PHPUnit coverage
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .ci-tools/.phpunit.cache
+            .ci-tools/coverage
+          key: phpunit-coverage-${{ hashFiles('composer.lock') }}
+
       - name: Execute Infection
         run: |
           infection \
