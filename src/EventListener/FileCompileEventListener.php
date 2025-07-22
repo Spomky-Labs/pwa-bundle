@@ -6,18 +6,24 @@ namespace SpomkyLabs\PwaBundle\EventListener;
 
 use SpomkyLabs\PwaBundle\Service\FileCompiler;
 use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 final readonly class FileCompileEventListener
 {
     public function __construct(
-        private FileCompiler $fileCompiler
+        private FileCompiler $fileCompiler,
+        #[Autowire(param: 'spomky_labs_pwa.asset_compiler')]
+        private bool $enabled,
     ) {
     }
 
     #[AsEventListener(PreAssetsCompileEvent::class)]
     public function __invoke(): void
     {
+        if (! $this->enabled) {
+            return;
+        }
         $this->fileCompiler->compile();
     }
 }

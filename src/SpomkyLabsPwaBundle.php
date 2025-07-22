@@ -36,6 +36,9 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         if ($config['image_processor'] !== null) {
             $builder->setAlias(ImageProcessorInterface::class, $config['image_processor']);
         }
+        if ($config['asset_compiler'] !== null) {
+            $builder->setParameter('spomky_labs_pwa.asset_compiler', $config['asset_compiler']);
+        }
         if ($config['web_client'] !== null) {
             $builder->setAlias('pwa.web_client', $config['web_client']);
         }
