@@ -26,7 +26,13 @@ return static function (RectorConfig $config): void {
     ]);
     $config->phpVersion(PhpVersion::PHP_82);
     $config->paths(
-        [__DIR__ . '/src', __DIR__ . '/tests', __DIR__ . '/castor.php', __DIR__ . '/ecs.php', __DIR__ . '/rector.php']
+        [
+            __DIR__ . '/../src',
+            __DIR__ . '/../tests',
+            __DIR__ . '/../castor.php',
+            __DIR__ . '/ecs.php',
+            __DIR__ . '/rector.php',
+        ]
     );
     $config->rule(ExplicitNullableParamTypeRector::class);
     $config->skip([

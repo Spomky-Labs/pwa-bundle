@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        bootstrap="tests/autoload.php"
+        bootstrap="../tests/autoload.php"
         colors="true"
-        xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
         cacheDirectory=".phpunit.cache"
 >
   <coverage/>
   <testsuites>
     <testsuite name="Test Suite">
-      <directory>./tests</directory>
+      <directory>./../tests</directory>
     </testsuite>
   </testsuites>
   <php>
@@ -22,11 +22,11 @@
   </php>
   <source>
     <include>
-      <directory>./src</directory>
+      <directory>./../src</directory>
     </include>
     <exclude>
-      <directory>./vendor</directory>
-      <directory>./tests</directory>
+      <directory>./../vendor</directory>
+      <directory>./../tests</directory>
     </exclude>
   </source>
   <extensions>

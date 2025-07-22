@@ -4,219 +4,170 @@ on:
   push:
     branches:
       - "*.x"
-  pull_request: null
+  pull_request:
 
 jobs:
   byte_level:
     name: "0️⃣ Byte-level"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - name: "Checkout"
+        uses: actions/checkout@v4
 
       - name: "Check file permissions"
         run: |
-          test "$(find . -type f -not -path './.git/*' -not -wholename './link' -executable)" == ""
+          NON_EXECUTABLE=$(find . -type f -not -path './.git/*' -not -path './link' -executable)
+          if [[ -n "$NON_EXECUTABLE" ]]; then
+            echo "Found non-executable files with executable permission:"
+            echo "$NON_EXECUTABLE"
+            exit 1
+          fi
 
       - name: "Find non-printable ASCII characters"
         run: |
-          ! LC_ALL=C.UTF-8 find . -type f -name "*.php" -print0 | xargs -0 -- grep -PHn "[[:cntrl:]]"
+          if LC_ALL=C.UTF-8 find . -type f -name "*.php" -print0 | xargs -0 grep -PHn "[[:cntrl:]]"; then
+            echo "Non-printable ASCII characters found"
+            exit 1
+          fi
 
-  syntax_errors:
-    name: "1️⃣ Syntax errors"
-    runs-on: "ubuntu-latest"
+  phpstan:
+    name: "1️⃣ Static Analysis (PHPStan)"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          php-version: "8.3"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - run: phpstan analyse --configuration=.ci-tools/phpstan.neon
 
-      - name: "Fetch Git base reference"
-        run: "git fetch --depth=1 origin ${GITHUB_BASE_REF}"
-
-      - name: "Validate Composer configuration"
-        run: "castor validate"
-
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "--optimize-autoloader"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v4"
-        id: "cache"
-        with:
-          path: "composer-cache"
-          key: "${{ runner.os }}-${{ hashFiles('**/composer.json') }}"
-
-      - name: "Check source code for syntax errors"
-        run: "castor lint"
-
-  unit_tests:
-    name: "2️⃣ Unit and functional tests"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    strategy:
-      matrix:
-        operating-system:
-          - "ubuntu-latest"
-        php-version:
-          - "8.2"
-          - "8.3"
-          - "8.4"
-        dependencies:
-          - "highest"
-    runs-on: ${{ matrix.operating-system }}
+  ecs:
+    name: "2️⃣ Coding Standards (ECS)"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
-          coverage: "xdebug"
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - run: ecs check --config .ci-tools/ecs.php
 
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "--optimize-autoloader"
-
-      - name: "Execute unit tests"
-        run: "castor test --coverage-text"
-
-  static_analysis:
-    name: "3️⃣ Static Analysis"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    runs-on: "ubuntu-latest"
+  rector:
+    name: "3️⃣ Rector"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          php-version: "8.3"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - run: rector process --dry-run --config .ci-tools/rector.php
 
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "highest"
-          composer-options: "--optimize-autoloader"
-
-      - name: "Execute static analysis"
-        run: "castor stan"
-
-  coding_standards:
-    name: "4️⃣ Coding Standards"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    runs-on: "ubuntu-latest"
+  lint:
+    name: "4️⃣ Lint"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "8.3"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
+      - uses: actions/checkout@v4
+      - run: composer exec -- parallel-lint src tests
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
-
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "highest"
-          composer-options: "--optimize-autoloader"
-
-      - name: "Check adherence to EditorConfig"
-        uses: "greut/eclint-action@v0"
-
-      - name: "Check coding style"
-        run: "castor cs"
+  validate:
+    name: "5️⃣ Validate composer.json"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          composer dump-autoload --optimize --strict-psr
+          composer validate --strict
 
   check_licenses:
-    name: "5️⃣ Check licenses"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    runs-on: "ubuntu-latest"
+    name: "6️⃣ Check licenses"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "8.3"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
+      - uses: actions/checkout@v4
+      - run: castor check-licenses
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
-
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "highest"
-          composer-options: "--optimize-autoloader"
-
-      - name: "Check coding style"
-        run: "castor check-licenses"
-
-  rector_checkstyle:
-    name: "6️⃣ Rector Checkstyle"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    runs-on: "ubuntu-latest"
+  deptrac:
+    name: "7️⃣ Deptrac"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          php-version: "8.3"
-          extensions: "json, mbstring, sockets, gd, curl, imagick"
-          tools: castor
-          coverage: "xdebug"
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
 
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - run: deptrac --config-file .ci-tools/deptrac.yaml --report-uncovered --report-skipped --fail-on-uncovered
 
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v3"
+  unit_tests:
+    name: "8️⃣ Unit & Functional Tests"
+    needs:
+      - phpstan
+      - ecs
+      - rector
+      - lint
+      - validate
+      - check_licenses
+      - deptrac
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: [8.4]
+    container:
+      image: ghcr.io/spomky-labs/phpqa:${{ matrix.php-version }}
+    env:
+      XDEBUG_MODE: coverage
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          dependency-versions: "highest"
-          composer-options: "--optimize-autoloader"
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
 
-      - name: "Execute Rector"
-        run: "castor rector"
+      - name: Run PHPUnit
+        run: phpunit --coverage-text --configuration .ci-tools/phpunit.xml.dist
 
   exported_files:
-    name: "7️⃣ Exported files"
-    needs:
-      - "byte_level"
-      - "syntax_errors"
-    runs-on: "ubuntu-latest"
+    name: "9️⃣ Exported files"
+    needs: [byte_level]
+    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
-
-      - name: "Check exported files"
+      - uses: actions/checkout@v4
+      - name: Check exported files
         run: |
           EXPECTED="LICENSE,README.md,RELEASES.md,SECURITY.md,composer.json"
-          CURRENT="$(git archive HEAD | tar --list --exclude="src" --exclude="src/*" --exclude="assets" --exclude="assets/*" --exclude="templates" --exclude="templates/*" | paste -s -d ",")"
-          echo "CURRENT =${CURRENT}"
-          echo "EXPECTED=${EXPECTED}"
-          test "${CURRENT}" == "${EXPECTED}"
+          CURRENT=$(git archive HEAD | tar --list | grep -v '/$' | grep -Ev '^(.ci-tools|assets|src|templates)/' | sort | paste -sd "," -)
+          echo "CURRENT = ${CURRENT}"
+          echo "EXPECTED = ${EXPECTED}"
+          if [[ "$CURRENT" != "$EXPECTED" ]]; then
+            echo "❌ Exported files do not match expected list"
+            exit 1
+          fi

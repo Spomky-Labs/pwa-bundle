@@ -37,7 +37,7 @@ final class ProtocolHandlerNormalizer implements NormalizerInterface, Normalizer
             // Construire le pattern de recherche
             $pattern = '/(?<=^|[&?])' . preg_quote($encodedPlaceholder, '/') . '=%25s(?=&|$)/';
             $replacement = "{$encodedPlaceholder}=%s";
-            $normalizedUrl = preg_replace($pattern, $replacement, $normalizedUrl);
+            $normalizedUrl = preg_replace($pattern, $replacement, (string) $normalizedUrl);
         }
 
         return [

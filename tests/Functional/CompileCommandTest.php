@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
+use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -16,6 +17,7 @@ final class CompileCommandTest extends AbstractPwaTestCase
 {
     #[Test]
     #[DataProvider('provideCommands')]
+    #[MaximumDuration(2000)]
     public static function theFileAreCompiled(string $command): void
     {
         // Given

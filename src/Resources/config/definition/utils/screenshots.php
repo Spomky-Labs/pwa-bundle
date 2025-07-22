@@ -52,8 +52,8 @@ function getScreenshotsNode(string $info): ArrayNodeDefinition
         ->example(['jpg', 'png', 'webp'])
         ->end()
         ->scalarNode('reference')
-            ->defaultNull()
-            ->info('The URL of the screenshot. Only for reference and not used by the bundle.')
+        ->defaultNull()
+        ->info('The URL of the screenshot. Only for reference and not used by the bundle.')
         ->end()
         ->end()
         ->end();

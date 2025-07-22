@@ -42,6 +42,9 @@ final readonly class ExpirationPlugin implements CachePluginInterface, HasDebugI
         return self::NAME;
     }
 
+    /**
+     * @return array{maxEntries: null|int, maxAgeSeconds: null|int}
+     */
     public function getDebug(): array
     {
         return [

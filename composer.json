@@ -47,42 +47,21 @@
         "twig/twig": "^3.8"
     },
     "require-dev": {
-        "ext-sockets": "*",
-        "dbrekelmans/bdi": "^1.1",
-        "ekino/phpstan-banned-code": "^1.0|^2.0|^3.0",
         "ergebnis/phpunit-slow-test-detector": "^2.14",
-        "infection/infection": "^0.28|^0.29",
         "matthiasnoback/symfony-config-test": "^5.1|^6.0",
         "nelmio/security-bundle": "^3.0",
-        "php-parallel-lint/php-parallel-lint": "^1.4",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpdoc-parser": "^1.28|^2.0",
-        "phpstan/phpstan": "^1.0|^2.0",
-        "phpstan/phpstan-beberlei-assert": "^1.0|^2.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
-        "phpstan/phpstan-phpunit": "^1.4|^2.0",
-        "phpstan/phpstan-strict-rules": "^1.0|^2.0",
-        "phpstan/phpstan-symfony": "^1.4|^2.0",
-        "phpunit/phpunit": "^11.0|^12.0",
-        "rector/rector": "^1.0|^2.0-rc2",
-        "shipmonk/dead-code-detector": "^0.5.1|^0.6|^0.9|^0.10|^0.11|^0.12",
-        "staabm/phpstan-todo-by": "^0.1|^0.2",
-        "struggle-for-php/sfp-phpstan-psr-log": "^0.20|^0.21|^0.22|^0.23|^0.24",
+        "roave/security-advisories": "dev-latest",
+        "symfony/console": "^7.2",
         "symfony/filesystem": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/mime": "^6.4|^7.0",
         "symfony/monolog-bundle": "^3.10",
         "symfony/panther": "^2.1",
         "symfony/translation": "^7.0",
-        "symfony/yaml": "^6.4|^7.0",
-        "symplify/easy-coding-standard": "^12.0"
+        "symfony/yaml": "^6.4|^7.0"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "phpstan/extension-installer": true,
-            "infection/extension-installer": true
-        }
+        "sort-packages": true
     },
     "extra": {
         "thanks": {
@@ -96,5 +75,16 @@
         "symfony/mime": "For generating and manipulating icons or screenshots",
         "symfony/filesystem": "For generating and manipulating icons or screenshots",
         "symfony/panther": "For generating screenshots directly from your application"
+    },
+    "scripts": {
+        "phpunit": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 phpunit --configuration .ci-tools/phpunit.xml.dist",
+        "ecs": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 ecs check --config .ci-tools/ecs.php",
+        "ecs:fix": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 ecs check --config .ci-tools/ecs.php --fix",
+        "rector": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 rector process --dry-run --config .ci-tools/rector.php",
+        "rector:fix": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 rector process --config .ci-tools/rector.php",
+        "phpstan": "docker run --init -it --rm --user \"$(id -u):$(id -g)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 phpstan analyse --configuration=.ci-tools/phpstan.neon",
+        "phpstan:baseline": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 phpstan analyse --configuration=.ci-tools/phpstan.neon --generate-baseline=.ci-tools/phpstan-baseline.neon",
+        "deptrac": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 deptrac --config-file .ci-tools/deptrac.yaml --report-uncovered --report-skipped --fail-on-uncovered",
+        "lint": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 composer exec -- parallel-lint src tests"
     }
 }
