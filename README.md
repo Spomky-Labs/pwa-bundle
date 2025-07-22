@@ -1,10 +1,6 @@
 # Progressive Web App for Symfony
 
-![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Coding%20Standards/badge.svg)
-![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Static%20Analyze/badge.svg)
-
-![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Unit%20and%20Functional%20Tests/badge.svg)
-![Build Status](https://github.com/Spomky-Labs/pwa-bundle/workflows/Rector%20Checkstyle/badge.svg)
+![CI](https://github.com/Spomky-Labs/pwa-bundle/actions/workflows/integrate.yml/badge.svg)
 
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/pwa-bundle/v/stable.png)](https://packagist.org/packages/Spomky-Labs/pwa-bundle)
 [![Total Downloads](https://poser.pugx.org/Spomky-Labs/pwa-bundle/downloads.png)](https://packagist.org/packages/Spomky-Labs/pwa-bundle)
@@ -27,14 +23,6 @@ Install the bundle with Composer:
 
 ```bash
 composer require spomky-labs/pwa-bundle
-```
-
-If you want to use the commands to generate icons and screenshots, install the necessary dependencies:
-
-```bash
-composer require symfony/panther dbrekelmans/bdi symfony/mime symfony/filesystem --dev
-vendor/bin/bdi detect drivers
-bin/console pwa:create:icons --help
 ```
 
 This project follows the [semantic versioning](http://semver.org/) strictly.
