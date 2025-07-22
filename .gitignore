@@ -10,3 +10,4 @@ package-lock.json
 /public
 /.castor.stub.php
 /tmp*
+/.ci-tools/coverage

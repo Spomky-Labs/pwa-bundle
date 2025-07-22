@@ -153,7 +153,7 @@ jobs:
           composer-options: --optimize-autoloader
 
       - name: Run PHPUnit
-        run: phpunit --coverage-text --configuration .ci-tools/phpunit.xml.dist
+        run: phpunit --coverage-xml .ci-tools/coverage  --log-junit=.ci-tools/coverage/junit.xml --configuration .ci-tools/phpunit.xml.dist
 
   exported_files:
     name: "9️⃣ Exported files"
