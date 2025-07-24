@@ -17,7 +17,7 @@
                 "name": "pwa/backgroundsync-form",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "badge": {
                 "main": "src/badge_controller.js",
@@ -45,7 +45,7 @@
                 "name": "pwa/connection-status",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "contact": {
                 "main": "src/contact_controller.js",
@@ -108,7 +108,7 @@
                 "name": "pwa/prefetch-on-demand",
                 "webpackMode": "eager",
                 "fetch": "eager",
-                "enabled": true
+                "enabled": false
             },
             "picture-in-picture": {
                 "main": "src/picture-in-picture_controller.js",
@@ -138,12 +138,19 @@
                 "fetch": "eager",
                 "enabled": false
             },
+            "service-worker": {
+                "main": "src/service-worker_controller.js",
+                "name": "pwa/service-worker",
+                "webpackMode": "eager",
+                "fetch": "false",
+                "enabled": false
+            },
             "speech-synthesis": {
                 "main": "src/speech-synthesis_controller.js",
                 "name": "pwa/speech-synthesis",
                 "webpackMode": "eager",
                 "fetch": "false",
-                "enabled": true
+                "enabled": false
             },
             "touch": {
                 "main": "src/touch_controller.js",
