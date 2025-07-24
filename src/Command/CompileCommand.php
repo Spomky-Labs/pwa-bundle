@@ -25,7 +25,7 @@ final class CompileCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $io->title('Compiling the PWA assets');
-        $this->compiler->compile();
+        $this->compiler->compile($io);
         $io->success('The PWA assets have been compiled.');
 
         return self::SUCCESS;

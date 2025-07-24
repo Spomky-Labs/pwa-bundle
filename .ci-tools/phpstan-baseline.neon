@@ -2434,6 +2434,18 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FileCompiler\:\:compile\(\) has parameter \$io with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Service/FileCompiler.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FileCompiler\:\:compile\(\) has parameter \$io with null as default value\.$#'
+			identifier: ergebnis.noParameterWithNullDefaultValue
+			count: 1
+			path: ../src/Service/FileCompiler.php
+
+		-
 			message: '#^Call to function assert\(\) with true and string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
