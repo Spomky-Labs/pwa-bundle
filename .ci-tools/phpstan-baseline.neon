@@ -1348,6 +1348,48 @@ parameters:
 			path: ../src/Normalizer/IconNormalizer.php
 
 		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:getSupportedTypes\(\) has parameter \$format with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:normalize\(\) has parameter \$format with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:normalize\(\) has parameter \$format with null as default value\.$#'
+			identifier: ergebnis.noParameterWithNullDefaultValue
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:normalize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:supportsNormalization\(\) has parameter \$format with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Normalizer\\ManifestNormalizer\:\:supportsNormalization\(\) has parameter \$format with null as default value\.$#'
+			identifier: ergebnis.noParameterWithNullDefaultValue
+			count: 1
+			path: ../src/Normalizer/ManifestNormalizer.php
+
+		-
 			message: '#^Cannot cast array\<mixed\>\|ArrayObject\<\(int\|string\), mixed\>\|bool\|float\|int\|string\|null to string\.$#'
 			identifier: cast.string
 			count: 1
