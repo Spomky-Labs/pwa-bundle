@@ -8,5 +8,8 @@ final class File
 {
     public string $name;
 
-    public string $accept;
+    /**
+     * @var string[]
+     */
+    public array $accept;
 }
