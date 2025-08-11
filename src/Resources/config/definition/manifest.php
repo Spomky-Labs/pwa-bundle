@@ -59,7 +59,9 @@ return static function (DefinitionConfigurator $definition): void {
         ->example('standalone')
         ->end()
         ->arrayNode('display_override')
-        ->info('A sequence of display modes that the browser will consider before using the display member.')
+        ->info(
+            'A sequence of display modes that the browser will consider before using the display member.'
+        )
         ->example([['fullscreen', 'minimal-ui']])
         ->scalarPrototype()
         ->end()
@@ -136,6 +138,10 @@ return static function (DefinitionConfigurator $definition): void {
         ->scalarNode('handle_links')
         ->info('Specifies the default link handling for the web app.')
         ->example(['auto', 'preferred', 'not-preferred'])
+        ->end()
+        ->arrayNode('note_taking')
+        ->info('The note-taking capabilities of the application.')
+        ->append(getUrlNode('note_taking_url', 'The URL to the note-taking service.'))
         ->end()
         ->append(getIconsNode('The icons of the application.'))
         ->append(getScreenshotsNode('The screenshots of the application.'))
