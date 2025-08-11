@@ -21,16 +21,14 @@ final class ProtocolHandlerNormalizer implements NormalizerInterface, Normalizer
     public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
         assert($data instanceof ProtocolHandler);
-        $url = $data->url;
-        $url->pathTypeReference = UrlGeneratorInterface::ABSOLUTE_URL;
         if ($data->placeholder !== null) {
-            $url->params = [
-                ...$url->params,
+            $data->url->params = [
+                ...$data->url->params,
                 $data->placeholder => '%s',
             ];
         }
 
-        $normalizedUrl = $this->normalizer->normalize($url, $format, $context);
+        $normalizedUrl = $this->normalizer->normalize($data->url, $format, $context);
         if ($data->placeholder !== null) {
             $encodedPlaceholder = urlencode($data->placeholder);
 
