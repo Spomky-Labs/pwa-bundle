@@ -59,9 +59,7 @@ return static function (DefinitionConfigurator $definition): void {
         ->example('standalone')
         ->end()
         ->arrayNode('display_override')
-        ->info(
-            'A sequence of display modes that the browser will consider before using the display member.'
-        )
+        ->info('A sequence of display modes that the browser will consider before using the display member.')
         ->example([['fullscreen', 'minimal-ui']])
         ->scalarPrototype()
         ->end()
