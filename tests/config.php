@@ -134,11 +134,13 @@ return static function (ContainerConfigurator $container) {
             'protocol_handlers' => [
                 [
                     'protocol' => 'web+jngl',
-                    'url' => '/lookup?type=%s',
+                    'placeholder' => 'type',
+                    'url' => 'protocol_lookup',
                 ],
                 [
                     'protocol' => 'web+jnglstore',
-                    'url' => '/shop?for=%s',
+                    'placeholder' => 'for',
+                    'url' => 'protocol_store',
                 ],
             ],
             'related_applications' => [
@@ -155,6 +157,9 @@ return static function (ContainerConfigurator $container) {
                     'platform' => 'windows',
                     'url' => 'https://apps.microsoft.com/store/detail/example-app1/id123456789',
                 ],
+            ],
+            'note_taking' => [
+                'note_taking_url' => '/notes',
             ],
             'scope' => '/',
             'start_url' => 'pwa.start_url',
