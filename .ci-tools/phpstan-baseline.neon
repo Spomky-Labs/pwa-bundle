@@ -553,12 +553,6 @@ parameters:
 			path: ../src/Dto/Manifest.php
 
 		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:getStartUrl\(\) has a nullable return type declaration\.$#'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Dto\\Manifest\:\:provideTranslation\(\) has a nullable return type declaration\.$#'
 			identifier: ergebnis.noNullableReturnTypeDeclaration
 			count: 1
