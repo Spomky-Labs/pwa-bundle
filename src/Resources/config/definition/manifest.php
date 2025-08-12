@@ -92,10 +92,7 @@ return static function (DefinitionConfigurator $definition): void {
         ->info('The scope of the application.')
         ->example('/app/')
         ->end()
-        ->scalarNode('start_url')
-        ->info('The start URL of the application.')
-        ->example('https://example.com')
-        ->end()
+        ->append(getUrlNode('start_url', 'The start URL of the application.'))
         ->scalarNode('theme_color')
         ->info(
             'The theme color of the application. If a dark theme color is specified, the theme color will be used for the light theme.'
