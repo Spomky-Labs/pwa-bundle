@@ -15,6 +15,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[PreloadUrl(alias: 'static-pages')]
 final class StaticPagesController extends AbstractController
 {
+    #[Route('/homepage', name: 'homepage')]
+    public function homepage(): never
+    {
+        // This method is intentionally left empty.
+        throw new RuntimeException('This method should not be called.');
+    }
+
     #[Route('/privacy-policy', name: 'privacy_policy')]
     public function privacyPolicy(string $param1): never
     {
