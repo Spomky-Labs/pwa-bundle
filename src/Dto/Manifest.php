@@ -50,7 +50,7 @@ final class Manifest
     public null|string $scope = null;
 
     #[SerializedName('start_url')]
-    public null|string $startUrl = null;
+    public null|string|Url $startUrl = null;
 
     #[SerializedName('theme_color')]
     public null|string $themeColor = null;
@@ -151,8 +151,12 @@ final class Manifest
     }
 
     #[SerializedName('start_url')]
-    public function getStartUrl(): null|string|TranslatableInterface
+    public function getStartUrl(): null|string|TranslatableInterface|Url
     {
+        if ($this->startUrl instanceof Url) {
+            return $this->startUrl;
+        }
+
         return $this->provideTranslation($this->startUrl);
     }
 }
