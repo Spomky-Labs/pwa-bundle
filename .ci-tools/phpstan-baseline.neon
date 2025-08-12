@@ -1782,7 +1782,7 @@ parameters:
 		-
 			message: '#^Cannot call method append\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 10
+			count: 11
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
@@ -1842,13 +1842,13 @@ parameters:
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 34
+			count: 33
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 18
+			count: 17
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
@@ -1860,7 +1860,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 25
+			count: 24
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
@@ -1878,7 +1878,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 17
+			count: 16
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
