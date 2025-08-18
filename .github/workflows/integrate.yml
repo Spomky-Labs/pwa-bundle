@@ -1,22 +1,26 @@
-name: "Integrate"
+name: 📁 PHP CI & Docker Build
 
 on:
   push:
     branches:
       - "*.x"
-  pull_request:
+  pull_request: ~
+  workflow_dispatch: ~
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
-  byte_level:
-    name: "0️⃣ Byte-level"
+  pre_checks:
+    name: "0️⃣ Pre-checks"
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: "Check file permissions"
         run: |
-          NON_EXECUTABLE=$(find . -type f -not -path './.git/*' -not -path './link' -executable)
+          NON_EXECUTABLE=$(find . -type f -not -path './.git/*' -not -path './bin/console' -not -path './link' -executable)
           if [[ -n "$NON_EXECUTABLE" ]]; then
             echo "Found non-executable files with executable permission:"
             echo "$NON_EXECUTABLE"
@@ -30,57 +34,104 @@ jobs:
             exit 1
           fi
 
-  phpstan:
-    name: "1️⃣ Static Analysis (PHPStan)"
-    needs: [byte_level]
+  prepare_dependencies:
+    name: "📦 Prepare Composer Dependencies"
+    needs: [pre_checks]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
+    outputs:
+      cache-key: ${{ steps.cache-key-generator.outputs.key }}
     steps:
       - uses: actions/checkout@v4
+
+      - id: cache-key-generator
+        run: echo "key=composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ steps.cache-key-generator.outputs.key }}
+          restore-keys: |
+            composer-${{ runner.os }}-
 
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
 
-      - run: phpstan analyse --configuration=.ci-tools/phpstan.neon
+  phpstan:
+    name: "1️⃣ Static Analysis (PHPStan)"
+    needs: [prepare_dependencies]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - run: castor phpstan
 
   ecs:
     name: "2️⃣ Coding Standards (ECS)"
-    needs: [byte_level]
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ramsey/composer-install@v3
+      - uses: actions/cache@v4
         with:
-          dependency-versions: highest
-          composer-options: --optimize-autoloader
-
-      - run: ecs check --config .ci-tools/ecs.php
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - run: castor ecs
 
   rector:
-    name: "3️⃣ Rector"
-    needs: [byte_level]
+    name: "3️⃣ Refactoring (Rector)"
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ramsey/composer-install@v3
+      - uses: actions/cache@v4
         with:
-          dependency-versions: highest
-          composer-options: --optimize-autoloader
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - run: castor rector
 
-      - run: rector process --dry-run --config .ci-tools/rector.php
+  validate:
+    name: "4️⃣ Validate composer.json"
+    needs: [prepare_dependencies]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - run: |
+          composer dump-autoload --optimize --strict-psr
+          composer validate --strict
+          composer normalize --dry-run --diff || true
 
   lint:
-    name: "4️⃣ Lint"
-    needs: [byte_level]
+    name: "5️⃣ Syntax Check"
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
@@ -88,21 +139,9 @@ jobs:
       - uses: actions/checkout@v4
       - run: composer exec -- parallel-lint src tests
 
-  validate:
-    name: "5️⃣ Validate composer.json"
-    needs: [byte_level]
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/spomky-labs/phpqa:8.4
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          composer dump-autoload --optimize --strict-psr
-          composer validate --strict
-
   check_licenses:
-    name: "6️⃣ Check licenses"
-    needs: [byte_level]
+    name: "6️⃣ License Check"
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
@@ -111,24 +150,25 @@ jobs:
       - run: castor check-licenses
 
   deptrac:
-    name: "7️⃣ Deptrac"
-    needs: [byte_level]
+    name: "7️⃣ Architecture Layer Check (Deptrac)"
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ramsey/composer-install@v3
+      - uses: actions/cache@v4
         with:
-          dependency-versions: highest
-          composer-options: --optimize-autoloader
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - run: castor deptrac
 
-      - run: deptrac --config-file .ci-tools/deptrac.yaml --report-uncovered --report-skipped --fail-on-uncovered
-
-  unit_tests:
-    name: "8️⃣ Unit & Functional Tests"
+  tests:
+    name: "8️⃣ Unit & Functional Tests (PHP ${{ matrix.php-version }}${{ matrix.lowest-deps && ' --prefer-lowest' || '' }})"
     needs:
+      - prepare_dependencies
       - phpstan
       - ecs
       - rector
@@ -138,34 +178,60 @@ jobs:
       - deptrac
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php-version: [8.4]
+        include:
+          - php-version: '8.2'
+            lowest-deps: true
+          - php-version: '8.2'
+          - php-version: '8.3'
+          - php-version: '8.4'
     container:
       image: ghcr.io/spomky-labs/phpqa:${{ matrix.php-version }}
     env:
       XDEBUG_MODE: coverage
     steps:
       - uses: actions/checkout@v4
-
       - uses: ramsey/composer-install@v3
         with:
-          dependency-versions: highest
-          composer-options: --optimize-autoloader
-
+          dependency-versions: ${{ matrix.lowest-deps && 'lowest' || 'highest' }}
+          composer-options: --no-interaction --no-progress --optimize-autoloader
       - name: Run PHPUnit
-        run: phpunit --coverage-xml .ci-tools/coverage  --log-junit=.ci-tools/coverage/junit.xml --configuration .ci-tools/phpunit.xml.dist
+        run: castor phpunit
 
-      - name: Save PHPUnit coverage
-        uses: actions/cache/save@v4
+  infection:
+    name: "🧬 Mutation Testing"
+    needs: [prepare_dependencies, tests]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/spomky-labs/phpqa:8.4
+    env:
+      XDEBUG_MODE: coverage
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+      - name: Restore PHPUnit result and coverage
+        uses: actions/cache@v4
         with:
           path: |
             .ci-tools/.phpunit.cache
             .ci-tools/coverage
-          key: phpunit-coverage-${{ hashFiles('composer.lock') }}
+          key: phpunit-${{ needs.prepare_dependencies.outputs.cache-key }}
+          restore-keys: |
+            phpunit-
+      - name: Execute Infection
+        run: castor infect
 
   exported_files:
-    name: "9️⃣ Exported files"
-    needs: [byte_level]
+    name: "📁 Exported Files Check"
+    needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -179,44 +245,3 @@ jobs:
             echo "❌ Exported files do not match expected list"
             exit 1
           fi
-
-  infection:
-    name: "🧬 Mutation Testing"
-    needs: [unit_tests]
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/spomky-labs/phpqa:8.4
-    env:
-      XDEBUG_MODE: coverage
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ramsey/composer-install@v3
-        with:
-          dependency-versions: highest
-          composer-options: --optimize-autoloader
-      - name: Restore PHPUnit result cache
-        uses: actions/cache@v4
-        with:
-          path: .phpunit.cache
-          key: phpunit-cache-${{ hashFiles('composer.lock') }}
-
-      - name: Restore PHPUnit coverage
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            .ci-tools/.phpunit.cache
-            .ci-tools/coverage
-          key: phpunit-coverage-${{ hashFiles('composer.lock') }}
-
-      - name: Execute Infection
-        run: |
-          infection \
-            --coverage=coverage \
-            --min-msi=35 \
-            --min-covered-msi=80 \
-            --threads=max \
-            --logger-github \
-            -s \
-            --filter=src/ \
-            --configuration=.ci-tools/infection.json.dist

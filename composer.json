@@ -47,12 +47,10 @@
         "twig/twig": "^3.8"
     },
     "require-dev": {
-        "ergebnis/phpunit-slow-test-detector": "^2.14",
         "matthiasnoback/symfony-config-test": "^5.1|^6.0",
         "nelmio/security-bundle": "^3.0",
-        "roave/security-advisories": "dev-latest",
         "symfony/console": "^7.2",
-        "symfony/filesystem": "^6.4|^7.0",
+        "symfony/filesystem": "^7.1",
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/mime": "^6.4|^7.0",
         "symfony/monolog-bundle": "^3.10",
@@ -75,17 +73,5 @@
         "symfony/mime": "For generating and manipulating icons or screenshots",
         "symfony/filesystem": "For generating and manipulating icons or screenshots",
         "symfony/panther": "For generating screenshots directly from your application"
-    },
-    "scripts": {
-        "phpunit": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project -e XDEBUG_MODE=coverage ghcr.io/spomky-labs/phpqa:8.4 phpunit --coverage-xml .ci-tools/coverage  --log-junit=.ci-tools/coverage/junit.xml --configuration .ci-tools/phpunit.xml.dist",
-        "ecs": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 ecs check --config .ci-tools/ecs.php",
-        "ecs:fix": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 ecs check --config .ci-tools/ecs.php --fix",
-        "rector": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 rector process --dry-run --config .ci-tools/rector.php",
-        "rector:fix": "docker run --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -w /project ghcr.io/spomky-labs/phpqa:8.4 rector process --config .ci-tools/rector.php",
-        "phpstan": "docker run --init -it --rm --user \"$(id -u):$(id -g)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 phpstan analyse --configuration=.ci-tools/phpstan.neon",
-        "phpstan:baseline": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 phpstan analyse --configuration=.ci-tools/phpstan.neon --generate-baseline=.ci-tools/phpstan-baseline.neon",
-        "deptrac": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 deptrac --config-file .ci-tools/deptrac.yaml --report-uncovered --report-skipped --fail-on-uncovered",
-        "lint": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project ghcr.io/spomky-labs/phpqa:8.4 composer exec -- parallel-lint src tests",
-        "infect": "docker run --init -it --rm --user \"$(id -u):$(id -u)\" --pull always -v \"$PWD\":/project -v \"$PWD/tmp-phpqa:/tmp\" -w /project -e XDEBUG_MODE=coverage ghcr.io/spomky-labs/phpqa:8.4 infection --coverage=coverage --min-msi=35 --min-covered-msi=80 --threads=max --logger-github -s --filter=src/ --configuration=.ci-tools/infection.json.dist"
     }
 }
