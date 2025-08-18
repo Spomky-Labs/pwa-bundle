@@ -122,6 +122,13 @@ return static function (DefinitionConfigurator $definition): void {
         )
         ->arrayPrototype()
         ->children()
+        ->scalarNode('type')
+        ->defaultValue('origin')
+        ->info(
+            'Specifies the type of scope extension. This is currently always origin (default), but future extensions may add other types.'
+        )
+        ->example(['origin'])
+        ->end()
         ->scalarNode('origin')
         ->isRequired()
         ->info('Specifies the origin pattern to associate with.')
