@@ -191,7 +191,8 @@
         "importmap": {
             "@hotwired/stimulus": "^3.0.0",
             "idb": "^8.0",
-            "idb-keyval": "^6.2"
+            "idb-keyval": "^6.2",
+            "@spomky-labs/pwa/helpers": "path:%PACKAGE%/src/helpers.js"
         }
     },
     "peerDependencies": {
