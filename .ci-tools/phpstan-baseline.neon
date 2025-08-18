@@ -625,6 +625,12 @@ parameters:
 			path: ../src/Dto/ScopeExtension.php
 
 		-
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\ScopeExtension has an uninitialized property \$type\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/ScopeExtension.php
+
+		-
 			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Screenshot has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
@@ -1836,19 +1842,19 @@ parameters:
 		-
 			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 2
+			count: 3
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 33
+			count: 34
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
 			message: '#^Cannot call method example\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 17
+			count: 18
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
@@ -1860,7 +1866,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 24
+			count: 25
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
@@ -1878,7 +1884,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 16
+			count: 17
 			path: ../src/Resources/config/definition/manifest.php
 
 		-

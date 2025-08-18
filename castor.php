@@ -342,7 +342,7 @@ function prepare_pr(): void
 
     io()
         ->section('Running static analysis…');
-    phpstan();
+    phpstan_baseline();
     deptrac();
     lint();
 

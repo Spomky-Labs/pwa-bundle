@@ -6,5 +6,7 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 final class ScopeExtension
 {
+    public string $type;
+
     public string $origin;
 }
