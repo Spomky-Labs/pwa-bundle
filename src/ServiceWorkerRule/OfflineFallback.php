@@ -74,13 +74,13 @@ DEBUG_COMMENT;
         $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 registerInstallTask(() => {
-  return caches.open(registerCacheName('{$cacheName}')).then(cache =>
+  return openCache(registerCacheName('{$cacheName}')).then(cache =>
     cache.addAll({$urls})
   );
 }, 10);
 workbox.routing.setCatchHandler(async ({ request }) => {
   const dest = request.destination;
-  const cache = await caches.open('{$cacheName}');
+  const cache = await openCache('{$cacheName}');
   const fallbacks = {$fallbacks};
 
   if (dest === 'document' && fallbacks.pageFallback) {

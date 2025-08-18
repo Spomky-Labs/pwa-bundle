@@ -353,6 +353,57 @@ function simplePushNotificationSupport(event) {
   event.waitUntil(sendNotification(message));
 }
 
+const periodicSyncTasks = new Map();
+
+function registerPeriodicSyncTask(tag, callback, priority = 100) {
+  if (!periodicSyncTasks.has(tag)) {
+    periodicSyncTasks.set(tag, []);
+  }
+  periodicSyncTasks.get(tag).push({
+    priority,
+    callback: (event) => {
+      const result = callback(event);
+      if (!result?.then) console.warn(`[\${tag}] periodic sync task did not return a Promise`);
+      return result;
+    }
+  });
+}
+
+async function runPeriodicSyncTasks(tag, event) {
+  const tasks = periodicSyncTasks.get(tag) ?? [];
+  return tasks
+    .sort((a, b) => a.priority - b.priority)
+    .reduce(
+      (chain, task) => chain.then(() => task.callback(event)),
+      Promise.resolve()
+    );
+}
+
+self.addEventListener('periodicsync', event => {
+  event.waitUntil(runPeriodicSyncTasks(event.tag, event));
+});
+
+const periodicChannel = new BroadcastChannel('periodic-sync');
+
+function notifyPeriodicSyncClients(tag, payload = {}) {
+  periodicChannel.postMessage({
+    type: 'periodic-sync-update',
+    tag,
+    timestamp: Date.now(),
+    ...payload
+  });
+}
+
+const cacheInstances = new Map();
+
+async function openCache(name) {
+  if (!cacheInstances.has(name)) {
+    const cache = await caches.open(name);
+    cacheInstances.set(name, cache);
+  }
+  return cacheInstances.get(name);
+}
+
 CUSTOM_HELPERS;
     }
 
