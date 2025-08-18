@@ -8,11 +8,28 @@ deptrac:
                 value: 'src/.*'
         - name: 'vendors'
           collectors:
-              - { type: classLike, value: '^Facebook\\' }
-              - { type: classLike, value: '^Nelmio\\' }
-              - { type: classLike, value: '^Symfony\\' }
+              - { type: classLike, value: '^Facebook\\WebDriver' }
+              - { type: classLike, value: '^Nelmio\\SecurityBundle' }
+              - { type: classLike, value: '^Symfony\\Component\\AssetMapper' }
+              - { type: classLike, value: '^Symfony\\Component\\Config' }
+              - { type: classLike, value: '^Symfony\\Component\\Console' }
+              - { type: classLike, value: '^Symfony\\Component\\DependencyInjection' }
+              - { type: classLike, value: '^Symfony\\Component\\EventDispatcher' }
+              - { type: classLike, value: '^Symfony\\Component\\Filesystem' }
+              - { type: classLike, value: '^Symfony\\Component\\HttpFoundation' }
+              - { type: classLike, value: '^Symfony\\Component\\HttpKernel' }
+              - { type: classLike, value: '^Symfony\\Component\\Mime' }
+              - { type: classLike, value: '^Symfony\\Component\\Panther' }
+              - { type: classLike, value: '^Symfony\\Component\\Process' }
+              - { type: classLike, value: '^Symfony\\Component\\Routing' }
+              - { type: classLike, value: '^Symfony\\Component\\Serializer' }
+              - { type: classLike, value: '^Symfony\\Component\\VarDumper' }
+              - { type: classLike, value: '^Symfony\\Component\\Yaml' }
+              - { type: classLike, value: '^Symfony\\Component\\Translation' }
+              - { type: classLike, value: '^Symfony\\Contracts\\Translation' }
               - { type: classLike, value: '^Twig\\' }
-              - { type: classLike, value: '^Psr\\' }
+              - { type: classLike, value: '^Psr\\EventDispatcher' }
+              - { type: classLike, value: '^Psr\\Log' }
     ruleset:
         library:
             - 'vendors'
