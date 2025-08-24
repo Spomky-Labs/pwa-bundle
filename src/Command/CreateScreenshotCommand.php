@@ -125,7 +125,7 @@ final class CreateScreenshotCommand extends Command
         $client->takeScreenshot($tmpName);
         try {
             $client->waitFor('title', 5, 500);
-            $result = preg_match("/<title>(.+)<\/title>/i", $crawler->html(), $title);
+            $result = preg_match("/<title>(.+)<\/title>/i", (string) $crawler->html(), $title);
             $title = $result === 1 ? $title[1] : null;
         } catch (Throwable) {
             $title = null;

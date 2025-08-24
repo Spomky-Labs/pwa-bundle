@@ -45,18 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - id: cache-key-generator
-        run: echo "key=composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ steps.cache-key-generator.outputs.key }}
-          restore-keys: |
-            composer-${{ runner.os }}-
-
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: highest
@@ -70,12 +58,12 @@ jobs:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - run: castor phpstan
 
   ecs:
@@ -86,12 +74,12 @@ jobs:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - run: castor ecs
 
   rector:
@@ -102,12 +90,12 @@ jobs:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - run: castor rector
 
   validate:
@@ -118,12 +106,12 @@ jobs:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - run: |
           composer dump-autoload --optimize --strict-psr
           composer validate --strict
@@ -157,12 +145,12 @@ jobs:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - run: castor deptrac
 
   tests:
@@ -211,21 +199,12 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+
+      - uses: ramsey/composer-install@v3
         with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ needs.prepare_dependencies.outputs.cache-key }}
-      - name: Restore PHPUnit result and coverage
-        uses: actions/cache@v4
-        with:
-          path: |
-            .ci-tools/.phpunit.cache
-            .ci-tools/coverage
-          key: phpunit-${{ needs.prepare_dependencies.outputs.cache-key }}
-          restore-keys: |
-            phpunit-
+          dependency-versions: highest
+          composer-options: --optimize-autoloader
+
       - name: Execute Infection
         run: castor infect
 

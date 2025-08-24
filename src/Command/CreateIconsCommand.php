@@ -64,6 +64,14 @@ final class CreateIconsCommand extends Command
             'png',
             ['png', 'jpg', 'webp']
         );
+        $this->addOption(
+            'color',
+            'c',
+            InputOption::VALUE_OPTIONAL,
+            'When the icon is a SVG, replaces currentColor with this color.',
+            '#000',
+            ['#000', '#fff']
+        );
         $this->addArgument(
             'sizes',
             InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
@@ -107,7 +115,7 @@ final class CreateIconsCommand extends Command
             $size = (int) $size;
             $outputSize = $size === 0 ? 'any' : sprintf('%sx%s', $size, $size);
             $io->info(sprintf('Processing icon %s', $outputSize));
-            $configuration = Configuration::create($size, $size, $format);
+            $configuration = Configuration::create($size, $size, $format, $input->getOption('color'));
             $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), null, null, null, $configuration);
             $filePath = sprintf('%s/%s-%s.%s', $dest, $filename, $outputSize, $format);
             $this->filesystem->dumpFile($filePath, $tmp);

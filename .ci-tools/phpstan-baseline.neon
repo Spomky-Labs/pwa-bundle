@@ -157,6 +157,66 @@ parameters:
 			path: ../src/Command/CreateIconsCommand.php
 
 		-
+			message: '#^Parameter \#4 \$backgroundColor of static method SpomkyLabs\\PwaBundle\\ImageProcessor\\Configuration\:\:create\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/Command/CreateIconsCommand.php
+
+		-
+			message: '#^Call to method manage\(\) on an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Call to method request\(\) on an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Call to method takeScreenshot\(\) on an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Call to method waitFor\(\) on an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Call to static method createChromeClient\(\) on an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cannot call method fullscreen\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cannot call method html\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cannot call method setSize\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cannot call method window\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 2
@@ -165,12 +225,18 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 2
+			count: 3
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
 			message: '#^Class "SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand" is not allowed to extend "Symfony\\Component\\Console\\Command\\Command"\.$#'
 			identifier: ergebnis.noExtends
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Cloning object of an unknown class Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
@@ -183,6 +249,12 @@ parameters:
 		-
 			message: '#^Constructor in SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand has parameter \$webClient with default value\.$#'
 			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Instantiated class Facebook\\WebDriver\\WebDriverDimension not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
@@ -223,6 +295,18 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:getClient\(\) has invalid return type Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:getClient\(\) should return Symfony\\Component\\Panther\\Client but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:getDefaultArguments\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -253,20 +337,20 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
-			message: '#^Parameter \#2 \$uri of method Symfony\\Component\\Panther\\Client\:\:request\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
 			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
-			message: '#^Parameter \$arguments of static method Symfony\\Component\\Panther\\Client\:\:createChromeClient\(\) expects array\<string\>\|null, array given\.$#'
-			identifier: argument.type
+			message: '#^Parameter \$webClient of method SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:__construct\(\) has invalid type Symfony\\Component\\Panther\\Client\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
+			message: '#^Property SpomkyLabs\\PwaBundle\\Command\\CreateScreenshotCommand\:\:\$webClient has unknown class Symfony\\Component\\Panther\\Client as its type\.$#'
+			identifier: class.notFound
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
@@ -994,6 +1078,12 @@ parameters:
 			path: ../src/ImageProcessor/Configuration.php
 
 		-
+			message: '#^Constructor in SpomkyLabs\\PwaBundle\\ImageProcessor\\Configuration has parameter \$svgColor with default value\.$#'
+			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/ImageProcessor/Configuration.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\Configuration\:\:__construct\(\) has parameter \$backgroundColor with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
@@ -1216,6 +1306,12 @@ parameters:
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImagickImageProcessor\:\:normalizeSvgColor\(\) should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: ../src/ImageProcessor/ImagickImageProcessor.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImagickImageProcessor\:\:process\(\) has parameter \$configuration with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
@@ -1242,6 +1338,18 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImagickImageProcessor\:\:process\(\) has parameter \$width with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/ImageProcessor/ImagickImageProcessor.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, int\|false given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: ../src/ImageProcessor/ImagickImageProcessor.php
+
+		-
+			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
+			identifier: if.condNotBoolean
 			count: 1
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
@@ -1662,13 +1770,13 @@ parameters:
 		-
 			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
 			message: '#^Cannot call method end\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 17
+			count: 18
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -1680,7 +1788,7 @@ parameters:
 		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 13
+			count: 14
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -1710,7 +1818,7 @@ parameters:
 		-
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 7
+			count: 8
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -2422,8 +2530,56 @@ parameters:
 			path: ../src/Service/Data.php
 
 		-
+			message: '#^Binary operation "\." between ''Unable to run…'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Call to function assert\(\) with true and string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Call to method getErrorOutput\(\) on an unknown class Symfony\\Component\\Process\\Process\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Call to method run\(\) on an unknown class Symfony\\Component\\Process\\Process\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Call to method wait\(\) on an unknown class Symfony\\Component\\Process\\Process\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
 			message: '#^Cannot call method process\(\) on SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\|null\.$#'
 			identifier: method.nonObject
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Caught class Symfony\\Component\\Process\\Exception\\ProcessFailedException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Instanceof between Symfony\\Component\\AssetMapper\\MappedAsset and Symfony\\Component\\AssetMapper\\MappedAsset will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Instantiated class Symfony\\Component\\Process\\Process not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -2440,8 +2596,8 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:getFaviconAsset\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:__construct\(\) has parameter \$renderer with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -2460,6 +2616,12 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\FaviconsCompiler\:\:processIcon\(\) has parameter \$rel with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
+			message: '#^Parameter \#1 \$assertion of function assert expects bool\|string, Symfony\\Component\\AssetMapper\\MappedAsset\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -2496,6 +2658,12 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImageProcessorInterface\:\:process\(\) is invoked with named argument for parameter \$configuration\.$#'
 			identifier: ergebnis.noNamedArgument
+			count: 1
+			path: ../src/Service/IconResolver.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\IconResolver\:\:__construct\(\) has parameter \$renderer with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Service/IconResolver.php
 
@@ -2700,18 +2868,6 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:__construct\(\) has parameter \$cspListener with null as default value\.$#'
 			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:getFormat\(\) has a nullable return type declaration\.$#'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:getFormat\(\) has parameter \$asset with a nullable type declaration\.$#'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Twig/PwaRuntime.php
 

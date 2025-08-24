@@ -8,6 +8,8 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Symfony73\Rector\Class_\GetFiltersToAsTwigFilterAttributeRector;
+use Rector\Symfony\Symfony73\Rector\Class_\GetFunctionsToAsTwigFunctionAttributeRector;
 use Rector\Symfony\Symfony73\Rector\Class_\InvokableCommandInputAttributeRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -34,7 +36,12 @@ $builder->withPaths(
         __DIR__ . '/rector.php',
     ]
 );
-$builder->withSkip([PreferPHPUnitThisCallRector::class, InvokableCommandInputAttributeRector::class]);
+$builder->withSkip([
+    PreferPHPUnitThisCallRector::class,
+    InvokableCommandInputAttributeRector::class,
+    GetFiltersToAsTwigFilterAttributeRector::class,
+    GetFunctionsToAsTwigFunctionAttributeRector::class,
+]);
 $builder->withParallel();
 $builder->withImportNames();
 

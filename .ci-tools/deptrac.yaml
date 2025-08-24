@@ -27,6 +27,7 @@ deptrac:
               - { type: classLike, value: '^Symfony\\Component\\Yaml' }
               - { type: classLike, value: '^Symfony\\Component\\Translation' }
               - { type: classLike, value: '^Symfony\\Contracts\\Translation' }
+              - { type: classLike, value: '^Symfony\\UX\\Icons' }
               - { type: classLike, value: '^Twig\\' }
               - { type: classLike, value: '^Psr\\EventDispatcher' }
               - { type: classLike, value: '^Psr\\Log' }

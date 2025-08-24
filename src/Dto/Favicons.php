@@ -51,4 +51,7 @@ final class Favicons
     public null|string $potrace = null;
 
     public bool $monochrome = false;
+
+    #[SerializedName('svg_color')]
+    public string $svgColor = '#000';
 }

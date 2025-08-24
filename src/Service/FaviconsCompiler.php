@@ -12,9 +12,12 @@ use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Symfony\UX\Icons\IconRendererInterface;
 use function assert;
 use function is_string;
 use function sprintf;
@@ -28,6 +31,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         private readonly null|ImageProcessorInterface $imageProcessor,
         private readonly Favicons $favicons,
         private readonly AssetMapperInterface $assetMapper,
+        private readonly ?IconRendererInterface $renderer,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
@@ -188,10 +192,19 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     private function processBrowserConfig(string $asset, string $hash): array
     {
         if ($this->favicons->useSilhouette === true && $this->debug === false) {
-            $asset = $this->generateSilhouette($asset);
+            $asset = $this->generateSilhouette($asset, $this->favicons->svgColor);
         }
         $this->logger->debug('Processing browserconfig.xml.');
-        $configuration = Configuration::create(70, 70, 'png', null, null, $this->favicons->imageScale);
+        $configuration = Configuration::create(
+            70,
+            70,
+            'png',
+            null,
+            null,
+            $this->favicons->imageScale,
+            false,
+            $this->favicons->svgColor
+        );
         $hash = hash('xxh128', $hash . $configuration);
         $icon70x70 = $this->processIcon(
             $asset,
@@ -201,7 +214,16 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             null
         );
 
-        $configuration = Configuration::create(150, 150, 'png', null, null, $this->favicons->imageScale);
+        $configuration = Configuration::create(
+            150,
+            150,
+            'png',
+            null,
+            null,
+            $this->favicons->imageScale,
+            false,
+            $this->favicons->svgColor
+        );
         $hash = hash('xxh128', $hash . $configuration);
         $icon150x150 = $this->processIcon(
             $asset,
@@ -211,7 +233,16 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             null
         );
 
-        $configuration = Configuration::create(310, 310, 'png', null, null, $this->favicons->imageScale);
+        $configuration = Configuration::create(
+            310,
+            310,
+            'png',
+            null,
+            null,
+            $this->favicons->imageScale,
+            false,
+            $this->favicons->svgColor
+        );
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x310 = $this->processIcon(
             $asset,
@@ -221,7 +252,16 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             null
         );
 
-        $configuration = Configuration::create(310, 150, 'png', null, null, $this->favicons->imageScale);
+        $configuration = Configuration::create(
+            310,
+            150,
+            'png',
+            null,
+            null,
+            $this->favicons->imageScale,
+            false,
+            $this->favicons->svgColor
+        );
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x150 = $this->processIcon(
             $asset,
@@ -231,7 +271,16 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             null
         );
 
-        $configuration = Configuration::create(144, 144, 'png', null, null, $this->favicons->imageScale);
+        $configuration = Configuration::create(
+            144,
+            144,
+            'png',
+            null,
+            null,
+            $this->favicons->imageScale,
+            false,
+            $this->favicons->svgColor
+        );
         $hash = hash('xxh128', $hash . $configuration);
         $icon144x144 = $this->processIcon(
             $asset,
@@ -293,7 +342,7 @@ XML;
 
     private function generateSafariPinnedTab(string $content, string $hash): Data
     {
-        $callback = fn (): string => $this->generateSilhouette($content);
+        $callback = fn (): string => $this->generateSilhouette($content, $this->favicons->svgColor);
         $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
 
         return Data::create(
@@ -309,14 +358,18 @@ XML;
         );
     }
 
-    private function generateSilhouette(string $asset): string
+    private function generateSilhouette(string $asset, string $svgColor): string
     {
         assert($this->imageProcessor !== null);
         $bmp = $this->imageProcessor->process($asset, null, null, null, configuration: Configuration::create(
             512,
             512,
             'bmp',
-            'white'
+            'white',
+            null,
+            null,
+            false,
+            $svgColor
         ));
         $tempFile = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
         assert($tempFile !== false, 'Unable to create a temporary file');
@@ -356,19 +409,24 @@ XML;
         return $svg;
     }
 
-    private function getFaviconAsset(Asset $source): string
+    private function getFaviconAsset(Asset $asset): string
     {
-        if (! str_starts_with($source->src, '/')) {
-            $asset = $this->assetMapper->getAsset($source->src);
-            assert($asset !== null, 'Unable to find the favicon source asset');
-            return $asset->content ?? file_get_contents($asset->sourcePath);
+        if (str_starts_with($asset->src, '/')) {
+            return (new Filesystem())->readFile($asset->src);
+        }
+        if ($this->renderer !== null && str_contains($asset->src, ':')) {
+            return $this->renderer->renderIcon($asset->src);
+        }
+        $mappedAsset = $this->assetMapper->getAsset($asset->src);
+        assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));
+        assert($mappedAsset instanceof MappedAsset, sprintf('Invalid asset "%s"', $mappedAsset->sourcePath));
+
+        $content = $mappedAsset->content;
+        if ($content === null) {
+            $content = (new Filesystem())->readFile($mappedAsset->sourcePath);
         }
 
-        assert(file_exists($source->src), 'Unable to find the favicon source file');
-        $data = file_get_contents($source->src);
-        assert($data !== false, 'Unable to read the favicon source file');
-
-        return $data;
+        return $content;
     }
 
     /**
