@@ -207,6 +207,7 @@ function phpqa(array $command, array $dockerOptions = [], ?string $php = null): 
         '--init',
         '-it',
         '--user', sprintf('%s:%s', getmyuid(), getmygid()),
+        '--pull', 'always',
         '-v', getcwd() . ':/project',
         '-v', getcwd() . '/tmp-phpqa:/project/tmp-phpqa',
         '-w', '/project',
@@ -348,6 +349,12 @@ function prepare_pr(): void
 
     io()
         ->success('Code is ready. You may now commit and push your changes.');
+}
+
+#[AsTask(description: 'Run composer.', ignoreValidationErrors: true)]
+function composer(#[AsRawTokens] array $args = []): void
+{
+    phpqa(['composer', ...$args]);
 }
 
 #[AsTask(description: 'Initialize the project.')]

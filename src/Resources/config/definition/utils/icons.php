@@ -104,6 +104,10 @@ function getIconsNode(string $info): ArrayNodeDefinition
         ->info('The purpose of the icon.')
         ->example(['any', 'maskable', 'monochrome'])
         ->end()
+        ->scalarNode('svg_color')
+        ->defaultValue('#000')
+        ->info('When the asset is a SVG file, replaces the currentColor attribute with this color.')
+        ->end()
         ->end()
         ->end();
 

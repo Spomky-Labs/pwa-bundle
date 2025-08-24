@@ -7,13 +7,10 @@ namespace SpomkyLabs\PwaBundle\Twig;
 use InvalidArgumentException;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
-use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Mime\MimeTypes;
 use function array_key_exists;
 use function sprintf;
 use const ENT_COMPAT;
@@ -39,10 +36,11 @@ final readonly class PwaRuntime
 
     /**
      * @param array<string, bool|int|string|null|float> $swAttributes
+     * @param bool $injectIcons Deprecated
      */
     public function load(
         bool $injectThemeColor = true,
-        bool $injectIcons = true,
+        bool $injectIcons = false,
         bool $injectFavicons = true,
         bool $injectSW = true,
         array $swAttributes = [],
@@ -55,7 +53,6 @@ final readonly class PwaRuntime
         if ($this->manifest->serviceWorker?->enabled === true) {
             $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
         }
-        $output = $this->injectIcons($output, $injectIcons);
         $output = $this->injectFavicons($output, $injectFavicons);
 
         return $this->injectThemeColor($output, $injectThemeColor);
@@ -173,61 +170,6 @@ SERVICE_WORKER;
         }
 
         return $output . sprintf('%s%s', PHP_EOL, $declaration);
-    }
-
-    private function injectIcons(string $output, bool $injectIcons): string
-    {
-        if ($this->manifest->icons === [] || $injectIcons === false) {
-            return $output;
-        }
-        foreach ($this->manifest->icons as $icon) {
-            ['url' => $url, 'type' => $type] = $this->getIconInfo($icon);
-            $attributes = sprintf(
-                'rel="%s" sizes="%s" href="%s"',
-                str_contains($icon->purpose ?? '', 'maskable') ? 'mask-icon' : 'icon',
-                $icon->getSizeList(),
-                $url
-            );
-            if ($type !== null) {
-                $attributes .= sprintf(' type="%s"', $type);
-            }
-
-            $output .= sprintf('%s<link %s>', PHP_EOL, $attributes);
-        }
-
-        return $output;
-    }
-
-    /**
-     * @return array{url: string, type: string|null}
-     */
-    private function getIconInfo(Icon $icon): array
-    {
-        $url = null;
-        $type = $icon->type;
-        if ($type === null && ! str_starts_with($icon->src->src, '/')) {
-            $asset = $this->assetMapper->getAsset($icon->src->src);
-            $url = $asset?->publicPath;
-            $type = $this->getFormat($asset);
-        }
-        if ($url === null) {
-            $url = $icon->src->src;
-        }
-
-        return [
-            'url' => $url,
-            'type' => $type,
-        ];
-    }
-
-    private function getFormat(?MappedAsset $asset): ?string
-    {
-        if ($asset === null || ! class_exists(MimeTypes::class)) {
-            return null;
-        }
-
-        $mime = MimeTypes::getDefault();
-        return $mime->guessMimeType($asset->sourcePath);
     }
 
     /**

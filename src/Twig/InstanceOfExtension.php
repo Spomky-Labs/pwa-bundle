@@ -32,7 +32,6 @@ class InstanceOfExtension extends AbstractExtension
      */
     public function isInstanceOf(object $var, string $instance): bool
     {
-        $reflexionClass = new ReflectionClass($instance);
-        return $reflexionClass->isInstance($var);
+        return (new ReflectionClass($instance))->isInstance($var);
     }
 }

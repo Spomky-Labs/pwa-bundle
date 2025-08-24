@@ -13,6 +13,7 @@ use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\UX\Icons\IconRendererInterface;
 use function array_key_exists;
 use function assert;
 use function count;
@@ -24,6 +25,7 @@ final readonly class IconResolver
     public function __construct(
         private AssetMapperInterface $assetMapper,
         private ImageProcessorInterface $imageProcessor,
+        private ?IconRendererInterface $renderer,
         #[Autowire(param: 'kernel.debug')]
         public bool $debug
     ) {
@@ -62,7 +64,7 @@ final readonly class IconResolver
             );
         }
 
-        $configuration = new Configuration(
+        $configuration = Configuration::create(
             $size,
             $size,
             $icon->format ?? $asset->publicExtension,
@@ -70,6 +72,7 @@ final readonly class IconResolver
             $icon->borderRadius,
             $icon->imageScale,
             str_contains($icon->purpose ?? '', 'monochrome'),
+            $icon->svgColor
         );
         $format = $icon->format ?? $asset->publicExtension;
         $hash = hash(
@@ -136,6 +139,20 @@ final readonly class IconResolver
                 sprintf('/pwa/%s.%s', $hash, $fileinfo['extension']),
                 sprintf('/pwa/%s-%s.%s', $hash, $fileinfo['filename'], $fileinfo['extension']),
                 $content,
+                $hash,
+                false,
+            );
+        }
+        if ($this->renderer !== null && str_contains($asset->src, ':')) {
+            $svg = $this->renderer->renderIcon($asset->src);
+            $hash = hash('xxh128', $svg);
+
+            return new MappedAsset(
+                sprintf('/pwa/icon-%s.svg', $hash),
+                $asset->src,
+                sprintf('/pwa/icon-%s.svg', $hash),
+                sprintf('/pwa/icon-%s.svg', $hash),
+                $svg,
                 $hash,
                 false,
             );

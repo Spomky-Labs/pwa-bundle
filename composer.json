@@ -33,7 +33,7 @@
     "require": {
         "php": ">=8.2",
         "phpdocumentor/reflection-docblock": "^5.3",
-        "psr/log": "^1.0|^2.0|^3.0",
+        "psr/log": "^1.1|^2.0|^3.0",
         "symfony/asset": "^6.4|^7.0",
         "symfony/asset-mapper": "^6.4|^7.0",
         "symfony/config": "^6.4|^7.0",
@@ -44,6 +44,7 @@
         "symfony/property-info": "^6.4|^7.0",
         "symfony/routing": "^6.4|^7.0",
         "symfony/serializer": "^6.4|^7.0",
+        "symfony/service-contracts": "^3.0",
         "twig/twig": "^3.8"
     },
     "require-dev": {
@@ -54,8 +55,8 @@
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/mime": "^6.4|^7.0",
         "symfony/monolog-bundle": "^3.10",
-        "symfony/panther": "^2.1",
         "symfony/translation": "^7.0",
+        "symfony/ux-icons": "^2.29",
         "symfony/yaml": "^6.4|^7.0"
     },
     "config": {
@@ -72,6 +73,6 @@
         "ext-imagick": "Required to generate icons (or GD).",
         "symfony/mime": "For generating and manipulating icons or screenshots",
         "symfony/filesystem": "For generating and manipulating icons or screenshots",
-        "symfony/panther": "For generating screenshots directly from your application"
+        "symfony/ux-icons": "For using SVG icons (e.g. for shortcuts)"
     }
 }

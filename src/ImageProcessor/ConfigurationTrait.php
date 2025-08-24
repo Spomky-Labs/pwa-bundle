@@ -25,16 +25,14 @@ trait ConfigurationTrait
         null|string $format,
         null|Configuration $configuration
     ): Configuration {
-        if (($width !== null || $height !== null || $format !== null) && $configuration === null) {
-            trigger_deprecation(
-                'spomky-labs/pwa-bundle',
-                '1.2.0',
-                'The "format", "width" and "height" parameters are deprecated and will be removed in 2.0.0. Please use "configuration" instead.'
-            );
-        }
         if ($configuration !== null) {
             return $configuration;
         }
+        trigger_deprecation(
+            'spomky-labs/pwa-bundle',
+            '1.2.0',
+            'The "format", "width" and "height" parameters are deprecated and will be removed in 2.0.0. Please use "configuration" instead.'
+        );
 
         if ($width === null && $height === null) {
             ['width' => $width, 'height' => $height] = $this->getSizes($image);
