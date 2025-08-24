@@ -19,6 +19,13 @@
                 "fetch": "eager",
                 "enabled": false
             },
+            "backgroundsync-queue": {
+                "main": "src/backgroundsync-queue_controller.js",
+                "name": "pwa/backgroundsync-queue",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
+            },
             "badge": {
                 "main": "src/badge_controller.js",
                 "name": "pwa/badge",
