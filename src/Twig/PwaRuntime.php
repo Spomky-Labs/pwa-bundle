@@ -231,10 +231,6 @@ SERVICE_WORKER;
                 '<meta name="msapplication-TileColor" content="%s">',
                 $this->favicons->tileColor
             );
-            /*$output .= PHP_EOL . sprintf(
-                '<meta name="msapplication-TileImage" content="%s">',
-                $files['/pwa/icon-144x144.png']->url
-            );*/
         }
 
         return $output;
