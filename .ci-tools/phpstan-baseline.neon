@@ -2872,6 +2872,24 @@ parameters:
 			path: ../src/Twig/PwaRuntime.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:getLocale\(\) has a nullable return type declaration\.$#'
+			identifier: ergebnis.noNullableReturnTypeDeclaration
+			count: 1
+			path: ../src/Twig/PwaRuntime.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:getLocale\(\) has parameter \$locale with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Twig/PwaRuntime.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:getLocale\(\) has parameter \$locale with null as default value\.$#'
+			identifier: ergebnis.noParameterWithNullDefaultValue
+			count: 1
+			path: ../src/Twig/PwaRuntime.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Twig\\PwaRuntime\:\:injectManifestFile\(\) has parameter \$locale with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1

@@ -11,6 +11,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
 use function array_key_exists;
 use function sprintf;
 use const ENT_COMPAT;
@@ -28,6 +29,7 @@ final readonly class PwaRuntime
         private FaviconsCompiler $faviconsCompiler,
         #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
+        private RequestStack $requestStack,
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
@@ -60,6 +62,7 @@ final readonly class PwaRuntime
 
     private function injectManifestFile(string $output, null|string $locale): string
     {
+        $locale = $this->getLocale($locale);
         $manifestPublicUrl = $locale === null ? $this->manifestPublicUrl : str_replace(
             '{locale}',
             $locale,
@@ -235,5 +238,10 @@ SERVICE_WORKER;
         }
 
         return $output;
+    }
+
+    private function getLocale(null|string $locale = null): null|string
+    {
+        return $locale ?? $this->requestStack->getMainRequest()?->getLocale();
     }
 }
