@@ -2662,6 +2662,12 @@ parameters:
 			path: ../src/Service/IconResolver.php
 
 		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\IconResolver\:\:__construct\(\) has parameter \$imageProcessor with a nullable type declaration\.$#'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/Service/IconResolver.php
+
+		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\Service\\IconResolver\:\:__construct\(\) has parameter \$renderer with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
