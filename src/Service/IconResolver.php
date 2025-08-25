@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use RuntimeException;
 use SpomkyLabs\PwaBundle\Dto\Asset;
 use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
@@ -24,7 +25,7 @@ final readonly class IconResolver
 {
     public function __construct(
         private AssetMapperInterface $assetMapper,
-        private ImageProcessorInterface $imageProcessor,
+        private ?ImageProcessorInterface $imageProcessor,
         private ?IconRendererInterface $renderer,
         #[Autowire(param: 'kernel.debug')]
         public bool $debug
@@ -33,6 +34,11 @@ final readonly class IconResolver
 
     public function getIcon(Icon $icon): Data
     {
+        if ($this->imageProcessor === null) {
+            throw new RuntimeException(
+                'Image processor is not configured. Please set GD or Imagick Image processor or a custom service that implement the ImageProcessorInterface.'
+            );
+        }
         $asset = $this->getAsset($icon->src);
         $content = $asset->content;
         if ($content === null) {
