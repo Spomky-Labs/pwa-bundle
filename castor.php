@@ -191,11 +191,11 @@ function php(#[AsRawTokens] array $args = []): void
     run(['php', ...$args]);
 }
 
-function phpqa(array $command, array $dockerOptions = [], ?string $php = null): void
+function phpqa(array $command, array $dockerOptions = []): void
 {
     $inContainer = file_exists('/.dockerenv');
     $hasDocker = trim(shell_exec('command -v docker') ?? '') !== '';
-    $phpVersion = getenv('PHP_VERSION') ?: ($php ?? (\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION));
+    $phpVersion = getenv('PHP_VERSION') ?: \PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION;
 
     if (! $hasDocker || $inContainer) {
         run($command);
@@ -226,9 +226,9 @@ function phpqa(array $command, array $dockerOptions = [], ?string $php = null): 
 }
 
 #[AsTask(description: 'Update the PHPQA Docker image')]
-function phpqa_update(?string $php = null): void
+function phpqa_update(): void
 {
-    $phpVersion = getenv('PHP_VERSION') ?: ($php ?? (\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION));
+    $phpVersion = getenv('PHP_VERSION') ?: (\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION);
 
     run(['docker', 'pull', 'ghcr.io/spomky-labs/phpqa:' . $phpVersion]);
 }
@@ -236,8 +236,6 @@ function phpqa_update(?string $php = null): void
 #[AsTask(description: 'Run PHPUnit tests with coverage')]
 function phpunit(?string $php = null): void
 {
-    $phpVersion = getenv('PHP_VERSION') ?: ($php ?? (\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION));
-
     phpqa(
         [
             'composer', 'exec', '--', 'phpunit-11',
@@ -245,8 +243,7 @@ function phpunit(?string $php = null): void
             '--log-junit=.ci-tools/coverage/junit.xml',
             '--configuration', '.ci-tools/phpunit.xml.dist',
         ],
-        ['-e', 'XDEBUG_MODE=coverage'],
-        $phpVersion
+        ['-e', 'XDEBUG_MODE=coverage']
     );
 }
 
