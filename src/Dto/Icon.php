@@ -31,8 +31,11 @@ final class Icon
 
     public null|string $purpose = null;
 
-    #[SerializedName('svg_color')]
-    public string $svgColor = '#000';
+    /**
+     * @var array<string, mixed>
+     */
+    #[SerializedName('svg_attr')]
+    public array $svgAttributes = [];
 
     #[SerializedName('sizes')]
     public function getSizeList(): string

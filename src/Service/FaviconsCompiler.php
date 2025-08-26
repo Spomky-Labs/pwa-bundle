@@ -53,14 +53,14 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 
         $faviconSources = [
             'light' => [
-                'asset' => $this->favicons->src,
+                'asset' => $this->favicons->default->src,
                 'media' => null,
             ],
         ];
 
-        if ($this->favicons->srcDark !== null) {
+        if ($this->favicons->dark !== null) {
             $faviconSources['dark'] = [
-                'asset' => $this->favicons->srcDark,
+                'asset' => $this->favicons->dark->src,
                 'media' => '(prefers-color-scheme: dark)',
             ];
         }
@@ -68,7 +68,11 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $sizes = $this->getFaviconSizes();
 
         foreach ($faviconSources as $mode => $sourceInfo) {
-            $asset = $this->getFaviconAsset($sourceInfo['asset']);
+            $theme = $mode === 'light' ? $this->favicons->default : $this->favicons->dark;
+            if ($theme === null) {
+                continue;
+            }
+            $asset = $this->getFaviconAsset($sourceInfo['asset'], $theme->svgAttributes);
             $hash = hash('xxh128', $asset);
 
             foreach ($sizes as $size) {
@@ -76,23 +80,23 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     $size['width'],
                     $size['height'],
                     $size['format'],
-                    $mode === 'light' ? $this->favicons->backgroundColor : $this->favicons->backgroundColorDark,
-                    $this->favicons->borderRadius,
-                    $size['imageScale'] ?? $this->favicons->imageScale,
+                    $theme->backgroundColor,
+                    $theme->borderRadius,
+                    $size['imageScale'] ?? $theme->imageScale,
                     $this->favicons->monochrome
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
                 $media = $size['media'] ?? null;
-                if ($this->favicons->srcDark !== null) {
+                if ($this->favicons->dark !== null) {
                     if ($media !== null) {
                         $media = sprintf(
                             '(%s) and %s',
                             $media,
-                            $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null)
+                            $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null)
                         );
                     } else {
-                        $media = $sourceInfo['media'] ?? ($this->favicons->srcDark !== null ? '(prefers-color-scheme: light)' : null);
+                        $media = $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null);
                     }
                 }
 
@@ -109,15 +113,14 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 
         if ($this->favicons->tileColor !== null) {
             $this->logger->debug('Creating browserconfig.xml.');
-            yield from $this->processBrowserConfig(
-                $this->getFaviconAsset($this->favicons->src),
-                hash('xxh128', $this->getFaviconAsset($this->favicons->src))
-            );
+            $image = $this->getFaviconAsset($this->favicons->default->src, $this->favicons->default->svgAttributes);
+            yield from $this->processBrowserConfig($image, hash('xxh128', $image));
         }
 
         if ($this->favicons->safariPinnedTabColor !== null && $this->favicons->useSilhouette === true) {
-            $hash = hash('xxh128', $this->getFaviconAsset($this->favicons->src));
-            $safariPinnedTab = $this->generateSafariPinnedTab($this->getFaviconAsset($this->favicons->src), $hash);
+            $image = $this->getFaviconAsset($this->favicons->default->src, $this->favicons->default->svgAttributes);
+            $hash = hash('xxh128', $image);
+            $safariPinnedTab = $this->generateSafariPinnedTab($image, $hash);
             yield $safariPinnedTab->url => $safariPinnedTab;
         }
 
@@ -192,7 +195,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     private function processBrowserConfig(string $asset, string $hash): array
     {
         if ($this->favicons->useSilhouette === true && $this->debug === false) {
-            $asset = $this->generateSilhouette($asset, $this->favicons->svgColor);
+            $asset = $this->generateSilhouette($asset);
         }
         $this->logger->debug('Processing browserconfig.xml.');
         $configuration = Configuration::create(
@@ -201,9 +204,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'png',
             null,
             null,
-            $this->favicons->imageScale,
+            $this->favicons->default->imageScale,
             false,
-            $this->favicons->svgColor
+            $this->favicons->default->svgAttributes
         );
         $hash = hash('xxh128', $hash . $configuration);
         $icon70x70 = $this->processIcon(
@@ -220,9 +223,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'png',
             null,
             null,
-            $this->favicons->imageScale,
+            $this->favicons->default->imageScale,
             false,
-            $this->favicons->svgColor
+            $this->favicons->default->svgAttributes
         );
         $hash = hash('xxh128', $hash . $configuration);
         $icon150x150 = $this->processIcon(
@@ -239,9 +242,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'png',
             null,
             null,
-            $this->favicons->imageScale,
+            $this->favicons->default->imageScale,
             false,
-            $this->favicons->svgColor
+            $this->favicons->default->svgAttributes
         );
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x310 = $this->processIcon(
@@ -258,9 +261,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'png',
             null,
             null,
-            $this->favicons->imageScale,
+            $this->favicons->default->imageScale,
             false,
-            $this->favicons->svgColor
+            $this->favicons->default->svgAttributes
         );
         $hash = hash('xxh128', $hash . $configuration);
         $icon310x150 = $this->processIcon(
@@ -277,9 +280,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'png',
             null,
             null,
-            $this->favicons->imageScale,
+            $this->favicons->default->imageScale,
             false,
-            $this->favicons->svgColor
+            $this->favicons->default->svgAttributes
         );
         $hash = hash('xxh128', $hash . $configuration);
         $icon144x144 = $this->processIcon(
@@ -342,7 +345,7 @@ XML;
 
     private function generateSafariPinnedTab(string $content, string $hash): Data
     {
-        $callback = fn (): string => $this->generateSilhouette($content, $this->favicons->svgColor);
+        $callback = fn (): string => $this->generateSilhouette($content);
         $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
 
         return Data::create(
@@ -358,7 +361,7 @@ XML;
         );
     }
 
-    private function generateSilhouette(string $asset, string $svgColor): string
+    private function generateSilhouette(string $asset): string
     {
         assert($this->imageProcessor !== null);
         $bmp = $this->imageProcessor->process($asset, null, null, null, configuration: Configuration::create(
@@ -366,10 +369,6 @@ XML;
             512,
             'bmp',
             'white',
-            null,
-            null,
-            false,
-            $svgColor
         ));
         $tempFile = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
         assert($tempFile !== false, 'Unable to create a temporary file');
@@ -409,13 +408,16 @@ XML;
         return $svg;
     }
 
-    private function getFaviconAsset(Asset $asset): string
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function getFaviconAsset(Asset $asset, array $attributes): string
     {
         if (str_starts_with($asset->src, '/')) {
             return (new Filesystem())->readFile($asset->src);
         }
         if ($this->renderer !== null && str_contains($asset->src, ':')) {
-            return $this->renderer->renderIcon($asset->src);
+            return $this->renderer->renderIcon($asset->src, $attributes);
         }
         $mappedAsset = $this->assetMapper->getAsset($asset->src);
         assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));

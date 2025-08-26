@@ -10,6 +10,9 @@ use function sprintf;
 
 final readonly class Configuration implements Stringable
 {
+    /**
+     * @param array<string, mixed> $svgAttributes
+     */
     public function __construct(
         public int $width,
         public int $height,
@@ -18,7 +21,7 @@ final readonly class Configuration implements Stringable
         public null|int $borderRadius = null,
         public null|int $imageScale = null,
         public bool $monochrome = false,
-        public string $svgColor = '#000',
+        public array $svgAttributes = [],
     ) {
         if ($this->borderRadius !== null && $this->backgroundColor === null) {
             throw new InvalidArgumentException('The background color must be set when the border radius is set');
@@ -36,10 +39,13 @@ final readonly class Configuration implements Stringable
             $this->borderRadius ?? 0,
             $this->imageScale ?? 0,
             $this->monochrome ? '1' : '0',
-            $this->svgColor,
+            json_encode($this->svgAttributes),
         );
     }
 
+    /**
+     * @param array<string, mixed> $svgAttributes
+     */
     public static function create(
         int $width,
         int $height,
@@ -48,8 +54,17 @@ final readonly class Configuration implements Stringable
         null|int $borderRadius = null,
         null|int $imageScale = null,
         bool $monochrome = false,
-        string $svgColor = '#000',
+        array $svgAttributes = [],
     ): self {
-        return new self($width, $height, $format, $backgroundColor, $borderRadius, $imageScale, $monochrome, $svgColor);
+        return new self(
+            $width,
+            $height,
+            $format,
+            $backgroundColor,
+            $borderRadius,
+            $imageScale,
+            $monochrome,
+            $svgAttributes
+        );
     }
 }
