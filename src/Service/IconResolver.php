@@ -39,7 +39,7 @@ final readonly class IconResolver
                 'Image processor is not configured. Please set GD or Imagick Image processor or a custom service that implement the ImageProcessorInterface.'
             );
         }
-        $asset = $this->getAsset($icon->src);
+        $asset = $this->getAsset($icon->src, $icon->svgAttributes);
         $content = $asset->content;
         if ($content === null) {
             $content = (new Filesystem())->readFile($asset->sourcePath);
@@ -78,7 +78,7 @@ final readonly class IconResolver
             $icon->borderRadius,
             $icon->imageScale,
             str_contains($icon->purpose ?? '', 'monochrome'),
-            $icon->svgColor
+            $icon->svgAttributes
         );
         $format = $icon->format ?? $asset->publicExtension;
         $hash = hash(
@@ -128,7 +128,10 @@ final readonly class IconResolver
         return $mimeTypes[0];
     }
 
-    private function getAsset(Asset $asset): MappedAsset
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function getAsset(Asset $asset, array $attributes): MappedAsset
     {
         if (str_starts_with($asset->src, '/')) {
             $content = (new Filesystem())->readFile($asset->src);
@@ -150,7 +153,7 @@ final readonly class IconResolver
             );
         }
         if ($this->renderer !== null && str_contains($asset->src, ':')) {
-            $svg = $this->renderer->renderIcon($asset->src);
+            $svg = $this->renderer->renderIcon($asset->src, $attributes);
             $hash = hash('xxh128', $svg);
 
             return new MappedAsset(

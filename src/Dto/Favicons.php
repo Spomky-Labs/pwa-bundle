@@ -10,34 +10,15 @@ final class Favicons
 {
     public bool $enabled = false;
 
-    public Asset $src;
+    public Theme $default;
 
-    #[SerializedName('src_dark')]
-    public ?Asset $srcDark = null;
-
-    #[SerializedName('background_color')]
-    public null|string $backgroundColor = null;
-
-    #[SerializedName('background_color_dark')]
-    public null|string $backgroundColorDark = null;
+    public ?Theme $dark = null;
 
     #[SerializedName('safari_pinned_tab_color')]
     public null|string $safariPinnedTabColor = null;
 
     #[SerializedName('tile_color')]
     public null|string $tileColor = null;
-
-    /**
-     * @var int<1, 50>|null
-     */
-    #[SerializedName('border_radius')]
-    public null|int $borderRadius = null;
-
-    /**
-     * @var int<1, 100>|null
-     */
-    #[SerializedName('image_scale')]
-    public null|int $imageScale = null;
 
     #[SerializedName('low_resolution')]
     public null|bool $lowResolution = null;
@@ -51,7 +32,4 @@ final class Favicons
     public null|string $potrace = null;
 
     public bool $monochrome = false;
-
-    #[SerializedName('svg_color')]
-    public string $svgColor = '#000';
 }

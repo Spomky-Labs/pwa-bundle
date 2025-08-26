@@ -44,11 +44,22 @@ final class ConfigurationTest extends KernelTestCase
                 'user_agent' => 'user-agent/1.0',
             ],
         ]];
-        yield 'Favicons only' => [[
+        yield 'Favicons only (old config)' => [[
             'pwa' => [
                 'favicons' => [
                     'enabled' => true,
                     'src' => 'pwa/1920x1920.svg',
+                ],
+            ],
+        ]];
+
+        yield 'Favicons only (new config)' => [[
+            'pwa' => [
+                'favicons' => [
+                    'enabled' => true,
+                    'default' => [
+                        'src' => 'pwa/1920x1920.svg',
+                    ],
                 ],
             ],
         ]];
@@ -311,7 +322,7 @@ final class ConfigurationTest extends KernelTestCase
                     ],
                 ],
             ],
-            'The child config "src" under "pwa.favicons" must be configured: The source of the favicon. Shall be a SVG or large PNG.',
+            'Invalid configuration for path "pwa.favicons": The default theme favicon shall be defined',
         ];
     }
 

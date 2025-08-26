@@ -41,7 +41,7 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
     private function createMainImage(string $image, Configuration $configuration): Imagick
     {
         if (preg_match('/^\s*<\?*svg\b/i', $image)) {
-            $image = $this->normalizeSvgColor($image, $configuration->svgColor);
+            dump($image);
         }
 
         $mainImage = new Imagick();
@@ -123,16 +123,5 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
         $mainImage->compositeImage($image, Imagick::COMPOSITE_OVER, $x, $y);
         $mainImage->setImageFormat($image->getImageFormat());
         return $mainImage;
-    }
-
-    private function normalizeSvgColor(string $svg, string $svgColor): string
-    {
-        if (! preg_match('/<svg\b[^>]*\bcolor\s*=/i', $svg)) {
-            $svg = preg_replace('/<svg\b/i', '<svg color="' . $svgColor . '"', $svg, 1);
-        }
-
-        $svg = preg_replace('/\bfill\s*=\s*"currentColor"/i', 'fill="' . $svgColor . '"', (string) $svg);
-
-        return preg_replace('/\bstroke\s*=\s*"currentColor"/i', 'stroke="' . $svgColor . '"', (string) $svg);
     }
 }

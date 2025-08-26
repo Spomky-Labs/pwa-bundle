@@ -523,7 +523,7 @@ parameters:
 			path: ../src/Dto/Cache.php
 
 		-
-			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Favicons has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Favicons has an uninitialized property \$default\. Give it default value or assign it in the constructor\.$#'
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Favicons.php
@@ -853,6 +853,12 @@ parameters:
 			path: ../src/Dto/Shortcut.php
 
 		-
+			message: '#^Class SpomkyLabs\\PwaBundle\\Dto\\Theme has an uninitialized property \$src\. Give it default value or assign it in the constructor\.$#'
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/Theme.php
+
+		-
 			message: '#^Constructor in SpomkyLabs\\PwaBundle\\Dto\\Url has parameter \$params with default value\.$#'
 			identifier: ergebnis.noConstructorParameterWithDefaultValue
 			count: 1
@@ -1078,7 +1084,7 @@ parameters:
 			path: ../src/ImageProcessor/Configuration.php
 
 		-
-			message: '#^Constructor in SpomkyLabs\\PwaBundle\\ImageProcessor\\Configuration has parameter \$svgColor with default value\.$#'
+			message: '#^Constructor in SpomkyLabs\\PwaBundle\\ImageProcessor\\Configuration has parameter \$svgAttributes with default value\.$#'
 			identifier: ergebnis.noConstructorParameterWithDefaultValue
 			count: 1
 			path: ../src/ImageProcessor/Configuration.php
@@ -1306,12 +1312,6 @@ parameters:
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
 		-
-			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImagickImageProcessor\:\:normalizeSvgColor\(\) should return string but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\ImageProcessor\\ImagickImageProcessor\:\:process\(\) has parameter \$configuration with a nullable type declaration\.$#'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
@@ -1342,14 +1342,14 @@ parameters:
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
 		-
-			message: '#^Only booleans are allowed in a negated boolean, int\|false given\.$#'
-			identifier: booleanNot.exprNotBoolean
+			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
+			identifier: if.condNotBoolean
 			count: 1
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
 		-
-			message: '#^Only booleans are allowed in an if condition, int\|false given\.$#'
-			identifier: if.condNotBoolean
+			message: '#^Should not use function "dump", please change the code\.$#'
+			identifier: ekinoBannedCode.function
 			count: 1
 			path: ../src/ImageProcessor/ImagickImageProcessor.php
 
@@ -1726,7 +1726,19 @@ parameters:
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
+			message: '#^Cannot call method append\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
 			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method beforeNormalization\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: ../src/Resources/config/definition/favicons.php
@@ -1758,7 +1770,7 @@ parameters:
 		-
 			message: '#^Cannot call method defaultNull\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 8
+			count: 9
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -1786,6 +1798,12 @@ parameters:
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
+			message: '#^Cannot call method ifTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
 			message: '#^Cannot call method info\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 14
@@ -1795,12 +1813,6 @@ parameters:
 			message: '#^Cannot call method integerNode\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -1819,6 +1831,36 @@ parameters:
 			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 8
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method setDeprecated\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method then\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method thenInvalid\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Cannot call method validate\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/favicons.php
+
+		-
+			message: '#^Language construct isset\(\) should not be used\.$#'
+			identifier: ergebnis.noIsset
+			count: 3
 			path: ../src/Resources/config/definition/favicons.php
 
 		-
@@ -2626,6 +2668,12 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
+			message: '#^Parameter \#2 \$attributes of method Symfony\\UX\\Icons\\IconRendererInterface\:\:renderIcon\(\) expects array\<string, bool\|string\>, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
 			message: '#^Strict comparison using \!\=\= between SpomkyLabs\\PwaBundle\\Dto\\Asset and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 2
@@ -2687,6 +2735,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$assertion of function assert expects bool\|string, Symfony\\Component\\AssetMapper\\MappedAsset\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/IconResolver.php
+
+		-
+			message: '#^Parameter \#2 \$attributes of method Symfony\\UX\\Icons\\IconRendererInterface\:\:renderIcon\(\) expects array\<string, bool\|string\>, array\<string, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/Service/IconResolver.php
