@@ -391,6 +391,12 @@ parameters:
 			path: ../src/DataCollector/PwaCollector.php
 
 		-
+			message: '#^Cannot access offset mixed on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/DataCollector/PwaCollector.php
+
+		-
 			message: '#^Cannot access property \$workbox on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -399,6 +405,12 @@ parameters:
 		-
 			message: '#^Class "SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector" is not allowed to extend "Symfony\\Component\\HttpKernel\\DataCollector\\DataCollector"\.$#'
 			identifier: ergebnis.noExtends
+			count: 1
+			path: ../src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:__construct\(\) has parameter \$locales with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: ../src/DataCollector/PwaCollector.php
 
@@ -465,6 +477,12 @@ parameters:
 		-
 			message: '#^Method SpomkyLabs\\PwaBundle\\DataCollector\\PwaCollector\:\:getWorkbox\(\) should return SpomkyLabs\\PwaBundle\\Dto\\Workbox but returns mixed\.$#'
 			identifier: return.type
+			count: 1
+			path: ../src/DataCollector/PwaCollector.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between array and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: ../src/DataCollector/PwaCollector.php
 

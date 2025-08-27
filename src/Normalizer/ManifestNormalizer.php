@@ -8,6 +8,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use function array_key_exists;
 use function assert;
 
@@ -29,7 +30,7 @@ final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareIn
             return $normalized;
         }
 
-        $normalized['lang'] = $context['translatable_normalization_locale'] ?? null;
+        $normalized['lang'] = $context[TranslatableNormalizer::NORMALIZATION_LOCALE_KEY] ?? null;
 
         return $normalized;
 

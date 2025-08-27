@@ -1,0 +1,48 @@
+
+<tr>
+    <td>{{ title }}</td>
+    <td>
+        <dl>
+            <dt>Source</dt>
+            <dd>{{ theme.src.src }}</dd>
+            <dt>Image scale</dt>
+            <dd>
+                {% if theme.imageScale %}
+                    {{ theme.imageScale }}%
+                {% else %}
+                    n / a
+                {% endif %}
+            </dd>
+            <dt>Border radius (rounded corners)</dt>
+            <dd>
+                {% if theme.borderRadius %}
+                    <br>
+                    {{ theme.borderRadius }}%. 50% is a circle.
+                {% else %}
+                    n / a
+                {% endif %}
+            </dd>
+            <dt>Background color</dt>
+            <dd>
+                {% if theme.backgroundColor %}
+                    {{ theme.backgroundColor }}
+                    <span style="background-color: {{ theme.backgroundColor }}; padding: 0.25rem; color: {{ theme.backgroundColor }};">{{ theme.backgroundColor }}</span>
+                {% else %}
+                    Composed images are transparent
+                {% endif %}
+            </dd>
+            <dt>SVG Attributes (only for Symfony UX Icons</dt>
+            <dd>
+                {% if theme.svgAttributes|length > 0 %}
+                    <lu>
+                        {% for key,value in theme.svgAttributes %}
+                            <li>{{ key }}: {{ value }}</li>
+                        {% endfor %}
+                    </lu>
+                {% else %}
+                    No SVG attributes
+                {% endif %}
+            </dd>
+        </dl>
+    </td>
+</tr>

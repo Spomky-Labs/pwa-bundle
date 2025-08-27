@@ -13,12 +13,14 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
@@ -45,6 +47,10 @@ final class PwaCollector extends DataCollector
         private readonly ManifestCompiler $manifestCompiler,
         private readonly ServiceWorkerCompiler $serviceWorkerCompiler,
         private readonly FaviconsCompiler $faviconsCompiler,
+        #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
+        private readonly string $manifestPublicUrl,
+        #[Autowire(param: 'kernel.enabled_locales')]
+        private readonly array $locales,
     ) {
     }
 
@@ -74,9 +80,22 @@ final class PwaCollector extends DataCollector
             'enabled' => $this->serviceWorker->enabled,
             'data' => $this->manifest,
             'installable' => $this->isInstallable(),
-            'output' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
             'files' => $this->dataToFiles($manifestFiles),
+            'publicUrl' => $this->manifestPublicUrl,
+            'locales' => $this->locales,
         ];
+        if ($this->locales === null || $this->locales === []) {
+            $this->data['manifest']['outputs'] = [
+                '*' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
+            ];
+        } else {
+            foreach ($this->locales as $locale) {
+                $this->data['manifest']['outputs'][$locale] = $this->serializer->serialize($this->manifest, 'json', [
+                    ...$jsonOptions,
+                    TranslatableNormalizer::NORMALIZATION_LOCALE_KEY => $locale,
+                ]);
+            }
+        }
 
         $faviconsFiles = $this->faviconsCompiler->getFiles();
         $faviconsFiles = is_array($faviconsFiles) ? $faviconsFiles : iterator_to_array($faviconsFiles);
@@ -174,16 +193,16 @@ final class PwaCollector extends DataCollector
     private function isInstallable(): array
     {
         $reasons = [
-            'The manifest must be enabled' => ! $this->manifest->enabled,
-            'The manifest must have a short name or a name' => $this->manifest->shortName === null && $this->manifest->name === null,
-            'The manifest must have a start URL' => $this->manifest->startUrl === null,
-            'The manifest must have a display value set to "standalone", "fullscreen" or "minimal-ui' => ! in_array(
+            'Enabled?' => ! $this->manifest->enabled,
+            'Short name or a name' => $this->manifest->shortName === null && $this->manifest->name === null,
+            'Start URL' => $this->manifest->startUrl === null,
+            'Display value set to "standalone", "fullscreen" or "minimal-ui"' => ! in_array(
                 $this->manifest->display,
                 ['standalone', 'fullscreen', 'minimal-ui'],
                 true
             ),
-            'The manifest must have at least one icon' => count($this->manifest->icons) === 0,
-            'The manifest must have the "prefer_related_applications" property set to a value other than "true"' => $this->manifest->preferRelatedApplications === true,
+            'At least one icon' => count($this->manifest->icons) === 0,
+            '"prefer_related_applications" property set to a value other than "true"' => $this->manifest->preferRelatedApplications === true,
         ];
 
         return [

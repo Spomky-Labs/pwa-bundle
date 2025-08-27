@@ -7,6 +7,7 @@
         <span class="status-badge status-warning">disabled</span>
     {% endif %}
 </p>
+{% if collector.data.favicons.enabled %}
 <h3>Details</h3>
 <table>
     <thead>
@@ -40,16 +41,17 @@
             {% endif %}
         </td>
     </tr>
-    <tr>
-        <td>Image scale</td>
-        <td>
-            {% if collector.favicons.imageScale %}
-                {{ collector.favicons.imageScale }}%
-            {% else %}
-                n / a
-            {% endif %}
-        </td>
-    </tr>
+    {% include '@SpomkyLabsPwa/Collector/theme-row.html.twig' with {title: collector.favicons.dark == null?"Default theme (light or dark)":"Light theme", theme: collector.favicons.default} %}
+    {% if collector.favicons.dark == null %}
+        <tr>
+            <td>Dark theme</td>
+            <td>
+                No dark theme
+            </td>
+        </tr>
+    {% else %}
+        {% include '@SpomkyLabsPwa/Collector/theme-row.html.twig' with {title: "Dark theme", theme: collector.favicons.dark} %}
+    {% endif %}
     <tr>
         <td>Tile color</td>
         <td>
@@ -78,23 +80,6 @@
         </td>
     </tr>
     <tr>
-        <td>Composed images</td>
-        <td>
-            {% if collector.favicons.backgroundColor %}
-                The composed images have a background color of
-                {{ collector.favicons.backgroundColor }}
-                <span style="background-color: {{ collector.favicons.backgroundColor }}; padding: 0.25rem; color: {{ collector.favicons.backgroundColor }};">{{ collector.favicons.backgroundColor }}</span>
-                {% if collector.favicons.borderRadius %}
-                    <br>
-                    And a border radius of
-                    {{ collector.favicons.borderRadius }}% (rounded corners). 50% is a circle.
-                {% endif %}
-            {% else %}
-                Composed images are transparent
-            {% endif %}
-        </td>
-    </tr>
-    <tr>
         <td>Safari pinned tab</td>
         <td>
             {% if collector.favicons.useSilhouette and collector.favicons.safariPinnedTabColor %}
@@ -117,3 +102,4 @@
         </li>
     {% endfor %}
 </ul>
+{% endif %}

@@ -26,6 +26,7 @@
         </li>
     {% endfor %}
 </ul>
+<b>Make sure {% verbatim %}"{{ pwa() }}"{% endverbatim %} is present on the head of your pages!</b>
 <h3>Details</h3>
 <table>
     <thead>
@@ -35,6 +36,10 @@
     </tr>
     </thead>
     <tbody>
+    <tr>
+        <td>Destination</td>
+        <td>{{ collector.data.manifest.publicUrl }}</td>
+    </tr>
     <tr>
         <td>ID</td>
         <td>{{ collector.manifest.id }}</td>
@@ -87,7 +92,19 @@
     </tr>
     <tr>
         <td>Start URL</td>
-        <td>{{ collector.manifest.startUrl }}</td>
+        <td>
+            Path: <strong>{{ collector.manifest.startUrl.path }}</strong>
+            Parameters (only for Symfony routes):
+            {% if collector.manifest.startUrl.params|length >0 %}
+            <ul>
+                {% for key, value in collector.manifest.startUrl.params %}
+                    <li>{{ key }}: {{ value }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            No route parameters
+            {% endif %}
+        </td>
     </tr>
     <tr>
         <td>Categories</td>
@@ -97,7 +114,7 @@
             {% else %}
                 <ul>
                     {% for category in collector.manifest.categories %}
-                        <li>{{ category|trans }}</li>
+                        <li>{{ category }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -166,7 +183,20 @@
 </div>
 <h3 class="tab-title">Output</h3>
 <div class="tab-content">
-    <pre class="output">{{ collector.data.manifest.output|nl2br }}</pre>
+    <ul>
+    {% for locale, output in collector.data.manifest.outputs %}
+        <dl>
+            <dt>
+                <a class="btn btn-link text-small sf-toggle sf-toggle-off" data-toggle-selector="#data-output-{{ locale }}" data-toggle-alt-content="Hide the output for locale {{ locale }}" data-toggle-original-content="Show the output for locale {{ locale }}">
+                    Show the output for locale {{ locale }}
+                </a>
+            </dt>
+            <dd id="data-output-{{ locale }}" class="context sf-toggle-content sf-toggle-hidden">
+                <pre class="output">{{ output|nl2br }}</pre>
+            </dd>
+        </dl>
+    {% endfor %}
+    </ul>
 </div>
 <h3>Generated files</h3>
 <ul>
