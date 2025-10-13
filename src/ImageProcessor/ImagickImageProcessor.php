@@ -40,10 +40,6 @@ final readonly class ImagickImageProcessor implements ImageProcessorInterface
 
     private function createMainImage(string $image, Configuration $configuration): Imagick
     {
-        if (preg_match('/^\s*<\?*svg\b/i', $image)) {
-            dump($image);
-        }
-
         $mainImage = new Imagick();
         $mainImage->setBackgroundColor(new ImagickPixel('transparent'));
         $mainImage->readImageBlob($image);
