@@ -148,44 +148,32 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'media' => $media,
         ]);
         $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
-        if ($this->debug === true) {
-            $html = $rel === null ? null : sprintf(
-                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
-                $rel,
-                $configuration->width,
-                $configuration->height,
-                $mimeType,
-                $publicUrl,
-                is_string($media) ? sprintf(' media="%s"', $media) : ''
-            );
-            return Data::create(
-                $publicUrl,
-                $closure,
-                [
-                    'Cache-Control' => 'public, max-age=604800, immutable',
-                    'Content-Type' => $mimeType,
-                    'X-Pwa-Dev' => true,
-                ],
-                $html
-            );
-        }
-        assert($this->imageProcessor !== null);
-        return Data::create(
+
+        $mediaAttr = is_string($media) ? sprintf(' media="%s"', $media) : '';
+        $html = $rel === null ? null : sprintf(
+            '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
+            $rel,
+            $configuration->width,
+            $configuration->height,
+            $mimeType,
             $publicUrl,
-            $closure,
-            [
+            $mediaAttr
+        );
+
+        $headers = [];
+        if ($this->debug) {
+            $headers = [
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => $mimeType,
                 'X-Pwa-Dev' => true,
-            ],
-            sprintf(
-                '<link rel="%s" sizes="%dx%d" type="%s" href="%s">',
-                $rel,
-                $configuration->width,
-                $configuration->height,
-                $mimeType,
-                $publicUrl
-            )
+            ];
+        }
+
+        return Data::create(
+            $publicUrl,
+            $closure,
+            $headers,
+            $html
         );
     }
 
@@ -316,15 +304,24 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 XML;
         $browserConfigHash = hash('xxh128', $content);
         $url = sprintf('/pwa/browserconfig-%s.xml', $browserConfigHash);
+
+        $headersImg = $this->debug ? [
+            'Cache-Control' => 'public, max-age=604800, immutable',
+            'Content-Type' => 'image/png',
+            'X-Pwa-Dev' => true,
+        ] : [];
+
+        $headersXml = $this->debug ? [
+            'Cache-Control' => 'public, max-age=604800, immutable',
+            'Content-Type' => 'application/xml',
+            'X-Pwa-Dev' => true,
+            'Etag' => hash('xxh128', $content),
+        ] : [];
+
         $browserConfig = Data::create(
             $url,
             $content,
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => 'application/xml',
-                'X-Pwa-Dev' => true,
-                'Etag' => hash('xxh128', $content),
-            ],
+            $headersXml,
             sprintf('<meta name="msapplication-config" content="%s">', $url)
         );
 
@@ -336,7 +333,7 @@ XML;
             $icon144x144->url => Data::create(
                 $icon144x144->url,
                 $icon144x144->getRawData(),
-                $icon144x144->headers,
+                $headersImg,
                 sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
             ),
             $browserConfig->url => $browserConfig,
@@ -348,15 +345,17 @@ XML;
         $callback = fn (): string => $this->generateSilhouette($content);
         $url = sprintf('/pwa/safari-pinned-tab-%s.svg', $hash);
 
+        $headers = $this->debug ? [
+            'Cache-Control' => 'public, max-age=604800, immutable',
+            'Content-Type' => 'image/svg+xml',
+            'X-Pwa-Dev' => true,
+            'Etag' => $hash,
+        ] : [];
+
         return Data::create(
             $url,
             $callback,
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => 'image/svg+xml',
-                'X-Pwa-Dev' => true,
-                'Etag' => $hash,
-            ],
+            $headers,
             sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)
         );
     }
