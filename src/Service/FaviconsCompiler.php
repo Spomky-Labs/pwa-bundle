@@ -169,12 +169,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ];
         }
 
-        return Data::create(
-            $publicUrl,
-            $closure,
-            $headers,
-            $html
-        );
+        return Data::create($publicUrl, $closure, $headers, $html);
     }
 
     /**
