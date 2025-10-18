@@ -18,10 +18,10 @@ final class CompileCommandTest extends AbstractPwaTestCase
     #[Test]
     #[DataProvider('provideCommands')]
     #[MaximumDuration(2000)]
-    public static function theFileAreCompiled(string $command): void
+    public static function theFileAreCompiled(string $commandName): void
     {
         // Given
-        $command = self::$application->find($command);
+        $command = self::$application->find($commandName);
         $commandTester = new CommandTester($command);
         assert(self::$kernel !== null);
 
@@ -32,6 +32,9 @@ final class CompileCommandTest extends AbstractPwaTestCase
         $commandTester->assertCommandIsSuccessful();
         static::assertFileExists(self::$kernel->getCacheDir() . '/output/site.webmanifest');
         static::assertFileExists(self::$kernel->getCacheDir() . '/output/sw.js');
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/favicon.ico');
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/idb/index.cjs');
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/workbox/workbox-sw.js');
     }
 
     /**
@@ -41,5 +44,27 @@ final class CompileCommandTest extends AbstractPwaTestCase
     {
         yield ['pwa:compile'];
         yield ['asset-map:compile'];
+    }
+
+    #[Test]
+    public static function onlyTheManifestAndTheServiceWorkerAreCompiled(): void
+    {
+        // Given
+        $command = self::$application->find('pwa:compile');
+        $commandTester = new CommandTester($command);
+        assert(self::$kernel !== null);
+
+        // When
+        $commandTester->execute([
+            '--context-only' => true,
+        ]);
+
+        // Then
+        $commandTester->assertCommandIsSuccessful();
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/site.webmanifest');
+        static::assertFileExists(self::$kernel->getCacheDir() . '/output/sw.js');
+        static::assertFileDoesNotExist(self::$kernel->getCacheDir() . '/output/favicon.ico');
+        static::assertFileDoesNotExist(self::$kernel->getCacheDir() . '/output/idb/index.cjs');
+        static::assertFileDoesNotExist(self::$kernel->getCacheDir() . '/output/workbox/workbox-sw.js');
     }
 }

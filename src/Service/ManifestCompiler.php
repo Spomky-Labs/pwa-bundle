@@ -134,7 +134,9 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
                 'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => 'application/manifest+json',
                 'X-Pwa-Dev' => true,
-            ]
+            ],
+            null,
+            false
         );
     }
 }
