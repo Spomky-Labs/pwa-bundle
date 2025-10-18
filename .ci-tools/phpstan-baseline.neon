@@ -2536,6 +2536,12 @@ parameters:
 			path: ../src/Service/ApplicationIconCompiler.php
 
 		-
+			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $contextFree with default value.
+			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/Service/Data.php
+
+		-
 			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $html with default value.
 			identifier: ergebnis.noConstructorParameterWithDefaultValue
 			count: 1
