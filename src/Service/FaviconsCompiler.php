@@ -14,7 +14,6 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symfony\UX\Icons\IconRendererInterface;
@@ -408,7 +407,7 @@ XML;
     private function getFaviconAsset(Asset $asset, array $attributes): string
     {
         if (str_starts_with($asset->src, '/')) {
-            return (new Filesystem())->readFile($asset->src);
+            return file_get_contents($asset->src);
         }
         if ($this->renderer !== null && str_contains($asset->src, ':')) {
             return $this->renderer->renderIcon($asset->src, $attributes);
@@ -419,7 +418,7 @@ XML;
 
         $content = $mappedAsset->content;
         if ($content === null) {
-            $content = (new Filesystem())->readFile($mappedAsset->sourcePath);
+            $content = file_get_contents($mappedAsset->sourcePath);
         }
 
         return $content;

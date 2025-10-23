@@ -12,7 +12,6 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\UX\Icons\IconRendererInterface;
 use function array_key_exists;
@@ -42,7 +41,7 @@ final readonly class IconResolver
         $asset = $this->getAsset($icon->src, $icon->svgAttributes);
         $content = $asset->content;
         if ($content === null) {
-            $content = (new Filesystem())->readFile($asset->sourcePath);
+            $content = file_get_contents($asset->sourcePath);
         }
 
         $imageProcessor = fn (Configuration $configuration): string => $this->imageProcessor->process(
@@ -134,7 +133,7 @@ final readonly class IconResolver
     private function getAsset(Asset $asset, array $attributes): MappedAsset
     {
         if (str_starts_with($asset->src, '/')) {
-            $content = (new Filesystem())->readFile($asset->src);
+            $content = file_get_contents($asset->src);
             $hash = hash('xxh128', $content);
             $fileinfo = pathinfo($asset->src);
             assert(is_array($fileinfo), 'Invalid file.');
