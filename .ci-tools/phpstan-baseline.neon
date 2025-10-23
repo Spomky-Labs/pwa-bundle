@@ -2650,6 +2650,12 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::getFaviconAsset() should return string but returns string|false.'
+			identifier: return.type
+			count: 2
+			path: ../src/Service/FaviconsCompiler.php
+
+		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::processIcon() has parameter $media with a nullable type declaration.'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
@@ -2746,7 +2752,19 @@ parameters:
 			path: ../src/Service/IconResolver.php
 
 		-
+			rawMessage: 'Parameter #1 $image of method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() expects string, string|false given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/IconResolver.php
+
+		-
 			rawMessage: 'Parameter #2 $attributes of method Symfony\UX\Icons\IconRendererInterface::renderIcon() expects array<string, bool|string>, array<string, mixed> given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/IconResolver.php
+
+		-
+			rawMessage: 'Parameter #2 $data of function hash expects string, string|false given.'
 			identifier: argument.type
 			count: 1
 			path: ../src/Service/IconResolver.php
@@ -2755,6 +2773,12 @@ parameters:
 			rawMessage: 'Parameter #3 $headers of class SpomkyLabs\PwaBundle\Service\Data constructor expects array<string, bool|string>, array<string, string|true|null> given.'
 			identifier: argument.type
 			count: 2
+			path: ../src/Service/IconResolver.php
+
+		-
+			rawMessage: 'Parameter #5 $content of class Symfony\Component\AssetMapper\MappedAsset constructor expects string|null, string|false given.'
+			identifier: argument.type
+			count: 1
 			path: ../src/Service/IconResolver.php
 
 		-
