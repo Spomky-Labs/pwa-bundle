@@ -1876,6 +1876,12 @@ parameters:
 			path: ../src/Resources/config/definition/image_processor.php
 
 		-
+			rawMessage: 'Cannot call method beforeNormalization() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/image_processor.php
+
+		-
 			rawMessage: 'Cannot call method defaultNull() on mixed.'
 			identifier: method.nonObject
 			count: 1
@@ -1884,11 +1890,17 @@ parameters:
 		-
 			rawMessage: 'Cannot call method end() on mixed.'
 			identifier: method.nonObject
-			count: 2
+			count: 3
 			path: ../src/Resources/config/definition/image_processor.php
 
 		-
 			rawMessage: 'Cannot call method example() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/image_processor.php
+
+		-
+			rawMessage: 'Cannot call method ifTrue() on mixed.'
 			identifier: method.nonObject
 			count: 1
 			path: ../src/Resources/config/definition/image_processor.php
@@ -1901,6 +1913,12 @@ parameters:
 
 		-
 			rawMessage: 'Cannot call method scalarNode() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Resources/config/definition/image_processor.php
+
+		-
+			rawMessage: 'Cannot call method then() on mixed.'
 			identifier: method.nonObject
 			count: 1
 			path: ../src/Resources/config/definition/image_processor.php
