@@ -93,9 +93,9 @@
     <tr>
         <td>Start URL</td>
         <td>
-            Path: <strong>{{ collector.manifest.startUrl.path }}</strong>
+            Path: {% if collector.manifest.startUrl is not null %}<strong>{{ collector.manifest.startUrl.path }}</strong>{% endif %}
             Parameters (only for Symfony routes):
-            {% if collector.manifest.startUrl.params|length >0 %}
+            {% if collector.manifest.startUrl is not null and collector.manifest.startUrl.params|length >0 %}
             <ul>
                 {% for key, value in collector.manifest.startUrl.params %}
                     <li>{{ key }}: {{ value }}</li>
