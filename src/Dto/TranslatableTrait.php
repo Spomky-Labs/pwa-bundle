@@ -22,7 +22,7 @@ trait TranslatableTrait
         }
         if (is_array($data)) {
             return array_map(
-                fn (string $value): TranslatableInterface => new TranslatableMessage($value, [], 'pwa'),
+                static fn (string $value): TranslatableInterface => new TranslatableMessage($value, [], 'pwa'),
                 $data
             );
         }
