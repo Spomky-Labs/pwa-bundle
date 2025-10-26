@@ -16,7 +16,7 @@ final readonly class BackgroundFetchCache implements ServiceWorkerRuleInterface
     public function __construct(
         ServiceWorker $serviceWorker,
         private RouterInterface $router,
-        private TranslatorInterface $translator,
+        private ?TranslatorInterface $translator = null,
     ) {
         $this->workbox = $serviceWorker->workbox;
     }
@@ -70,7 +70,7 @@ BACKGROUND_FETCH_CACHE;
 
         $successMessage = $this->workbox->backgroundFetch->successMessage ?? '{title} ✅';
         if ($successMessage !== '' && $successMessage !== null) {
-            $successMessage = $this->translator->trans($successMessage, [], 'pwa');
+            $successMessage = $this->translator?->trans($successMessage, [], 'pwa') ?? $successMessage;
         }
         $declaration .= <<<BACKGROUND_FETCH_CACHE
 registerBackgroundFetchTask('success', async (event) => {
@@ -129,7 +129,7 @@ BACKGROUND_FETCH_CACHE;
 
         $failureMessage = $this->workbox->backgroundFetch->failureMessage ?? '{title} ❌';
         if ($failureMessage !== '' && $failureMessage !== null) {
-            $failureMessage = $this->translator->trans($failureMessage, [], 'pwa');
+            $failureMessage = $this->translator?->trans($failureMessage, [], 'pwa') ?? $failureMessage;
         }
 
         return $declaration . <<<BACKGROUND_FETCH_CACHE

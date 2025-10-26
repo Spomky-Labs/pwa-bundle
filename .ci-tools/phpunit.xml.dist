@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         bootstrap="../tests/autoload.php"
         colors="true"
-        xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="phpunit.xsd"
         cacheDirectory=".phpunit.cache"
 >
   <coverage/>
