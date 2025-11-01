@@ -2854,6 +2854,24 @@ parameters:
 			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
 
 		-
+			rawMessage: Constructor in SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache has parameter $translator with default value.
+			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache::__construct() has parameter $translator with a nullable type declaration.'
+			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			count: 1
+			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache::__construct() has parameter $translator with null as default value.'
+			identifier: ergebnis.noParameterWithNullDefaultValue
+			count: 1
+			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
+
+		-
 			rawMessage: 'Language construct isset() should not be used.'
 			identifier: ergebnis.noIsset
 			count: 1

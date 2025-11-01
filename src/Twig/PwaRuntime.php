@@ -69,9 +69,10 @@ final readonly class PwaRuntime
             $this->manifestPublicUrl
         );
         $url = $this->assetMapper->getPublicPath($manifestPublicUrl) ?? $manifestPublicUrl;
-        $useCredentials = '';
         if ($this->manifest->useCredentials === true) {
             $useCredentials = ' crossorigin="use-credentials"';
+        } else {
+            $useCredentials = ' crossorigin="anonymous"';
         }
 
         return $output . sprintf('%s<link rel="manifest" href="%s"%s>', PHP_EOL, $url, $useCredentials);
@@ -127,6 +128,7 @@ final readonly class PwaRuntime
         if ($serviceWorker->workbox->enabled === true) {
             $workboxUrl = sprintf('%s%s', $serviceWorker->workbox->workboxPublicUrl, '/workbox-window.prod.mjs');
             $declaration = <<<SERVICE_WORKER
+<link rel="modulepreload" href="{$workboxUrl}">
 <script type="module"{$scriptAttributes}>
   import {Workbox} from '{$workboxUrl}';
 
