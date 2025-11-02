@@ -28,7 +28,51 @@ const DEFAULT_I18N = {
  * - enqueueValue (Boolean) default: true
  * - i18nValue (Object)    default: {}
  *
- * Events (prefix "speech"): ready, unsupported, voicesloaded, start, end, pause, resume, error, boundary, queued, dequeue, cancel, voicechange, ratechange, pitchchange, volumechange
+ * Properties (getters):
+ * - voices: Array of available voices
+ * - locales: Array of available locale codes
+ * - isSpeaking: Boolean - true if currently speaking
+ * - isPaused: Boolean - true if paused
+ * - isPending: Boolean - true if utterances are pending in native queue
+ * - queueSize: Number - size of internal queue
+ *
+ * Methods:
+ * - speak({ params }): Speak text with optional parameters
+ * - speakItem(event): Speak text from clicked element
+ * - enqueueItems({ params }): Enqueue multiple items
+ * - pause(): Pause current speech
+ * - resume(): Resume paused speech
+ * - cancel(): Cancel all speech and clear queue
+ * - skipToNext(): Skip to next utterance in queue
+ * - clearQueue(): Clear queue without canceling current speech
+ * - getVoicesByLang(lang): Get voices for specific language
+ * - getVoiceByName(name): Get voice by name
+ * - getDefaultVoice(): Get system default voice
+ * - getCurrentUtterance(): Get current utterance object
+ * - setRate({ params }): Set speech rate
+ * - setPitch({ params }): Set speech pitch
+ * - setVolume({ params }): Set speech volume
+ * - changeVoiceFromSelect(): Update voice from select element
+ *
+ * Events (prefix "pwa:speech-synthesis:"):
+ * - ready: Controller is ready
+ * - unsupported: Browser doesn't support SpeechSynthesis
+ * - voicesloaded: Voices have been loaded
+ * - start: Speech started
+ * - end: Speech ended
+ * - pause: Speech paused
+ * - resume: Speech resumed
+ * - error: Speech error occurred
+ * - boundary: Word/sentence boundary reached
+ * - queued: Utterance added to queue
+ * - dequeue: Utterance removed from queue
+ * - queuechange: Queue size changed
+ * - queueempty: Queue is now empty
+ * - cancel: Speech canceled
+ * - voicechange: Voice changed
+ * - ratechange: Rate changed
+ * - pitchchange: Pitch changed
+ * - volumechange: Volume changed
  */
 export default class extends Controller {
     static targets = ['item', 'voiceSelect', 'status'];
@@ -80,6 +124,18 @@ export default class extends Controller {
 
     get isSpeaking() {
         return window.speechSynthesis.speaking;
+    }
+
+    get isPaused() {
+        return window.speechSynthesis.paused;
+    }
+
+    get isPending() {
+        return window.speechSynthesis.pending;
+    }
+
+    get queueSize() {
+        return this._utterances.length;
     }
 
     speak({ params = {} }) {
@@ -174,6 +230,40 @@ export default class extends Controller {
         this.dispatchEvent('pwa:speech-synthesis:volumechange', { volume: this.volumeValue });
     }
 
+    getVoicesByLang(lang) {
+        if (!lang) return [];
+        const langPrefix = lang.toLowerCase().split('-')[0];
+        return this._voices.filter(v =>
+            v.lang === lang || v.lang?.toLowerCase().startsWith(langPrefix + '-')
+        );
+    }
+
+    getVoiceByName(name) {
+        if (!name) return null;
+        return this._voices.find(v => v.name === name) ?? null;
+    }
+
+    getDefaultVoice() {
+        return this._voices.find(v => v.default) ?? this._voices[0] ?? null;
+    }
+
+    clearQueue() {
+        this._utterances = [];
+        this.dispatchEvent('pwa:speech-synthesis:queuechange', { size: 0 });
+        this.dispatchEvent('pwa:speech-synthesis:queueempty');
+    }
+
+    getCurrentUtterance() {
+        return this._current;
+    }
+
+    skipToNext() {
+        if (!this.isSpeaking) return;
+        window.speechSynthesis.cancel();
+        this._current = null;
+        this._drainQueue();
+    }
+
     _loadVoices() {
         const list = window.speechSynthesis.getVoices() || [];
         if (list.length) {
@@ -266,6 +356,7 @@ export default class extends Controller {
     _queue(utter) {
         this._utterances.push(utter);
         this.dispatchEvent('pwa:speech-synthesis:queued', { size: this._utterances.length });
+        this.dispatchEvent('pwa:speech-synthesis:queuechange', { size: this._utterances.length });
     }
 
     _drainQueue() {
@@ -274,6 +365,10 @@ export default class extends Controller {
         const next = this._utterances.shift();
         window.speechSynthesis.speak(next);
         this.dispatchEvent('pwa:speech-synthesis:dequeue', { remaining: this._utterances.length });
+        this.dispatchEvent('pwa:speech-synthesis:queuechange', { size: this._utterances.length });
+        if (this._utterances.length === 0) {
+            this.dispatchEvent('pwa:speech-synthesis:queueempty');
+        }
     }
 
     _t(key) {
@@ -286,8 +381,30 @@ export default class extends Controller {
 
     _pickVoiceFor(lang) {
         if (!this._voices?.length || !lang) return null;
-        return this._voices.find(v => v.lang === lang)
-            ?? this._voices.find(v => v.lang?.toLowerCase().startsWith(lang.toLowerCase().split('-')[0] + '-'))
-            ?? null;
+
+        const langPrefix = lang.toLowerCase().split('-')[0];
+
+        // Try exact match with default voice first
+        const exactDefault = this._voices.find(v => v.lang === lang && v.default);
+        if (exactDefault) return exactDefault;
+
+        // Try exact match with local voice
+        const exactLocal = this._voices.find(v => v.lang === lang && v.localService);
+        if (exactLocal) return exactLocal;
+
+        // Try exact match
+        const exact = this._voices.find(v => v.lang === lang);
+        if (exact) return exact;
+
+        // Try language prefix match with default voice
+        const prefixDefault = this._voices.find(v => v.lang?.toLowerCase().startsWith(langPrefix + '-') && v.default);
+        if (prefixDefault) return prefixDefault;
+
+        // Try language prefix match with local voice
+        const prefixLocal = this._voices.find(v => v.lang?.toLowerCase().startsWith(langPrefix + '-') && v.localService);
+        if (prefixLocal) return prefixLocal;
+
+        // Try language prefix match
+        return this._voices.find(v => v.lang?.toLowerCase().startsWith(langPrefix + '-')) ?? null;
     }
 }
