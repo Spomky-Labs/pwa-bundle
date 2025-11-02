@@ -7,7 +7,6 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use function assert;
 use function sprintf;
 
 /**
@@ -33,7 +32,7 @@ abstract class AbstractPwaTestCase extends KernelTestCase
     private static function cleanupFolder(): void
     {
         $filesystem = self::getContainer()->get(Filesystem::class);
-        assert($filesystem instanceof Filesystem);
+        static::assertInstanceOf(Filesystem::class, $filesystem);
         $filesystem->remove(sprintf('%s/samples', self::$kernel->getCacheDir()));
         $filesystem->remove(sprintf('%s/output', self::$kernel->getCacheDir()));
     }

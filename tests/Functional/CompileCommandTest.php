@@ -8,7 +8,7 @@ use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
-use function assert;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @internal
@@ -23,7 +23,7 @@ final class CompileCommandTest extends AbstractPwaTestCase
         // Given
         $command = self::$application->find($commandName);
         $commandTester = new CommandTester($command);
-        assert(self::$kernel !== null);
+        static::assertInstanceOf(KernelInterface::class, self::$kernel);
 
         // When
         $commandTester->execute([]);
@@ -52,7 +52,7 @@ final class CompileCommandTest extends AbstractPwaTestCase
         // Given
         $command = self::$application->find('pwa:compile');
         $commandTester = new CommandTester($command);
-        assert(self::$kernel !== null);
+        static::assertInstanceOf(KernelInterface::class, self::$kernel);
 
         // When
         $commandTester->execute([

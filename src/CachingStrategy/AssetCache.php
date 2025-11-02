@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
@@ -33,7 +33,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
     private LoggerInterface $logger;
 
     public function __construct(
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         #[Autowire(service: 'asset_mapper.public_assets_path_resolver')]
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
         private readonly AssetMapperInterface $assetMapper,
@@ -41,7 +41,8 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
         if ($debug === true) {

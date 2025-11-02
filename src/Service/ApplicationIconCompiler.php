@@ -10,12 +10,15 @@ use function count;
 
 final readonly class ApplicationIconCompiler implements FileCompilerInterface
 {
+    private Manifest $manifest;
+
     public function __construct(
         private IconResolver $iconResolver,
-        private Manifest $manifest,
+        ManifestBuilder $manifestBuilder,
         #[Autowire(param: 'kernel.debug')]
         public bool $debug,
     ) {
+        $this->manifest = $manifestBuilder->create();
     }
 
     /**

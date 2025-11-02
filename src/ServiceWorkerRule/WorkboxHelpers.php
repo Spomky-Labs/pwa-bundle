@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 
 final readonly class WorkboxHelpers implements ServiceWorkerRuleInterface
 {
     private Workbox $workbox;
 
-    public function __construct(ServiceWorker $serviceWorker)
+    public function __construct(ServiceWorkerBuilder $serviceWorkerBuilder)
     {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
     }
 
     public function process(bool $debug = false): string
