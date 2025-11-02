@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
-use function assert;
+use Symfony\Component\HttpKernel\KernelInterface;
 use function sprintf;
 
 /**
@@ -20,7 +20,7 @@ final class GenerateIconsCommandTest extends AbstractPwaTestCase
         // Given
         $command = self::$application->find('pwa:create:icons');
         $commandTester = new CommandTester($command);
-        assert(self::$kernel !== null);
+        static::assertInstanceOf(KernelInterface::class, self::$kernel);
         $output = sprintf('%s/samples/icons', self::$kernel->getCacheDir());
 
         // When

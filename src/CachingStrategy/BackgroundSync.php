@@ -6,10 +6,10 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectErrorOnRangePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectRedirectResponsePlugin;
@@ -27,11 +27,12 @@ final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterfa
      * @param iterable<MatchCallbackHandlerInterface> $matchCallbackHandlers
      */
     public function __construct(
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         #[AutowireIterator('spomky_labs_pwa.match_callback_handler')]
         private readonly iterable $matchCallbackHandlers,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $this->logger = new NullLogger();
     }
 

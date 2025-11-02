@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -21,10 +22,13 @@ final class WindowsWidgets implements ServiceWorkerRuleInterface, CanLogInterfac
 {
     private LoggerInterface $logger;
 
+    private readonly Manifest $manifest;
+
     public function __construct(
-        private readonly Manifest $manifest,
+        ManifestBuilder $manifestBuilder,
         private readonly SerializerInterface $serializer
     ) {
+        $this->manifest = $manifestBuilder->create();
         $this->logger = new NullLogger();
     }
 

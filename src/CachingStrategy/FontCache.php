@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
@@ -30,13 +30,14 @@ final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
     private LoggerInterface $logger;
 
     public function __construct(
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly AssetMapperInterface $assetMapper,
         private readonly SerializerInterface $serializer,
         #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
         if ($debug === true) {
             $options |= JSON_PRETTY_PRINT;

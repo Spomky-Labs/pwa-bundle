@@ -31,23 +31,26 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
 
     private LoggerInterface $logger;
 
+    private readonly ServiceWorker $serviceWorker;
+
     /**
      * @param iterable<ServiceWorkerRuleInterface> $serviceworkerRules
      */
     public function __construct(
-        private readonly ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly AssetMapperInterface $assetMapper,
         #[AutowireIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
         private readonly iterable $serviceworkerRules,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
-        $serviceWorkerPublicUrl = $serviceWorker->dest;
+        $this->serviceWorker = $serviceWorkerBuilder->create();
+        $serviceWorkerPublicUrl = $this->serviceWorker->dest;
         $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
-        if ($serviceWorker->enabled === true && $serviceWorker->workbox->enabled === true) {
-            $this->workboxVersion = $serviceWorker->workbox->version;
-            $this->workboxPublicUrl = '/' . trim($serviceWorker->workbox->workboxPublicUrl, '/');
-            $this->idbPublicUrl = '/' . trim($serviceWorker->workbox->indexDBPublicUrl, '/');
+        if ($this->serviceWorker->enabled === true && $this->serviceWorker->workbox->enabled === true) {
+            $this->workboxVersion = $this->serviceWorker->workbox->version;
+            $this->workboxPublicUrl = '/' . trim($this->serviceWorker->workbox->workboxPublicUrl, '/');
+            $this->idbPublicUrl = '/' . trim($this->serviceWorker->workbox->indexDBPublicUrl, '/');
         } else {
             $this->workboxVersion = null;
             $this->workboxPublicUrl = null;
