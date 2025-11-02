@@ -149,14 +149,14 @@
                 "main": "src/service-worker_controller.js",
                 "name": "pwa/service-worker",
                 "webpackMode": "eager",
-                "fetch": "false",
+                "fetch": "eager",
                 "enabled": false
             },
             "speech-synthesis": {
                 "main": "src/speech-synthesis_controller.js",
                 "name": "pwa/speech-synthesis",
                 "webpackMode": "eager",
-                "fetch": "false",
+                "fetch": "eager",
                 "enabled": false
             },
             "touch": {
