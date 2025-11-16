@@ -1,8 +1,9 @@
 {
     "name": "@spomky-labs/pwa-bundle",
-    "description": "Stimulus Controllers for the PWA Bundle",
+    "description": "Web APIs Stimulus Controllers for Progressive Web Applications",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "0.0.0-development",
+    "main": "src/index.js",
     "symfony": {
         "controllers": {
             "background-fetch": {
@@ -188,11 +189,11 @@
                 "enabled": false
             },
             "web-share": {
-              "main": "src/web-share_controller.js",
-              "name": "pwa/web-share",
-              "webpackMode": "eager",
-              "fetch": "eager",
-              "enabled": false
+                "main": "src/web-share_controller.js",
+                "name": "pwa/web-share",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
             }
         },
         "importmap": {
@@ -207,9 +208,53 @@
         "idb": "^8.0",
         "idb-keyval": "^6.2"
     },
+    "scripts": {
+        "version": "echo \"Version will be set by CI/CD or manually\""
+    },
     "devDependencies": {
         "@hotwired/stimulus": "^3.0.0",
         "idb": "^8.0",
         "idb-keyval": "^6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Spomky-Labs/pwa-bundle.git",
+        "directory": "assets"
+    },
+    "homepage": "https://github.com/Spomky-Labs/pwa-bundle/tree/1.4.x/assets",
+    "bugs": {
+        "url": "https://github.com/Spomky-Labs/pwa-bundle/issues"
+    },
+    "keywords": [
+        "pwa",
+        "progressive-web-app",
+        "stimulus",
+        "symfony",
+        "symfony-ux",
+        "web-apis",
+        "service-worker",
+        "background-sync",
+        "web-push",
+        "geolocation",
+        "webauthn",
+        "offline-first"
+    ],
+    "author": {
+        "name": "Florent Morselli",
+        "url": "https://github.com/Spomky"
+    },
+    "contributors": [
+        {
+            "name": "All contributors",
+            "url": "https://github.com/Spomky-Labs/pwa-bundle/graphs/contributors"
+        }
+    ],
+    "files": [
+        "src/",
+        "README.md",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
     }
 }
