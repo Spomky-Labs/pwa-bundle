@@ -189,11 +189,11 @@
                 "enabled": false
             },
             "web-share": {
-              "main": "src/web-share_controller.js",
-              "name": "pwa/web-share",
-              "webpackMode": "eager",
-              "fetch": "eager",
-              "enabled": false
+                "main": "src/web-share_controller.js",
+                "name": "pwa/web-share",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": false
             }
         },
         "importmap": {
@@ -218,7 +218,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Spomky-Labs/pwa-bundle.git",
+        "url": "git+https://github.com/Spomky-Labs/pwa-bundle.git",
         "directory": "assets"
     },
     "homepage": "https://github.com/Spomky-Labs/pwa-bundle/tree/1.4.x/assets",
