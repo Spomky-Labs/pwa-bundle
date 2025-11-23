@@ -78,6 +78,11 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
         ]];
+        yield 'Service Worker with short syntax' => [[
+            'pwa' => [
+                'serviceworker' => 'sw.js',
+            ],
+        ]];
         yield 'Service Worker without source' => [
             [
                 'pwa' => [
