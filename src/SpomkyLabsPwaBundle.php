@@ -46,7 +46,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
         $serviceWorkerConfig = $config['serviceworker'];
         $manifestConfig = $config['manifest'];
-        if ($serviceWorkerConfig['enabled'] === true && $manifestConfig['enabled'] === true) {
+        if ($serviceWorkerConfig['enabled'] === true) {
             $manifestConfig['serviceworker'] = $serviceWorkerConfig;
         }
 

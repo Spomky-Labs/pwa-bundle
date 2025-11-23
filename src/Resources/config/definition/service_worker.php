@@ -15,6 +15,8 @@ return static function (DefinitionConfigurator $definition): void {
         ->then(static fn (string $v): array => [
             'enabled' => true,
             'src' => $v,
+            'dest' => '/sw.js',
+            'scope' => '/',
         ])
         ->end()
         ->children()

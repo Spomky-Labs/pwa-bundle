@@ -233,8 +233,8 @@ function phpqa_update(): void
     run(['docker', 'pull', 'ghcr.io/spomky-labs/phpqa:' . $phpVersion]);
 }
 
-#[AsTask(description: 'Run PHPUnit tests with coverage')]
-function phpunit(?string $php = null): void
+#[AsTask(description: 'Run PHPUnit tests with coverage', ignoreValidationErrors: true)]
+function phpunit(#[AsRawTokens] array $args = []): void
 {
     phpqa(
         [
@@ -242,6 +242,7 @@ function phpunit(?string $php = null): void
             '--coverage-xml', '.ci-tools/coverage',
             '--log-junit=.ci-tools/coverage/junit.xml',
             '--configuration', '.ci-tools/phpunit.xml.dist',
+            ...$args,
         ],
         ['-e', 'XDEBUG_MODE=coverage']
     );
