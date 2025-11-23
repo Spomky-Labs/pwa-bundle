@@ -126,36 +126,36 @@ final readonly class PwaRuntime
             $registerOptions = sprintf(', {%s}', mb_substr($registerOptions, 2));
         }
         if ($serviceWorker->workbox->enabled === true) {
-            $workboxUrl = sprintf('%s%s', $serviceWorker->workbox->workboxPublicUrl, '/workbox-window.prod.mjs');
+            $workboxUrl = sprintf('%s%s', $serviceWorker->workbox->workboxPublicUrl, '/workbox-window.prod.umd.js');
+            // Using UMD version instead of ESM to avoid importmap dependency issues
+            // This prevents "bare specifier not remapped" errors regardless of script order.
+            // See: https://github.com/Spomky-Labs/pwa-bundle/issues/391
             $declaration = <<<SERVICE_WORKER
-<link rel="modulepreload" href="{$workboxUrl}">
-<script type="module"{$scriptAttributes}>
-  import {Workbox} from '{$workboxUrl}';
-
+<script src="{$workboxUrl}" defer{$scriptAttributes} onload="(async () => {
   if ('serviceWorker' in navigator) {
-    const wb = new Workbox('{$url}'{$registerOptions});
-
-    wb.addEventListener('waiting', () => {
-      const event = new CustomEvent('sw:update-available', { detail: { wb } });
-      window.dispatchEvent(event);
-    });
-
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        window.location.reload();
-        refreshing = true;
-      }
-    });
-
     try {
+      const wb = new workbox.Workbox('{$url}'{$registerOptions});
+
+      wb.addEventListener('waiting', () => {
+        const event = new CustomEvent('sw:update-available', { detail: { wb } });
+        window.dispatchEvent(event);
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          window.location.reload();
+          refreshing = true;
+        }
+      });
+
       await wb.register();
       window.workbox = wb;
     } catch (e) {
       console.error('SW registration failed', e);
     }
   }
-</script>
+})()"></script>
 SERVICE_WORKER;
         } else {
             $declaration = <<<SERVICE_WORKER
