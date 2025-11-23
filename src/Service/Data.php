@@ -19,6 +19,7 @@ final class Data
         private string|Closure $data,
         public readonly array $headers,
         public readonly null|string $html = null,
+        public readonly bool $contextFree = true,
     ) {
     }
 
@@ -29,9 +30,10 @@ final class Data
         string $url,
         string|Closure $data,
         array $headers = [],
-        null|string $html = null
+        null|string $html = null,
+        bool $contextFree = true,
     ): self {
-        return new self($url, $data, $headers, $html);
+        return new self($url, $data, $headers, $html, $contextFree);
     }
 
     public function getData(): string

@@ -34,7 +34,7 @@ final class FileCompiler implements CanLogInterface
         $this->logger = $logger;
     }
 
-    public function compile(?SymfonyStyle $io = null): void
+    public function compile(?SymfonyStyle $io = null, bool $contextDependentOnly = false): void
     {
         $this->logger->debug('Compiling files...');
         foreach ($this->fileCompilers as $fileCompiler) {
@@ -49,6 +49,9 @@ final class FileCompiler implements CanLogInterface
             $progressBar?->setMessage('Start');
             $progressBar?->start();
             foreach ($fileCompiler->getFiles() as $data) {
+                if ($contextDependentOnly === true && $data->contextFree === true) {
+                    continue;
+                }
                 $progressBar?->advance();
                 $progressBar?->setMessage(sprintf('Compiling %s', $data->url));
                 $this->logger->debug('Compiling file.', [

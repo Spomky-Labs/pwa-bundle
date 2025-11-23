@@ -10,9 +10,11 @@ use ReflectionMethod;
 use RuntimeException;
 use SpomkyLabs\PwaBundle\Attribute\PreloadUrl;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
-use Symfony\Component\DependencyInjection\ChildDefinition;
+use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGeneratorFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 use function array_key_exists;
@@ -26,18 +28,31 @@ final class PreloadUrlCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        foreach ($this->findAllTaggedRoutes($container) as $alias => $urls) {
-            $definitionId = sprintf('spomky_labs_pwa.preload_urls_tag_generator.%s', $alias);
-            $definition = new ChildDefinition(PreloadUrlsTagGenerator::class);
-            $definition
-                ->setArguments([
-                    '$alias' => $alias,
-                    '$urls' => $urls,
-                ])
-                ->addTag('spomky_labs_pwa.preload_urls_generator')
-            ;
-            $container->setDefinition($definitionId, $definition);
+        if ($container->hasDefinition(PreloadUrlsTagGenerator::class)) {
+            $container->removeDefinition(PreloadUrlsTagGenerator::class);
         }
+        if ($container->hasAlias(PreloadUrlsTagGenerator::class)) {
+            $container->removeAlias(PreloadUrlsTagGenerator::class);
+        }
+        foreach ($this->findAllTaggedRoutes($container) as $alias => $urls) {
+            $id = sprintf('spomky_labs_pwa.preload_urls_tag_generator.%s', $alias);
+
+            $def = new Definition(PreloadUrlsTagGenerator::class);
+            $def->setFactory([new Reference(PreloadUrlsTagGeneratorFactory::class), 'create']);
+            $def->setAutowired(false)
+                ->setAutoconfigured(false)
+                ->setPublic(false);
+            $def->setArgument('$alias', $alias);
+            $def->setArgument('$urls', array_map(static fn (array $r) => [
+                'route' => $r['route'],
+                'params' => $r['params'] ?? [],
+                'pathTypeReference' => $r['pathTypeReference'],
+            ], $urls));
+            $def->addTag('spomky_labs_pwa.preload_urls_generator');
+
+            $container->setDefinition($id, $def);
+        }
+
     }
 
     /**
@@ -118,7 +133,10 @@ final class PreloadUrlCompilerPass implements CompilerPassInterface
             try {
                 /** @var Route $routeAttribute */
                 $routeAttribute = $attribute->newInstance();
-                $routeName = $routeAttribute->getName();
+                $routeName = method_exists(
+                    $routeAttribute,
+                    'getName'
+                ) ? $routeAttribute->getName() : $routeAttribute->name;
                 if ($routeName === null) {
                     continue;
                 }

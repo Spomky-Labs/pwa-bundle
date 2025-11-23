@@ -10,8 +10,11 @@ use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -34,6 +37,12 @@ use const JSON_UNESCAPED_UNICODE;
 
 final class PwaCollector extends DataCollector
 {
+    private readonly ServiceWorker $serviceWorker;
+
+    private readonly Manifest $manifest;
+
+    private readonly Favicons $favicons;
+
     /**
      * @param iterable<HasCacheStrategiesInterface> $cachingServices
      */
@@ -41,9 +50,9 @@ final class PwaCollector extends DataCollector
         private readonly SerializerInterface $serializer,
         #[AutowireIterator('spomky_labs_pwa.cache_strategy')]
         private readonly iterable $cachingServices,
-        private readonly Manifest $manifest,
-        private readonly ServiceWorker $serviceWorker,
-        private readonly Favicons $favicons,
+        ManifestBuilder $manifestBuilder,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
+        FaviconsBuilder $faviconsBuilder,
         private readonly ManifestCompiler $manifestCompiler,
         private readonly ServiceWorkerCompiler $serviceWorkerCompiler,
         private readonly FaviconsCompiler $faviconsCompiler,
@@ -52,6 +61,9 @@ final class PwaCollector extends DataCollector
         #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
     ) {
+        $this->favicons = $faviconsBuilder->create();
+        $this->manifest = $manifestBuilder->create();
+        $this->serviceWorker = $serviceWorkerBuilder->create();
     }
 
     public function collect(Request $request, Response $response, ?Throwable $exception = null): void

@@ -8,7 +8,9 @@ use InvalidArgumentException;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,10 +24,14 @@ final readonly class PwaRuntime
 {
     private string $manifestPublicUrl;
 
+    private Manifest $manifest;
+
+    private Favicons $favicons;
+
     public function __construct(
         private AssetMapperInterface $assetMapper,
-        private Manifest $manifest,
-        private Favicons $favicons,
+        ManifestBuilder $manifestBuilder,
+        FaviconsBuilder $faviconsBuilder,
         private FaviconsCompiler $faviconsCompiler,
         #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
@@ -33,6 +39,8 @@ final readonly class PwaRuntime
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
+        $this->favicons = $faviconsBuilder->create();
+        $this->manifest = $manifestBuilder->create();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
     }
 

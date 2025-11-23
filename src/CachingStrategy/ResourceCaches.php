@@ -6,11 +6,11 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Url;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
@@ -39,14 +39,15 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
      */
     public function __construct(
         private readonly PreloadUrlsGeneratorManager $preloadUrlsGeneratorManager,
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly SerializerInterface $serializer,
         #[AutowireIterator('spomky_labs_pwa.match_callback_handler')]
         private readonly iterable $matchCallbackHandlers,
         #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
         if ($debug === true) {
             $options |= JSON_PRETTY_PRINT;

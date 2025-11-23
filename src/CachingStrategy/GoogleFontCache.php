@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 
@@ -18,9 +18,10 @@ final class GoogleFontCache implements HasCacheStrategiesInterface, CanLogInterf
 
     private LoggerInterface $logger;
 
-    public function __construct(ServiceWorker $serviceWorker)
+    public function __construct(ServiceWorkerBuilder $serviceWorkerBuilder)
     {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $this->logger = new NullLogger();
     }
 
