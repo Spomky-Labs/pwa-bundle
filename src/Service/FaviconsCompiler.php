@@ -26,15 +26,18 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
     private LoggerInterface $logger;
 
+    private readonly Favicons $favicons;
+
     public function __construct(
         private readonly null|ImageProcessorInterface $imageProcessor,
-        private readonly Favicons $favicons,
+        FaviconsBuilder $faviconsBuilder,
         private readonly AssetMapperInterface $assetMapper,
         private readonly ?IconRendererInterface $renderer,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
         $this->logger = new NullLogger();
+        $this->favicons = $faviconsBuilder->create();
     }
 
     /**

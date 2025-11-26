@@ -8,15 +8,18 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 
 final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
 {
     private LoggerInterface $logger;
 
-    public function __construct(
-        private readonly ServiceWorker $serviceWorker
-    ) {
+    private readonly ServiceWorker $serviceWorker;
+
+    public function __construct(ServiceWorkerBuilder $serviceWorkerBuilder)
+    {
         $this->logger = new NullLogger();
+        $this->serviceWorker = $serviceWorkerBuilder->create();
     }
 
     public function process(bool $debug = false): string
