@@ -36,12 +36,14 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
 
     private LoggerInterface $logger;
 
+    private readonly Manifest $manifest;
+
     /**
      * @param array<string> $locales
      */
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly Manifest $manifest,
+        ManifestBuilder $manifestBuilder,
         #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
         #[Autowire(param: 'kernel.debug')]
@@ -50,6 +52,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
     ) {
+        $this->manifest = $manifestBuilder->create();
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
         $options = [

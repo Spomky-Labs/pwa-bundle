@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -25,10 +25,11 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
     private LoggerInterface $logger;
 
     public function __construct(
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly SerializerInterface $serializer,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $this->logger = new NullLogger();
     }
 

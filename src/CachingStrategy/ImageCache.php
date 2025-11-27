@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use function sprintf;
@@ -22,11 +22,12 @@ final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
     private LoggerInterface $logger;
 
     public function __construct(
-        ServiceWorker $serviceWorker,
+        ServiceWorkerBuilder $serviceWorkerBuilder,
         #[Autowire(service: 'asset_mapper.public_assets_path_resolver')]
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
     ) {
-        $this->workbox = $serviceWorker->workbox;
+        $this->workbox = $serviceWorkerBuilder->create()
+            ->workbox;
         $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $this->logger = new NullLogger();
     }
