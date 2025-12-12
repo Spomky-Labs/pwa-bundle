@@ -29,7 +29,28 @@ final class ExactPathnameMatchCallbackHandler implements MatchCallbackHandlerInt
             'match_callback' => $matchCallback,
         ]);
 
-        return sprintf("({url}) => url.pathname === '%s'", trim(mb_substr($matchCallback, 9)));
+        $pathname = trim(mb_substr($matchCallback, 9));
+
+        return sprintf(
+            <<<'JS'
+({request, url}) => {
+    if (url.pathname !== '%s') {
+        return false;
+    }
+    const acceptHeader = request.headers.get('Accept') || '';
+    if (acceptHeader.includes('text/vnd.turbo-stream.html')) {
+        return false;
+    }
+    if (request.headers.get('Turbo-Frame')) {
+        return false;
+    }
+
+    return true;
+}
+JS
+            ,
+            $pathname
+        );
     }
 
     public function setLogger(LoggerInterface $logger): void

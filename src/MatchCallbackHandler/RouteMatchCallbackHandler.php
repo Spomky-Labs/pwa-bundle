@@ -34,7 +34,26 @@ final class RouteMatchCallbackHandler implements MatchCallbackHandlerInterface, 
             'route' => $route,
         ]);
 
-        return sprintf("({url}) => url.pathname === '%s'", $route);
+        return sprintf(
+            <<<'JS'
+({request, url}) => {
+    if (url.pathname !== '%s') {
+        return false;
+    }
+    const acceptHeader = request.headers.get('Accept') || '';
+    if (acceptHeader.includes('text/vnd.turbo-stream.html')) {
+        return false;
+    }
+    if (request.headers.get('Turbo-Frame')) {
+        return false;
+    }
+
+    return true;
+}
+JS
+            ,
+            $route
+        );
     }
 
     public function setLogger(LoggerInterface $logger): void
