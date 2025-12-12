@@ -28,7 +28,22 @@ final class NavigationMatchCallbackHandler implements MatchCallbackHandlerInterf
             'match_callback' => $matchCallback,
         ]);
 
-        return "({request}) => request.mode === 'navigate'";
+        return <<<'JS'
+({request}) => {
+    if (request.mode !== 'navigate') {
+        return false;
+    }
+    const acceptHeader = request.headers.get('Accept') || '';
+    if (acceptHeader.includes('text/vnd.turbo-stream.html')) {
+        return false;
+    }
+    if (request.headers.get('Turbo-Frame')) {
+        return false;
+    }
+
+    return true;
+}
+JS;
     }
 
     public function setLogger(LoggerInterface $logger): void

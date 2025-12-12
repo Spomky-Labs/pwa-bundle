@@ -29,7 +29,28 @@ final class PathnameEndsWithMatchCallbackHandler implements MatchCallbackHandler
             'match_callback' => $matchCallback,
         ]);
 
-        return sprintf("({url}) => url.pathname.endsWith('%s')", trim(mb_substr($matchCallback, 9)));
+        $pathname = trim(mb_substr($matchCallback, 9));
+
+        return sprintf(
+            <<<'JS'
+({request, url}) => {
+    if (!url.pathname.endsWith('%s')) {
+        return false;
+    }
+    const acceptHeader = request.headers.get('Accept') || '';
+    if (acceptHeader.includes('text/vnd.turbo-stream.html')) {
+        return false;
+    }
+    if (request.headers.get('Turbo-Frame')) {
+        return false;
+    }
+
+    return true;
+}
+JS
+            ,
+            $pathname
+        );
     }
 
     public function setLogger(LoggerInterface $logger): void

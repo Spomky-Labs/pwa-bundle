@@ -29,7 +29,28 @@ final class DestinationMatchCallbackHandler implements MatchCallbackHandlerInter
             'match_callback' => $matchCallback,
         ]);
 
-        return sprintf("({request}) => request.destination === '%s'", trim(mb_substr($matchCallback, 12)));
+        $destination = trim(mb_substr($matchCallback, 12));
+
+        return sprintf(
+            <<<'JS'
+({request}) => {
+    if (request.destination !== '%s') {
+        return false;
+    }
+    const acceptHeader = request.headers.get('Accept') || '';
+    if (acceptHeader.includes('text/vnd.turbo-stream.html')) {
+        return false;
+    }
+    if (request.headers.get('Turbo-Frame')) {
+        return false;
+    }
+
+    return true;
+}
+JS
+            ,
+            $destination
+        );
     }
 
     public function setLogger(LoggerInterface $logger): void
