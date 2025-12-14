@@ -38,6 +38,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     ) {
         $this->favicons = $faviconsBuilder->create();
         $this->logger = new NullLogger();
+        $this->favicons = $faviconsBuilder->create();
     }
 
     /**
