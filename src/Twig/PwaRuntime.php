@@ -39,8 +39,8 @@ final readonly class PwaRuntime
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
-        $this->manifest = $manifestBuilder->create();
         $this->favicons = $faviconsBuilder->create();
+        $this->manifest = $manifestBuilder->create();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
     }
 

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverDimension;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
+use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorManager;
-use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
+use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGeneratorFactory;
 use SpomkyLabs\PwaBundle\Command\CompileCommand;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
@@ -36,8 +37,6 @@ use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -136,24 +135,21 @@ return static function (ContainerConfigurator $configurator): void {
     $container->instanceof(HasCacheStrategiesInterface::class)
         ->tag('spomky_labs_pwa.cache_strategy')
     ;
-    $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*');
+    $container->load('SpomkyLabs\\PwaBundle\\CachingStrategy\\', '../../CachingStrategy/*')
+        ->exclude('../../CachingStrategy/PreloadUrlsTagGenerator.php')
+    ;
 
     $container->instanceof(MatchCallbackHandlerInterface::class)
         ->tag('spomky_labs_pwa.match_callback_handler')
     ;
     $container->load('SpomkyLabs\\PwaBundle\\MatchCallbackHandler\\', '../../MatchCallbackHandler/*');
 
+    $container->set(PreloadUrlsTagGeneratorFactory::class);
     $container->set(PreloadUrlsGeneratorManager::class);
-    $container->instanceof(UrlGeneratorInterface::class)
+    $container->instanceof(PreloadUrlsGeneratorInterface::class)
         ->tag('spomky_labs_pwa.preload_urls_generator')
     ;
-    $container->set(PreloadUrlsTagGenerator::class)
-        ->abstract()
-        ->args([
-            '$alias' => abstract_arg('alias'),
-            '$urls' => abstract_arg('urls'),
-        ])
-    ;
+
     $container->set(ScreenshotListener::class);
 
     if ($configurator->env() !== 'prod') {

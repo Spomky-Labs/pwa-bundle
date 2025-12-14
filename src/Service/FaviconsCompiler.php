@@ -36,6 +36,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
+        $this->favicons = $faviconsBuilder->create();
         $this->logger = new NullLogger();
         $this->favicons = $faviconsBuilder->create();
     }

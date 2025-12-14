@@ -55,11 +55,11 @@ function getIconsNode(string $info): ArrayNodeDefinition
         ->end()
         ->arrayNode('sizes')
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => is_int($v))
+        ->ifTrue(is_int(...))
         ->then(static fn (int $v): array => [$v])
         ->end()
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => is_string($v))
+        ->ifTrue(is_string(...))
         ->then(static function (string $v): array {
             if ($v === 'any') {
                 return [0];

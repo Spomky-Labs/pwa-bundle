@@ -18,8 +18,8 @@ final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
 
     public function __construct(ServiceWorkerBuilder $serviceWorkerBuilder)
     {
-        $this->logger = new NullLogger();
         $this->serviceWorker = $serviceWorkerBuilder->create();
+        $this->logger = new NullLogger();
     }
 
     public function process(bool $debug = false): string

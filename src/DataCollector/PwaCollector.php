@@ -37,11 +37,11 @@ use const JSON_UNESCAPED_UNICODE;
 
 final class PwaCollector extends DataCollector
 {
+    private readonly ServiceWorker $serviceWorker;
+
     private readonly Manifest $manifest;
 
     private readonly Favicons $favicons;
-
-    private readonly ServiceWorker $serviceWorker;
 
     /**
      * @param iterable<HasCacheStrategiesInterface> $cachingServices
@@ -51,8 +51,8 @@ final class PwaCollector extends DataCollector
         #[AutowireIterator('spomky_labs_pwa.cache_strategy')]
         private readonly iterable $cachingServices,
         ManifestBuilder $manifestBuilder,
-        FaviconsBuilder $faviconsBuilder,
         ServiceWorkerBuilder $serviceWorkerBuilder,
+        FaviconsBuilder $faviconsBuilder,
         private readonly ManifestCompiler $manifestCompiler,
         private readonly ServiceWorkerCompiler $serviceWorkerCompiler,
         private readonly FaviconsCompiler $faviconsCompiler,
@@ -61,8 +61,8 @@ final class PwaCollector extends DataCollector
         #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
     ) {
-        $this->manifest = $manifestBuilder->create();
         $this->favicons = $faviconsBuilder->create();
+        $this->manifest = $manifestBuilder->create();
         $this->serviceWorker = $serviceWorkerBuilder->create();
     }
 

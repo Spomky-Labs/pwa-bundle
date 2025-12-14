@@ -109,7 +109,9 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
             [
                 'Content-Type' => 'application/javascript',
                 'X-Pwa-Dev' => true,
-            ]
+            ],
+            null,
+            false
         );
     }
 

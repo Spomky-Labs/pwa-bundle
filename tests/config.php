@@ -6,6 +6,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use SpomkyLabs\PwaBundle\Tests\DummyImageProcessor;
 use SpomkyLabs\PwaBundle\Tests\DummyUrlsGenerator;
+use SpomkyLabs\PwaBundle\Tests\StaticPagesGenerator;
 use SpomkyLabs\PwaBundle\Tests\TestFilesystem;
 
 return static function (ContainerConfigurator $container) {
@@ -18,10 +19,8 @@ return static function (ContainerConfigurator $container) {
     $services->set(DummyImageProcessor::class);
     $services->set('asset_mapper.local_public_assets_filesystem', TestFilesystem::class);
     $services->load('SpomkyLabs\\PwaBundle\\Tests\\Controller\\', __DIR__ . '/Controller/');
-    $services
-        ->set(DummyUrlsGenerator::class)
-        ->tag('spomky_labs_pwa.preload_urls_generator')
-    ;
+    $services->set(DummyUrlsGenerator::class);
+    $services->set(StaticPagesGenerator::class);
 
     $container->extension('framework', [
         'test' => true,

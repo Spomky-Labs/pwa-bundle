@@ -295,6 +295,12 @@ parameters:
 			path: ../src/CompilerPass/LoggerCompilerPass.php
 
 		-
+			rawMessage: 'Generator expects value type array{alias: string, route: string, params: array<string, mixed>, pathTypeReference: int}, array{alias: string, route: mixed, params: array<string, mixed>, pathTypeReference: int} given.'
+			identifier: generator.valueType
+			count: 1
+			path: ../src/CompilerPass/PreloadUrlCompilerPass.php
+
+		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass::findAllTaggedRoutes() has a parameter $container with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
 			identifier: ergebnis.noParameterWithContainerTypeDeclaration
 			count: 1
@@ -958,8 +964,20 @@ parameters:
 			path: ../src/Event/PreManifestCompileEvent.php
 
 		-
+			rawMessage: 'Call to function assert() with true will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: ../src/EventListener/FileCompileEventListener.php
+
+		-
 			rawMessage: Constructor in SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener has parameter $enabled with default value.
 			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/EventListener/FileCompileEventListener.php
+
+		-
+			rawMessage: Instanceof between Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent and Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent will always evaluate to true.
+			identifier: instanceof.alwaysTrue
 			count: 1
 			path: ../src/EventListener/FileCompileEventListener.php
 
@@ -1624,364 +1642,10 @@ parameters:
 			path: ../src/Normalizer/UrlNormalizer.php
 
 		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/asset_compiler.php
-
-		-
-			rawMessage: 'Cannot call method booleanNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/asset_compiler.php
-
-		-
-			rawMessage: 'Cannot call method defaultTrue() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/asset_compiler.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/asset_compiler.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/asset_compiler.php
-
-		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method append() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method arrayNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method beforeNormalization() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method booleanNode() on mixed.'
-			identifier: method.nonObject
-			count: 4
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method canBeEnabled() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method children() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method defaultFalse() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method defaultNull() on mixed.'
-			identifier: method.nonObject
-			count: 9
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method defaultTrue() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method defaultValue() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 18
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method example() on mixed.'
-			identifier: method.nonObject
-			count: 4
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method ifTrue() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 14
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method integerNode() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method max() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method min() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 8
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method setDeprecated() on mixed.'
-			identifier: method.nonObject
-			count: 6
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method then() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method thenInvalid() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Cannot call method validate() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/favicons.php
-
-		-
 			rawMessage: 'Language construct isset() should not be used.'
 			identifier: ergebnis.noIsset
 			count: 3
 			path: ../src/Resources/config/definition/favicons.php
-
-		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Cannot call method defaultNull() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Cannot call method example() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/image_processor.php
-
-		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/logging.php
-
-		-
-			rawMessage: 'Cannot call method defaultNull() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/logging.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/logging.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/logging.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/logging.php
-
-		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method append() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method arrayNode() on mixed.'
-			identifier: method.nonObject
-			count: 6
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method arrayPrototype() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method beforeNormalization() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method booleanNode() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method canBeEnabled() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method cannotBeEmpty() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method children() on mixed.'
-			identifier: method.nonObject
-			count: 3
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method defaultTrue() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method defaultValue() on mixed.'
-			identifier: method.nonObject
-			count: 3
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 34
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method example() on mixed.'
-			identifier: method.nonObject
-			count: 18
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method ifTrue() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 25
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method integerNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method isRequired() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 17
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method scalarPrototype() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/manifest.php
-
-		-
-			rawMessage: 'Cannot call method then() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/manifest.php
 
 		-
 			rawMessage: 'Parameter #1 $icons of function expandIcons expects array, mixed given.'
@@ -1996,75 +1660,9 @@ parameters:
 			path: ../src/Resources/config/definition/manifest.php
 
 		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method defaultValue() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method example() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method ifNotInArray() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method integerNode() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method setDeprecated() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method thenInvalid() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
-			rawMessage: 'Cannot call method validate() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/path_type_reference.php
-
-		-
 			rawMessage: Anonymous function should return array but returns mixed.
 			identifier: return.type
 			count: 8
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
@@ -2176,204 +1774,6 @@ parameters:
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
-			rawMessage: 'Cannot call method addDefaultsIfNotSet() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method append() on mixed.'
-			identifier: method.nonObject
-			count: 8
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method arrayNode() on mixed.'
-			identifier: method.nonObject
-			count: 18
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method arrayPrototype() on mixed.'
-			identifier: method.nonObject
-			count: 4
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method beforeNormalization() on mixed.'
-			identifier: method.nonObject
-			count: 7
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method booleanNode() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method canBeDisabled() on mixed.'
-			identifier: method.nonObject
-			count: 5
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method canBeEnabled() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method cannotBeEmpty() on mixed.'
-			identifier: method.nonObject
-			count: 4
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method children() on mixed.'
-			identifier: method.nonObject
-			count: 12
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method defaultFalse() on mixed.'
-			identifier: method.nonObject
-			count: 6
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method defaultNull() on mixed.'
-			identifier: method.nonObject
-			count: 8
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method defaultTrue() on mixed.'
-			identifier: method.nonObject
-			count: 5
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method defaultValue() on mixed.'
-			identifier: method.nonObject
-			count: 40
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 115
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method example() on mixed.'
-			identifier: method.nonObject
-			count: 38
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method ifNotInArray() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method ifString() on mixed.'
-			identifier: method.nonObject
-			count: 3
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method ifTrue() on mixed.'
-			identifier: method.nonObject
-			count: 4
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 74
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method integerNode() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method integerPrototype() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method isRequired() on mixed.'
-			identifier: method.nonObject
-			count: 5
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method prototype() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 43
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method scalarPrototype() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method setDeprecated() on mixed.'
-			identifier: method.nonObject
-			count: 17
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method then() on mixed.'
-			identifier: method.nonObject
-			count: 7
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method thenInvalid() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method treatFalseLike() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method treatNullLike() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method treatTrueLike() on mixed.'
-			identifier: method.nonObject
-			count: 11
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
-			rawMessage: 'Cannot call method validate() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
 			rawMessage: 'Language construct isset() should not be used.'
 			identifier: ergebnis.noIsset
 			count: 4
@@ -2422,36 +1822,6 @@ parameters:
 			path: ../src/Resources/config/definition/utils/url_node.php
 
 		-
-			rawMessage: 'Call to an undefined method Symfony\Component\Config\Definition\Builder\NodeDefinition::children().'
-			identifier: method.notFound
-			count: 1
-			path: ../src/Resources/config/definition/web_client.php
-
-		-
-			rawMessage: 'Cannot call method defaultNull() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/web_client.php
-
-		-
-			rawMessage: 'Cannot call method end() on mixed.'
-			identifier: method.nonObject
-			count: 3
-			path: ../src/Resources/config/definition/web_client.php
-
-		-
-			rawMessage: 'Cannot call method info() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/web_client.php
-
-		-
-			rawMessage: 'Cannot call method scalarNode() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Resources/config/definition/web_client.php
-
-		-
 			rawMessage: Access to constant TAG of internal class SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass from outside its root namespace SpomkyLabs.
 			identifier: classConstant.internalClass
 			count: 1
@@ -2462,6 +1832,12 @@ parameters:
 			identifier: method.childReturnType
 			count: 1
 			path: ../src/Service/ApplicationIconCompiler.php
+
+		-
+			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $contextFree with default value.
+			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			count: 1
+			path: ../src/Service/Data.php
 
 		-
 			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $html with default value.
@@ -2830,14 +2206,14 @@ parameters:
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Twig\InstanceOfExtension" is not allowed to extend "Twig\Extension\AbstractExtension".
-			identifier: ergebnis.noExtends
+			rawMessage: Class SpomkyLabs\PwaBundle\Twig\InstanceOfExtension is neither abstract nor final.
+			identifier: ergebnis.final
 			count: 1
 			path: ../src/Twig/InstanceOfExtension.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Twig\InstanceOfExtension is neither abstract nor final.
-			identifier: ergebnis.final
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\InstanceOfExtension::getTests() return type has no value type specified in iterable type array.'
+			identifier: missingType.iterableValue
 			count: 1
 			path: ../src/Twig/InstanceOfExtension.php
 
