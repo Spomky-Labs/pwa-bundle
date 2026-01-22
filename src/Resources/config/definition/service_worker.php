@@ -305,9 +305,11 @@ return static function (DefinitionConfigurator $definition): void {
         ->example([1, 2, 5])
         ->end()
         ->scalarNode('strategy')
-        ->defaultValue('NetworkFirst')
-        ->info('The caching strategy. Only "NetworkFirst", "CacheFirst" and "StaleWhileRevalidate" are supported.')
-        ->example(['NetworkFirst', 'StaleWhileRevalidate', 'CacheFirst'])
+        ->defaultValue('StaleWhileRevalidate')
+        ->info(
+            'The caching strategy. Only "NetworkFirst", "CacheFirst" and "StaleWhileRevalidate" are supported. StaleWhileRevalidate provides instant page loads with background updates.'
+        )
+        ->example(['StaleWhileRevalidate', 'NetworkFirst', 'CacheFirst'])
         ->validate()
         ->ifNotInArray(CacheStrategyInterface::STRATEGIES)
         ->thenInvalid(
@@ -326,8 +328,10 @@ return static function (DefinitionConfigurator $definition): void {
         )
         ->end()
         ->booleanNode('broadcast')
-        ->defaultFalse()
-        ->info('Whether to broadcast the cache update events (for "StaleWhileRevalidate" strategy only).')
+        ->defaultTrue()
+        ->info(
+            'Whether to broadcast the cache update events (for "StaleWhileRevalidate" strategy only). Enables client notification when content is updated.'
+        )
         ->end()
         ->booleanNode('range_requests')
         ->defaultFalse()
