@@ -175,6 +175,12 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
+			rawMessage: Casting to string something that's already string.
+			identifier: cast.useless
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
 			rawMessage: Class "SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand" is not allowed to extend "Symfony\Component\Console\Command\Command".
 			identifier: ergebnis.noExtends
 			count: 1
