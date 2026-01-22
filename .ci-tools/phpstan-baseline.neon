@@ -2458,24 +2458,6 @@ parameters:
 			path: ../src/Twig/PwaRuntime.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Twig\ResourceHintsExtension" is not allowed to extend "Twig\Extension\AbstractExtension".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Twig/ResourceHintsExtension.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\ResourceHintsRuntime::getHttpHeader() should return string but returns string|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Twig/ResourceHintsRuntime.php
-
-		-
-			rawMessage: 'Parameter #1 $links of method Symfony\Component\WebLink\HttpHeaderSerializer::serialize() expects iterable<Psr\Link\LinkInterface>&Traversable, array given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Twig/ResourceHintsRuntime.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin::__construct() has parameter $broadcastChannel with a nullable type declaration.'
 			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
