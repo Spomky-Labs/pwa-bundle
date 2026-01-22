@@ -685,6 +685,18 @@ parameters:
 			path: ../src/Dto/PageCache.php
 
 		-
+			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PreloadResource has an uninitialized property $as. Give it default value or assign it in the constructor.
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/PreloadResource.php
+
+		-
+			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PreloadResource has an uninitialized property $href. Give it default value or assign it in the constructor.
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/PreloadResource.php
+
+		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ProtocolHandler has an uninitialized property $protocol. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -2170,6 +2182,60 @@ parameters:
 			path: ../src/Service/ManifestCompiler.php
 
 		-
+			rawMessage: Cannot access offset 'enabled' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: Cannot access offset 'google_fonts' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: Cannot access offset 'use_cdn' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: Cannot cast float|int|list<bool|float|int|string|Stringable>|string|Stringable to string.
+			identifier: cast.string
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder::isEnabled() should return bool but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: 'Only booleans are allowed in &&, mixed given on the left side.'
+			identifier: booleanAnd.leftNotBoolean
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: 'Only booleans are allowed in &&, mixed given on the right side.'
+			identifier: booleanAnd.rightNotBoolean
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: 'Only booleans are allowed in an if condition, mixed given.'
+			identifier: if.condNotBoolean
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
+			rawMessage: 'Parameter #1 $string of function htmlspecialchars expects string, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/ResourceHintsBuilder.php
+
+		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler::getIndexDBFile() has a nullable return type declaration.'
 			identifier: ergebnis.noNullableReturnTypeDeclaration
 			count: 1
@@ -2310,7 +2376,7 @@ parameters:
 		-
 			rawMessage: 'Parameter #2 $value of method Symfony\Component\DependencyInjection\Container::setParameter() expects array|bool|float|int|string|UnitEnum|null, mixed given.'
 			identifier: argument.type
-			count: 9
+			count: 10
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-

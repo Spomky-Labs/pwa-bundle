@@ -15,10 +15,12 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
 use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\WebLink\GenericLinkProvider;
 
 final readonly class PwaRuntime
 {
@@ -36,6 +38,7 @@ final readonly class PwaRuntime
         #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         string $manifestPublicUrl,
         private RequestStack $requestStack,
+        private ResourceHintsBuilder $resourceHintsBuilder,
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
@@ -55,8 +58,10 @@ final readonly class PwaRuntime
         bool $injectSW = true,
         array $swAttributes = [],
         null|string $locale = null,
+        bool $injectResourceHints = true,
     ): string {
         $output = '';
+        $output = $this->injectResourceHints($output, $injectResourceHints);
         if ($this->manifest->enabled === true) {
             $output = $this->injectManifestFile($output, $locale);
         }
@@ -249,5 +254,42 @@ SERVICE_WORKER;
     private function getLocale(null|string $locale = null): null|string
     {
         return $locale ?? $this->requestStack->getMainRequest()?->getLocale();
+    }
+
+    private function injectResourceHints(string $output, bool $injectResourceHints): string
+    {
+        if ($injectResourceHints === false || ! $this->resourceHintsBuilder->isEnabled()) {
+            return $output;
+        }
+
+        // Add Link headers to the request for HTTP/2 Server Push / Early Hints
+        $this->addResourceHintsToRequest();
+
+        // Generate HTML link tags
+        return $output . $this->resourceHintsBuilder->generateHtml();
+    }
+
+    private function addResourceHintsToRequest(): void
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            return;
+        }
+
+        $links = $this->resourceHintsBuilder->getLinks();
+        if ($links === []) {
+            return;
+        }
+
+        $linkProvider = $request->attributes->get('_links');
+        if (! $linkProvider instanceof GenericLinkProvider) {
+            $linkProvider = new GenericLinkProvider();
+        }
+
+        foreach ($links as $link) {
+            $linkProvider = $linkProvider->withLink($link);
+        }
+
+        $request->attributes->set('_links', $linkProvider);
     }
 }

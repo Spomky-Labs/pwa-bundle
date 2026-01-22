@@ -28,6 +28,7 @@ use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use SpomkyLabs\PwaBundle\Service\IconResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
+use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
@@ -77,6 +78,14 @@ return static function (ContainerConfigurator $configurator): void {
         ])
     ;
     $container->set(ServiceWorkerCompiler::class);
+
+    /*** Resource Hints ***/
+    $container->set(ResourceHintsBuilder::class)
+        ->args([
+            '$config' => param('spomky_labs_pwa.resource_hints.config'),
+            '$workboxConfig' => param('spomky_labs_pwa.sw.config'),
+        ])
+    ;
 
     /*** Commands ***/
     $container->set(CompileCommand::class);
