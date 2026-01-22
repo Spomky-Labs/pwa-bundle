@@ -72,6 +72,11 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
             'enabled' => false,
         ]);
 
+        /*** Early Hints ***/
+        $builder->setParameter('spomky_labs_pwa.early_hints.config', $config['early_hints'] ?? [
+            'enabled' => false,
+        ]);
+
         if (! in_array($builder->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $builder->removeDefinition(PwaDevServerListener::class);
         }
