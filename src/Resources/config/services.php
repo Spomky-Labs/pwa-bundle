@@ -35,8 +35,6 @@ use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
-use SpomkyLabs\PwaBundle\Twig\ResourceHintsExtension;
-use SpomkyLabs\PwaBundle\Twig\ResourceHintsRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -134,12 +132,6 @@ return static function (ContainerConfigurator $configurator): void {
         ->tag('twig.extension')
     ;
     $container->set(PwaRuntime::class)
-        ->tag('twig.runtime')
-    ;
-    $container->set(ResourceHintsExtension::class)
-        ->tag('twig.extension')
-    ;
-    $container->set(ResourceHintsRuntime::class)
         ->tag('twig.runtime')
     ;
 
