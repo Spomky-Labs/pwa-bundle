@@ -318,7 +318,7 @@ final class ResourceHintsBuilderTest extends TestCase
         $html = $builder->generateHtml();
 
         // Then
-        self::assertSame('', $html);
+        static::assertSame('', $html);
     }
 
     #[Test]
@@ -340,14 +340,16 @@ final class ResourceHintsBuilderTest extends TestCase
             ->with('fonts/inter-var.woff2')
             ->willReturn('/assets/fonts/inter-var-abc123.woff2');
 
-        $builder = $this->createBuilder($hints, ['enabled' => true], [], $assetMapper);
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
 
         // When
         $links = $builder->getLinks();
 
         // Then
-        self::assertCount(1, $links);
-        self::assertSame('/assets/fonts/inter-var-abc123.woff2', $links[0]->getHref());
+        static::assertCount(1, $links);
+        static::assertSame('/assets/fonts/inter-var-abc123.woff2', $links[0]->getHref());
     }
 
     #[Test]
@@ -365,17 +367,19 @@ final class ResourceHintsBuilderTest extends TestCase
 
         $assetMapper = $this->createMock(AssetMapperInterface::class);
         $assetMapper
-            ->expects(self::never())
+            ->expects(static::never())
             ->method('getPublicPath');
 
-        $builder = $this->createBuilder($hints, ['enabled' => true], [], $assetMapper);
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
 
         // When
         $links = $builder->getLinks();
 
         // Then
-        self::assertCount(1, $links);
-        self::assertSame('/fonts/custom.woff2', $links[0]->getHref());
+        static::assertCount(1, $links);
+        static::assertSame('/fonts/custom.woff2', $links[0]->getHref());
     }
 
     #[Test]
@@ -393,17 +397,19 @@ final class ResourceHintsBuilderTest extends TestCase
 
         $assetMapper = $this->createMock(AssetMapperInterface::class);
         $assetMapper
-            ->expects(self::never())
+            ->expects(static::never())
             ->method('getPublicPath');
 
-        $builder = $this->createBuilder($hints, ['enabled' => true], [], $assetMapper);
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
 
         // When
         $links = $builder->getLinks();
 
         // Then
-        self::assertCount(1, $links);
-        self::assertSame('https://cdn.example.com/fonts/custom.woff2', $links[0]->getHref());
+        static::assertCount(1, $links);
+        static::assertSame('https://cdn.example.com/fonts/custom.woff2', $links[0]->getHref());
     }
 
     #[Test]
@@ -425,14 +431,16 @@ final class ResourceHintsBuilderTest extends TestCase
             ->with('fonts/unknown.woff2')
             ->willReturn(null);
 
-        $builder = $this->createBuilder($hints, ['enabled' => true], [], $assetMapper);
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
 
         // When
         $links = $builder->getLinks();
 
         // Then
-        self::assertCount(1, $links);
-        self::assertSame('/fonts/unknown.woff2', $links[0]->getHref());
+        static::assertCount(1, $links);
+        static::assertSame('/fonts/unknown.woff2', $links[0]->getHref());
     }
 
     /**
