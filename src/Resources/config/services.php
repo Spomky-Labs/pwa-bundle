@@ -13,6 +13,7 @@ use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
+use SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener;
 use SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
 use SpomkyLabs\PwaBundle\EventListener\ScreenshotListener;
@@ -121,6 +122,12 @@ return static function (ContainerConfigurator $configurator): void {
     /*** Event Listeners and Subscribers ***/
     $container->set(FileCompiler::class);
     $container->set(FileCompileEventListener::class);
+    $container->set(EarlyHintsListener::class)
+        ->args([
+            '$config' => param('spomky_labs_pwa.early_hints.config'),
+            '$manifestPublicUrl' => param('spomky_labs_pwa.manifest.public_url'),
+        ])
+    ;
     $container->set(PwaDevServerListener::class)
         ->args([
             '$profiler' => service('profiler')

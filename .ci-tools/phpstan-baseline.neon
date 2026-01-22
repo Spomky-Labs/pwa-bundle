@@ -1048,6 +1048,18 @@ parameters:
 			path: ../src/Event/PreManifestCompileEvent.php
 
 		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener::__construct() has parameter $config with no value type specified in iterable type array.'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../src/EventListener/EarlyHintsListener.php
+
+		-
+			rawMessage: 'Only booleans are allowed in &&, bool|null given on the left side.'
+			identifier: booleanAnd.leftNotBoolean
+			count: 2
+			path: ../src/EventListener/EarlyHintsListener.php
+
+		-
 			rawMessage: 'Call to function assert() with true will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -2376,7 +2388,7 @@ parameters:
 		-
 			rawMessage: 'Parameter #2 $value of method Symfony\Component\DependencyInjection\Container::setParameter() expects array|bool|float|int|string|UnitEnum|null, mixed given.'
 			identifier: argument.type
-			count: 10
+			count: 11
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
