@@ -35,10 +35,10 @@ use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\Mime\MimeTypes;
-use Symfony\Component\Panther\Client;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Panther\Client;
 
 return static function (ContainerConfigurator $configurator): void {
     $container = $configurator->services()

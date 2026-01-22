@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
-use function sprintf;
 use const JSON_THROW_ON_ERROR;
+use function sprintf;
 
 final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasDebugInterface
 {

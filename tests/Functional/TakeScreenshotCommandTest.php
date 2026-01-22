@@ -6,9 +6,9 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
 use PHPUnit\Framework\Attributes\Test;
+use function sprintf;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpKernel\KernelInterface;
-use function sprintf;
 
 /**
  * @internal

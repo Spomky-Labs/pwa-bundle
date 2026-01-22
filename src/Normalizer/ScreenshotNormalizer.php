@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\Screenshot;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use function assert;
-use function sprintf;
 
 final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {

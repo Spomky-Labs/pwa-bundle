@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use function count;
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Url;
@@ -15,16 +20,11 @@ use SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\RangeRequestsPlugin;
+use function sprintf;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\SerializerInterface;
-use function count;
-use function sprintf;
-use const JSON_PRETTY_PRINT;
-use const JSON_THROW_ON_ERROR;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 
 final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterface
 {

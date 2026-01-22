@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\ProtocolHandler;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use function assert;
 
 final class ProtocolHandlerNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {

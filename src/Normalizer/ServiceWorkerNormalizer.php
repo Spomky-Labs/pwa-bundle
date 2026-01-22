@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use function assert;
 
 final readonly class ServiceWorkerNormalizer implements NormalizerInterface
 {

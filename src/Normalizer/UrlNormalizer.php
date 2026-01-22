@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
+use const FILTER_VALIDATE_URL;
 use SpomkyLabs\PwaBundle\Dto\Url;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -11,8 +13,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Throwable;
-use function assert;
-use const FILTER_VALIDATE_URL;
 
 final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {

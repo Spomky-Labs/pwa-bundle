@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CompilerPass;
 
+use function array_key_exists;
+use function is_string;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -11,15 +13,13 @@ use RuntimeException;
 use SpomkyLabs\PwaBundle\Attribute\PreloadUrl;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGenerator;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGeneratorFactory;
+use function sprintf;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
-use function array_key_exists;
-use function is_string;
-use function sprintf;
 
 /**
  * @internal

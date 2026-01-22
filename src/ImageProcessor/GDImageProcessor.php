@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
+use function assert;
 use GdImage;
 use InvalidArgumentException;
-use function assert;
 use function is_string;
 use function mb_strlen;
 

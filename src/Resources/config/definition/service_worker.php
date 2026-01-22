@@ -194,6 +194,12 @@ return static function (DefinitionConfigurator $definition): void {
         ->defaultTrue()
         ->info('Whether to clear the cache during the service worker activation.')
         ->end()
+        ->booleanNode('navigation_preload')
+        ->defaultFalse()
+        ->info(
+            'Whether to enable navigation preload. This speeds up navigation requests by making the network request in parallel with service worker boot-up. Note: Do not enable if you are precaching HTML pages (e.g., with offline_fallback or warm_cache_urls), as it would be redundant.'
+        )
+        ->end()
         ->arrayNode('offline_fallback')
         ->treatNullLike([])
         ->treatFalseLike([])

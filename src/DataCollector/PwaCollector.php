@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\DataCollector;
 
+use function count;
+use function in_array;
+use function is_array;
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
@@ -27,13 +34,6 @@ use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
-use function count;
-use function in_array;
-use function is_array;
-use const JSON_PRETTY_PRINT;
-use const JSON_THROW_ON_ERROR;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 
 final class PwaCollector extends DataCollector
 {

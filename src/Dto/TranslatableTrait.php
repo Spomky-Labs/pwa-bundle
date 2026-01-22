@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use function is_array;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
-use function is_array;
 
 trait TranslatableTrait
 {

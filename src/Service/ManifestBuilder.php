@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use function assert;
 
 final class ManifestBuilder
 {

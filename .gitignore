@@ -11,3 +11,4 @@ package-lock.json
 /.castor.stub.php
 /tmp*
 /.ci-tools/coverage
+/.grepai

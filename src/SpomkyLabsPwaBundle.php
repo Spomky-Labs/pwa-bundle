@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle;
 
+use function in_array;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
@@ -12,7 +13,6 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use function in_array;
 
 final class SpomkyLabsPwaBundle extends AbstractBundle
 {

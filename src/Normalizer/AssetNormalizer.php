@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
+use function is_string;
 use SpomkyLabs\PwaBundle\Dto\Asset;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use function assert;
-use function is_string;
 
 final readonly class AssetNormalizer implements NormalizerInterface, DenormalizerInterface
 {

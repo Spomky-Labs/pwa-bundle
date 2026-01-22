@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Twig;
 
+use function array_key_exists;
+use const ENT_COMPAT;
+use const ENT_SUBSTITUTE;
 use InvalidArgumentException;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
+use const PHP_EOL;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
-use function array_key_exists;
-use function sprintf;
-use const ENT_COMPAT;
-use const ENT_SUBSTITUTE;
-use const PHP_EOL;
 
 final readonly class PwaRuntime
 {

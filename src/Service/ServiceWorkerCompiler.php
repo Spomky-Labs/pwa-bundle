@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
-use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
-use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use function assert;
 use function count;
 use function in_array;
 use function is_array;
 use function is_string;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use function sprintf;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterface
 {

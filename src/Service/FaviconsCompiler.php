@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use function assert;
+use function is_string;
+use const PHP_EOL;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
@@ -11,16 +14,13 @@ use SpomkyLabs\PwaBundle\Dto\Asset;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symfony\UX\Icons\IconRendererInterface;
-use function assert;
-use function is_string;
-use function sprintf;
-use const PHP_EOL;
 
 final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {

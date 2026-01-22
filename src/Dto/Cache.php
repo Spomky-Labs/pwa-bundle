@@ -7,8 +7,8 @@ namespace SpomkyLabs\PwaBundle\Dto;
 use DateInterval;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 use function is_string;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 abstract class Cache
 {

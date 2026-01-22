@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use const PHP_EOL;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
+use function sprintf;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use function sprintf;
-use const PHP_EOL;
 
 final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface
 {
