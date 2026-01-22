@@ -33,6 +33,7 @@ use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
@@ -86,6 +87,13 @@ return static function (ContainerConfigurator $configurator): void {
         ->args([
             '$config' => param('spomky_labs_pwa.resource_hints.config'),
             '$workboxConfig' => param('spomky_labs_pwa.sw.config'),
+        ])
+    ;
+
+    /*** Speculation Rules ***/
+    $container->set(SpeculationRulesBuilder::class)
+        ->args([
+            '$config' => param('spomky_labs_pwa.speculation_rules.config'),
         ])
     ;
 

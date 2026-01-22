@@ -16,6 +16,7 @@ use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
+use SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder;
 use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -39,6 +40,7 @@ final readonly class PwaRuntime
         string $manifestPublicUrl,
         private RequestStack $requestStack,
         private ResourceHintsBuilder $resourceHintsBuilder,
+        private SpeculationRulesBuilder $speculationRulesBuilder,
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
@@ -59,6 +61,7 @@ final readonly class PwaRuntime
         array $swAttributes = [],
         null|string $locale = null,
         bool $injectResourceHints = true,
+        bool $injectSpeculationRules = true,
     ): string {
         $output = '';
         $output = $this->injectResourceHints($output, $injectResourceHints);
@@ -69,8 +72,9 @@ final readonly class PwaRuntime
             $output = $this->injectServiceWorker($output, $injectSW, $swAttributes);
         }
         $output = $this->injectFavicons($output, $injectFavicons);
+        $output = $this->injectThemeColor($output, $injectThemeColor);
 
-        return $this->injectThemeColor($output, $injectThemeColor);
+        return $this->injectSpeculationRules($output, $injectSpeculationRules);
     }
 
     private function injectManifestFile(string $output, null|string $locale): string
@@ -291,5 +295,20 @@ SERVICE_WORKER;
         }
 
         $request->attributes->set('_links', $linkProvider);
+    }
+
+    private function injectSpeculationRules(string $output, bool $injectSpeculationRules): string
+    {
+        if ($injectSpeculationRules === false || ! $this->speculationRulesBuilder->isEnabled()) {
+            return $output;
+        }
+
+        $json = $this->speculationRulesBuilder->generateJson();
+
+        if ($json === null) {
+            return $output;
+        }
+
+        return $output . sprintf('%s<script type="speculationrules">%s</script>', PHP_EOL, $json);
     }
 }
