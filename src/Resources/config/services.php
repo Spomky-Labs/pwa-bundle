@@ -16,6 +16,7 @@ use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
 use SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener;
 use SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
+use SpomkyLabs\PwaBundle\EventListener\ResourceHintsListener;
 use SpomkyLabs\PwaBundle\EventListener\ScreenshotListener;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
@@ -128,6 +129,7 @@ return static function (ContainerConfigurator $configurator): void {
             '$manifestPublicUrl' => param('spomky_labs_pwa.manifest.public_url'),
         ])
     ;
+    $container->set(ResourceHintsListener::class);
     $container->set(PwaDevServerListener::class)
         ->args([
             '$profiler' => service('profiler')
