@@ -67,6 +67,11 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $builder->setParameter('spomky_labs_pwa.sw.public_url', $config['serviceworker']['dest'] ?? null);
         $builder->setParameter('spomky_labs_pwa.sw.config', $serviceWorkerConfig);
 
+        /*** Resource Hints ***/
+        $builder->setParameter('spomky_labs_pwa.resource_hints.config', $config['resource_hints'] ?? [
+            'enabled' => false,
+        ]);
+
         if (! in_array($builder->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $builder->removeDefinition(PwaDevServerListener::class);
         }
