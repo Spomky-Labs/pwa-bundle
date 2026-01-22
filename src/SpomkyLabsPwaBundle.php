@@ -77,6 +77,11 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
             'enabled' => false,
         ]);
 
+        /*** Speculation Rules ***/
+        $builder->setParameter('spomky_labs_pwa.speculation_rules.config', $config['speculation_rules'] ?? [
+            'enabled' => false,
+        ]);
+
         if (! in_array($builder->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $builder->removeDefinition(PwaDevServerListener::class);
         }

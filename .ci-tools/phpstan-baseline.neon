@@ -889,6 +889,12 @@ parameters:
 			path: ../src/Dto/Shortcut.php
 
 		-
+			rawMessage: Property SpomkyLabs\PwaBundle\Dto\SpeculationRule::$requires type has no value type specified in iterable type array.
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../src/Dto/SpeculationRule.php
+
+		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Theme has an uninitialized property $src. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -2260,6 +2266,30 @@ parameters:
 			path: ../src/Service/ServiceWorkerCompiler.php
 
 		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::buildSingleRule() has a nullable return type declaration.'
+			identifier: ergebnis.noNullableReturnTypeDeclaration
+			count: 1
+			path: ../src/Service/SpeculationRulesBuilder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::buildWhereClause() has a nullable return type declaration.'
+			identifier: ergebnis.noNullableReturnTypeDeclaration
+			count: 1
+			path: ../src/Service/SpeculationRulesBuilder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::generateJson() has a nullable return type declaration.'
+			identifier: ergebnis.noNullableReturnTypeDeclaration
+			count: 1
+			path: ../src/Service/SpeculationRulesBuilder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::isEnabled() should return bool but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: ../src/Service/SpeculationRulesBuilder.php
+
+		-
 			rawMessage: 'Parameter #2 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
 			identifier: argument.type
 			count: 1
@@ -2388,7 +2418,7 @@ parameters:
 		-
 			rawMessage: 'Parameter #2 $value of method Symfony\Component\DependencyInjection\Container::setParameter() expects array|bool|float|int|string|UnitEnum|null, mixed given.'
 			identifier: argument.type
-			count: 11
+			count: 12
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
