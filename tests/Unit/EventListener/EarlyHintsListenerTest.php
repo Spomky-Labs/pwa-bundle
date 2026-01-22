@@ -44,13 +44,13 @@ final class EarlyHintsListenerTest extends TestCase
 
         // Then
         $linkProvider = $request->attributes->get('_links');
-        self::assertInstanceOf(GenericLinkProvider::class, $linkProvider);
+        static::assertInstanceOf(GenericLinkProvider::class, $linkProvider);
 
         $links = $linkProvider->getLinks();
-        self::assertNotEmpty($links);
+        static::assertNotEmpty($links);
 
         $hrefs = array_map(fn ($link) => $link->getHref(), $links);
-        self::assertContains('/site.webmanifest', $hrefs);
+        static::assertContains('/site.webmanifest', $hrefs);
     }
 
     #[Test]
@@ -72,7 +72,7 @@ final class EarlyHintsListenerTest extends TestCase
         $listener($event);
 
         // Then
-        self::assertNull($request->attributes->get('_links'));
+        static::assertNull($request->attributes->get('_links'));
     }
 
     #[Test]
@@ -95,7 +95,7 @@ final class EarlyHintsListenerTest extends TestCase
         $listener($event);
 
         // Then
-        self::assertNull($request->attributes->get('_links'));
+        static::assertNull($request->attributes->get('_links'));
     }
 
     #[Test]
@@ -118,7 +118,7 @@ final class EarlyHintsListenerTest extends TestCase
         $listener($event);
 
         // Then
-        self::assertNull($request->attributes->get('_links'));
+        static::assertNull($request->attributes->get('_links'));
     }
 
     #[Test]
@@ -145,12 +145,12 @@ final class EarlyHintsListenerTest extends TestCase
         $links = $linkProvider->getLinks();
 
         $manifestLinks = array_filter($links, fn ($link) => $link->getHref() === '/site.webmanifest');
-        self::assertCount(1, $manifestLinks);
+        static::assertCount(1, $manifestLinks);
 
         $manifestLink = reset($manifestLinks);
-        self::assertContains(Link::REL_PRELOAD, $manifestLink->getRels());
-        self::assertSame('fetch', $manifestLink->getAttributes()['as']);
-        self::assertSame('anonymous', $manifestLink->getAttributes()['crossorigin']);
+        static::assertContains(Link::REL_PRELOAD, $manifestLink->getRels());
+        static::assertSame('fetch', $manifestLink->getAttributes()['as']);
+        static::assertSame('anonymous', $manifestLink->getAttributes()['crossorigin']);
     }
 
     #[Test]
@@ -174,7 +174,7 @@ final class EarlyHintsListenerTest extends TestCase
 
         // Then
         $linkProvider = $request->attributes->get('_links');
-        self::assertNull($linkProvider);
+        static::assertNull($linkProvider);
     }
 
     #[Test]
@@ -211,11 +211,11 @@ final class EarlyHintsListenerTest extends TestCase
         $links = $linkProvider->getLinks();
 
         $swLinks = array_filter($links, fn ($link) => $link->getHref() === '/sw.js');
-        self::assertCount(1, $swLinks);
+        static::assertCount(1, $swLinks);
 
         $swLink = reset($swLinks);
-        self::assertContains(Link::REL_PRELOAD, $swLink->getRels());
-        self::assertSame('script', $swLink->getAttributes()['as']);
+        static::assertContains(Link::REL_PRELOAD, $swLink->getRels());
+        static::assertSame('script', $swLink->getAttributes()['as']);
     }
 
     #[Test]
@@ -253,11 +253,11 @@ final class EarlyHintsListenerTest extends TestCase
         $links = $linkProvider->getLinks();
 
         $cdnLinks = array_filter($links, fn ($link) => $link->getHref() === 'https://storage.googleapis.com');
-        self::assertCount(1, $cdnLinks);
+        static::assertCount(1, $cdnLinks);
 
         $cdnLink = reset($cdnLinks);
-        self::assertContains(Link::REL_PRECONNECT, $cdnLink->getRels());
-        self::assertTrue($cdnLink->getAttributes()['crossorigin']);
+        static::assertContains(Link::REL_PRECONNECT, $cdnLink->getRels());
+        static::assertTrue($cdnLink->getAttributes()['crossorigin']);
     }
 
     #[Test]
@@ -292,7 +292,7 @@ final class EarlyHintsListenerTest extends TestCase
 
         // Then
         $linkProvider = $request->attributes->get('_links');
-        self::assertNull($linkProvider);
+        static::assertNull($linkProvider);
     }
 
     #[Test]
@@ -323,8 +323,8 @@ final class EarlyHintsListenerTest extends TestCase
         $links = $linkProvider->getLinks();
 
         $hrefs = array_map(fn ($link) => $link->getHref(), $links);
-        self::assertContains('/existing-resource.js', $hrefs);
-        self::assertContains('/site.webmanifest', $hrefs);
+        static::assertContains('/existing-resource.js', $hrefs);
+        static::assertContains('/site.webmanifest', $hrefs);
     }
 
     /**
