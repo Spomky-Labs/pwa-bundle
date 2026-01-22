@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\PreloadResource;
 use SpomkyLabs\PwaBundle\Dto\ResourceHints;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\WebLink\Link;
 
@@ -320,6 +321,128 @@ final class ResourceHintsBuilderTest extends TestCase
         static::assertSame('', $html);
     }
 
+    #[Test]
+    public function itResolvesAssetMapperPaths(): void
+    {
+        // Given
+        $fontPreload = new PreloadResource();
+        $fontPreload->href = 'fonts/inter-var.woff2'; // Asset Mapper logical path (no leading /)
+        $fontPreload->as = 'font';
+
+        $hints = new ResourceHints();
+        $hints->enabled = true;
+        $hints->autoPreconnect = false;
+        $hints->preload = [$fontPreload];
+
+        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $assetMapper
+            ->method('getPublicPath')
+            ->with('fonts/inter-var.woff2')
+            ->willReturn('/assets/fonts/inter-var-abc123.woff2');
+
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
+
+        // When
+        $links = $builder->getLinks();
+
+        // Then
+        static::assertCount(1, $links);
+        static::assertSame('/assets/fonts/inter-var-abc123.woff2', $links[0]->getHref());
+    }
+
+    #[Test]
+    public function itKeepsAbsolutePathsUnchanged(): void
+    {
+        // Given
+        $fontPreload = new PreloadResource();
+        $fontPreload->href = '/fonts/custom.woff2'; // Absolute path (starts with /)
+        $fontPreload->as = 'font';
+
+        $hints = new ResourceHints();
+        $hints->enabled = true;
+        $hints->autoPreconnect = false;
+        $hints->preload = [$fontPreload];
+
+        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $assetMapper
+            ->expects(static::never())
+            ->method('getPublicPath');
+
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
+
+        // When
+        $links = $builder->getLinks();
+
+        // Then
+        static::assertCount(1, $links);
+        static::assertSame('/fonts/custom.woff2', $links[0]->getHref());
+    }
+
+    #[Test]
+    public function itKeepsAbsoluteUrlsUnchanged(): void
+    {
+        // Given
+        $fontPreload = new PreloadResource();
+        $fontPreload->href = 'https://cdn.example.com/fonts/custom.woff2';
+        $fontPreload->as = 'font';
+
+        $hints = new ResourceHints();
+        $hints->enabled = true;
+        $hints->autoPreconnect = false;
+        $hints->preload = [$fontPreload];
+
+        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $assetMapper
+            ->expects(static::never())
+            ->method('getPublicPath');
+
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
+
+        // When
+        $links = $builder->getLinks();
+
+        // Then
+        static::assertCount(1, $links);
+        static::assertSame('https://cdn.example.com/fonts/custom.woff2', $links[0]->getHref());
+    }
+
+    #[Test]
+    public function itFallsBackToSlashPrefixWhenAssetNotFound(): void
+    {
+        // Given
+        $fontPreload = new PreloadResource();
+        $fontPreload->href = 'fonts/unknown.woff2';
+        $fontPreload->as = 'font';
+
+        $hints = new ResourceHints();
+        $hints->enabled = true;
+        $hints->autoPreconnect = false;
+        $hints->preload = [$fontPreload];
+
+        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $assetMapper
+            ->method('getPublicPath')
+            ->with('fonts/unknown.woff2')
+            ->willReturn(null);
+
+        $builder = $this->createBuilder($hints, [
+            'enabled' => true,
+        ], [], $assetMapper);
+
+        // When
+        $links = $builder->getLinks();
+
+        // Then
+        static::assertCount(1, $links);
+        static::assertSame('/fonts/unknown.woff2', $links[0]->getHref());
+    }
+
     /**
      * @param array<string, mixed> $config
      * @param array<string, mixed> $workboxConfig
@@ -327,13 +450,16 @@ final class ResourceHintsBuilderTest extends TestCase
     private function createBuilder(
         ResourceHints $hints,
         array $config,
-        array $workboxConfig = []
+        array $workboxConfig = [],
+        ?AssetMapperInterface $assetMapper = null
     ): ResourceHintsBuilder {
         $denormalizer = $this->createMock(DenormalizerInterface::class);
         $denormalizer
             ->method('denormalize')
             ->willReturn($hints);
 
-        return new ResourceHintsBuilder($denormalizer, $config, $workboxConfig);
+        $assetMapper ??= $this->createMock(AssetMapperInterface::class);
+
+        return new ResourceHintsBuilder($denormalizer, $assetMapper, $config, $workboxConfig);
     }
 }

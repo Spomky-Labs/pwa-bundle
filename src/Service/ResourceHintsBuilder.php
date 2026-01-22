@@ -9,6 +9,7 @@ use const ENT_QUOTES;
 use SpomkyLabs\PwaBundle\Dto\PreloadResource;
 use SpomkyLabs\PwaBundle\Dto\ResourceHints;
 use function sprintf;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\WebLink\Link;
@@ -23,6 +24,7 @@ final class ResourceHintsBuilder
      */
     public function __construct(
         private readonly DenormalizerInterface $denormalizer,
+        private readonly AssetMapperInterface $assetMapper,
         #[Autowire(param: 'spomky_labs_pwa.resource_hints.config')]
         private readonly array $config,
         #[Autowire(param: 'spomky_labs_pwa.sw.config')]
@@ -131,7 +133,8 @@ final class ResourceHintsBuilder
 
     private function createPreloadLink(PreloadResource $resource): Link
     {
-        $link = (new Link(Link::REL_PRELOAD, $resource->href))
+        $href = $this->resolveHref($resource->href);
+        $link = (new Link(Link::REL_PRELOAD, $href))
             ->withAttribute('as', $resource->as);
 
         if ($resource->type !== null) {
@@ -154,6 +157,24 @@ final class ResourceHintsBuilder
         }
 
         return $link;
+    }
+
+    /**
+     * Resolve href to a public URL.
+     * If href starts with / or is an absolute URL, return as-is.
+     * Otherwise, treat as an Asset Mapper logical path and resolve it.
+     */
+    private function resolveHref(string $href): string
+    {
+        // Absolute URL or path starting with /
+        if (str_starts_with($href, '/') || str_starts_with($href, 'http://') || str_starts_with($href, 'https://')) {
+            return $href;
+        }
+
+        // Try to resolve as Asset Mapper logical path
+        $publicPath = $this->assetMapper->getPublicPath($href);
+
+        return $publicPath ?? '/' . $href;
     }
 
     private function renderLinkAsHtml(Link $link): string
