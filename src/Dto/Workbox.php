@@ -58,5 +58,5 @@ final class Workbox
     public null|BackgroundFetch $backgroundFetch = null;
 
     #[SerializedName('navigation_preload')]
-    public bool $navigationPreload = true;
+    public bool $navigationPreload = false;
 }
