@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use function assert;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use function assert;
 
 final class FaviconsBuilder implements CanLogInterface
 {

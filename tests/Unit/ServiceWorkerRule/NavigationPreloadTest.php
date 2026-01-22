@@ -31,7 +31,7 @@ final class NavigationPreloadTest extends TestCase
         $result = $rule->process();
 
         // Then
-        self::assertSame('', $result);
+        static::assertSame('', $result);
     }
 
     #[Test]
@@ -48,7 +48,7 @@ final class NavigationPreloadTest extends TestCase
         $result = $rule->process();
 
         // Then
-        self::assertSame('', $result);
+        static::assertSame('', $result);
     }
 
     #[Test]
@@ -65,7 +65,7 @@ final class NavigationPreloadTest extends TestCase
         $result = $rule->process();
 
         // Then
-        self::assertStringContainsString('workbox.navigationPreload.enable();', $result);
+        static::assertStringContainsString('workbox.navigationPreload.enable();', $result);
     }
 
     #[Test]
@@ -82,9 +82,9 @@ final class NavigationPreloadTest extends TestCase
         $result = $rule->process(debug: true);
 
         // Then
-        self::assertStringContainsString('NAVIGATION PRELOAD', $result);
-        self::assertStringContainsString('workbox.navigationPreload.enable();', $result);
-        self::assertStringContainsString('END NAVIGATION PRELOAD', $result);
+        static::assertStringContainsString('NAVIGATION PRELOAD', $result);
+        static::assertStringContainsString('workbox.navigationPreload.enable();', $result);
+        static::assertStringContainsString('END NAVIGATION PRELOAD', $result);
     }
 
     #[Test]
@@ -101,8 +101,8 @@ final class NavigationPreloadTest extends TestCase
         $result = $rule->process(debug: false);
 
         // Then
-        self::assertStringNotContainsString('NAVIGATION PRELOAD', $result);
-        self::assertStringContainsString('workbox.navigationPreload.enable();', $result);
+        static::assertStringNotContainsString('NAVIGATION PRELOAD', $result);
+        static::assertStringContainsString('workbox.navigationPreload.enable();', $result);
     }
 
     #[Test]
@@ -110,7 +110,7 @@ final class NavigationPreloadTest extends TestCase
     {
         // Navigation Preload should run after WorkboxImport (1024) and WorkboxHelpers (1023)
         // but before cache strategies
-        self::assertSame(1022, NavigationPreload::getPriority());
+        static::assertSame(1022, NavigationPreload::getPriority());
     }
 
     private function createNavigationPreloadRule(Workbox $workbox): NavigationPreload

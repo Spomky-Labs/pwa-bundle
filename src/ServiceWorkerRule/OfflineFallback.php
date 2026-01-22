@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use function count;
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
@@ -12,11 +17,6 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use function count;
-use const JSON_PRETTY_PRINT;
-use const JSON_THROW_ON_ERROR;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
 
 final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterface
 {

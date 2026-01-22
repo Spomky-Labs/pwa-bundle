@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use function count;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use function count;
 
 final readonly class ApplicationIconCompiler implements FileCompilerInterface
 {

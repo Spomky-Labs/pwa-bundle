@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
-use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePluginInterface;
-use SpomkyLabs\PwaBundle\WorkboxPlugin\HasBodyInterface;
 use function in_array;
-use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const PHP_EOL;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePluginInterface;
+use SpomkyLabs\PwaBundle\WorkboxPlugin\HasBodyInterface;
+use function sprintf;
 
 final class WorkboxCacheStrategy implements CacheStrategyInterface
 {

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use function is_string;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,8 +20,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Yaml\Yaml;
-use function is_string;
-use function sprintf;
 
 #[AsCommand(name: 'pwa:create:icons', description: '[DEPRECATED] Generate icons for your PWA')]
 final class CreateIconsCommand extends Command

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use function count;
 use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy;
@@ -16,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Yaml\Yaml;
-use function count;
 
 #[AsCommand(name: 'pwa:cache:list-strategies', description: 'List the available cache strategies')]
 final class ListCacheStrategiesCommand extends Command

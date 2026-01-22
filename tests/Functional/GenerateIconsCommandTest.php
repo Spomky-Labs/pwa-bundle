@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
+use function sprintf;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpKernel\KernelInterface;
-use function sprintf;
 
 /**
  * @internal

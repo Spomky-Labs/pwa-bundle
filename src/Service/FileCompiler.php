@@ -6,12 +6,12 @@ namespace SpomkyLabs\PwaBundle\Service;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use function sprintf;
 use Symfony\Component\AssetMapper\Path\PublicAssetsFilesystemInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use function sprintf;
 
 final class FileCompiler implements CanLogInterface
 {

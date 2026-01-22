@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use function array_key_exists;
+use function assert;
+use function count;
+use function is_array;
 use RuntimeException;
 use SpomkyLabs\PwaBundle\Dto\Asset;
 use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\UX\Icons\IconRendererInterface;
-use function array_key_exists;
-use function assert;
-use function count;
-use function is_array;
-use function sprintf;
 
 final readonly class IconResolver
 {

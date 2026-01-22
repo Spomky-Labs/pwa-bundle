@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use function array_key_exists;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use function array_key_exists;
 use function sprintf;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final class PreloadUrlsGeneratorManager implements CanLogInterface
 {

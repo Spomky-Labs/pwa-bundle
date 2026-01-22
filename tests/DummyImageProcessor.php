@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests;
 
+use function assert;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
-use function assert;
 
 /**
  * @internal

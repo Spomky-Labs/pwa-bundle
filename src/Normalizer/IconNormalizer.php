@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\Icon;
 use SpomkyLabs\PwaBundle\Service\IconResolver;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use function assert;
 
 final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {

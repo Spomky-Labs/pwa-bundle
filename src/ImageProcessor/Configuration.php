@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
 use InvalidArgumentException;
-use Stringable;
 use function sprintf;
+use Stringable;
 
 final readonly class Configuration implements Stringable
 {

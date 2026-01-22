@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use function count;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
@@ -15,7 +16,6 @@ use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectErrorOnRangePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectRedirectResponsePlugin;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpectStatusCodesPlugin;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use function count;
 
 final class BackgroundSync implements HasCacheStrategiesInterface, CanLogInterface
 {

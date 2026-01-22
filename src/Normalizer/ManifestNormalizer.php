@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
+use function array_key_exists;
+use function assert;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
-use function array_key_exists;
-use function assert;
 
 final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
