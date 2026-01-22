@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use function assert;
 use Facebook\WebDriver\WebDriverDimension;
+use function is_int;
+use function is_string;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use function sprintf;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,10 +25,6 @@ use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
-use function assert;
-use function is_int;
-use function is_string;
-use function sprintf;
 
 #[AsCommand(
     name: 'pwa:create:screenshot',
