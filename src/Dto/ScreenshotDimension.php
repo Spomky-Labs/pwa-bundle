@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use function assert;
 use function preg_match;
 use function sprintf;
 
@@ -42,7 +43,7 @@ final readonly class ScreenshotDimension
         }
 
         // Try to parse as dimensions (e.g., "1920x1080" or "1920×1080")
-        if (preg_match('/^(\d+)[x×](\d+)$/i', $value, $matches)) {
+        if (preg_match('/^(\d+)[x×](\d+)$/i', $value, $matches) === 1) {
             $width = (int) $matches[1];
             $height = (int) $matches[2];
             if ($width > 0 && $height > 0) {
@@ -66,7 +67,7 @@ final readonly class ScreenshotDimension
     public static function expandFromString(string $value): array
     {
         // Check for orientation suffix: /L, /P, or /LP
-        if (preg_match('/^(.+)\/(L|P|LP)$/i', $value, $matches)) {
+        if (preg_match('/^(.+)\/(L|P|LP)$/i', $value, $matches) === 1) {
             $baseValue = $matches[1];
             $orientation = strtoupper($matches[2]);
 
@@ -119,6 +120,8 @@ final readonly class ScreenshotDimension
         if ($this->profile !== null) {
             return $this->profile->getDimensions();
         }
+
+        assert($this->width !== null && $this->height !== null);
 
         return [
             'width' => $this->width,

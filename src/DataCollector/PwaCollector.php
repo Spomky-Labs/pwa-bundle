@@ -17,6 +17,7 @@ use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\Data;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
@@ -32,9 +33,16 @@ use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
 
+/**
+ * @phpstan-type ManifestData array{enabled: bool, data: Manifest, installable: array{status: bool, reasons: array<string, bool>}, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>, publicUrl: string, locales: array<string>, outputs?: array<string, string>}
+ * @phpstan-type ServiceWorkerData array{enabled: bool, data: ServiceWorker, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>}
+ * @phpstan-type FaviconsData array{enabled: bool, data: Favicons, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>}
+ * @phpstan-type CollectedData array{cachingStrategies: array<CacheStrategyInterface>, manifest: ManifestData, serviceWorker: ServiceWorkerData, favicons: FaviconsData}
+ *
+ * @property CollectedData $data
+ */
 final class PwaCollector extends DataCollector
 {
     private readonly ServiceWorker $serviceWorker;
@@ -120,9 +128,9 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @return array<string, mixed>|Data
+     * @return array<string, mixed>
      */
-    public function getData(): array|Data
+    public function getData(): array
     {
         return $this->data;
     }
@@ -141,7 +149,7 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @return array<string, Data>
+     * @return array<array{url: string, html: string|null, headers: array<string, string|bool>}>
      */
     public function getManifestFiles(): array
     {
@@ -154,7 +162,7 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @return array<string, Data>
+     * @return array<array{url: string, html: string|null, headers: array<string, string|bool>}>
      */
     public function getServiceWorkerFiles(): array
     {
@@ -172,7 +180,7 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @return array<string, Data>
+     * @return array<array{url: string, html: string|null, headers: array<string, string|bool>}>
      */
     public function getFaviconsFiles(): array
     {
@@ -185,13 +193,13 @@ final class PwaCollector extends DataCollector
     }
 
     /**
-     * @param \SpomkyLabs\PwaBundle\Service\Data[] $data
+     * @param Data[] $data
      * @return array{url: string, html: string|null, headers: array<string, string|bool>}[]
      */
     private function dataToFiles(array $data): array
     {
         return array_map(
-            static fn (\SpomkyLabs\PwaBundle\Service\Data $data): array => [
+            static fn (Data $data): array => [
                 'url' => $data->url,
                 'headers' => $data->headers,
                 'html' => $data->html,

@@ -26,17 +26,22 @@ final readonly class AppendCacheStrategies implements ServiceWorkerRuleInterface
     public function process(bool $debug = false): string
     {
         $body = '';
-        foreach ($this->cacheStrategies as $idCacheStrategy => $cacheStrategy) {
-            foreach ($cacheStrategy->getCacheStrategies() as $idStrategy => $strategy) {
+        $cacheStrategyIndex = 0;
+        foreach ($this->cacheStrategies as $cacheStrategy) {
+            $strategyIndex = 0;
+            foreach ($cacheStrategy->getCacheStrategies() as $strategy) {
                 if ($strategy->isEnabled() === false) {
+                    $strategyIndex++;
                     continue;
                 }
 
                 $body .= PHP_EOL . $strategy->render(
-                    sprintf('cache_%d_%d', $idCacheStrategy, $idStrategy),
+                    sprintf('cache_%d_%d', $cacheStrategyIndex, $strategyIndex),
                     $this->debug
                 );
+                $strategyIndex++;
             }
+            $cacheStrategyIndex++;
         }
 
         return $body;

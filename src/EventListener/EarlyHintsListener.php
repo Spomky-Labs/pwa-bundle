@@ -84,7 +84,8 @@ final readonly class EarlyHintsListener
         $links = [];
 
         // Preload manifest if enabled
-        if ($this->manifest->enabled && ($this->config['preload_manifest'] ?? true)) {
+        $preloadManifest = (bool) ($this->config['preload_manifest'] ?? true);
+        if ($this->manifest->enabled && $preloadManifest) {
             $manifestUrl = '/' . trim($this->manifestPublicUrl, '/');
             $links[] = (new Link(Link::REL_PRELOAD, $manifestUrl))
                 ->withAttribute('as', 'fetch')
@@ -92,16 +93,20 @@ final readonly class EarlyHintsListener
         }
 
         // Preload service worker if enabled
-        if ($this->manifest->serviceWorker?->enabled && ($this->config['preload_serviceworker'] ?? false)) {
-            $swUrl = $this->manifest->serviceWorker->dest;
+        $preloadServiceWorker = (bool) ($this->config['preload_serviceworker'] ?? false);
+        $serviceWorker = $this->manifest->serviceWorker;
+        if ($serviceWorker !== null && $serviceWorker->enabled && $preloadServiceWorker) {
+            $swUrl = $serviceWorker->dest;
             $links[] = (new Link(Link::REL_PRELOAD, $swUrl))
                 ->withAttribute('as', 'script');
         }
 
         // Preconnect to Workbox CDN if using CDN
-        if ($this->manifest->serviceWorker?->workbox->enabled
-            && $this->manifest->serviceWorker->workbox->config->useCDN
-            && ($this->config['preconnect_workbox_cdn'] ?? true)) {
+        $preconnectCdn = (bool) ($this->config['preconnect_workbox_cdn'] ?? true);
+        if ($serviceWorker !== null
+            && $serviceWorker->workbox->enabled
+            && $serviceWorker->workbox->config->useCDN
+            && $preconnectCdn) {
             $links[] = (new Link(Link::REL_PRECONNECT, 'https://storage.googleapis.com'))
                 ->withAttribute('crossorigin', true);
         }

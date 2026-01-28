@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use function assert;
 use function count;
+use function is_array;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -52,6 +54,8 @@ final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
         $urls = json_decode($this->serializer->serialize($this->getFonts(), 'json', [
             JsonEncode::OPTIONS => $this->jsonOptions,
         ]), true);
+        assert(is_array($urls));
+        /** @var array<string> $urls */
         $maxEntries = count($urls) + ($this->workbox->fontCache->maxEntries ?? 60);
 
         $strategy = WorkboxCacheStrategy::create(
@@ -69,7 +73,7 @@ final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
                     $this->workbox->fontCache->maxAgeInSeconds() ?? 60 * 60 * 24 * 365
                 ),
             );
-        if (count($urls) > 0) {
+        if ($urls !== []) {
             $strategy = $strategy->withPreloadUrl(...$urls);
         }
         $this->logger->debug('Font cache strategy', [

@@ -45,7 +45,10 @@ final class ManifestScreenshotListener implements CanLogInterface
         foreach ($configurations as $config) {
             // Find all screenshot files matching this configuration
             $pattern = sprintf('%s%s-*x*.%s', $config->output, $config->filename, $config->format);
-            $files = glob($pattern) ?: [];
+            $files = glob($pattern);
+            if ($files === false) {
+                $files = [];
+            }
 
             if ($files === []) {
                 $missingScreenshots[] = $pattern;
@@ -55,7 +58,7 @@ final class ManifestScreenshotListener implements CanLogInterface
             foreach ($files as $filename) {
                 // Extract dimensions from filename (e.g., "homepage-fr-1920x941.webp")
                 $basename = pathinfo($filename, PATHINFO_FILENAME);
-                if (! preg_match('/-(\d+)x(\d+)$/', $basename, $matches)) {
+                if (preg_match('/-(\d+)x(\d+)$/', $basename, $matches) !== 1) {
                     continue;
                 }
 

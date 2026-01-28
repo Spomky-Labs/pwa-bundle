@@ -40,7 +40,7 @@ final class CompileCommand extends Command
         $noScreenshots = (bool) $input->getOption('no-screenshots');
 
         // Generate screenshots if the generator is available and not skipped
-        if (! $noScreenshots && $this->screenshotGenerator?->isEnabled()) {
+        if (! $noScreenshots && $this->screenshotGenerator !== null && $this->screenshotGenerator->isEnabled()) {
             $io->title('Generating screenshots');
             if (! $this->screenshotGenerator->generate($io)) {
                 return self::FAILURE;

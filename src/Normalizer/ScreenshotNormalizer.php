@@ -48,11 +48,9 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
             'type' => $imageType,
         ];
 
-        $cleanup = static fn (array $data): array => array_filter(
-            $data,
-            static fn ($value) => ($value !== null && $value !== [])
-        );
-        return $cleanup($result);
+        /** @var array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, type?: string} */
+        $result = array_filter($result, static fn ($value) => ($value !== null && $value !== []));
+        return $result;
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
-use function count;
+use function assert;
+use function is_array;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -65,6 +66,8 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
                 JsonEncode::OPTIONS => $this->jsonOptions,
             ]);
             $urls = json_decode($routes, true, 512, JSON_THROW_ON_ERROR);
+            assert(is_array($urls));
+            /** @var array<string> $urls */
             $cacheName = $resourceCache->cacheName ?? sprintf('page-cache-%d', $id);
 
             $plugins = [
@@ -94,7 +97,7 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
                 ->withOptions([
                     'networkTimeoutSeconds' => $resourceCache->networkTimeout,
                 ]);
-            if (count($urls) > 0) {
+            if ($urls !== []) {
                 $strategy = $strategy->withPreloadUrl(...$urls);
             }
 

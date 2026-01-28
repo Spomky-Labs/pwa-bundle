@@ -137,7 +137,7 @@ final class PreloadUrlCompilerPass implements CompilerPassInterface
                     $routeAttribute,
                     'getName'
                 ) ? $routeAttribute->getName() : $routeAttribute->name;
-                if ($routeName === null) {
+                if (! is_string($routeName)) {
                     continue;
                 }
                 yield [

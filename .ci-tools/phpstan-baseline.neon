@@ -1,78 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: 'Only iterables can be unpacked, mixed given in argument #1.'
-			identifier: argument.unpackNonIterable
-			count: 1
-			path: ../src/CachingStrategy/AssetCache.php
-
-		-
-			rawMessage: 'Parameter #1 $name of method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::withName() expects string, string|null given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/AssetCache.php
-
-		-
-			rawMessage: 'Parameter #1 $preloadUrl of method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::withPreloadUrl() expects string, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/AssetCache.php
-
-		-
-			rawMessage: 'Parameter #1 $value of function count expects array|Countable, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/AssetCache.php
-
-		-
-			rawMessage: 'Only iterables can be unpacked, mixed given in argument #1.'
-			identifier: argument.unpackNonIterable
-			count: 1
-			path: ../src/CachingStrategy/FontCache.php
-
-		-
-			rawMessage: 'Parameter #1 $preloadUrl of method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::withPreloadUrl() expects string, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/FontCache.php
-
-		-
-			rawMessage: 'Parameter #1 $value of function count expects array|Countable, mixed given.'
-			identifier: argument.type
-			count: 2
-			path: ../src/CachingStrategy/FontCache.php
-
-		-
-			rawMessage: 'Only iterables can be unpacked, mixed given in argument #1.'
-			identifier: argument.unpackNonIterable
-			count: 1
-			path: ../src/CachingStrategy/ResourceCaches.php
-
-		-
-			rawMessage: 'Parameter #1 $preloadUrl of method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::withPreloadUrl() expects string, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/ResourceCaches.php
-
-		-
-			rawMessage: 'Parameter #1 $value of function count expects array|Countable, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/CachingStrategy/ResourceCaches.php
-
-		-
-			rawMessage: Cannot cast mixed to int.
-			identifier: cast.int
-			count: 1
-			path: ../src/CachingStrategy/WorkboxCacheStrategy.php
-
-		-
-			rawMessage: 'Only booleans are allowed in &&, bool|null given on the right side.'
-			identifier: booleanAnd.rightNotBoolean
-			count: 1
-			path: ../src/Command/CompileCommand.php
-
-		-
 			rawMessage: 'Argument of an invalid type mixed supplied for foreach, only iterables are supported.'
 			identifier: foreach.nonIterable
 			count: 1
@@ -151,84 +79,6 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
-			rawMessage: 'Generator expects value type array{alias: string, route: string, params: array<string, mixed>, pathTypeReference: int}, array{alias: string, route: mixed, params: array<string, mixed>, pathTypeReference: int} given.'
-			identifier: generator.valueType
-			count: 1
-			path: ../src/CompilerPass/PreloadUrlCompilerPass.php
-
-		-
-			rawMessage: Cannot access offset 'data' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 4
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: Cannot access offset 'files' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: Cannot access property $workbox on mixed.
-			identifier: property.nonObject
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getCachingStrategies() should return array<SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface> but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getData() should return array<string, mixed>|Symfony\Component\VarDumper\Cloner\Data but returns array|Symfony\Component\VarDumper\Cloner\Data.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getFavicons() should return SpomkyLabs\PwaBundle\Dto\Favicons but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getFaviconsFiles() should return array<string, Symfony\Component\VarDumper\Cloner\Data> but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getManifest() should return SpomkyLabs\PwaBundle\Dto\Manifest but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getManifestFiles() should return array<string, Symfony\Component\VarDumper\Cloner\Data> but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getServiceWorker() should return SpomkyLabs\PwaBundle\Dto\ServiceWorker but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getServiceWorkerFiles() should return array<string, Symfony\Component\VarDumper\Cloner\Data> but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::getWorkbox() should return SpomkyLabs\PwaBundle\Dto\Workbox but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\BackgroundSync has an uninitialized property $matchCallback. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -269,30 +119,6 @@ parameters:
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Icon.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getCategories() should return array<string|Symfony\Contracts\Translation\TranslatableInterface> but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getDescription() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Manifest.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PageCache extends @final class SpomkyLabs\PwaBundle\Dto\ResourceCache.
@@ -355,24 +181,6 @@ parameters:
 			path: ../src/Dto/Screenshot.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Screenshot::getLabel() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Screenshot.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ScreenshotDimension::getDimensions() should return array{width: int, height: int} but returns array{width: int|null, height: int|null}.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/ScreenshotDimension.php
-
-		-
-			rawMessage: 'Only booleans are allowed in an if condition, int|false given.'
-			identifier: if.condNotBoolean
-			count: 2
-			path: ../src/Dto/ScreenshotDimension.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ServiceWorker has an uninitialized property $workbox. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -385,18 +193,6 @@ parameters:
 			path: ../src/Dto/ShareTarget.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getText() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getTitle() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Shortcut has an uninitialized property $name. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -405,24 +201,6 @@ parameters:
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Shortcut has an uninitialized property $url. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getDescription() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getName() should return string|Symfony\Contracts\Translation\TranslatableInterface but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
 			count: 1
 			path: ../src/Dto/Shortcut.php
 
@@ -441,24 +219,6 @@ parameters:
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Widget has an uninitialized property $name. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getDescription() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getName() should return string|Symfony\Contracts\Translation\TranslatableInterface but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
-			identifier: return.type
 			count: 1
 			path: ../src/Dto/Widget.php
 
@@ -532,18 +292,6 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: 'Only booleans are allowed in &&, bool|null given on the left side.'
-			identifier: booleanAnd.leftNotBoolean
-			count: 2
-			path: ../src/EventListener/EarlyHintsListener.php
-
-		-
-			rawMessage: 'Only booleans are allowed in &&, mixed given on the right side.'
-			identifier: booleanAnd.rightNotBoolean
-			count: 3
-			path: ../src/EventListener/EarlyHintsListener.php
-
-		-
 			rawMessage: 'Call to function assert() with true will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -554,36 +302,6 @@ parameters:
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: ../src/EventListener/FileCompileEventListener.php
-
-		-
-			rawMessage: 'Only booleans are allowed in a negated boolean, int|false given.'
-			identifier: booleanNot.exprNotBoolean
-			count: 1
-			path: ../src/EventListener/ManifestScreenshotListener.php
-
-		-
-			rawMessage: Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary.
-			identifier: ternary.shortNotAllowed
-			count: 1
-			path: ../src/EventListener/ManifestScreenshotListener.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::normalize() should return array{src: string, sizes?: string, type?: string, purpose?: string} but returns array<mixed>.'
-			identifier: return.type
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::normalize() should return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, type?: string} but returns array<mixed>.'
-			identifier: return.type
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::normalize() should return array{scope?: string, src: string, use_cache?: bool} but returns array<mixed>.'
-			identifier: return.type
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
 
 		-
 			rawMessage: 'Parameter #1 $icons of function expandIcons expects array<int, array<string, mixed>|string>, mixed given.'
@@ -952,72 +670,6 @@ parameters:
 			path: ../src/Service/ScreenshotUrlGenerator.php
 
 		-
-			rawMessage: 'Parameter #2 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/ServiceWorkerRule/AppendCacheStrategies.php
-
-		-
-			rawMessage: Cannot access property $enabled on SpomkyLabs\PwaBundle\Dto\BackgroundFetch|null.
-			identifier: property.nonObject
-			count: 1
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: Cannot access property $progressUrl on SpomkyLabs\PwaBundle\Dto\BackgroundFetch|null.
-			identifier: property.nonObject
-			count: 4
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: Cannot access property $successUrl on SpomkyLabs\PwaBundle\Dto\BackgroundFetch|null.
-			identifier: property.nonObject
-			count: 4
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: 'Strict comparison using === between int<1, max> and 0 will always evaluate to false.'
-			identifier: identical.alwaysFalse
-			count: 2
-			path: ../src/ServiceWorkerRule/OfflineFallback.php
-
-		-
-			rawMessage: Cannot access property $dbName on SpomkyLabs\PwaBundle\Dto\BackgroundFetch|null.
-			identifier: property.nonObject
-			count: 1
-			path: ../src/ServiceWorkerRule/WorkboxHelpers.php
-
-		-
-			rawMessage: 'Construct empty() is not allowed. Use more strict comparison.'
-			identifier: empty.notAllowed
-			count: 1
-			path: ../src/ServiceWorkerRule/WorkboxImport.php
-
-		-
-			rawMessage: Cannot access offset 'dest' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: Cannot access offset 'enabled' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 3
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: Cannot access offset 'public_url' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: Cannot access offset 'serviceworker' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
 			rawMessage: 'Parameter #1 $config (array<string, mixed>) of method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::loadExtension() should be contravariant with parameter $config (array) of method Symfony\Component\DependencyInjection\Extension\ConfigurableExtensionInterface::loadExtension()'
 			identifier: method.childParameterType
 			count: 1
@@ -1028,21 +680,3 @@ parameters:
 			identifier: method.childParameterType
 			count: 1
 			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Parameter #2 $id of method Symfony\Component\DependencyInjection\ContainerBuilder::setAlias() expects string|Symfony\Component\DependencyInjection\Alias, mixed given.'
-			identifier: argument.type
-			count: 3
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Parameter #2 $value of method Symfony\Component\DependencyInjection\Container::setParameter() expects array|bool|float|int|string|UnitEnum|null, mixed given.'
-			identifier: argument.type
-			count: 12
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Parameter #2 of function sprintf is expected to be string by placeholder #1 ("%%s"), string|false given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/WorkboxPlugin/CacheableResponsePlugin.php
