@@ -11,5 +11,5 @@ final class File
     /**
      * @var string[]
      */
-    public array $accept;
+    public array $accept = [];
 }

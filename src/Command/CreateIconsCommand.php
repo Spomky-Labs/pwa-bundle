@@ -113,7 +113,11 @@ final class CreateIconsCommand extends Command
         $generatedIcons = [];
         foreach ($sizes as $size) {
             $size = (int) $size;
-            $outputSize = $size === 0 ? 'any' : sprintf('%sx%s', $size, $size);
+            if ($size < 1) {
+                $io->warning(sprintf('Invalid size %d, skipping (size must be >= 1)', $size));
+                continue;
+            }
+            $outputSize = sprintf('%sx%s', $size, $size);
             $io->info(sprintf('Processing icon %s', $outputSize));
             $configuration = Configuration::create($size, $size, $format, $input->getOption('color'));
             $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), null, null, null, $configuration);

@@ -5,6 +5,10 @@ declare(strict_types=1);
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
+/**
+ * @param array<int, array<string, mixed>|string> $icons
+ * @return array<int, array<string, mixed>>
+ */
 function expandIcons(array $icons): array
 {
     $expandedIcons = [];

@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Service;
 
 use const ENT_HTML5;
 use const ENT_QUOTES;
+use function is_scalar;
 use SpomkyLabs\PwaBundle\Dto\PreloadResource;
 use SpomkyLabs\PwaBundle\Dto\ResourceHints;
 use function sprintf;
@@ -43,7 +44,7 @@ final class ResourceHintsBuilder
 
     public function isEnabled(): bool
     {
-        return $this->config['enabled'] ?? false;
+        return (bool) ($this->config['enabled'] ?? false);
     }
 
     /**
@@ -115,15 +116,19 @@ final class ResourceHintsBuilder
         $origins = [];
 
         // Check if Workbox CDN is used
+        /** @var array<string, mixed> $workbox */
         $workbox = $this->workboxConfig['workbox'] ?? [];
-        if (($workbox['enabled'] ?? false) && ($workbox['use_cdn'] ?? false)) {
+        $workboxEnabled = (bool) ($workbox['enabled'] ?? false);
+        $useCdn = (bool) ($workbox['use_cdn'] ?? false);
+        if ($workboxEnabled && $useCdn) {
             $origins[] = 'https://storage.googleapis.com';
             $origins[] = 'https://cdn.jsdelivr.net';
         }
 
         // Check if Google Fonts cache is enabled
+        /** @var array<string, mixed> $googleFonts */
         $googleFonts = $workbox['google_fonts'] ?? [];
-        if ($googleFonts['enabled'] ?? false) {
+        if ((bool) ($googleFonts['enabled'] ?? false)) {
             $origins[] = 'https://fonts.googleapis.com';
             $origins[] = 'https://fonts.gstatic.com';
         }
@@ -193,7 +198,7 @@ final class ResourceHintsBuilder
         foreach ($attributes as $name => $value) {
             if ($value === true) {
                 $attrString .= sprintf(' %s', $name);
-            } elseif ($value !== false && $value !== null) {
+            } elseif ($value !== false && $value !== null && is_scalar($value)) {
                 $attrString .= sprintf(
                     ' %s="%s"',
                     $name,

@@ -45,6 +45,7 @@ final class PwaCollector extends DataCollector
 
     /**
      * @param iterable<HasCacheStrategiesInterface> $cachingServices
+     * @param array<string> $locales
      */
     public function __construct(
         private readonly SerializerInterface $serializer,
@@ -96,7 +97,7 @@ final class PwaCollector extends DataCollector
             'publicUrl' => $this->manifestPublicUrl,
             'locales' => $this->locales,
         ];
-        if ($this->locales === null || $this->locales === []) {
+        if ($this->locales === []) {
             $this->data['manifest']['outputs'] = [
                 '*' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
             ];

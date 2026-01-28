@@ -40,7 +40,7 @@ final readonly class BroadcastUpdatePlugin implements CachePluginInterface, HasD
     }
 
     /**
-     * @param array<string, string> $headersToCheck
+     * @param array<string> $headersToCheck
      */
     public static function create(array $headersToCheck = []): static
     {

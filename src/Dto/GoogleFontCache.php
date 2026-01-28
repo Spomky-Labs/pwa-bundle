@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class GoogleFontCache extends Cache
 {
-    public bool $enabled;
+    public bool $enabled = true;
 
     #[SerializedName('cache_prefix')]
     public null|string $cachePrefix = null;

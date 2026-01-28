@@ -66,7 +66,9 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
             default:
                 throw new InvalidArgumentException('Unsupported format');
         }
-        return ob_get_clean();
+        $result = ob_get_clean();
+        assert(is_string($result));
+        return $result;
     }
 
     /**
@@ -180,9 +182,12 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
         }
 
         $hex = ltrim($configuration->backgroundColor, '#');
-        $r = (int) hexdec(mb_substr($hex, 0, 2));
-        $g = (int) hexdec(mb_substr($hex, 2, 2));
-        $b = (int) hexdec(mb_substr($hex, 4, 2));
+        /** @var int<0, 255> $r */
+        $r = max(0, min(255, (int) hexdec(mb_substr($hex, 0, 2))));
+        /** @var int<0, 255> $g */
+        $g = max(0, min(255, (int) hexdec(mb_substr($hex, 2, 2))));
+        /** @var int<0, 255> $b */
+        $b = max(0, min(255, (int) hexdec(mb_substr($hex, 4, 2))));
         $color = imagecolorallocate($background, $r, $g, $b);
         assert($color !== false);
         imagefill($background, 0, 0, $color);

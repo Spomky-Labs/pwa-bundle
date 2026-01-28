@@ -8,9 +8,9 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class LaunchHandler
 {
-    #[SerializedName('client_mode')]
     /**
-     * @var string|array<string>
+     * @var array<string>
      */
+    #[SerializedName('client_mode')]
     public array $clientMode = [];
 }

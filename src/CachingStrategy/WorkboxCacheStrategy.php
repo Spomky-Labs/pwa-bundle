@@ -118,7 +118,8 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
             [self::STRATEGY_NETWORK_FIRST, self::STRATEGY_NETWORK_ONLY],
             true
         ) && ($this->options['networkTimeoutSeconds'] ?? null) !== null) {
-            $timeout = "networkTimeoutSeconds: {$this->options['networkTimeoutSeconds']},";
+            $networkTimeout = (int) $this->options['networkTimeoutSeconds'];
+            $timeout = "networkTimeoutSeconds: {$networkTimeout},";
         }
         $cacheName = '';
         if ($this->strategy !== self::STRATEGY_NETWORK_ONLY) {

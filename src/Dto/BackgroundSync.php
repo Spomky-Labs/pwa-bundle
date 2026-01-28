@@ -32,10 +32,10 @@ final class BackgroundSync extends Cache
     public string $method;
 
     #[SerializedName('max_retention_time')]
-    public int $maxRetentionTime;
+    public int $maxRetentionTime = 1440;
 
     #[SerializedName('force_sync_fallback')]
-    public bool $forceSyncFallback;
+    public bool $forceSyncFallback = false;
 
     #[SerializedName('broadcast_channel')]
     public null|string $broadcastChannel = null;

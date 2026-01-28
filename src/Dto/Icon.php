@@ -14,7 +14,7 @@ final class Icon
      * @var array<int>
      */
     #[SerializedName('sizes')]
-    public array $sizeList;
+    public array $sizeList = [];
 
     public null|string $type = null;
 

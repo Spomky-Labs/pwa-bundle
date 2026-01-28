@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use function assert;
+use function is_string;
 use SpomkyLabs\PwaBundle\Dto\ProtocolHandler;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -28,13 +29,16 @@ final class ProtocolHandlerNormalizer implements NormalizerInterface, Normalizer
         }
 
         $normalizedUrl = $this->normalizer->normalize($data->url, $format, $context);
+        assert(is_string($normalizedUrl));
         if ($data->placeholder !== null) {
             $encodedPlaceholder = urlencode($data->placeholder);
 
             // Construire le pattern de recherche
             $pattern = '/(?<=^|[&?])' . preg_quote($encodedPlaceholder, '/') . '=%25s(?=&|$)/';
             $replacement = "{$encodedPlaceholder}=%s";
-            $normalizedUrl = preg_replace($pattern, $replacement, (string) $normalizedUrl);
+            $replaced = preg_replace($pattern, $replacement, $normalizedUrl);
+            assert(is_string($replaced));
+            $normalizedUrl = $replaced;
         }
 
         return [

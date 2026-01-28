@@ -62,6 +62,8 @@ final class SpeculationRule
 
     /**
      * Whether this rule should only apply when requirements are met.
+     *
+     * @var array<string>|null
      */
     #[SerializedName('requires')]
     public ?array $requires = null;

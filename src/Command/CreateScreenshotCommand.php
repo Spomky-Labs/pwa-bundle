@@ -134,8 +134,8 @@ final class CreateScreenshotCommand extends Command
         $data = file_get_contents($tmpName);
         assert(is_string($data));
         ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($data);
-        assert(is_int($width));
-        assert(is_int($height));
+        assert(is_int($width) && $width >= 1);
+        assert(is_int($height) && $height >= 1);
         $configuration = Configuration::create($width, $height, $format);
         $data = $this->imageProcessor->process($data, null, null, null, $configuration);
         file_put_contents($tmpName, $data);
@@ -178,9 +178,12 @@ final class CreateScreenshotCommand extends Command
         socket_getsockname($socket, $address, $port);
         socket_close($socket);
 
-        return $port;
+        return (int) $port;
     }
 
+    /**
+     * @return array<string>
+     */
     private function getDefaultArguments(): array
     {
         $args = [];

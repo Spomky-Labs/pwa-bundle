@@ -68,6 +68,7 @@ final readonly class IconResolver
                 ],
             );
         }
+        assert($size >= 1);
 
         $configuration = Configuration::create(
             $size,

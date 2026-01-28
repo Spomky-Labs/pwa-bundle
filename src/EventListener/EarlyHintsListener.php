@@ -26,6 +26,9 @@ final readonly class EarlyHintsListener
 {
     private Manifest $manifest;
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function __construct(
         ManifestBuilder $manifestBuilder,
         #[Autowire(param: 'spomky_labs_pwa.early_hints.config')]
@@ -38,7 +41,7 @@ final readonly class EarlyHintsListener
 
     public function __invoke(RequestEvent $event): void
     {
-        if (! ($this->config['enabled'] ?? false)) {
+        if ((bool) ($this->config['enabled'] ?? false) !== true) {
             return;
         }
 
