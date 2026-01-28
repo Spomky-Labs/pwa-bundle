@@ -42,7 +42,7 @@ final class ScreenshotListener implements CanLogInterface
         $this->logger->debug('User agent found.', [
             'user_agent' => $userAgent,
         ]);
-        $userAgentToFind = $this->userAgent ?? 'HeadlessChrome';
+        $userAgentToFind = $this->userAgent ?? 'PWAScreenshotBot';
         if (! str_contains($userAgent, $userAgentToFind)) {
             $this->logger->debug('User agent does not match.', [
                 'user_agent' => $userAgent,

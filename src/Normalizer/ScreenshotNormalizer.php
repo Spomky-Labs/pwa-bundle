@@ -26,7 +26,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
     }
 
     /**
-     * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
+     * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, type?: string}
      */
     public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
@@ -43,9 +43,9 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
             'src' => $this->normalizer->normalize($data->src, $format, $context),
             'sizes' => $sizes,
             'form_factor' => $formFactor,
-            'label' => $data->label,
+            'label' => $this->normalizer->normalize($data->getLabel(), $format, $context),
             'platform' => $data->platform,
-            'format' => $imageType,
+            'type' => $imageType,
         ];
 
         $cleanup = static fn (array $data): array => array_filter(
@@ -78,7 +78,7 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
         if ($object->width !== null && $object->height !== null) {
             return [
                 'sizes' => sprintf('%dx%d', $object->width, $object->height),
-                'formFactor' => $object->formFactor ?? $this->getFormFactor($object->width, $object->height),
+                'formFactor' => $object->formFactor,
             ];
         }
 
@@ -89,13 +89,19 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
             ];
         }
 
-        ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes(
-            file_get_contents($asset->sourcePath)
-        );
+        $imageData = @file_get_contents($asset->sourcePath);
+        if ($imageData === false) {
+            return [
+                'sizes' => null,
+                'formFactor' => $object->formFactor,
+            ];
+        }
+
+        ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($imageData);
 
         return [
             'sizes' => sprintf('%dx%d', $width, $height),
-            'formFactor' => $object->formFactor ?? $this->getFormFactor($width, $height),
+            'formFactor' => $object->formFactor,
         ];
     }
 
@@ -106,14 +112,5 @@ final class ScreenshotNormalizer implements NormalizerInterface, NormalizerAware
         }
 
         return MimeTypes::getDefault()->guessMimeType($asset->sourcePath);
-    }
-
-    private function getFormFactor(?int $width, ?int $height): ?string
-    {
-        if ($width === null || $height === null) {
-            return null;
-        }
-
-        return $width > $height ? 'wide' : 'narrow';
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -27,6 +28,12 @@ final class Screenshot
     public null|string $platform = null;
 
     public null|string $type = null;
+
+    /**
+     * Locale for which this screenshot is intended. Used for filtering, not serialized.
+     */
+    #[Ignore]
+    public null|string $locale = null;
 
     public function getLabel(): null|string|TranslatableInterface
     {

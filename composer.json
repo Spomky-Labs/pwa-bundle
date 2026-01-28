@@ -49,6 +49,7 @@
         "twig/twig": "^3.8"
     },
     "require-dev": {
+        "dbrekelmans/bdi": "*",
         "matthiasnoback/symfony-config-test": "^5.1|^6.0",
         "monolog/monolog": "^3.0",
         "nelmio/security-bundle": "^3.3",
@@ -60,6 +61,7 @@
         "symfony/mime": "^6.4|^7.0|^8.0",
         "symfony/monolog-bridge": "^6.4|^7.0|^8.0",
         "symfony/monolog-bundle": "^3.10|^4.0",
+        "symfony/panther": "^2.3",
         "symfony/translation": "^6.4|^7.0|^8.0",
         "symfony/twig-bundle": "^7.0|^8.0",
         "symfony/ux-icons": "^2.29",

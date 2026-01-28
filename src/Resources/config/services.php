@@ -13,10 +13,9 @@ use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\DataCollector\PwaCollector;
-use SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener;
 use SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener;
+use SpomkyLabs\PwaBundle\EventListener\ManifestScreenshotListener;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
-use SpomkyLabs\PwaBundle\EventListener\ResourceHintsListener;
 use SpomkyLabs\PwaBundle\EventListener\ScreenshotListener;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
@@ -31,6 +30,9 @@ use SpomkyLabs\PwaBundle\Service\IconResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
+use SpomkyLabs\PwaBundle\Service\ScreenshotAttributeCollector;
+use SpomkyLabs\PwaBundle\Service\ScreenshotGenerator;
+use SpomkyLabs\PwaBundle\Service\ScreenshotUrlGenerator;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder;
@@ -73,6 +75,8 @@ return static function (ContainerConfigurator $configurator): void {
 
     $container->set(IconResolver::class);
     $container->set(ApplicationIconCompiler::class);
+    $container->set(ScreenshotUrlGenerator::class);
+    $container->set(ScreenshotAttributeCollector::class);
 
     /*** Service Worker ***/
     $container->set(ServiceWorkerBuilder::class)
@@ -101,6 +105,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->set(CompileCommand::class);
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
         $container->set(CreateScreenshotCommand::class);
+        $container->set(ScreenshotGenerator::class);
     }
     if (class_exists(MimeTypes::class)) {
         $container->set(CreateIconsCommand::class);
@@ -131,13 +136,7 @@ return static function (ContainerConfigurator $configurator): void {
     /*** Event Listeners and Subscribers ***/
     $container->set(FileCompiler::class);
     $container->set(FileCompileEventListener::class);
-    $container->set(EarlyHintsListener::class)
-        ->args([
-            '$config' => param('spomky_labs_pwa.early_hints.config'),
-            '$manifestPublicUrl' => param('spomky_labs_pwa.manifest.public_url'),
-        ])
-    ;
-    $container->set(ResourceHintsListener::class);
+    $container->set(ManifestScreenshotListener::class);
     $container->set(PwaDevServerListener::class)
         ->args([
             '$profiler' => service('profiler')
@@ -176,9 +175,8 @@ return static function (ContainerConfigurator $configurator): void {
         ->tag('spomky_labs_pwa.preload_urls_generator')
     ;
 
-    $container->set(ScreenshotListener::class);
-
     if ($configurator->env() !== 'prod') {
+        $container->set(ScreenshotListener::class);
         $container->set(PwaCollector::class)
             ->tag('data_collector', [
                 'template' => '@SpomkyLabsPwa/Collector/template.html.twig',

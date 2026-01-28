@@ -114,7 +114,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         }
 
         $callback = function () use ($manifest, $locale): string {
-            $preEvent = new PreManifestCompileEvent($manifest);
+            $preEvent = new PreManifestCompileEvent($manifest, $locale);
             $preEvent = $this->dispatcher->dispatch($preEvent);
             assert($preEvent instanceof PreManifestCompileEvent);
 
