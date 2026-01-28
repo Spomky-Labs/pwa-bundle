@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Twig;
 use function array_key_exists;
 use const ENT_COMPAT;
 use const ENT_SUBSTITUTE;
+use function in_array;
 use InvalidArgumentException;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use const PHP_EOL;
@@ -73,6 +74,7 @@ final readonly class PwaRuntime
         }
         $output = $this->injectFavicons($output, $injectFavicons);
         $output = $this->injectThemeColor($output, $injectThemeColor);
+        $output = $this->injectMobileWebAppCapable($output);
 
         return $this->injectSpeculationRules($output, $injectSpeculationRules);
     }
@@ -254,6 +256,21 @@ SERVICE_WORKER;
                 '<meta name="msapplication-TileColor" content="%s">',
                 $this->favicons->tileColor
             );
+        }
+
+        return $output;
+    }
+
+    private function injectMobileWebAppCapable(string $output): string
+    {
+        if ($this->manifest->enabled === false || $this->manifest->display === null) {
+            return $output;
+        }
+
+        // Add mobile-web-app-capable meta tag for PWA display modes
+        $pwaDisplayModes = ['standalone', 'fullscreen', 'minimal-ui'];
+        if (in_array($this->manifest->display, $pwaDisplayModes, true)) {
+            $output .= sprintf('%s<meta name="mobile-web-app-capable" content="yes">', PHP_EOL);
         }
 
         return $output;
