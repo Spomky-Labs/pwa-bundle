@@ -23,11 +23,9 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
             'use_cache' => $data->useCache,
         ];
 
-        $cleanup = static fn (array $data): array => array_filter(
-            $data,
-            static fn ($value) => ($value !== null && $value !== [])
-        );
-        return $cleanup($result);
+        /** @var array{scope?: string, src: string, use_cache?: bool} */
+        $result = array_filter($result, static fn ($value) => $value !== null);
+        return $result;
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

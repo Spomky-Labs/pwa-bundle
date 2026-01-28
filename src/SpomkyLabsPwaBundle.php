@@ -29,58 +29,84 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $container->addCompilerPass(new LoggerCompilerPass());
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->import('Resources/config/services.php');
 
-        if ($config['image_processor'] !== null) {
-            $builder->setAlias(ImageProcessorInterface::class, $config['image_processor']);
+        /** @var string|null $imageProcessor */
+        $imageProcessor = $config['image_processor'];
+        if ($imageProcessor !== null) {
+            $builder->setAlias(ImageProcessorInterface::class, $imageProcessor);
         }
-        if ($config['asset_compiler'] !== null) {
-            $builder->setParameter('spomky_labs_pwa.asset_compiler', $config['asset_compiler']);
-        }
-        if ($config['web_client'] !== null) {
-            $builder->setAlias('pwa.web_client', $config['web_client']);
-        }
-        $builder->setParameter('spomky_labs_pwa.screenshot_user_agent', $config['user_agent']);
 
+        /** @var string|null $assetCompiler */
+        $assetCompiler = $config['asset_compiler'];
+        if ($assetCompiler !== null) {
+            $builder->setParameter('spomky_labs_pwa.asset_compiler', $assetCompiler);
+        }
+
+        /** @var string|null $webClient */
+        $webClient = $config['web_client'];
+        if ($webClient !== null) {
+            $builder->setAlias('pwa.web_client', $webClient);
+        }
+
+        /** @var string $userAgent */
+        $userAgent = $config['user_agent'];
+        $builder->setParameter('spomky_labs_pwa.screenshot_user_agent', $userAgent);
+
+        /** @var array{enabled: bool, dest?: string} $serviceWorkerConfig */
         $serviceWorkerConfig = $config['serviceworker'];
+        /** @var array{enabled: bool, public_url?: string} $manifestConfig */
         $manifestConfig = $config['manifest'];
         if ($serviceWorkerConfig['enabled'] === true) {
             $manifestConfig['serviceworker'] = $serviceWorkerConfig;
         }
 
-        if ($config['logger'] !== null) {
-            $builder->setAlias('spomky_labs_pwa.logger', $config['logger']);
+        /** @var string|null $logger */
+        $logger = $config['logger'];
+        if ($logger !== null) {
+            $builder->setAlias('spomky_labs_pwa.logger', $logger);
         }
 
         /*** Manifest ***/
-        $builder->setParameter('spomky_labs_pwa.manifest.enabled', $config['manifest']['enabled']);
-        $builder->setParameter('spomky_labs_pwa.manifest.public_url', $config['manifest']['public_url'] ?? null);
+        $builder->setParameter('spomky_labs_pwa.manifest.enabled', $manifestConfig['enabled']);
+        $builder->setParameter('spomky_labs_pwa.manifest.public_url', $manifestConfig['public_url'] ?? null);
         $builder->setParameter('spomky_labs_pwa.manifest.config', $manifestConfig);
 
         /*** Favicons ***/
-        $builder->setParameter('spomky_labs_pwa.favicons.config', $config['favicons']);
+        /** @var array<string, mixed> $faviconsConfig */
+        $faviconsConfig = $config['favicons'];
+        $builder->setParameter('spomky_labs_pwa.favicons.config', $faviconsConfig);
 
         /*** Service Worker ***/
-        $builder->setParameter('spomky_labs_pwa.sw.enabled', $config['serviceworker']['enabled']);
-        $builder->setParameter('spomky_labs_pwa.sw.public_url', $config['serviceworker']['dest'] ?? null);
+        $builder->setParameter('spomky_labs_pwa.sw.enabled', $serviceWorkerConfig['enabled']);
+        $builder->setParameter('spomky_labs_pwa.sw.public_url', $serviceWorkerConfig['dest'] ?? null);
         $builder->setParameter('spomky_labs_pwa.sw.config', $serviceWorkerConfig);
 
         /*** Resource Hints ***/
-        $builder->setParameter('spomky_labs_pwa.resource_hints.config', $config['resource_hints'] ?? [
+        /** @var array{enabled: bool} $resourceHintsConfig */
+        $resourceHintsConfig = $config['resource_hints'] ?? [
             'enabled' => false,
-        ]);
+        ];
+        $builder->setParameter('spomky_labs_pwa.resource_hints.config', $resourceHintsConfig);
 
         /*** Early Hints ***/
-        $builder->setParameter('spomky_labs_pwa.early_hints.config', $config['early_hints'] ?? [
+        /** @var array{enabled: bool} $earlyHintsConfig */
+        $earlyHintsConfig = $config['early_hints'] ?? [
             'enabled' => false,
-        ]);
+        ];
+        $builder->setParameter('spomky_labs_pwa.early_hints.config', $earlyHintsConfig);
 
         /*** Speculation Rules ***/
-        $builder->setParameter('spomky_labs_pwa.speculation_rules.config', $config['speculation_rules'] ?? [
+        /** @var array{enabled: bool} $speculationRulesConfig */
+        $speculationRulesConfig = $config['speculation_rules'] ?? [
             'enabled' => false,
-        ]);
+        ];
+        $builder->setParameter('spomky_labs_pwa.speculation_rules.config', $speculationRulesConfig);
 
         if (! in_array($builder->getParameter('kernel.environment'), ['dev', 'test'], true)) {
             $builder->removeDefinition(PwaDevServerListener::class);

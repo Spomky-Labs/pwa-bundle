@@ -12,7 +12,7 @@ final class ServiceWorker
 
     public null|Asset $src = null;
 
-    public string $dest;
+    public string $dest = '/sw.js';
 
     public null|string $scope = null;
 

@@ -8,13 +8,13 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Workbox
 {
-    public bool $enabled;
+    public bool $enabled = false;
 
     #[SerializedName('idb_public_url')]
-    public string $indexDBPublicUrl;
+    public string $indexDBPublicUrl = '/idb';
 
     #[SerializedName('cache_manifest')]
-    public bool $cacheManifest;
+    public bool $cacheManifest = false;
 
     #[SerializedName('image_cache')]
     public ImageCache $imageCache;
@@ -26,7 +26,7 @@ final class Workbox
      * @var array<PageCache>
      */
     #[SerializedName('resource_caches')]
-    public array $resourceCaches;
+    public array $resourceCaches = [];
 
     #[SerializedName('asset_cache')]
     public AssetCache $assetCache;

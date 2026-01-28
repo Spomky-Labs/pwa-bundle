@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
-use function count;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -47,19 +46,11 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
             'fontFallback' => $this->workbox->offlineFallback->fontFallback,
         ];
         $options = array_filter($options, static fn (mixed $v): bool => $v !== null);
-        if (count($options) === 0) {
+        if ($options === []) {
             return '';
         }
-        $urls = count($options) === 0 ? '' : $this->serializer->serialize(
-            array_values($options),
-            'json',
-            $this->serializerOptions($debug)
-        );
-        $fallbacks = count($options) === 0 ? '' : $this->serializer->serialize(
-            $options,
-            'json',
-            $this->serializerOptions($debug)
-        );
+        $urls = $this->serializer->serialize(array_values($options), 'json', $this->serializerOptions($debug));
+        $fallbacks = $this->serializer->serialize($options, 'json', $this->serializerOptions($debug));
 
         $declaration = '';
         if ($debug === true) {

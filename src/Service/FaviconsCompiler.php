@@ -429,7 +429,7 @@ XML;
     }
 
     /**
-     * @return array{url: string, width: int, height: int, format: string, mimetype: string, rel: string}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string}[]
      */
     private function getFaviconSizes(): array
     {

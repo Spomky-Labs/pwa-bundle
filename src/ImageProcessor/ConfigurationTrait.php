@@ -37,8 +37,8 @@ trait ConfigurationTrait
         if ($width === null && $height === null) {
             ['width' => $width, 'height' => $height] = $this->getSizes($image);
         }
-        assert(is_int($width));
-        assert(is_int($height));
+        assert(is_int($width) && $width >= 1);
+        assert(is_int($height) && $height >= 1);
         assert(is_string($format));
 
         return Configuration::create($width, $height, $format);

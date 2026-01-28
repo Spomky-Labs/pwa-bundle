@@ -11,5 +11,5 @@ final class FileHandler
     /**
      * @var array<string, string[]>
      */
-    public array $accept;
+    public array $accept = [];
 }

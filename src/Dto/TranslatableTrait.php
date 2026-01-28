@@ -11,9 +11,11 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 trait TranslatableTrait
 {
     /**
-     * @param null|string|array<string> $data
+     * @template T of null|string|array<string>
      *
-     * @return null|string|TranslatableInterface|array<string|TranslatableInterface>
+     * @param T $data
+     *
+     * @phpstan-return (T is null ? null : (T is string ? string|TranslatableInterface : array<string|TranslatableInterface>))
      */
     public function provideTranslation(null|string|array $data): null|string|TranslatableInterface|array
     {

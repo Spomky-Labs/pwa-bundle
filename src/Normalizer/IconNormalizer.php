@@ -36,12 +36,10 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
             'purpose' => $data->purpose,
         ];
 
-        $cleanup = static fn (array $data): array => array_filter(
-            $data,
-            static fn ($value) => ($value !== null && $value !== [])
-        );
+        /** @var array{src: string, sizes?: string, type?: string, purpose?: string} */
+        $result = array_filter($result, static fn ($value) => $value !== null);
 
-        return $cleanup($result);
+        return $result;
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

@@ -43,7 +43,7 @@ final class SpeculationRulesBuilder
 
     public function isEnabled(): bool
     {
-        return $this->config['enabled'] ?? false;
+        return (bool) ($this->config['enabled'] ?? false);
     }
 
     /**

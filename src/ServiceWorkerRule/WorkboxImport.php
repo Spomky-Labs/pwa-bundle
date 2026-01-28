@@ -77,7 +77,7 @@ IMPORT_CDN_STRATEGY;
             $configOptions['debug'] = false;
         }
 
-        if (! empty($configOptions)) {
+        if ($configOptions !== []) {
             $configJson = json_encode($configOptions, JSON_UNESCAPED_SLASHES);
             if ($debug === true) {
                 $declaration .= <<<DEBUG_COMMENT

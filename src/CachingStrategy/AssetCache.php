@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
+use function assert;
 use function count;
+use function is_array;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -58,14 +60,17 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         $urls = json_decode($this->serializer->serialize($this->getAssets(), 'json', [
             JsonEncode::OPTIONS => $this->jsonOptions,
         ]), true);
+        assert(is_array($urls));
+        /** @var array<string> $urls */
 
+        $cacheName = $this->workbox->assetCache->cacheName ?? 'assets';
         $strategy = WorkboxCacheStrategy::create(
             $this->workbox->enabled && $this->workbox->assetCache->enabled,
             true,
             CacheStrategyInterface::STRATEGY_CACHE_FIRST,
             sprintf("({url}) => url.pathname.startsWith('%s')", $this->assetPublicPrefix),
         )
-            ->withName($this->workbox->assetCache->cacheName)
+            ->withName($cacheName)
             ->withPlugin(
                 ExpirationPlugin::create(
                     count($this->getAssets()) * 2,
@@ -73,7 +78,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
                 ),
             );
 
-        if (count($urls) > 0) {
+        if ($urls !== []) {
             $strategy = $strategy->withPreloadUrl(...$urls);
         }
         $this->logger->debug('Cache strategy for assets', [

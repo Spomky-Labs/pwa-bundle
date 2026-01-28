@@ -90,12 +90,21 @@ final class CreateScreenshotCommand extends Command
         }
 
         $url = $input->getArgument('url');
+        if (! is_string($url)) {
+            $io->error('The URL must be a string.');
+            return self::FAILURE;
+        }
         $dest = rtrim((string) $input->getOption('output'), '/');
-        $height = $input->getOption('height');
-        $width = $input->getOption('width');
+        $heightOption = $input->getOption('height');
+        $widthOption = $input->getOption('width');
         $format = $input->getOption('format');
         if (! is_string($format)) {
             $io->error('The format must be defined.');
+            return self::FAILURE;
+        }
+        $filenameOption = $input->getOption('filename');
+        if (! is_string($filenameOption)) {
+            $io->error('The filename must be a string.');
             return self::FAILURE;
         }
 
@@ -104,20 +113,22 @@ final class CreateScreenshotCommand extends Command
 
         $tmpName = $this->filesystem
             ->tempnam('', 'pwa-');
-        if ($width !== null xor $height !== null) {
+        $hasWidth = $widthOption !== null;
+        $hasHeight = $heightOption !== null;
+        if ($hasWidth !== $hasHeight) {
             $io->error('If you define a width, you must define a height.');
             return self::FAILURE;
         }
-        if ($width !== null && $height !== null) {
-            $width = (int) $width;
-            $height = (int) $height;
-            if ($width <= 0 || $height <= 0) {
+        if ($widthOption !== null && $heightOption !== null) {
+            $windowWidth = (int) $widthOption;
+            $windowHeight = (int) $heightOption;
+            if ($windowWidth <= 0 || $windowHeight <= 0) {
                 $io->error('Width and height must be positive integers.');
                 return self::FAILURE;
             }
             $client->manage()
                 ->window()
-                ->setSize(new WebDriverDimension($width, $height));
+                ->setSize(new WebDriverDimension($windowWidth, $windowHeight));
         }
         $client->manage()
             ->window()
@@ -134,13 +145,13 @@ final class CreateScreenshotCommand extends Command
         $data = file_get_contents($tmpName);
         assert(is_string($data));
         ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($data);
-        assert(is_int($width));
-        assert(is_int($height));
+        assert(is_int($width) && $width >= 1);
+        assert(is_int($height) && $height >= 1);
         $configuration = Configuration::create($width, $height, $format);
         $data = $this->imageProcessor->process($data, null, null, null, $configuration);
         file_put_contents($tmpName, $data);
 
-        $filename = sprintf('%s/%s-%dx%d.%s', $dest, $input->getOption('filename'), $width, $height, $format);
+        $filename = sprintf('%s/%s-%dx%d.%s', $dest, $filenameOption, $width, $height, $format);
 
         $this->filesystem->copy($tmpName, $filename, true);
         $this->filesystem->remove($tmpName);
@@ -178,29 +189,36 @@ final class CreateScreenshotCommand extends Command
         socket_getsockname($socket, $address, $port);
         socket_close($socket);
 
-        return $port;
+        return (int) $port;
     }
 
+    /**
+     * @return array<string>
+     */
     private function getDefaultArguments(): array
     {
         $args = [];
 
-        if (! ($_SERVER['PANTHER_NO_HEADLESS'] ?? false)) {
+        $noHeadless = (bool) ($_SERVER['PANTHER_NO_HEADLESS'] ?? false);
+        if (! $noHeadless) {
             $args[] = '--headless';
             $args[] = '--window-size=1200,1100';
             $args[] = '--disable-gpu';
         }
 
-        if ($_SERVER['PANTHER_DEVTOOLS'] ?? true) {
+        $devTools = (bool) ($_SERVER['PANTHER_DEVTOOLS'] ?? true);
+        if ($devTools) {
             $args[] = '--auto-open-devtools-for-tabs';
         }
 
-        if ($_SERVER['PANTHER_NO_SANDBOX'] ?? $_SERVER['HAS_JOSH_K_SEAL_OF_APPROVAL'] ?? false) {
+        $noSandbox = (bool) ($_SERVER['PANTHER_NO_SANDBOX'] ?? $_SERVER['HAS_JOSH_K_SEAL_OF_APPROVAL'] ?? false);
+        if ($noSandbox) {
             $args[] = '--no-sandbox';
         }
 
-        if ($_SERVER['PANTHER_CHROME_ARGUMENTS'] ?? false) {
-            $arguments = explode(' ', (string) $_SERVER['PANTHER_CHROME_ARGUMENTS']);
+        $chromeArguments = $_SERVER['PANTHER_CHROME_ARGUMENTS'] ?? null;
+        if (is_string($chromeArguments) && $chromeArguments !== '') {
+            $arguments = explode(' ', $chromeArguments);
             $args = array_merge($args, $arguments);
         }
 

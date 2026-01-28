@@ -11,6 +11,9 @@ use Twig\TwigTest;
 
 class InstanceOfExtension
 {
+    /**
+     * @return array<TwigTest>
+     */
     public function getTests(): array
     {
         return [new TwigTest('instanceof', $this->isInstanceOf(...))];

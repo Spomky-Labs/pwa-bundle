@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\CachingStrategy;
 
 use function in_array;
+use function is_int;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
@@ -113,12 +114,13 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
         }
 
         $timeout = '';
+        $networkTimeoutOption = $this->options['networkTimeoutSeconds'] ?? null;
         if (in_array(
             $this->strategy,
             [self::STRATEGY_NETWORK_FIRST, self::STRATEGY_NETWORK_ONLY],
             true
-        ) && ($this->options['networkTimeoutSeconds'] ?? null) !== null) {
-            $timeout = "networkTimeoutSeconds: {$this->options['networkTimeoutSeconds']},";
+        ) && is_int($networkTimeoutOption)) {
+            $timeout = "networkTimeoutSeconds: {$networkTimeoutOption},";
         }
         $cacheName = '';
         if ($this->strategy !== self::STRATEGY_NETWORK_ONLY) {

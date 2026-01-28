@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\WorkboxPlugin;
 
+use function assert;
 use function sprintf;
 
 final readonly class CacheableResponsePlugin implements CachePluginInterface, HasDebugInterface
@@ -32,10 +33,9 @@ final readonly class CacheableResponsePlugin implements CachePluginInterface, Ha
 
     public function render(int $jsonOptions = 0): string
     {
-        return sprintf(
-            'new workbox.cacheableResponse.CacheableResponsePlugin(%s)',
-            json_encode($this->options, $jsonOptions)
-        );
+        $json = json_encode($this->options, $jsonOptions);
+        assert($json !== false);
+        return sprintf('new workbox.cacheableResponse.CacheableResponsePlugin(%s)', $json);
     }
 
     /**

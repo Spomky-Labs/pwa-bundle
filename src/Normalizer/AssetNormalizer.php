@@ -18,9 +18,6 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
     ) {
     }
 
-    /**
-     * @return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string}
-     */
     public function normalize(mixed $data, ?string $format = null, array $context = []): string
     {
         assert($data instanceof Asset);

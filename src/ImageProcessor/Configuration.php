@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
+use function assert;
 use InvalidArgumentException;
 use function sprintf;
 use Stringable;
@@ -11,6 +12,8 @@ use Stringable;
 final readonly class Configuration implements Stringable
 {
     /**
+     * @param int<1, max> $width
+     * @param int<1, max> $height
      * @param array<string, mixed> $svgAttributes
      */
     public function __construct(
@@ -30,6 +33,8 @@ final readonly class Configuration implements Stringable
 
     public function __toString(): string
     {
+        $svgAttributesJson = json_encode($this->svgAttributes);
+        assert($svgAttributesJson !== false);
         return sprintf(
             '%d%d%s%s%d%d%s%s',
             $this->width,
@@ -39,11 +44,13 @@ final readonly class Configuration implements Stringable
             $this->borderRadius ?? 0,
             $this->imageScale ?? 0,
             $this->monochrome ? '1' : '0',
-            json_encode($this->svgAttributes),
+            $svgAttributesJson,
         );
     }
 
     /**
+     * @param int<1, max> $width
+     * @param int<1, max> $height
      * @param array<string, mixed> $svgAttributes
      */
     public static function create(

@@ -22,6 +22,7 @@ final readonly class WorkboxHelpers implements ServiceWorkerRuleInterface
         if ($this->workbox->enabled === false) {
             return '';
         }
+        $bgFetchDbName = $this->workbox->backgroundFetch !== null ? $this->workbox->backgroundFetch->dbName : 'background-fetch-db';
         return <<<CUSTOM_HELPERS
 function registerCacheFirst(routeMatchFn, cacheName, plugins = []) {
   const strategy = new workbox.strategies.CacheFirst({ cacheName, plugins });
@@ -179,7 +180,7 @@ function registerCacheName(name) {
 }
 
 async function openBackgroundFetchDatabase() {
-  return await self.idb.openDB('{$this->workbox->backgroundFetch->dbName}', 1, {
+  return await self.idb.openDB('{$bgFetchDbName}', 1, {
     upgrade(db) {
       if (!db.objectStoreNames.contains('files')) {
         db.createObjectStore('files', { keyPath: 'id' });

@@ -24,18 +24,19 @@ final readonly class BackgroundFetchCache implements ServiceWorkerRuleInterface
 
     public function process(bool $debug = false): string
     {
-        if (! $this->workbox->backgroundFetch->enabled) {
+        $backgroundFetch = $this->workbox->backgroundFetch;
+        if ($backgroundFetch === null || ! $backgroundFetch->enabled) {
             return '';
         }
 
         $declaration = '';
 
-        if ($this->workbox->backgroundFetch->successUrl !== null) {
-            $path = $this->workbox->backgroundFetch->successUrl->path;
+        if ($backgroundFetch->successUrl !== null) {
+            $path = $backgroundFetch->successUrl->path;
             $successUrl = str_starts_with($path, '/') ? $path : $this->router->generate(
                 $path,
-                $this->workbox->backgroundFetch->successUrl->params,
-                $this->workbox->backgroundFetch->successUrl->pathTypeReference
+                $backgroundFetch->successUrl->params,
+                $backgroundFetch->successUrl->pathTypeReference
             );
             $declaration .= <<<BACKGROUND_FETCH_CACHE
 registerBackgroundFetchTask('click', async (event) => {
@@ -49,12 +50,12 @@ registerBackgroundFetchTask('click', async (event) => {
 BACKGROUND_FETCH_CACHE;
         }
 
-        if ($this->workbox->backgroundFetch->progressUrl !== null) {
-            $path = $this->workbox->backgroundFetch->progressUrl->path;
+        if ($backgroundFetch->progressUrl !== null) {
+            $path = $backgroundFetch->progressUrl->path;
             $progressUrl = str_starts_with($path, '/') ? $path : $this->router->generate(
                 $path,
-                $this->workbox->backgroundFetch->progressUrl->params,
-                $this->workbox->backgroundFetch->progressUrl->pathTypeReference
+                $backgroundFetch->progressUrl->params,
+                $backgroundFetch->progressUrl->pathTypeReference
             );
             $declaration .= <<<BACKGROUND_FETCH_CACHE
 
@@ -69,8 +70,8 @@ registerBackgroundFetchTask('click', async (event) => {
 BACKGROUND_FETCH_CACHE;
         }
 
-        $successMessage = $this->workbox->backgroundFetch->successMessage ?? '{title} ✅';
-        if ($successMessage !== '' && $successMessage !== null) {
+        $successMessage = $backgroundFetch->successMessage ?? '{title} ✅';
+        if ($successMessage !== '') {
             $successMessage = $this->translator?->trans($successMessage, [], 'pwa') ?? $successMessage;
         }
         $declaration .= <<<BACKGROUND_FETCH_CACHE
@@ -128,8 +129,8 @@ registerBackgroundFetchTask('success', async (event) => {
 
 BACKGROUND_FETCH_CACHE;
 
-        $failureMessage = $this->workbox->backgroundFetch->failureMessage ?? '{title} ❌';
-        if ($failureMessage !== '' && $failureMessage !== null) {
+        $failureMessage = $backgroundFetch->failureMessage ?? '{title} ❌';
+        if ($failureMessage !== '') {
             $failureMessage = $this->translator?->trans($failureMessage, [], 'pwa') ?? $failureMessage;
         }
 

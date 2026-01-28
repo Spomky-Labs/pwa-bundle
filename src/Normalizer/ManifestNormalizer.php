@@ -42,7 +42,7 @@ final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareIn
             return false;
         }
 
-        if (! empty($context[self::CTX_SKIP])) {
+        if (($context[self::CTX_SKIP] ?? false) === true) {
             return false;
         }
 
