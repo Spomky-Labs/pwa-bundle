@@ -97,7 +97,7 @@ final readonly class EarlyHintsListener
 
         // Preconnect to Workbox CDN if using CDN
         if ($this->manifest->serviceWorker?->workbox->enabled
-            && $this->manifest->serviceWorker->workbox->useCDN
+            && $this->manifest->serviceWorker->workbox->config->useCDN
             && ($this->config['preconnect_workbox_cdn'] ?? true)) {
             $links[] = (new Link(Link::REL_PRECONNECT, 'https://storage.googleapis.com'))
                 ->withAttribute('crossorigin', true);

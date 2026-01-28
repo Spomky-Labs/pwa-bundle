@@ -49,7 +49,7 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
         string $strategy,
         string $matchCallback,
     ): static {
-        return new static($enabled, $requireWorkbox, $strategy, $matchCallback,);
+        return new static($enabled, $requireWorkbox, $strategy, $matchCallback);
     }
 
     public function withName(string $name): static
@@ -147,12 +147,13 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
 
         $declaration = '';
         if ($debug) {
+            $matchCallbackComment = str_replace(['*/', '/*'], ['*\\/', '/\\*'], $this->matchCallback);
             $declaration .= <<<DEBUG_STATEMENT
 
 
 /**************************************************** CACHE STRATEGY ****************************************************/
 // Strategy: {$this->strategy}
-// Match: {$this->matchCallback}
+/* Match: {$matchCallbackComment} */
 // Cache Name: {$this->getName()}
 // Enabled: {$this->enabled}
 // Needs Workbox: {$this->needsWorkbox()}

@@ -10,14 +10,6 @@ final class Workbox
 {
     public bool $enabled;
 
-    #[SerializedName('use_cdn')]
-    public bool $useCDN;
-
-    public string $version;
-
-    #[SerializedName('workbox_public_url')]
-    public string $workboxPublicUrl;
-
     #[SerializedName('idb_public_url')]
     public string $indexDBPublicUrl;
 
@@ -59,4 +51,6 @@ final class Workbox
 
     #[SerializedName('navigation_preload')]
     public bool $navigationPreload = false;
+
+    public WorkboxConfig $config;
 }

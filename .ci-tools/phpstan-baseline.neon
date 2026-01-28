@@ -979,6 +979,12 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
+			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $config. Give it default value or assign it in the constructor.
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/Workbox.php
+
+		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $enabled. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -1016,24 +1022,6 @@ parameters:
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $resourceCaches. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $useCDN. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $version. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $workboxPublicUrl. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Workbox.php
@@ -1764,7 +1752,7 @@ parameters:
 		-
 			rawMessage: Anonymous function should return array but returns mixed.
 			identifier: return.type
-			count: 8
+			count: 10
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
@@ -1781,6 +1769,18 @@ parameters:
 
 		-
 			rawMessage: Cannot access offset 'asset_cache_name' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Resources/config/definition/service_worker.php
+
+		-
+			rawMessage: Cannot access offset 'config' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: ../src/Resources/config/definition/service_worker.php
+
+		-
+			rawMessage: Cannot access offset 'debug' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: ../src/Resources/config/definition/service_worker.php
@@ -1870,7 +1870,25 @@ parameters:
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
+			rawMessage: Cannot access offset 'use_cdn' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Resources/config/definition/service_worker.php
+
+		-
+			rawMessage: Cannot access offset 'version' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Resources/config/definition/service_worker.php
+
+		-
 			rawMessage: Cannot access offset 'warm_cache_urls' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../src/Resources/config/definition/service_worker.php
+
+		-
+			rawMessage: Cannot access offset 'workbox_public_url' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: ../src/Resources/config/definition/service_worker.php
@@ -1878,7 +1896,7 @@ parameters:
 		-
 			rawMessage: 'Language construct isset() should not be used.'
 			identifier: ergebnis.noIsset
-			count: 4
+			count: 5
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
@@ -2348,6 +2366,18 @@ parameters:
 			identifier: property.nonObject
 			count: 1
 			path: ../src/ServiceWorkerRule/WorkboxHelpers.php
+
+		-
+			rawMessage: 'Construct empty() is not allowed. Use more strict comparison.'
+			identifier: empty.notAllowed
+			count: 1
+			path: ../src/ServiceWorkerRule/WorkboxImport.php
+
+		-
+			rawMessage: 'Language construct isset() should not be used.'
+			identifier: ergebnis.noIsset
+			count: 1
+			path: ../src/ServiceWorkerRule/WorkboxImport.php
 
 		-
 			rawMessage: Cannot access offset 'dest' on mixed.
