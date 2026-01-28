@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use const JSON_UNESCAPED_SLASHES;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
@@ -40,7 +41,7 @@ final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
 
 DEBUG_COMMENT;
         }
-        if ($this->workbox->useCDN === true) {
+        if ($this->workbox->config->useCDN === true) {
             if ($debug === true) {
                 $declaration .= <<<DEBUG_COMMENT
 // Import from CDN
@@ -49,11 +50,11 @@ DEBUG_COMMENT;
 DEBUG_COMMENT;
             }
             $declaration .= <<<IMPORT_CDN_STRATEGY
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->version}/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->config->version}/workbox-sw.js');
 importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
 IMPORT_CDN_STRATEGY;
         } else {
-            $workboxPublicUrl = '/' . trim($this->workbox->workboxPublicUrl, '/');
+            $workboxPublicUrl = '/' . trim($this->workbox->config->workboxPublicUrl, '/');
             $idbPublicUrl = '/' . trim($this->workbox->indexDBPublicUrl, '/');
             if ($debug === true) {
                 $declaration .= <<<DEBUG_COMMENT
@@ -69,6 +70,24 @@ workbox.setConfig({modulePathPrefix: '{$workboxPublicUrl}'});
 
 IMPORT_CDN_STRATEGY;
         }
+
+        // Add workbox configuration
+        $configOptions = [];
+        if (isset($this->workbox->config) && ! $this->workbox->config->debug) {
+            $configOptions['debug'] = false;
+        }
+
+        if (! empty($configOptions)) {
+            $configJson = json_encode($configOptions, JSON_UNESCAPED_SLASHES);
+            if ($debug === true) {
+                $declaration .= <<<DEBUG_COMMENT
+// Additional Workbox configuration
+
+DEBUG_COMMENT;
+            }
+            $declaration .= "workbox.setConfig({$configJson});\n";
+        }
+
         if ($debug === true) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END WORKBOX IMPORT ****************************************************/

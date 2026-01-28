@@ -112,10 +112,31 @@ return static function (DefinitionConfigurator $definition): void {
             return $v;
         })
         ->end()
+        ->beforeNormalization()
+        ->ifTrue(static fn (mixed $v): bool => true)
+        ->then(static function (mixed $v): array {
+            if (isset($v['config'])) {
+                return $v;
+            }
+            $v['config'] = [
+                'use_cdn' => $v['use_cdn'] ?? false,
+                'version' => $v['version'] ?? '7.3.0',
+                'workbox_public_url' => $v['workbox_public_url'] ?? '/workbox',
+                'debug' => $v['debug'] ?? true,
+            ];
+
+            return $v;
+        })
+        ->end()
         ->children()
         ->booleanNode('use_cdn')
         ->defaultFalse()
         ->info('Whether to use the local workbox or the CDN.')
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.5.0',
+            'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.use_cdn" instead.'
+        )
         ->end()
         ->arrayNode('google_fonts')
         ->canBeDisabled()
@@ -140,11 +161,21 @@ return static function (DefinitionConfigurator $definition): void {
         ->end()
         ->scalarNode('version')
         ->defaultValue('7.3.0')
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.5.0',
+            'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.version" instead.'
+        )
         ->info('The version of workbox. When using local files, the version shall be "7.0.0."')
         ->end()
         ->scalarNode('workbox_public_url')
         ->defaultValue('/workbox')
         ->info('The public path to the local workbox. Only used if use_cdn is false.')
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.5.0',
+            'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.workbox_public_url" instead.'
+        )
         ->end()
         ->scalarNode('idb_public_url')
         ->defaultValue('/idb')
@@ -199,6 +230,29 @@ return static function (DefinitionConfigurator $definition): void {
         ->info(
             'Whether to enable navigation preload. This speeds up navigation requests by making the network request in parallel with service worker boot-up. Note: Do not enable if you are precaching HTML pages (e.g., with offline_fallback or warm_cache_urls), as it would be redundant.'
         )
+        ->end()
+        ->arrayNode('config')
+        ->treatNullLike([])
+        ->treatFalseLike([])
+        ->children()
+        ->booleanNode('debug')
+        ->defaultTrue()
+        ->info('Controls workbox debug logging. Set to false to disable debug mode and logging.')
+        ->example([true, false])
+        ->end()
+        ->scalarNode('version')
+        ->defaultValue('7.3.0')
+        ->info('The version of workbox. When using local files, the version shall be "7.0.0."')
+        ->end()
+        ->booleanNode('use_cdn')
+        ->defaultFalse()
+        ->info('Whether to use the local workbox or the CDN.')
+        ->end()
+        ->scalarNode('workbox_public_url')
+        ->defaultValue('/workbox')
+        ->info('The public path to the local workbox. Only used if use_cdn is false.')
+        ->end()
+        ->end()
         ->end()
         ->arrayNode('offline_fallback')
         ->treatNullLike([])

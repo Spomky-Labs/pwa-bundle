@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Dto\WorkboxConfig;
 use SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -224,7 +225,8 @@ final class EarlyHintsListenerTest extends TestCase
         // Given
         $workbox = new Workbox();
         $workbox->enabled = true;
-        $workbox->useCDN = true;
+        $workbox->config = new WorkboxConfig();
+        $workbox->config->useCDN = true;
 
         $serviceWorker = new ServiceWorker();
         $serviceWorker->enabled = true;
@@ -266,7 +268,8 @@ final class EarlyHintsListenerTest extends TestCase
         // Given
         $workbox = new Workbox();
         $workbox->enabled = true;
-        $workbox->useCDN = true;
+        $workbox->config = new WorkboxConfig();
+        $workbox->config->useCDN = true;
 
         $serviceWorker = new ServiceWorker();
         $serviceWorker->enabled = true;

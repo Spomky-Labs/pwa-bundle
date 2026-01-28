@@ -143,7 +143,11 @@ final readonly class PwaRuntime
             $registerOptions = sprintf(', {%s}', mb_substr($registerOptions, 2));
         }
         if ($serviceWorker->workbox->enabled === true) {
-            $workboxUrl = sprintf('%s%s', $serviceWorker->workbox->workboxPublicUrl, '/workbox-window.prod.umd.js');
+            $workboxUrl = sprintf(
+                '%s%s',
+                '/' . trim($serviceWorker->workbox->config->workboxPublicUrl, '/'),
+                '/workbox-window.prod.umd.js'
+            );
             // Using UMD version instead of ESM to avoid importmap dependency issues
             // This prevents "bare specifier not remapped" errors regardless of script order.
             // See: https://github.com/Spomky-Labs/pwa-bundle/issues/391
