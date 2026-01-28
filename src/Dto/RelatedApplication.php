@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 final class RelatedApplication
 {
-    public string $platform;
+    public string $platform = '';
 
     public Url $url;
 

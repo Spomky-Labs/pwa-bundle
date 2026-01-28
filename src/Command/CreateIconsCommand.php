@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Command;
 
+use function is_array;
 use function is_string;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
@@ -90,14 +91,28 @@ final class CreateIconsCommand extends Command
         }
 
         $source = $input->getArgument('source');
+        if (! is_string($source)) {
+            $io->error('The source must be a string.');
+            return self::FAILURE;
+        }
         $dest = rtrim((string) $input->getOption('output'), '/');
         $filename = $input->getOption('filename');
+        if (! is_string($filename)) {
+            $io->error('The filename must be a string.');
+            return self::FAILURE;
+        }
         $format = $input->getOption('format');
         if (! is_string($format)) {
             $io->error('The format must be a string.');
             return self::FAILURE;
         }
+        $color = $input->getOption('color');
+        $backgroundColor = is_string($color) ? $color : null;
         $sizes = $input->getArgument('sizes');
+        if (! is_array($sizes)) {
+            $io->error('The sizes must be an array.');
+            return self::FAILURE;
+        }
 
         $sourcePath = $this->getSourcePath($source);
         if (! is_string($sourcePath)) {
@@ -119,8 +134,13 @@ final class CreateIconsCommand extends Command
             }
             $outputSize = sprintf('%sx%s', $size, $size);
             $io->info(sprintf('Processing icon %s', $outputSize));
-            $configuration = Configuration::create($size, $size, $format, $input->getOption('color'));
-            $tmp = $this->imageProcessor->process(file_get_contents($sourcePath), null, null, null, $configuration);
+            $configuration = Configuration::create($size, $size, $format, $backgroundColor);
+            $sourceContent = file_get_contents($sourcePath);
+            if ($sourceContent === false) {
+                $io->error('Unable to read source file.');
+                return self::FAILURE;
+            }
+            $tmp = $this->imageProcessor->process($sourceContent, null, null, null, $configuration);
             $filePath = sprintf('%s/%s-%s.%s', $dest, $filename, $outputSize, $format);
             $this->filesystem->dumpFile($filePath, $tmp);
             $asset = $this->assetMapper->getAssetFromSourcePath($filePath);

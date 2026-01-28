@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 final class ProtocolHandler
 {
-    public string $protocol;
+    public string $protocol = '';
 
     public null|string $placeholder = null;
 

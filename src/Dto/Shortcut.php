@@ -11,7 +11,7 @@ final class Shortcut
 {
     use TranslatableTrait;
 
-    public string $name;
+    public string $name = '';
 
     #[SerializedName('short_name')]
     public null|string $shortName = null;

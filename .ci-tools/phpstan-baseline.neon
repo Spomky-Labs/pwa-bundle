@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: 'Argument of an invalid type mixed supplied for foreach, only iterables are supported.'
-			identifier: foreach.nonIterable
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
 			rawMessage: Cannot cast mixed to int.
 			identifier: cast.int
 			count: 1
@@ -19,30 +13,6 @@ parameters:
 			path: ../src/Command/CreateIconsCommand.php
 
 		-
-			rawMessage: 'Parameter #1 $image of method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() expects string, string|false given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
-			rawMessage: 'Parameter #1 $source of method SpomkyLabs\PwaBundle\Command\CreateIconsCommand::getSourcePath() expects string, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
-			rawMessage: 'Parameter #3 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
-			rawMessage: 'Parameter #4 $backgroundColor of static method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() expects string|null, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
 			rawMessage: Cannot cast mixed to int.
 			identifier: cast.int
 			count: 3
@@ -51,62 +21,14 @@ parameters:
 		-
 			rawMessage: Cannot cast mixed to string.
 			identifier: cast.string
-			count: 2
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Only booleans are allowed in a negated boolean, mixed given.'
-			identifier: booleanNot.exprNotBoolean
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Only booleans are allowed in an if condition, mixed given.'
-			identifier: if.condNotBoolean
-			count: 3
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Parameter #2 $uri of method Symfony\Component\Panther\Client::request() expects string, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Parameter #3 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\BackgroundSync has an uninitialized property $matchCallback. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/BackgroundSync.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\BackgroundSync has an uninitialized property $method. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/BackgroundSync.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\BackgroundSync has an uninitialized property $queueName. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/BackgroundSync.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Favicons has an uninitialized property $default. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Favicons.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\File has an uninitialized property $name. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/File.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\FileHandler has an uninitialized property $action. Give it default value or assign it in the constructor.
@@ -127,52 +49,16 @@ parameters:
 			path: ../src/Dto/PageCache.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PreloadResource has an uninitialized property $as. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/PreloadResource.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PreloadResource has an uninitialized property $href. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/PreloadResource.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ProtocolHandler has an uninitialized property $protocol. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/ProtocolHandler.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ProtocolHandler has an uninitialized property $url. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/ProtocolHandler.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\RelatedApplication has an uninitialized property $platform. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/RelatedApplication.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\RelatedApplication has an uninitialized property $url. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/RelatedApplication.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ResourceCache has an uninitialized property $matchCallback. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/ResourceCache.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ScopeExtension has an uninitialized property $origin. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/ScopeExtension.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Screenshot has an uninitialized property $src. Give it default value or assign it in the constructor.
@@ -193,12 +79,6 @@ parameters:
 			path: ../src/Dto/ShareTarget.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Shortcut has an uninitialized property $name. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Shortcut has an uninitialized property $url. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -217,31 +97,13 @@ parameters:
 			path: ../src/Dto/Widget.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Widget has an uninitialized property $name. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $assetCache. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $cacheManifest. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $config. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $enabled. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Workbox.php
@@ -265,19 +127,7 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $indexDBPublicUrl. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $offlineFallback. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $resourceCaches. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/Workbox.php

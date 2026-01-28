@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 class ResourceCache extends Cache
 {
     #[SerializedName('match_callback')]
-    public string $matchCallback;
+    public string $matchCallback = '';
 
     #[SerializedName('network_timeout')]
     public int $networkTimeout = 3;

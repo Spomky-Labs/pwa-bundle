@@ -9,10 +9,10 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 final class BackgroundSync extends Cache
 {
     #[SerializedName('queue_name')]
-    public string $queueName;
+    public string $queueName = '';
 
     #[SerializedName('match_callback')]
-    public string $matchCallback;
+    public string $matchCallback = '';
 
     #[SerializedName('error_on_4xx')]
     public bool $errorOn4xx = false;
@@ -29,7 +29,7 @@ final class BackgroundSync extends Cache
     #[SerializedName('expected_status_codes')]
     public array $expectedStatusCodes = [];
 
-    public string $method;
+    public string $method = 'POST';
 
     #[SerializedName('max_retention_time')]
     public int $maxRetentionTime = 1440;

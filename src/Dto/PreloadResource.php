@@ -11,12 +11,12 @@ final class PreloadResource
     /**
      * The URL or path to preload.
      */
-    public string $href;
+    public string $href = '';
 
     /**
      * The 'as' attribute value: script, style, font, image, fetch, etc.
      */
-    public string $as;
+    public string $as = '';
 
     /**
      * The MIME type of the resource.

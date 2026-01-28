@@ -6,7 +6,7 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 final class File
 {
-    public string $name;
+    public string $name = '';
 
     /**
      * @var string[]

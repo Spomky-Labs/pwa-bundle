@@ -8,5 +8,5 @@ final class ScopeExtension
 {
     public string $type = 'origin';
 
-    public string $origin;
+    public string $origin = '';
 }
