@@ -12,9 +12,9 @@ return static function (DefinitionConfigurator $definition): void {
         ->info('The Panther Client for generating screenshots. If not set, the default client will be used.')
         ->end()
         ->scalarNode('user_agent')
-        ->defaultNull()
+        ->defaultValue('PWAScreenshotBot')
         ->info(
-            'The user agent to use when generating screenshots. If not set, the default user agent will be used. When requesting the current application in an environment other than "prod", the profiler will be disabled.'
+            'The user agent to use when generating screenshots. When this user agent is detected, the Symfony profiler and debug toolbar will be automatically disabled to ensure screenshots look like production.'
         )
         ->end()
         ->end();

@@ -185,6 +185,9 @@ jobs:
         with:
           dependency-versions: ${{ matrix.lowest-deps && 'lowest' || 'highest' }}
           composer-options: --no-interaction --no-progress --optimize-autoloader
+      - name: "Downgrade phpdocumentor/reflection-docblock"
+        run: composer require -W phpdocumentor/reflection-docblock ^5.3
+
       - name: Run PHPUnit
         run: castor phpunit
 

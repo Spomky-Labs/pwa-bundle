@@ -1,18 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Attribute\PreloadUrl has parameter $params with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Attribute/PreloadUrl.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Attribute\PreloadUrl has parameter $pathTypeReference with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Attribute/PreloadUrl.php
-
-		-
 			rawMessage: 'Only iterables can be unpacked, mixed given in argument #1.'
 			identifier: argument.unpackNonIterable
 			count: 1
@@ -35,12 +23,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../src/CachingStrategy/AssetCache.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface::getName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/CachingStrategy/CacheStrategyInterface.php
 
 		-
 			rawMessage: 'Only iterables can be unpacked, mixed given in argument #1.'
@@ -85,26 +67,14 @@ parameters:
 			path: ../src/CachingStrategy/ResourceCaches.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::getMethod() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/CachingStrategy/WorkboxCacheStrategy.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CachingStrategy\WorkboxCacheStrategy::getName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/CachingStrategy/WorkboxCacheStrategy.php
-
-		-
 			rawMessage: 'Part $this->options[''networkTimeoutSeconds''] (mixed) of encapsed string cannot be cast to string.'
 			identifier: encapsedStringPart.nonString
 			count: 1
 			path: ../src/CachingStrategy/WorkboxCacheStrategy.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Command\CompileCommand" is not allowed to extend "Symfony\Component\Console\Command\Command".
-			identifier: ergebnis.noExtends
+			rawMessage: 'Only booleans are allowed in &&, bool|null given on the right side.'
+			identifier: booleanAnd.rightNotBoolean
 			count: 1
 			path: ../src/Command/CompileCommand.php
 
@@ -123,18 +93,6 @@ parameters:
 		-
 			rawMessage: Cannot cast mixed to string.
 			identifier: cast.string
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Command\CreateIconsCommand" is not allowed to extend "Symfony\Component\Console\Command\Command".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Command/CreateIconsCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateIconsCommand::__construct() has parameter $imageProcessor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Command/CreateIconsCommand.php
 
@@ -163,60 +121,6 @@ parameters:
 			path: ../src/Command/CreateIconsCommand.php
 
 		-
-			rawMessage: 'Call to method manage() on an unknown class Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 2
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Call to method request() on an unknown class Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Call to method takeScreenshot() on an unknown class Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Call to method waitFor() on an unknown class Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Call to static method createChromeClient() on an unknown class Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Cannot call method fullscreen() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Cannot call method html() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Cannot call method setSize() on mixed.'
-			identifier: method.nonObject
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Cannot call method window() on mixed.'
-			identifier: method.nonObject
-			count: 2
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
 			rawMessage: Cannot cast mixed to int.
 			identifier: cast.int
 			count: 2
@@ -225,67 +129,7 @@ parameters:
 		-
 			rawMessage: Cannot cast mixed to string.
 			identifier: cast.string
-			count: 3
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand" is not allowed to extend "Symfony\Component\Console\Command\Command".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Cloning object of an unknown class Symfony\Component\Panther\Client.
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand has parameter $userAgent with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand has parameter $webClient with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Instantiated class Facebook\WebDriver\WebDriverDimension not found.
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has parameter $imageProcessor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has parameter $userAgent with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has parameter $userAgent with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has parameter $webClient with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has parameter $webClient with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
+			count: 2
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
@@ -295,32 +139,8 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::getClient() has invalid return type Symfony\Component\Panther\Client.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::getClient() should return Symfony\Component\Panther\Client but returns mixed.'
-			identifier: return.type
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::getDefaultArguments() return type has no value type specified in iterable type array.'
 			identifier: missingType.iterableValue
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method Symfony\Component\Panther\Client::createChromeClient() is invoked with named argument for parameter $arguments.'
-			identifier: ergebnis.noNamedArgument
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: 'Method Symfony\Component\Panther\Client::createChromeClient() is invoked with named argument for parameter $options.'
-			identifier: ergebnis.noNamedArgument
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
@@ -337,50 +157,26 @@ parameters:
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
+			rawMessage: 'Parameter #2 $uri of method Symfony\Component\Panther\Client::request() expects string, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Command/CreateScreenshotCommand.php
+
+		-
 			rawMessage: 'Parameter #3 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
 			identifier: argument.type
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
 
 		-
-			rawMessage: 'Parameter $webClient of method SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::__construct() has invalid type Symfony\Component\Panther\Client.'
-			identifier: class.notFound
+			rawMessage: 'Parameter $arguments of static method Symfony\Component\Panther\Client::createChromeClient() expects array<string>|null, array given.'
+			identifier: argument.type
 			count: 1
 			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Property SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand::$webClient has unknown class Symfony\Component\Panther\Client as its type.
-			identifier: class.notFound
-			count: 1
-			path: ../src/Command/CreateScreenshotCommand.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand" is not allowed to extend "Symfony\Component\Console\Command\Command".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Command/ListCacheStrategiesCommand.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass::process() has a parameter $container with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
-			count: 1
-			path: ../src/CompilerPass/LoggerCompilerPass.php
 
 		-
 			rawMessage: 'Generator expects value type array{alias: string, route: string, params: array<string, mixed>, pathTypeReference: int}, array{alias: string, route: mixed, params: array<string, mixed>, pathTypeReference: int} given.'
 			identifier: generator.valueType
-			count: 1
-			path: ../src/CompilerPass/PreloadUrlCompilerPass.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass::findAllTaggedRoutes() has a parameter $container with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
-			count: 1
-			path: ../src/CompilerPass/PreloadUrlCompilerPass.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass::process() has a parameter $container with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
 			count: 1
 			path: ../src/CompilerPass/PreloadUrlCompilerPass.php
 
@@ -403,26 +199,8 @@ parameters:
 			path: ../src/DataCollector/PwaCollector.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\DataCollector\PwaCollector" is not allowed to extend "Symfony\Component\HttpKernel\DataCollector\DataCollector".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::__construct() has parameter $locales with no value type specified in iterable type array.'
 			identifier: missingType.iterableValue
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::collect() has parameter $exception with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/DataCollector/PwaCollector.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\DataCollector\PwaCollector::collect() has parameter $exception with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
 			count: 1
 			path: ../src/DataCollector/PwaCollector.php
 
@@ -493,18 +271,6 @@ parameters:
 			path: ../src/DataCollector/PwaCollector.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\AssetCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/AssetCache.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\BackgroundSync" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/BackgroundSync.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\BackgroundSync has an uninitialized property $forceSyncFallback. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -533,18 +299,6 @@ parameters:
 			identifier: property.uninitialized
 			count: 1
 			path: ../src/Dto/BackgroundSync.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Cache::maxAgeInSeconds() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Cache.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Cache::maxAgeInSeconds() is not final, but since the containing class is abstract, it should be.'
-			identifier: ergebnis.finalInAbstractClass
-			count: 1
-			path: ../src/Dto/Cache.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Favicons has an uninitialized property $default. Give it default value or assign it in the constructor.
@@ -577,18 +331,6 @@ parameters:
 			path: ../src/Dto/FileHandler.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\FontCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/FontCache.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\GoogleFontCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/GoogleFontCache.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\GoogleFontCache has an uninitialized property $enabled. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -607,12 +349,6 @@ parameters:
 			path: ../src/Dto/Icon.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\ImageCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/ImageCache.php
-
-		-
 			rawMessage: Property SpomkyLabs\PwaBundle\Dto\LaunchHandler::$clientMode type has no value type specified in iterable type array.
 			identifier: missingType.iterableValue
 			count: 1
@@ -625,20 +361,8 @@ parameters:
 			path: ../src/Dto/Manifest.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getDescription() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getDescription() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
 			count: 1
 			path: ../src/Dto/Manifest.php
 
@@ -649,34 +373,10 @@ parameters:
 			path: ../src/Dto/Manifest.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getShortName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
 			count: 1
 			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::provideTranslation() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Manifest::provideTranslation() has parameter $data with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Dto/Manifest.php
-
-		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\PageCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\ResourceCache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/PageCache.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\PageCache extends @final class SpomkyLabs\PwaBundle\Dto\ResourceCache.
@@ -721,20 +421,8 @@ parameters:
 			path: ../src/Dto/RelatedApplication.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Dto\ResourceCache" is not allowed to extend "SpomkyLabs\PwaBundle\Dto\Cache".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Dto/ResourceCache.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ResourceCache has an uninitialized property $matchCallback. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/ResourceCache.php
-
-		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ResourceCache is neither abstract nor final.
-			identifier: ergebnis.final
 			count: 1
 			path: ../src/Dto/ResourceCache.php
 
@@ -757,28 +445,22 @@ parameters:
 			path: ../src/Dto/Screenshot.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Screenshot::getLabel() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Screenshot.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Screenshot::getLabel() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
 			count: 1
 			path: ../src/Dto/Screenshot.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Screenshot::provideTranslation() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ScreenshotDimension::getDimensions() should return array{width: int, height: int} but returns array{width: int|null, height: int|null}.'
+			identifier: return.type
 			count: 1
-			path: ../src/Dto/Screenshot.php
+			path: ../src/Dto/ScreenshotDimension.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Screenshot::provideTranslation() has parameter $data with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Dto/Screenshot.php
+			rawMessage: 'Only booleans are allowed in an if condition, int|false given.'
+			identifier: if.condNotBoolean
+			count: 2
+			path: ../src/Dto/ScreenshotDimension.php
 
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\ServiceWorker has an uninitialized property $dest. Give it default value or assign it in the constructor.
@@ -799,38 +481,14 @@ parameters:
 			path: ../src/Dto/ShareTarget.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getText() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getText() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
 			count: 1
 			path: ../src/Dto/ShareTargetParameters.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getTitle() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::getTitle() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::provideTranslation() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/ShareTargetParameters.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\ShareTargetParameters::provideTranslation() has parameter $data with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Dto/ShareTargetParameters.php
 
@@ -847,12 +505,6 @@ parameters:
 			path: ../src/Dto/Shortcut.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getDescription() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getDescription() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
 			count: 1
@@ -865,26 +517,8 @@ parameters:
 			path: ../src/Dto/Shortcut.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getShortName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::provideTranslation() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Shortcut.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Shortcut::provideTranslation() has parameter $data with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Dto/Shortcut.php
 
@@ -901,18 +535,6 @@ parameters:
 			path: ../src/Dto/Theme.php
 
 		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Dto\Url has parameter $params with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Dto/Url.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Dto\Url has parameter $pathTypeReference with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Dto/Url.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Widget has an uninitialized property $adaptativeCardTemplate. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
@@ -921,12 +543,6 @@ parameters:
 		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Widget has an uninitialized property $name. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getDescription() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
 			count: 1
 			path: ../src/Dto/Widget.php
 
@@ -943,26 +559,8 @@ parameters:
 			path: ../src/Dto/Widget.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getShortName() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::getShortName() should return string|Symfony\Contracts\Translation\TranslatableInterface|null but returns array<string|Symfony\Contracts\Translation\TranslatableInterface>|string|Symfony\Contracts\Translation\TranslatableInterface|null.'
 			identifier: return.type
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::provideTranslation() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Dto/Widget.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Dto\Widget::provideTranslation() has parameter $data with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Dto/Widget.php
 
@@ -1036,12 +634,6 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Event\PreManifestCompileEvent is neither abstract nor final.
-			identifier: ergebnis.final
-			count: 1
-			path: ../src/Event/PreManifestCompileEvent.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener::__construct() has parameter $config with no value type specified in iterable type array.'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1060,226 +652,28 @@ parameters:
 			path: ../src/EventListener/FileCompileEventListener.php
 
 		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\EventListener\FileCompileEventListener has parameter $enabled with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/EventListener/FileCompileEventListener.php
-
-		-
 			rawMessage: Instanceof between Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent and Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent will always evaluate to true.
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: ../src/EventListener/FileCompileEventListener.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener::__construct() has parameter $profiler with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
+			rawMessage: 'Only booleans are allowed in a negated boolean, int|false given.'
+			identifier: booleanNot.exprNotBoolean
 			count: 1
-			path: ../src/EventListener/PwaDevServerListener.php
+			path: ../src/EventListener/ManifestScreenshotListener.php
 
 		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\EventListener\ScreenshotListener has parameter $profiler with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
+			rawMessage: Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary.
+			identifier: ternary.shortNotAllowed
 			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\EventListener\ScreenshotListener has parameter $userAgent with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\ScreenshotListener::__construct() has parameter $profiler with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\ScreenshotListener::__construct() has parameter $profiler with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\ScreenshotListener::__construct() has parameter $userAgent with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\EventListener\ScreenshotListener::__construct() has parameter $userAgent with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/EventListener/ScreenshotListener.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ImageProcessor\Configuration has parameter $backgroundColor with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ImageProcessor\Configuration has parameter $borderRadius with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ImageProcessor\Configuration has parameter $imageScale with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ImageProcessor\Configuration has parameter $monochrome with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ImageProcessor\Configuration has parameter $svgAttributes with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $backgroundColor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $backgroundColor with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $borderRadius with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $borderRadius with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $imageScale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::__construct() has parameter $imageScale with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $backgroundColor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $backgroundColor with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $borderRadius with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $borderRadius with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $imageScale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\Configuration::create() has parameter $imageScale with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/Configuration.php
+			path: ../src/EventListener/ManifestScreenshotListener.php
 
 		-
 			rawMessage: 'Parameter #9 of function sprintf is expected to be string by placeholder #8 ("%%s"), string|false given.'
 			identifier: argument.type
 			count: 1
 			path: ../src/ImageProcessor/Configuration.php
-
-		-
-			rawMessage: Control structures using switch should not be used.
-			identifier: ergebnis.noSwitch
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::getConfiguration() has parameter $configuration with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::getConfiguration() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::getConfiguration() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::getConfiguration() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() has parameter $configuration with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() has parameter $configuration with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/GDImageProcessor.php
 
 		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor::process() should return string but returns string|false.'
@@ -1318,182 +712,14 @@ parameters:
 			path: ../src/ImageProcessor/GDImageProcessor.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() has parameter $configuration with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImageProcessorInterface.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() has parameter $configuration with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/ImageProcessorInterface.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImageProcessorInterface.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImageProcessorInterface.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImageProcessorInterface.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::getConfiguration() has parameter $configuration with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::getConfiguration() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::getConfiguration() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::getConfiguration() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::process() has parameter $configuration with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::process() has parameter $configuration with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::process() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::process() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor::process() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ImageProcessor/ImagickImageProcessor.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::denormalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::denormalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::supportsDenormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::supportsDenormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\AssetNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/AssetNormalizer.php
-
-		-
 			rawMessage: 'PHPDoc tag @return with type array<string, string> is incompatible with native type string.'
 			identifier: return.phpDocType
 			count: 1
 			path: ../src/Normalizer/AssetNormalizer.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::normalize() should return array{src: string, sizes?: string, type?: string, purpose?: string} but returns array<mixed>.'
 			identifier: return.type
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/IconNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\IconNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
 			count: 1
 			path: ../src/Normalizer/IconNormalizer.php
 
@@ -1504,56 +730,8 @@ parameters:
 			path: ../src/Normalizer/ManifestNormalizer.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ManifestNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ManifestNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ManifestNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ManifestNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ManifestNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ManifestNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ManifestNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ManifestNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ManifestNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ManifestNormalizer.php
-
-		-
 			rawMessage: 'Cannot cast array<mixed>|ArrayObject<(int|string), mixed>|bool|float|int|string|null to string.'
 			identifier: cast.string
-			count: 1
-			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ProtocolHandlerNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ProtocolHandlerNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ProtocolHandlerNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
 			count: 1
 			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
 
@@ -1564,178 +742,22 @@ parameters:
 			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ProtocolHandlerNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ProtocolHandlerNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
-
-		-
 			rawMessage: 'Parameter #3 $subject of function preg_replace expects array<float|int|string>|string, mixed given.'
 			identifier: argument.type
 			count: 1
 			path: ../src/Normalizer/ProtocolHandlerNormalizer.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::__construct() has parameter $imageProcessor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getFormFactor() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getFormFactor() has parameter $height with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getFormFactor() has parameter $width with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getSizes() has parameter $asset with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getType() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::getType() has parameter $asset with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::normalize() should return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, format?: string} but returns array<mixed>.'
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::normalize() should return array{src: string, sizes?: string, form_factor?: string, label?: string, platform?: string, type?: string} but returns array<mixed>.'
 			identifier: return.type
 			count: 1
 			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ScreenshotNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Parameter #1 $image of method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::getSizes() expects string, string|false given.'
-			identifier: argument.type
-			count: 1
-			path: ../src/Normalizer/ScreenshotNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
 
 		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::normalize() should return array{scope?: string, src: string, use_cache?: bool} but returns array<mixed>.'
 			identifier: return.type
 			count: 1
 			path: ../src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\ServiceWorkerNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/ServiceWorkerNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\UrlNormalizer::getSupportedTypes() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/UrlNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\UrlNormalizer::normalize() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/UrlNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\UrlNormalizer::normalize() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/UrlNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\UrlNormalizer::supportsNormalization() has parameter $format with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Normalizer/UrlNormalizer.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Normalizer\UrlNormalizer::supportsNormalization() has parameter $format with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Normalizer/UrlNormalizer.php
-
-		-
-			rawMessage: 'Language construct isset() should not be used.'
-			identifier: ergebnis.noIsset
-			count: 3
-			path: ../src/Resources/config/definition/favicons.php
 
 		-
 			rawMessage: 'Parameter #1 $icons of function expandIcons expects array, mixed given.'
@@ -1894,12 +916,6 @@ parameters:
 			path: ../src/Resources/config/definition/service_worker.php
 
 		-
-			rawMessage: 'Language construct isset() should not be used.'
-			identifier: ergebnis.noIsset
-			count: 5
-			path: ../src/Resources/config/definition/service_worker.php
-
-		-
 			rawMessage: 'Strict comparison using !== between mixed and null will always evaluate to true.'
 			identifier: notIdentical.alwaysTrue
 			count: 3
@@ -1930,18 +946,6 @@ parameters:
 			path: ../src/Resources/config/definition/utils/shortcuts.php
 
 		-
-			rawMessage: 'Function getUrlNode() has parameter $examples with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Resources/config/definition/utils/url_node.php
-
-		-
-			rawMessage: 'Function getUrlNode() has parameter $examples with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Resources/config/definition/utils/url_node.php
-
-		-
 			rawMessage: Access to constant TAG of internal class SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass from outside its root namespace SpomkyLabs.
 			identifier: classConstant.internalClass
 			count: 1
@@ -1952,42 +956,6 @@ parameters:
 			identifier: method.childReturnType
 			count: 1
 			path: ../src/Service/ApplicationIconCompiler.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $contextFree with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Service/Data.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Service\Data has parameter $html with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Service/Data.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\Data::__construct() has parameter $html with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/Data.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\Data::__construct() has parameter $html with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Service/Data.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\Data::create() has parameter $html with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/Data.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\Data::create() has parameter $html with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Service/Data.php
 
 		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\Data::getData() should return string but returns Closure|string.'
@@ -2002,32 +970,8 @@ parameters:
 			path: ../src/Service/Data.php
 
 		-
-			rawMessage: Binary operation "." between 'Unable to run…' and mixed results in an error.
-			identifier: binaryOp.invalid
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
 			rawMessage: 'Call to function assert() with true and string will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Call to method getErrorOutput() on an unknown class Symfony\Component\Process\Process.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Call to method run() on an unknown class Symfony\Component\Process\Process.'
-			identifier: class.notFound
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Call to method wait() on an unknown class Symfony\Component\Process\Process.'
-			identifier: class.notFound
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -2038,38 +982,8 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
-			rawMessage: Caught class Symfony\Component\Process\Exception\ProcessFailedException not found.
-			identifier: class.notFound
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
 			rawMessage: Instanceof between Symfony\Component\AssetMapper\MappedAsset and Symfony\Component\AssetMapper\MappedAsset will always evaluate to true.
 			identifier: instanceof.alwaysTrue
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: Instantiated class Symfony\Component\Process\Process not found.
-			identifier: class.notFound
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() is invoked with named argument for parameter $configuration.'
-			identifier: ergebnis.noNamedArgument
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::__construct() has parameter $imageProcessor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::__construct() has parameter $renderer with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -2077,24 +991,6 @@ parameters:
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::getFaviconAsset() should return string but returns string|false.'
 			identifier: return.type
 			count: 2
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::processIcon() has parameter $media with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::processIcon() has parameter $media with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::processIcon() has parameter $rel with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
@@ -2116,18 +1012,6 @@ parameters:
 			path: ../src/Service/FaviconsCompiler.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FileCompiler::compile() has parameter $io with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/FileCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FileCompiler::compile() has parameter $io with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Service/FileCompiler.php
-
-		-
 			rawMessage: 'Call to function assert() with true and string will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -2136,36 +1020,6 @@ parameters:
 		-
 			rawMessage: Instanceof between Symfony\Component\AssetMapper\MappedAsset and Symfony\Component\AssetMapper\MappedAsset will always evaluate to true.
 			identifier: instanceof.alwaysTrue
-			count: 1
-			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface::process() is invoked with named argument for parameter $configuration.'
-			identifier: ergebnis.noNamedArgument
-			count: 1
-			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\IconResolver::__construct() has parameter $imageProcessor with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\IconResolver::__construct() has parameter $renderer with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\IconResolver::getType() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\IconResolver::getType() has parameter $type with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
 			count: 1
 			path: ../src/Service/IconResolver.php
 
@@ -2204,18 +1058,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../src/Service/IconResolver.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ManifestCompiler::__construct() has parameter $dispatcher with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/ManifestCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ManifestCompiler::compileManifest() has parameter $locale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Service/ManifestCompiler.php
 
 		-
 			rawMessage: Cannot access offset 'enabled' on mixed.
@@ -2272,34 +1114,70 @@ parameters:
 			path: ../src/Service/ResourceHintsBuilder.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler::getIndexDBFile() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: 'Cannot call method process() on SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface|null.'
+			identifier: method.nonObject
 			count: 1
-			path: ../src/Service/ServiceWorkerCompiler.php
+			path: ../src/Service/ScreenshotGenerator.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler::getWorkboxFile() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: Cannot cast mixed to string.
+			identifier: cast.string
 			count: 1
-			path: ../src/Service/ServiceWorkerCompiler.php
+			path: ../src/Service/ScreenshotGenerator.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::buildSingleRule() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ScreenshotGenerator::getAvailablePort() should return int but returns mixed.'
+			identifier: return.type
 			count: 1
-			path: ../src/Service/SpeculationRulesBuilder.php
+			path: ../src/Service/ScreenshotGenerator.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::buildWhereClause() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ScreenshotGenerator::getDefaultArguments() return type has no value type specified in iterable type array.'
+			identifier: missingType.iterableValue
 			count: 1
-			path: ../src/Service/SpeculationRulesBuilder.php
+			path: ../src/Service/ScreenshotGenerator.php
 
 		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::generateJson() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
+			rawMessage: 'Only booleans are allowed in &&, mixed given on the right side.'
+			identifier: booleanAnd.rightNotBoolean
 			count: 1
-			path: ../src/Service/SpeculationRulesBuilder.php
+			path: ../src/Service/ScreenshotGenerator.php
+
+		-
+			rawMessage: 'Only booleans are allowed in a negated boolean, mixed given.'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: ../src/Service/ScreenshotGenerator.php
+
+		-
+			rawMessage: 'Only booleans are allowed in an if condition, mixed given.'
+			identifier: if.condNotBoolean
+			count: 2
+			path: ../src/Service/ScreenshotGenerator.php
+
+		-
+			rawMessage: 'Parameter #1 $chromeDriverBinary of static method Symfony\Component\Panther\Client::createChromeClient() expects string|null, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/ScreenshotGenerator.php
+
+		-
+			rawMessage: 'Parameter #2 $arguments of static method Symfony\Component\Panther\Client::createChromeClient() expects array<string>|null, array given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/ScreenshotGenerator.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\ScreenshotUrlGenerator::generateUrl() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: ../src/Service/ScreenshotUrlGenerator.php
+
+		-
+			rawMessage: 'Parameter #1 $name of method Symfony\Component\Routing\Generator\UrlGeneratorInterface::generate() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: ../src/Service/ScreenshotUrlGenerator.php
 
 		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder::isEnabled() should return bool but returns mixed.'
@@ -2332,30 +1210,6 @@ parameters:
 			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
 
 		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache has parameter $translator with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache::__construct() has parameter $translator with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache::__construct() has parameter $translator with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/ServiceWorkerRule/BackgroundFetchCache.php
-
-		-
-			rawMessage: 'Language construct isset() should not be used.'
-			identifier: ergebnis.noIsset
-			count: 1
-			path: ../src/ServiceWorkerRule/OfflineFallback.php
-
-		-
 			rawMessage: 'Strict comparison using === between int<1, max> and 0 will always evaluate to false.'
 			identifier: identical.alwaysFalse
 			count: 2
@@ -2370,12 +1224,6 @@ parameters:
 		-
 			rawMessage: 'Construct empty() is not allowed. Use more strict comparison.'
 			identifier: empty.notAllowed
-			count: 1
-			path: ../src/ServiceWorkerRule/WorkboxImport.php
-
-		-
-			rawMessage: 'Language construct isset() should not be used.'
-			identifier: ergebnis.noIsset
 			count: 1
 			path: ../src/ServiceWorkerRule/WorkboxImport.php
 
@@ -2404,38 +1252,8 @@ parameters:
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle" is not allowed to extend "Symfony\Component\HttpKernel\Bundle\AbstractBundle".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::build() has a parameter $container with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::loadExtension() has a parameter $builder with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::loadExtension() has parameter $config with no value type specified in iterable type array.'
 			identifier: missingType.iterableValue
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::prependExtension() has a parameter $builder with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
-			count: 1
-			path: ../src/SpomkyLabsPwaBundle.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::setAssetMapperPath() has a parameter $builder with a type declaration of Symfony\Component\DependencyInjection\ContainerBuilder, but containers should not be injected.'
-			identifier: ergebnis.noParameterWithContainerTypeDeclaration
 			count: 1
 			path: ../src/SpomkyLabsPwaBundle.php
 
@@ -2452,139 +1270,13 @@ parameters:
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Twig\InstanceOfExtension is neither abstract nor final.
-			identifier: ergebnis.final
-			count: 1
-			path: ../src/Twig/InstanceOfExtension.php
-
-		-
 			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\InstanceOfExtension::getTests() return type has no value type specified in iterable type array.'
 			identifier: missingType.iterableValue
 			count: 1
 			path: ../src/Twig/InstanceOfExtension.php
 
 		-
-			rawMessage: Class "SpomkyLabs\PwaBundle\Twig\PwaExtension" is not allowed to extend "Twig\Extension\AbstractExtension".
-			identifier: ergebnis.noExtends
-			count: 1
-			path: ../src/Twig/PwaExtension.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\Twig\PwaRuntime has parameter $cspListener with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Language construct isset() should not be used.'
-			identifier: ergebnis.noIsset
-			count: 2
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::__construct() has parameter $cspListener with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::__construct() has parameter $cspListener with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::getLocale() has a nullable return type declaration.'
-			identifier: ergebnis.noNullableReturnTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::getLocale() has parameter $locale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::getLocale() has parameter $locale with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::injectManifestFile() has parameter $locale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::load() has parameter $locale with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Twig\PwaRuntime::load() has parameter $locale with null as default value.'
-			identifier: ergebnis.noParameterWithNullDefaultValue
-			count: 1
-			path: ../src/Twig/PwaRuntime.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin::__construct() has parameter $broadcastChannel with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/BackgroundSyncPlugin.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\BackgroundSyncPlugin::create() has parameter $broadcastChannel with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/BackgroundSyncPlugin.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\WorkboxPlugin\BroadcastUpdatePlugin has parameter $headersToCheck with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/WorkboxPlugin/BroadcastUpdatePlugin.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin has parameter $headers with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/WorkboxPlugin/CacheableResponsePlugin.php
-
-		-
-			rawMessage: Constructor in SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin has parameter $statuses with default value.
-			identifier: ergebnis.noConstructorParameterWithDefaultValue
-			count: 1
-			path: ../src/WorkboxPlugin/CacheableResponsePlugin.php
-
-		-
 			rawMessage: 'Parameter #2 of function sprintf is expected to be string by placeholder #1 ("%%s"), string|false given.'
 			identifier: argument.type
 			count: 1
 			path: ../src/WorkboxPlugin/CacheableResponsePlugin.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin::__construct() has parameter $maxAgeSeconds with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/ExpirationPlugin.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin::__construct() has parameter $maxEntries with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/ExpirationPlugin.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin::create() has parameter $maxAgeSeconds with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/ExpirationPlugin.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin::create() has parameter $maxEntries with a nullable type declaration.'
-			identifier: ergebnis.noParameterWithNullableTypeDeclaration
-			count: 1
-			path: ../src/WorkboxPlugin/ExpirationPlugin.php

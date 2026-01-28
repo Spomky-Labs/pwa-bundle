@@ -10,6 +10,7 @@ class PreManifestCompileEvent
 {
     public function __construct(
         public Manifest $manifest,
+        public readonly null|string $locale = null,
     ) {
     }
 }
