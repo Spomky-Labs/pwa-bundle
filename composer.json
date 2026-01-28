@@ -1,86 +1,87 @@
 {
-    "name": "spomky-labs/pwa-bundle",
-    "description": "Progressive Web App Manifest Generator Bundle for Symfony.",
-    "type": "symfony-bundle",
-    "license": "MIT",
-    "keywords": [
-        "symfony-ux",
-        "PWA",
-        "Bundle",
-        "Symfony"
-    ],
-    "homepage": "https://github.com/spomky-labs",
-    "authors": [
-        {
-            "name": "Florent Morselli",
-            "homepage": "https://github.com/Spomky"
-        },
-        {
-            "name": "All contributors",
-            "homepage": "https://github.com/spomky-labs/pwa-bundle/contributors"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "SpomkyLabs\\PwaBundle\\": "src/"
-        }
+  "name": "spomky-labs/pwa-bundle",
+  "description": "Progressive Web App Manifest Generator Bundle for Symfony.",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "keywords": [
+    "symfony-ux",
+    "PWA",
+    "Bundle",
+    "Symfony"
+  ],
+  "homepage": "https://github.com/spomky-labs",
+  "authors": [
+    {
+      "name": "Florent Morselli",
+      "homepage": "https://github.com/Spomky"
     },
-    "autoload-dev": {
-        "psr-4": {
-            "SpomkyLabs\\PwaBundle\\Tests\\": "tests/"
-        }
-    },
-    "require": {
-        "php": ">=8.2",
-        "phpdocumentor/reflection-docblock": "^5.3|^6.0",
-        "psr/log": "^1.1|^2.0|^3.0",
-        "symfony/asset": "^6.4|^7.0|^8.0",
-        "symfony/asset-mapper": "^6.4|^7.0|^8.0",
-        "symfony/config": "^6.4|^7.0|^8.0",
-        "symfony/dependency-injection": "^6.4|^7.0|^8.0",
-        "symfony/deprecation-contracts": "^3.5",
-        "symfony/http-kernel": "^6.4|^7.0|^8.0",
-        "symfony/property-access": "^6.4|^7.0|^8.0",
-        "symfony/property-info": "^6.4|^7.0|^8.0",
-        "symfony/routing": "^6.4|^7.0|^8.0",
-        "symfony/serializer": "^6.4|^7.0|^8.0",
-        "symfony/service-contracts": "^3.0",
-        "symfony/web-link": "^6.4|^7.0|^8.0",
-        "twig/twig": "^3.8"
-    },
-    "require-dev": {
-        "dbrekelmans/bdi": "*",
-        "matthiasnoback/symfony-config-test": "^5.1|^6.0",
-        "monolog/monolog": "^3.0",
-        "nelmio/security-bundle": "^3.3",
-        "symfony/console": "^6.4|^7.0|^8.0",
-        "symfony/event-dispatcher": "^6.4|^7.0|^8.0",
-        "symfony/filesystem": "^6.4|^7.0|^8.0",
-        "symfony/finder": "^6.4|^7.0|^8.0",
-        "symfony/framework-bundle": "^7.0|^8.0",
-        "symfony/mime": "^6.4|^7.0|^8.0",
-        "symfony/monolog-bridge": "^6.4|^7.0|^8.0",
-        "symfony/monolog-bundle": "^3.10|^4.0",
-        "symfony/panther": "^2.3",
-        "symfony/translation": "^6.4|^7.0|^8.0",
-        "symfony/twig-bundle": "^7.0|^8.0",
-        "symfony/ux-icons": "^2.29",
-        "symfony/yaml": "^6.4|^7.0|^8.0"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "thanks": {
-            "name": "spomky-labs/pwa-bundle",
-            "url": "https://github.com/spomky-labs/pwa-bundle"
-        }
-    },
-    "suggest": {
-        "ext-gd": "Required to generate icons (or Imagick).",
-        "ext-imagick": "Required to generate icons (or GD).",
-        "symfony/mime": "For generating and manipulating icons or screenshots",
-        "symfony/filesystem": "For generating and manipulating icons or screenshots",
-        "symfony/ux-icons": "For using SVG icons (e.g. for shortcuts)"
+    {
+      "name": "All contributors",
+      "homepage": "https://github.com/spomky-labs/pwa-bundle/contributors"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SpomkyLabs\\PwaBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SpomkyLabs\\PwaBundle\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "phpdocumentor/reflection-docblock": "^5.3|^6.0",
+    "psr/log": "^1.1|^2.0|^3.0",
+    "symfony/asset": "^6.4|^7.0|^8.0",
+    "symfony/asset-mapper": "^6.4|^7.0|^8.0",
+    "symfony/config": "^6.4|^7.0|^8.0",
+    "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+    "symfony/deprecation-contracts": "^3.5",
+    "symfony/http-kernel": "^6.4|^7.0|^8.0",
+    "symfony/property-access": "^6.4|^7.0|^8.0",
+    "symfony/property-info": "^6.4|^7.0|^8.0",
+    "symfony/routing": "^6.4|^7.0|^8.0",
+    "symfony/serializer": "^6.4|^7.0|^8.0",
+    "symfony/service-contracts": "^3.0",
+    "symfony/web-link": "^6.4|^7.0|^8.0",
+    "twig/twig": "^3.8"
+  },
+  "require-dev": {
+    "dbrekelmans/bdi": "*",
+    "matthiasnoback/symfony-config-test": "^5.1|^6.0",
+    "monolog/monolog": "^3.0",
+    "nelmio/security-bundle": "^3.3",
+    "phpdocumentor/reflection-docblock": "^5.3",
+    "symfony/console": "^6.4|^7.0|^8.0",
+    "symfony/event-dispatcher": "^6.4|^7.0|^8.0",
+    "symfony/filesystem": "^6.4|^7.0|^8.0",
+    "symfony/finder": "^6.4|^7.0|^8.0",
+    "symfony/framework-bundle": "^7.0|^8.0",
+    "symfony/mime": "^6.4|^7.0|^8.0",
+    "symfony/monolog-bridge": "^6.4|^7.0|^8.0",
+    "symfony/monolog-bundle": "^3.10|^4.0",
+    "symfony/panther": "^2.3",
+    "symfony/translation": "^6.4|^7.0|^8.0",
+    "symfony/twig-bundle": "^7.0|^8.0",
+    "symfony/ux-icons": "^2.29",
+    "symfony/yaml": "^6.4|^7.0|^8.0"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "thanks": {
+      "name": "spomky-labs/pwa-bundle",
+      "url": "https://github.com/spomky-labs/pwa-bundle"
+    }
+  },
+  "suggest": {
+    "ext-gd": "Required to generate icons (or Imagick).",
+    "ext-imagick": "Required to generate icons (or GD).",
+    "symfony/mime": "For generating and manipulating icons or screenshots",
+    "symfony/filesystem": "For generating and manipulating icons or screenshots",
+    "symfony/ux-icons": "For using SVG icons (e.g. for shortcuts)"
+  }
 }
