@@ -172,8 +172,7 @@ final class ScreenshotListenerTest extends TestCase
     public function itLogsDebugMessages(): void
     {
         // Given
-        $profiler = $this->createMock(Profiler::class);
-        $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
+        $listener = new ScreenshotListener(static::createStub(Profiler::class), 'HeadlessChrome');
 
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(static::atLeastOnce())
