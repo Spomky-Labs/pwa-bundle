@@ -153,13 +153,20 @@ final readonly class PwaRuntime
             // Using UMD version instead of ESM to avoid importmap dependency issues
             // This prevents "bare specifier not remapped" errors regardless of script order.
             // See: https://github.com/Spomky-Labs/pwa-bundle/pull/393
-            // Using separate scripts instead of onload attribute for CSP compatibility.
-            // Inline event handlers are blocked by CSP even with nonces.
-            // Both scripts use defer, so they execute in document order after DOM is ready.
+            // CSP compatibility: dynamically loading workbox-window inside the inline script
+            // because inline event handlers (onload) are blocked by CSP even with nonces,
+            // and defer is ignored on inline scripts.
             $declaration = <<<SERVICE_WORKER
-<script src="{$workboxUrl}" defer></script>
-<script defer{$scriptAttributes}>
+<script{$scriptAttributes}>
 (async () => {
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '{$workboxUrl}';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+
   if ('serviceWorker' in navigator) {
     try {
       const wb = new workbox.Workbox('{$url}'{$registerOptions});
