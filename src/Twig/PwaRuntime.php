@@ -152,9 +152,14 @@ final readonly class PwaRuntime
             );
             // Using UMD version instead of ESM to avoid importmap dependency issues
             // This prevents "bare specifier not remapped" errors regardless of script order.
-            // See: https://github.com/Spomky-Labs/pwa-bundle/issues/391
+            // See: https://github.com/Spomky-Labs/pwa-bundle/pull/393
+            // Using separate scripts instead of onload attribute for CSP compatibility.
+            // Inline event handlers are blocked by CSP even with nonces.
+            // Both scripts use defer, so they execute in document order after DOM is ready.
             $declaration = <<<SERVICE_WORKER
-<script src="{$workboxUrl}" defer{$scriptAttributes} onload="(async () => {
+<script src="{$workboxUrl}" defer></script>
+<script defer{$scriptAttributes}>
+(async () => {
   if ('serviceWorker' in navigator) {
     try {
       const wb = new workbox.Workbox('{$url}'{$registerOptions});
@@ -178,7 +183,8 @@ final readonly class PwaRuntime
       console.error('SW registration failed', e);
     }
   }
-})()"></script>
+})();
+</script>
 SERVICE_WORKER;
         } else {
             $declaration = <<<SERVICE_WORKER
