@@ -170,6 +170,7 @@ function statusGuard(min, max) {
 registerMessageTask(async (event) => {
   if (event.data?.type === 'SKIP_WAITING') {
     await self.skipWaiting();
+    await self.clients.claim();
   }
 });
 
