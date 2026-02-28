@@ -29,6 +29,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\TranslatableNormalizer;
@@ -43,7 +44,7 @@ use Throwable;
  *
  * @property CollectedData $data
  */
-final class PwaCollector extends DataCollector
+final class PwaCollector extends DataCollector implements LateDataCollectorInterface
 {
     private readonly ServiceWorker $serviceWorker;
 
@@ -76,6 +77,14 @@ final class PwaCollector extends DataCollector
     }
 
     public function collect(Request $request, Response $response, ?Throwable $exception = null): void
+    {
+        // Data collection is deferred to lateCollect() to avoid
+        // blocking the response. The compiler calls and manifest
+        // serialization are expensive and not needed until the
+        // profiler panel is rendered.
+    }
+
+    public function lateCollect(): void
     {
         $jsonOptions = [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
