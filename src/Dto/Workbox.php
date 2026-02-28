@@ -52,5 +52,5 @@ final class Workbox
     #[SerializedName('navigation_preload')]
     public bool $navigationPreload = false;
 
-    public WorkboxConfig $config;
+    public WorkboxConfig $config = new WorkboxConfig();
 }
