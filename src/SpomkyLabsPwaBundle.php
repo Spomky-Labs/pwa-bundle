@@ -120,10 +120,14 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
     private function setAssetMapperPath(ContainerBuilder $builder): void
     {
+        $path = realpath(__DIR__ . '/../assets/src');
+        if ($path === false) {
+            return;
+        }
         $builder->prependExtensionConfig('framework', [
             'asset_mapper' => [
                 'paths' => [
-                    realpath(__DIR__ . '/../assets/src') => '@spomky-labs/pwa-bundle',
+                    $path => '@spomky-labs/pwa-bundle',
                 ],
             ],
         ]);
