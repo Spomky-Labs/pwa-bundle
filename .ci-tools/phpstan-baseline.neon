@@ -103,12 +103,6 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $config. Give it default value or assign it in the constructor.
-			identifier: property.uninitialized
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Workbox has an uninitialized property $fontCache. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1
