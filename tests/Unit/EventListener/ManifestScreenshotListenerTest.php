@@ -32,8 +32,8 @@ final class ManifestScreenshotListenerTest extends TestCase
                 'configurations' => [],
             ]);
 
-        $router = $this->createMock(RouterInterface::class);
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $router = static::createStub(RouterInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
 
         $listener = new ManifestScreenshotListener($attributeCollector, $router, $assetMapper);
 
@@ -54,8 +54,8 @@ final class ManifestScreenshotListenerTest extends TestCase
                 'configurations' => [],
             ]);
 
-        $router = $this->createMock(RouterInterface::class);
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
+        $router = static::createStub(RouterInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
 
         $listener = new ManifestScreenshotListener($attributeCollector, $router, $assetMapper);
 

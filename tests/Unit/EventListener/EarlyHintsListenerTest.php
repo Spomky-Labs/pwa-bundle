@@ -349,8 +349,6 @@ final class EarlyHintsListenerTest extends TestCase
         Request $request,
         int $requestType = HttpKernelInterface::MAIN_REQUEST
     ): RequestEvent {
-        $kernel = $this->createMock(HttpKernelInterface::class);
-
-        return new RequestEvent($kernel, $request, $requestType);
+        return new RequestEvent(static::createStub(HttpKernelInterface::class), $request, $requestType);
     }
 }
