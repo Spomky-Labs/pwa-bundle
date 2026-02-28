@@ -53,4 +53,9 @@ final class Workbox
     public bool $navigationPreload = false;
 
     public WorkboxConfig $config;
+
+    public function __construct()
+    {
+        $this->config = new WorkboxConfig();
+    }
 }
