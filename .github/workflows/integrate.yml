@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -75,7 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -91,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -107,7 +107,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -146,7 +146,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
@@ -181,7 +181,7 @@ jobs:
       XDEBUG_MODE: coverage
     steps:
       - uses: actions/checkout@v6
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.lowest-deps && 'lowest' || 'highest' }}
           composer-options: --no-interaction --no-progress --optimize-autoloader
@@ -204,7 +204,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
           composer-options: --optimize-autoloader
