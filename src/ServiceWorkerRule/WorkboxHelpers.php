@@ -295,7 +295,7 @@ function registerPushTask(callback) {
   pushTasks.push(callback);
 }
 self.addEventListener('push', (event) => {
-    if (!(self.Notification && self.Notification.permission === 'granted')) {
+    if (typeof self.Notification !== 'undefined' && self.Notification.permission === 'denied') {
         return;
     }
     event.waitUntil(
