@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests\Unit\ServiceWorkerRule;
 
+use ReflectionClass;
+
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
@@ -11,6 +13,7 @@ use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Dto\WorkboxConfig;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\WorkboxImport;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 /**
@@ -170,10 +173,12 @@ final class WorkboxImportTest extends TestCase
     }
 
     #[Test]
-    public function itHasCorrectPriority(): void
+    public function itHasCorrectTaggedItemPriority(): void
     {
         // WorkboxImport should have highest priority
-        static::assertSame(1024, WorkboxImport::getPriority());
+        $attribute = (new ReflectionClass(WorkboxImport::class))->getAttributes(AsTaggedItem::class)[0];
+
+        static::assertSame(1024, $attribute->getArguments()['priority']);
     }
 
     private function createWorkboxImportRule(Workbox $workbox): WorkboxImport

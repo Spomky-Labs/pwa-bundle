@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests\Unit\ServiceWorkerRule;
 
+use ReflectionClass;
+
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\NavigationPreload;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 /**
@@ -106,11 +109,13 @@ final class NavigationPreloadTest extends TestCase
     }
 
     #[Test]
-    public function itHasCorrectPriority(): void
+    public function itHasCorrectTaggedItemPriority(): void
     {
         // Navigation Preload should run after WorkboxImport (1024) and WorkboxHelpers (1023)
         // but before cache strategies
-        static::assertSame(1022, NavigationPreload::getPriority());
+        $attribute = (new ReflectionClass(NavigationPreload::class))->getAttributes(AsTaggedItem::class)[0];
+
+        static::assertSame(1022, $attribute->getArguments()['priority']);
     }
 
     private function createNavigationPreloadRule(Workbox $workbox): NavigationPreload
