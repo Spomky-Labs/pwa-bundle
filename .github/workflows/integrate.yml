@@ -16,7 +16,7 @@ jobs:
     name: "0️⃣ Pre-checks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: "Check file permissions"
         run: |
@@ -43,7 +43,7 @@ jobs:
     outputs:
       cache-key: ${{ steps.cache-key-generator.outputs.key }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -57,7 +57,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -73,7 +73,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -89,7 +89,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -105,7 +105,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -124,7 +124,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: composer exec -- parallel-lint src tests
 
   check_licenses:
@@ -134,7 +134,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: castor check-licenses
 
   deptrac:
@@ -144,7 +144,7 @@ jobs:
     container:
       image: ghcr.io/spomky-labs/phpqa:8.4
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -180,7 +180,7 @@ jobs:
     env:
       XDEBUG_MODE: coverage
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.lowest-deps && 'lowest' || 'highest' }}
@@ -202,7 +202,7 @@ jobs:
       XDEBUG_MODE: coverage
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: ramsey/composer-install@v4
         with:
@@ -217,7 +217,7 @@ jobs:
     needs: [prepare_dependencies]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Check exported files
         run: |
           EXPECTED="LICENSE,README.md,RELEASES.md,SECURITY.md,composer.json"
