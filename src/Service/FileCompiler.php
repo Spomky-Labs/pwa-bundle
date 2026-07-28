@@ -61,6 +61,7 @@ final class FileCompiler implements CanLogInterface
                 $this->assetsFilesystem->write($data->url, $data->getData());
             }
             $progressBar?->finish();
+            $io?->newLine(2);
         }
         $this->logger->debug('Files compiled.');
     }
