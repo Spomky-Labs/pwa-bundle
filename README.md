@@ -1,6 +1,6 @@
 # Progressive Web App for Symfony
 
-![CI](https://github.com/Spomky-Labs/pwa-bundle/actions/workflows/integrate.yml/badge.svg)
+[![CI](https://github.com/Spomky-Labs/pwa-bundle/actions/workflows/integrate.yml/badge.svg)](https://github.com/Spomky-Labs/pwa-bundle/actions/workflows/integrate.yml)
 
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/pwa-bundle/v/stable.png)](https://packagist.org/packages/Spomky-Labs/pwa-bundle)
 [![Total Downloads](https://poser.pugx.org/Spomky-Labs/pwa-bundle/downloads.png)](https://packagist.org/packages/Spomky-Labs/pwa-bundle)
