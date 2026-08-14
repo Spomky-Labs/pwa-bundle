@@ -9,7 +9,10 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+// Must run after WorkboxImport (1024) and WorkboxHelpers (1023) but before cache strategies
+#[AsTaggedItem(priority: 1022)]
 final class NavigationPreload implements ServiceWorkerRuleInterface, CanLogInterface
 {
     private readonly Workbox $workbox;
@@ -68,13 +71,6 @@ DEBUG_COMMENT;
         ]);
 
         return $declaration;
-    }
-
-    public static function getPriority(): int
-    {
-        // Must run after WorkboxImport (1024) and WorkboxHelpers (1023)
-        // but before cache strategies
-        return 1022;
     }
 
     public function setLogger(LoggerInterface $logger): void

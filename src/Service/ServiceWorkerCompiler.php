@@ -39,7 +39,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
     public function __construct(
         ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly AssetMapperInterface $assetMapper,
-        #[AutowireIterator('spomky_labs_pwa.service_worker_rule', defaultPriorityMethod: 'getPriority')]
+        #[AutowireIterator('spomky_labs_pwa.service_worker_rule')]
         private readonly iterable $serviceworkerRules,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
