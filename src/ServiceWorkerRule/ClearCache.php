@@ -43,21 +43,29 @@ final class ClearCache implements ServiceWorkerRuleInterface, CanLogInterface
 
 /**************************************************** CACHE CLEAR ****************************************************/
 // The configuration is set to clear the cache on each install event
-// The following code will remove all the caches
+// Caches registered through registerCacheName() are removed. To also remove a cache
+// opened by the application, use registerClearCacheListener((names) => names.filter(...))
 
 DEBUG_COMMENT;
         }
 
         $declaration .= <<<CLEAR_CACHE
-registerInstallTask(() =>
-  caches.keys().then(keys =>
-    Promise.all(
-      keys
-        .filter(k => usedCacheNames.has(k))
-        .map(k => caches.delete(k))
-    )
-  )
-, 0);
+registerInstallTask(async () => {
+  const keys = await caches.keys();
+  const doomed = new Set(keys.filter(k => usedCacheNames.has(k)));
+
+  for (const task of clearCacheListeners) {
+    try {
+      for (const name of (await task(keys)) ?? []) {
+        doomed.add(name);
+      }
+    } catch (e) {
+      console.error('A clear cache listener failed', e);
+    }
+  }
+
+  await Promise.all([...doomed].map(k => caches.delete(k)));
+}, 0);
 
 CLEAR_CACHE;
 
