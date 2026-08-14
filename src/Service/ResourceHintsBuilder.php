@@ -30,6 +30,7 @@ final class ResourceHintsBuilder
         private readonly array $config,
         #[Autowire(param: 'spomky_labs_pwa.sw.config')]
         private readonly array $workboxConfig,
+        private readonly BasePathResolver $basePathResolver,
     ) {
     }
 
@@ -179,7 +180,7 @@ final class ResourceHintsBuilder
         // Try to resolve as Asset Mapper logical path
         $publicPath = $this->assetMapper->getPublicPath($href);
 
-        return $publicPath ?? '/' . $href;
+        return $this->basePathResolver->prefix($publicPath ?? '/' . $href);
     }
 
     private function renderLinkAsHtml(Link $link): string

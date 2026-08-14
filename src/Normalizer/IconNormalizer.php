@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use function assert;
 use SpomkyLabs\PwaBundle\Dto\Icon;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\IconResolver;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -17,6 +18,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
 
     public function __construct(
         private readonly IconResolver $iconResolver,
+        private readonly BasePathResolver $basePathResolver,
     ) {
     }
 
@@ -30,7 +32,7 @@ final class IconNormalizer implements NormalizerInterface, NormalizerAwareInterf
         $imageType = $this->iconResolver->getType($data->type, $icon->url);
 
         $result = [
-            'src' => $icon->url,
+            'src' => $this->basePathResolver->prefix($icon->url),
             'sizes' => $data->getSizeList(),
             'type' => $imageType,
             'purpose' => $data->purpose,

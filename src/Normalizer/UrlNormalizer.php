@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 use function assert;
 use const FILTER_VALIDATE_URL;
 use SpomkyLabs\PwaBundle\Dto\Url;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -21,6 +22,7 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly AssetMapperInterface $assetMapper,
+        private readonly BasePathResolver $basePathResolver,
     ) {
     }
 
@@ -36,10 +38,10 @@ final class UrlNormalizer implements NormalizerInterface, NormalizerAwareInterfa
         // If the path is an asset, we return the public path
         $asset = $this->assetMapper->getAsset($data->path);
         if ($asset !== null) {
-            return $asset->publicPath;
+            return $this->basePathResolver->prefix($asset->publicPath);
         }
 
-        // Otherwise, we try to generate the URL
+        // Otherwise, we try to generate the URL. The URL generator already takes the base path into account.
         try {
             $params = [
                 '_locale' => $context['translatable_normalization_locale'] ?? null,
