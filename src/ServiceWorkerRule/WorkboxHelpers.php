@@ -6,7 +6,9 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(priority: 1023)]
 final readonly class WorkboxHelpers implements ServiceWorkerRuleInterface
 {
     private Workbox $workbox;
@@ -170,6 +172,7 @@ function statusGuard(min, max) {
 registerMessageTask(async (event) => {
   if (event.data?.type === 'SKIP_WAITING') {
     await self.skipWaiting();
+    await self.clients.claim();
   }
 });
 
@@ -294,7 +297,7 @@ function registerPushTask(callback) {
   pushTasks.push(callback);
 }
 self.addEventListener('push', (event) => {
-    if (!(self.Notification && self.Notification.permission === 'granted')) {
+    if (typeof self.Notification !== 'undefined' && self.Notification.permission === 'denied') {
         return;
     }
     event.waitUntil(
@@ -407,10 +410,5 @@ async function openCache(name) {
 }
 
 CUSTOM_HELPERS;
-    }
-
-    public static function getPriority(): int
-    {
-        return 1023;
     }
 }

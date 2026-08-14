@@ -11,6 +11,7 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Dto\WorkboxConfig;
 use SpomkyLabs\PwaBundle\EventListener\EarlyHintsListener;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -342,15 +343,13 @@ final class EarlyHintsListenerTest extends TestCase
 
         $manifestBuilder = new ManifestBuilder($denormalizer, []);
 
-        return new EarlyHintsListener($manifestBuilder, $config, 'site.webmanifest');
+        return new EarlyHintsListener($manifestBuilder, $config, 'site.webmanifest', new BasePathResolver());
     }
 
     private function createRequestEvent(
         Request $request,
         int $requestType = HttpKernelInterface::MAIN_REQUEST
     ): RequestEvent {
-        $kernel = $this->createMock(HttpKernelInterface::class);
-
-        return new RequestEvent($kernel, $request, $requestType);
+        return new RequestEvent(static::createStub(HttpKernelInterface::class), $request, $requestType);
     }
 }

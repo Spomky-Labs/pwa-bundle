@@ -8,17 +8,22 @@ use const JSON_UNESCAPED_SLASHES;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(priority: 1024)]
 final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
 {
     private readonly Workbox $workbox;
 
     private LoggerInterface $logger;
 
-    public function __construct(ServiceWorkerBuilder $serviceWorkerBuilder)
-    {
+    public function __construct(
+        ServiceWorkerBuilder $serviceWorkerBuilder,
+        private readonly BasePathResolver $basePathResolver,
+    ) {
         $this->workbox = $serviceWorkerBuilder->create()
             ->workbox;
         $this->logger = new NullLogger();
@@ -54,8 +59,10 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workb
 importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
 IMPORT_CDN_STRATEGY;
         } else {
-            $workboxPublicUrl = '/' . trim($this->workbox->config->workboxPublicUrl, '/');
-            $idbPublicUrl = '/' . trim($this->workbox->indexDBPublicUrl, '/');
+            $workboxPublicUrl = $this->basePathResolver->prefix(
+                '/' . trim($this->workbox->config->workboxPublicUrl, '/')
+            );
+            $idbPublicUrl = $this->basePathResolver->prefix('/' . trim($this->workbox->indexDBPublicUrl, '/'));
             if ($debug === true) {
                 $declaration .= <<<DEBUG_COMMENT
 // Import from public URL
@@ -102,11 +109,6 @@ DEBUG_COMMENT;
         ]);
 
         return $declaration;
-    }
-
-    public static function getPriority(): int
-    {
-        return 1024;
     }
 
     public function setLogger(LoggerInterface $logger): void

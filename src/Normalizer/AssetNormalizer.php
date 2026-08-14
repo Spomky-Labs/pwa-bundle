@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 use function assert;
 use function is_string;
 use SpomkyLabs\PwaBundle\Dto\Asset;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -15,22 +16,21 @@ final readonly class AssetNormalizer implements NormalizerInterface, Denormalize
 {
     public function __construct(
         private AssetMapperInterface $assetMapper,
+        private BasePathResolver $basePathResolver,
     ) {
     }
 
     public function normalize(mixed $data, ?string $format = null, array $context = []): string
     {
         assert($data instanceof Asset);
-        $url = null;
         if (! str_starts_with($data->src, '/')) {
             $asset = $this->assetMapper->getAsset($data->src);
-            $url = $asset?->publicPath;
-        }
-        if ($url === null) {
-            $url = $data->src;
+            if ($asset?->publicPath !== null) {
+                return $this->basePathResolver->prefix($asset->publicPath);
+            }
         }
 
-        return $url;
+        return $data->src;
     }
 
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed

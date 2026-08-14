@@ -47,8 +47,8 @@
     <tr>
         <td>Use CDN?</td>
         <td>
-            {% if collector.workbox.useCDN %}
-                Yes, version: {{ collector.workbox.version }}
+            {% if collector.workbox.config.useCDN %}
+                Yes, version: {{ collector.workbox.config.version }}
             {% else %}
                 No
             {% endif %}

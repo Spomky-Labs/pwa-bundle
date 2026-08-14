@@ -33,6 +33,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         FaviconsBuilder $faviconsBuilder,
         private readonly AssetMapperInterface $assetMapper,
         private readonly ?IconRendererInterface $renderer,
+        private readonly BasePathResolver $basePathResolver,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
     ) {
@@ -159,7 +160,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $configuration->width,
             $configuration->height,
             $mimeType,
-            $publicUrl,
+            $this->basePathResolver->prefix($publicUrl),
             $mediaAttr
         );
 
@@ -287,21 +288,23 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $tileColor = PHP_EOL . sprintf('            <TileColor>%s</TileColor>', $this->favicons->tileColor);
         }
 
-        $content = <<<XML
-<?xml version="1.0" encoding="utf-8"?>
-<browserconfig>
-    <msapplication>
-        <tile>
-            <square70x70logo src="{$icon70x70->url}"/>
-            <square150x150logo src="{$icon150x150->url}"/>
-            <square310x310logo src="{$icon310x310->url}"/>
-            <wide310x150logo src="{$icon310x150->url}"/>{$tileColor}
-        </tile>
-    </msapplication>
-</browserconfig>
-XML;
-        $browserConfigHash = hash('xxh128', $content);
+        // The hash is computed on the base path free version so that the compiled file keeps the same name
+        // whatever the base path the application is served from.
+        $browserConfigHash = hash('xxh128', $this->renderBrowserConfig(
+            $icon70x70->url,
+            $icon150x150->url,
+            $icon310x310->url,
+            $icon310x150->url,
+            $tileColor
+        ));
         $url = sprintf('/pwa/browserconfig-%s.xml', $browserConfigHash);
+        $content = $this->renderBrowserConfig(
+            $this->basePathResolver->prefix($icon70x70->url),
+            $this->basePathResolver->prefix($icon150x150->url),
+            $this->basePathResolver->prefix($icon310x310->url),
+            $this->basePathResolver->prefix($icon310x150->url),
+            $tileColor
+        );
 
         $headersImg = $this->debug ? [
             'Cache-Control' => 'public, max-age=604800, immutable',
@@ -320,7 +323,7 @@ XML;
             $url,
             $content,
             $headersXml,
-            sprintf('<meta name="msapplication-config" content="%s">', $url)
+            sprintf('<meta name="msapplication-config" content="%s">', $this->basePathResolver->prefix($url))
         );
 
         return [
@@ -332,10 +335,35 @@ XML;
                 $icon144x144->url,
                 $icon144x144->getRawData(),
                 $headersImg,
-                sprintf('<meta name="msapplication-TileImage" content="%s">', $icon144x144->url)
+                sprintf(
+                    '<meta name="msapplication-TileImage" content="%s">',
+                    $this->basePathResolver->prefix($icon144x144->url)
+                )
             ),
             $browserConfig->url => $browserConfig,
         ];
+    }
+
+    private function renderBrowserConfig(
+        string $square70x70logo,
+        string $square150x150logo,
+        string $square310x310logo,
+        string $wide310x150logo,
+        string $tileColor,
+    ): string {
+        return <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo src="{$square70x70logo}"/>
+            <square150x150logo src="{$square150x150logo}"/>
+            <square310x310logo src="{$square310x310logo}"/>
+            <wide310x150logo src="{$wide310x150logo}"/>{$tileColor}
+        </tile>
+    </msapplication>
+</browserconfig>
+XML;
     }
 
     private function generateSafariPinnedTab(string $content, string $hash): Data
@@ -354,7 +382,11 @@ XML;
             $url,
             $callback,
             $headers,
-            sprintf('<link rel="mask-icon" href="%s" color="%s">', $url, $this->favicons->safariPinnedTabColor)
+            sprintf(
+                '<link rel="mask-icon" href="%s" color="%s">',
+                $this->basePathResolver->prefix($url),
+                $this->favicons->safariPinnedTabColor
+            )
         );
     }
 
@@ -373,8 +405,15 @@ XML;
         $tempOutput = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
         assert($tempOutput !== false, 'Unable to create a temporary file');
 
+        $potrace = $this->favicons->potrace;
+        if ($potrace === null) {
+            throw new RuntimeException(
+                'Unable to generate the silhouette: no potrace binary configured. Set "pwa.favicons.potrace" or disable "use_silhouette".'
+            );
+        }
+
         $command = [
-            $this->favicons->potrace,
+            $potrace,
             '--alphamax', '0',
             '--opttolerance', '0',
             '--turdsize', '0',
@@ -429,12 +468,12 @@ XML;
     }
 
     /**
-     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string}[]
      */
     private function getFaviconSizes(): array
     {
         $sizes = [
-            //Always
+            // Always
             [
                 'url' => '/favicon.ico',
                 'width' => 16,
@@ -459,7 +498,7 @@ XML;
                 'mimetype' => 'image/png',
                 'rel' => 'icon',
             ],
-            //High resolution iOS
+            // High resolution iOS
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 180,
@@ -468,7 +507,7 @@ XML;
                 'mimetype' => 'image/png',
                 'rel' => 'apple-touch-icon',
             ],
-            //High resolution chrome
+            // High resolution chrome
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 192,
@@ -701,7 +740,7 @@ XML;
         if ($this->favicons->lowResolution === true) {
             $sizes = [
                 ...$sizes,
-                //Prior iOS 6
+                // Prior iOS 6
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 57,
@@ -727,7 +766,7 @@ XML;
                     'rel' => 'apple-touch-icon',
                 ],
 
-                //Prior iOS 7
+                // Prior iOS 7
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 60,
@@ -761,7 +800,7 @@ XML;
                     'rel' => 'apple-touch-icon',
                 ],
 
-                //Other resolution
+                // Other resolution
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 36,

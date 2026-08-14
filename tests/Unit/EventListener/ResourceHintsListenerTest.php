@@ -11,6 +11,7 @@ use ReflectionClass;
 use SpomkyLabs\PwaBundle\Dto\PreloadResource;
 use SpomkyLabs\PwaBundle\Dto\ResourceHints;
 use SpomkyLabs\PwaBundle\EventListener\ResourceHintsListener;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -292,7 +293,13 @@ final class ResourceHintsListenerTest extends TestCase
             ->method('getPublicPath')
             ->willReturnCallback(fn (string $path): string => '/' . $path);
 
-        $resourceHintsBuilder = new ResourceHintsBuilder($denormalizer, $assetMapper, $config, []);
+        $resourceHintsBuilder = new ResourceHintsBuilder(
+            $denormalizer,
+            $assetMapper,
+            $config,
+            [],
+            new BasePathResolver()
+        );
 
         return new ResourceHintsListener($resourceHintsBuilder);
     }
@@ -301,8 +308,6 @@ final class ResourceHintsListenerTest extends TestCase
         Request $request,
         int $requestType = HttpKernelInterface::MAIN_REQUEST
     ): RequestEvent {
-        $kernel = $this->createMock(HttpKernelInterface::class);
-
-        return new RequestEvent($kernel, $request, $requestType);
+        return new RequestEvent(static::createStub(HttpKernelInterface::class), $request, $requestType);
     }
 }

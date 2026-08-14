@@ -28,7 +28,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'HeadlessChrome/1.0');
 
@@ -46,7 +46,7 @@ final class ScreenshotListenerTest extends TestCase
         // Given
         $listener = new ScreenshotListener(null, 'HeadlessChrome');
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'HeadlessChrome/1.0');
 
@@ -69,7 +69,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
 
         $event = new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
@@ -90,7 +90,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
 
@@ -112,7 +112,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64) HeadlessChrome/1.0');
 
@@ -134,7 +134,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener = new ScreenshotListener($profiler);
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'PWAScreenshotBot/1.0');
 
@@ -151,13 +151,13 @@ final class ScreenshotListenerTest extends TestCase
     {
         // Given
         $listener = new ScreenshotListener(null, 'HeadlessChrome');
-        $logger = $this->createMock(LoggerInterface::class);
+        $logger = static::createStub(LoggerInterface::class);
 
         // When
         $listener->setLogger($logger);
 
         // Then
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'HeadlessChrome/1.0');
 
@@ -172,8 +172,7 @@ final class ScreenshotListenerTest extends TestCase
     public function itLogsDebugMessages(): void
     {
         // Given
-        $profiler = $this->createMock(Profiler::class);
-        $listener = new ScreenshotListener($profiler, 'HeadlessChrome');
+        $listener = new ScreenshotListener(static::createStub(Profiler::class), 'HeadlessChrome');
 
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(static::atLeastOnce())
@@ -181,7 +180,7 @@ final class ScreenshotListenerTest extends TestCase
 
         $listener->setLogger($logger);
 
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = static::createStub(HttpKernelInterface::class);
         $request = new Request();
         $request->headers->set('user-agent', 'HeadlessChrome/1.0');
 

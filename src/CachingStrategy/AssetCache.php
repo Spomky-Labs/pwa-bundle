@@ -14,6 +14,7 @@ use const JSON_UNESCAPED_UNICODE;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\ExpirationPlugin;
@@ -40,6 +41,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
         private readonly AssetMapperInterface $assetMapper,
         private readonly SerializerInterface $serializer,
+        private readonly BasePathResolver $basePathResolver,
         #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
@@ -62,13 +64,15 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         ]), true);
         assert(is_array($urls));
         /** @var array<string> $urls */
-
         $cacheName = $this->workbox->assetCache->cacheName ?? 'assets';
         $strategy = WorkboxCacheStrategy::create(
             $this->workbox->enabled && $this->workbox->assetCache->enabled,
             true,
             CacheStrategyInterface::STRATEGY_CACHE_FIRST,
-            sprintf("({url}) => url.pathname.startsWith('%s')", $this->assetPublicPrefix),
+            sprintf(
+                "({url}) => url.pathname.startsWith('%s')",
+                $this->basePathResolver->prefix($this->assetPublicPrefix)
+            ),
         )
             ->withName($cacheName)
             ->withPlugin(
@@ -101,7 +105,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         $assets = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
             if (preg_match($this->workbox->assetCache->regex, (string) $asset->publicPath) === 1) {
-                $assets[] = $asset->publicPath;
+                $assets[] = $this->basePathResolver->prefix($asset->publicPath);
             }
         }
         $this->logger->debug('Preloading assets', [

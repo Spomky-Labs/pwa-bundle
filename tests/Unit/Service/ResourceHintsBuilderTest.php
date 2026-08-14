@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\PreloadResource;
 use SpomkyLabs\PwaBundle\Dto\ResourceHints;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -460,6 +461,6 @@ final class ResourceHintsBuilderTest extends TestCase
 
         $assetMapper ??= $this->createMock(AssetMapperInterface::class);
 
-        return new ResourceHintsBuilder($denormalizer, $assetMapper, $config, $workboxConfig);
+        return new ResourceHintsBuilder($denormalizer, $assetMapper, $config, $workboxConfig, new BasePathResolver());
     }
 }

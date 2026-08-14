@@ -23,8 +23,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itSupportsScreenshotNormalization(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
         $screenshot = new Screenshot();
 
@@ -39,8 +39,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itDoesNotSupportOtherTypes(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
         $object = new stdClass();
 
@@ -55,8 +55,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itReturnsCorrectSupportedTypes(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
         // When
@@ -71,8 +71,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itNormalizesScreenshotWithWidthAndHeight(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
@@ -109,8 +109,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itNormalizesScreenshotWithNarrowFormFactor(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
@@ -138,8 +138,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itNormalizesScreenshotWithExplicitFormFactor(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
@@ -166,8 +166,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itNormalizesScreenshotWithoutDimensions(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
@@ -193,8 +193,8 @@ final class ScreenshotNormalizerTest extends TestCase
     public function itFiltersNullValuesFromResult(): void
     {
         // Given
-        $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $assetMapper = static::createStub(AssetMapperInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $normalizer = new ScreenshotNormalizer($assetMapper, $imageProcessor);
 
@@ -225,7 +225,7 @@ final class ScreenshotNormalizerTest extends TestCase
     {
         // Given
         $assetMapper = $this->createMock(AssetMapperInterface::class);
-        $imageProcessor = $this->createMock(ImageProcessorInterface::class);
+        $imageProcessor = static::createStub(ImageProcessorInterface::class);
 
         $assetMapper->method('getAsset')
             ->willReturn(null);
