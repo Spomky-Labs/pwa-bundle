@@ -9,6 +9,12 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @deprecated since 1.6.0, will be removed in 2.0.0. It decides for the application that a
+ * click opens a given URL, that downloads are chunked into a fixed IndexedDB schema and that
+ * the notification title is rewritten. Handle the "backgroundfetchsuccess" event in your own
+ * service worker source instead.
+ */
 final readonly class BackgroundFetchCache implements ServiceWorkerRuleInterface
 {
     private Workbox $workbox;

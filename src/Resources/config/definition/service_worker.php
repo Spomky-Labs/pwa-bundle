@@ -231,6 +231,12 @@ return static function (DefinitionConfigurator $definition): void {
             'Whether to enable navigation preload. This speeds up navigation requests by making the network request in parallel with service worker boot-up. Note: Do not enable if you are precaching HTML pages (e.g., with offline_fallback or warm_cache_urls), as it would be redundant.'
         )
         ->end()
+        ->booleanNode('keep_deprecated_helpers')
+        ->defaultTrue()
+        ->info(
+            'Whether to emit the deprecated service worker helpers (registerPushTask, registerMessageTask, registerNotificationAction, registerPeriodicSyncTask, registerBackgroundFetchTask, registerCacheFirst and the background fetch storage). They are deprecated since 1.6.0 and will be removed in 2.0.0: replace them with plain "self.addEventListener()" calls in your own service worker source, then set this option to false.'
+        )
+        ->end()
         ->arrayNode('config')
         ->treatNullLike([])
         ->treatFalseLike([])
@@ -516,13 +522,12 @@ return static function (DefinitionConfigurator $definition): void {
         ->end()
         ->arrayNode('background_fetch')
         ->canBeEnabled()
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.6.0',
+            'The "%node%" option is deprecated and will be removed in 2.0.0. It imposes an IndexedDB schema and a client/service worker protocol that no application reuses as-is. Handle the "backgroundfetchsuccess" event in your own service worker source instead.'
+        )
         ->children()
-        ->scalarNode('db_name')
-        ->info('The IndexDB name where downloads are stored')
-        ->defaultValue('bgfetch-completed')
-        ->cannotBeEmpty()
-        ->example(['bgfetch-completed', 'bgfetch-downloads'])
-        ->end()
         ->scalarNode('db_name')
         ->info('The IndexDB name where downloads are stored')
         ->defaultValue('bgfetch-completed')

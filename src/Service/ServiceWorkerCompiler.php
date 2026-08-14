@@ -182,6 +182,11 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         if ($this->serviceWorker->workbox->config->useCDN) {
             return [];
         }
+        // Only the deprecated helpers rely on self.idb. Once they are switched off, the
+        // library is never imported, so there is nothing to copy to the public folder.
+        if ($this->serviceWorker->workbox->keepDeprecatedHelpers === false) {
+            return [];
+        }
         $fileLocator = new FileLocator(__DIR__ . '/../Resources');
         $resourcePath = $fileLocator->locate('idb');
 

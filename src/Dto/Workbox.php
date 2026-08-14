@@ -46,11 +46,24 @@ final class Workbox
     #[SerializedName('clear_cache')]
     public bool $clearCache = true;
 
+    /**
+     * @deprecated since 1.6.0, will be removed in 2.0.0. Handle the "backgroundfetchsuccess"
+     * event in your own service worker source instead.
+     */
     #[SerializedName('background_fetch')]
+    // @phpstan-ignore-next-line the deprecated type is the point: both go away in 2.0.0
     public null|BackgroundFetch $backgroundFetch = null;
 
     #[SerializedName('navigation_preload')]
     public bool $navigationPreload = false;
+
+    /**
+     * Switch controlling WorkboxDeprecatedHelpers. Not deprecated itself: it is the way out,
+     * and the deprecation notice is triggered from the bundle extension when it is left to
+     * true. Disappears in 2.0.0 along with the helpers it keeps.
+     */
+    #[SerializedName('keep_deprecated_helpers')]
+    public bool $keepDeprecatedHelpers = true;
 
     public WorkboxConfig $config;
 
