@@ -188,8 +188,15 @@ jobs:
       - name: "Downgrade phpdocumentor/reflection-docblock"
         run: composer require -W phpdocumentor/reflection-docblock ^5.3
 
+      # Castor requires PHP >= 8.4, while this matrix also covers 8.2 and 8.3. Inside a
+      # container the castor task is a plain passthrough, so run PHPUnit directly here,
+      # the way the syntax check and composer validation jobs already do.
       - name: Run PHPUnit
-        run: castor phpunit
+        run: |
+          composer exec -- phpunit-11 \
+            --coverage-xml .ci-tools/coverage \
+            --log-junit=.ci-tools/coverage/junit.xml \
+            --configuration .ci-tools/phpunit.xml.dist
 
   infection:
     name: "🧬 Mutation Testing"
