@@ -71,7 +71,7 @@ castor prepare_pr            # Runs: ecs_fix → rector_fix → phpstan_baseline
 - Strict types required in all PHP files
 - Architecture boundaries enforced by Deptrac (see `.ci-tools/deptrac.yaml`)
 - Git-Flow branching model
-- Main branch for PRs: `1.5.x`
+- Main branch for PRs: `1.6.x`
 
 
 ## grepai - Semantic Code Search
