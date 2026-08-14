@@ -1,5 +1,22 @@
 # @spomky-labs/pwa-bundle
 
+> [!WARNING]
+> **Deprecated since 1.6.0, removed in 2.0.0.**
+>
+> These controllers are leaving the bundle. Wrapping a browser API in a generic, configurable
+> Stimulus controller turns out to be a lot of abstraction for very little reuse: every project
+> wants its own behaviour, its own UI and its own error handling. Several of them also push
+> real-time, client-side interactions through the server and back, a round trip nobody really
+> asks for.
+>
+> The bundle keeps what it does well: the web manifest, the service worker, the favicons and the
+> icons.
+>
+> **What to do:** copy the controllers you use into your own application and register them there.
+> They are plain Stimulus controllers with no dependency on the bundle, so nothing is lost. The
+> full rationale is in
+> [this comment](https://github.com/Spomky-Labs/pwa-bundle/issues/372#issuecomment-5295710299).
+
 Web APIs Stimulus controllers for your Progressive Web Applications.
 
 This package provides ready-to-use [Stimulus](https://stimulus.hotwired.dev/) controllers that leverage modern Web APIs to enhance your Progressive Web Applications with native-like features.
