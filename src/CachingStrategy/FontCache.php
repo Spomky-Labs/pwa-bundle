@@ -14,6 +14,7 @@ use const JSON_UNESCAPED_UNICODE;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CacheableResponsePlugin;
@@ -35,6 +36,7 @@ final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
         ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly AssetMapperInterface $assetMapper,
         private readonly SerializerInterface $serializer,
+        private readonly BasePathResolver $basePathResolver,
         #[Autowire(param: 'kernel.debug')]
         bool $debug,
     ) {
@@ -96,7 +98,7 @@ final class FontCache implements HasCacheStrategiesInterface, CanLogInterface
         $fonts = [];
         foreach ($this->assetMapper->allAssets() as $asset) {
             if (preg_match($this->workbox->fontCache->regex, (string) $asset->publicPath) === 1) {
-                $fonts[] = $asset->publicPath;
+                $fonts[] = $this->basePathResolver->prefix($asset->publicPath);
             }
         }
         $this->logger->debug('Preloading fonts', [

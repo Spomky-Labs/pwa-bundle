@@ -10,6 +10,7 @@ deptrac:
           collectors:
               - { type: classLike, value: '^Facebook\\WebDriver' }
               - { type: classLike, value: '^Nelmio\\SecurityBundle' }
+              - { type: classLike, value: '^Symfony\\Component\\Asset' }
               - { type: classLike, value: '^Symfony\\Component\\AssetMapper' }
               - { type: classLike, value: '^Symfony\\Component\\Config' }
               - { type: classLike, value: '^Symfony\\Component\\Console' }

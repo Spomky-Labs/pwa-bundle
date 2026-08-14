@@ -6,10 +6,16 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 
 use function assert;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final readonly class ServiceWorkerNormalizer implements NormalizerInterface
 {
+    public function __construct(
+        private BasePathResolver $basePathResolver,
+    ) {
+    }
+
     /**
      * @return array{scope?: string, src: string, use_cache?: bool}
      */
@@ -18,7 +24,7 @@ final readonly class ServiceWorkerNormalizer implements NormalizerInterface
         assert($data instanceof ServiceWorker);
 
         $result = [
-            'src' => '/' . trim($data->dest, '/'),
+            'src' => $this->basePathResolver->prefix('/' . trim($data->dest, '/')),
             'scope' => $data->scope,
             'use_cache' => $data->useCache,
         ];

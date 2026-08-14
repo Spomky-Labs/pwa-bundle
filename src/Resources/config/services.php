@@ -21,6 +21,7 @@ use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
 use SpomkyLabs\PwaBundle\MatchCallbackHandler\MatchCallbackHandlerInterface;
 use SpomkyLabs\PwaBundle\Service\ApplicationIconCompiler;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
@@ -56,6 +57,14 @@ return static function (ContainerConfigurator $configurator): void {
 
     $container->instanceof(CanLogInterface::class)->tag(LoggerCompilerPass::TAG);
     $container->instanceof(FileCompilerInterface::class)->tag('spomky_labs_pwa.compiler');
+
+    /* Base path */
+    $container->set(BasePathResolver::class)
+        ->args([
+            '$context' => service('assets.context')
+                ->nullOnInvalid(),
+        ])
+    ;
 
     /* Manifest */
     $container->set(ManifestBuilder::class)

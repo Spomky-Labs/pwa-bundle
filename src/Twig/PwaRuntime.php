@@ -13,6 +13,7 @@ use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use const PHP_EOL;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
@@ -42,6 +43,7 @@ final readonly class PwaRuntime
         private RequestStack $requestStack,
         private ResourceHintsBuilder $resourceHintsBuilder,
         private SpeculationRulesBuilder $speculationRulesBuilder,
+        private BasePathResolver $basePathResolver,
         #[Autowire(service: 'nelmio_security.csp_listener')]
         private ?ContentSecurityPolicyListener $cspListener = null,
     ) {
@@ -87,7 +89,9 @@ final readonly class PwaRuntime
             $locale,
             $this->manifestPublicUrl
         );
-        $url = $this->assetMapper->getPublicPath($manifestPublicUrl) ?? $manifestPublicUrl;
+        $url = $this->basePathResolver->prefix(
+            $this->assetMapper->getPublicPath($manifestPublicUrl) ?? $manifestPublicUrl
+        );
         if ($this->manifest->useCredentials === true) {
             $useCredentials = ' crossorigin="use-credentials"';
         } else {
@@ -133,7 +137,7 @@ final readonly class PwaRuntime
             return $output;
         }
         $scriptAttributes = $this->createAttributesString($swAttributes);
-        $url = $serviceWorker->dest;
+        $url = $this->basePathResolver->prefix('/' . trim($serviceWorker->dest, '/'));
         $registerOptions = '';
         if ($serviceWorker->scope !== null) {
             $registerOptions .= sprintf(", scope: '%s'", $serviceWorker->scope);
@@ -145,11 +149,11 @@ final readonly class PwaRuntime
             $registerOptions = sprintf(', {%s}', mb_substr($registerOptions, 2));
         }
         if ($serviceWorker->workbox->enabled === true) {
-            $workboxUrl = sprintf(
+            $workboxUrl = $this->basePathResolver->prefix(sprintf(
                 '%s%s',
                 '/' . trim($serviceWorker->workbox->config->workboxPublicUrl, '/'),
                 '/workbox-window.prod.umd.js'
-            );
+            ));
             // Using UMD version instead of ESM to avoid importmap dependency issues
             // This prevents "bare specifier not remapped" errors regardless of script order.
             // See: https://github.com/Spomky-Labs/pwa-bundle/pull/393

@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\CachingStrategy;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use function sprintf;
@@ -25,6 +26,7 @@ final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
         ServiceWorkerBuilder $serviceWorkerBuilder,
         #[Autowire(service: 'asset_mapper.public_assets_path_resolver')]
         PublicAssetsPathResolverInterface $publicAssetsPathResolver,
+        private readonly BasePathResolver $basePathResolver,
     ) {
         $this->workbox = $serviceWorkerBuilder->create()
             ->workbox;
@@ -41,7 +43,7 @@ final class ImageCache implements HasCacheStrategiesInterface, CanLogInterface
                 CacheStrategyInterface::STRATEGY_CACHE_FIRST,
                 sprintf(
                     "({request, url}) => (request.destination === 'image' && !url.pathname.startsWith('%s'))",
-                    $this->assetPublicPrefix
+                    $this->basePathResolver->prefix($this->assetPublicPrefix)
                 )
             )
                 ->withName($this->workbox->imageCache->cacheName ?? 'images'),

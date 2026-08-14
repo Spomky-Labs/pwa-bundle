@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\EventListener;
 
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -35,6 +36,7 @@ final readonly class EarlyHintsListener
         private array $config,
         #[Autowire(param: 'spomky_labs_pwa.manifest.public_url')]
         private string $manifestPublicUrl,
+        private BasePathResolver $basePathResolver,
     ) {
         $this->manifest = $manifestBuilder->create();
     }
@@ -86,7 +88,7 @@ final readonly class EarlyHintsListener
         // Preload manifest if enabled
         $preloadManifest = (bool) ($this->config['preload_manifest'] ?? true);
         if ($this->manifest->enabled && $preloadManifest) {
-            $manifestUrl = '/' . trim($this->manifestPublicUrl, '/');
+            $manifestUrl = $this->basePathResolver->prefix('/' . trim($this->manifestPublicUrl, '/'));
             $links[] = (new Link(Link::REL_PRELOAD, $manifestUrl))
                 ->withAttribute('as', 'fetch')
                 ->withAttribute('crossorigin', 'anonymous');
@@ -96,7 +98,7 @@ final readonly class EarlyHintsListener
         $preloadServiceWorker = (bool) ($this->config['preload_serviceworker'] ?? false);
         $serviceWorker = $this->manifest->serviceWorker;
         if ($serviceWorker !== null && $serviceWorker->enabled && $preloadServiceWorker) {
-            $swUrl = $serviceWorker->dest;
+            $swUrl = $this->basePathResolver->prefix('/' . trim($serviceWorker->dest, '/'));
             $links[] = (new Link(Link::REL_PRELOAD, $swUrl))
                 ->withAttribute('as', 'script');
         }

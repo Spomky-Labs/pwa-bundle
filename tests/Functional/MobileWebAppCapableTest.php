@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 use PHPUnit\Framework\Attributes\Test;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
@@ -154,7 +155,8 @@ final class MobileWebAppCapableTest extends KernelTestCase
             '/manifest.json',
             static::getContainer()->get('request_stack'),
             static::getContainer()->get(ResourceHintsBuilder::class),
-            static::getContainer()->get(SpeculationRulesBuilder::class)
+            static::getContainer()->get(SpeculationRulesBuilder::class),
+            static::getContainer()->get(BasePathResolver::class)
         );
     }
 }

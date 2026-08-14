@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Dto\WorkboxConfig;
+use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\WorkboxImport;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -188,6 +189,6 @@ final class WorkboxImportTest extends TestCase
 
         $serviceWorkerBuilder = new ServiceWorkerBuilder($denormalizer, []);
 
-        return new WorkboxImport($serviceWorkerBuilder);
+        return new WorkboxImport($serviceWorkerBuilder, new BasePathResolver());
     }
 }
