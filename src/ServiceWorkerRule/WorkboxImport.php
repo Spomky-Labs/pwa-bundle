@@ -10,7 +10,9 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(priority: 1024)]
 final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
 {
     private readonly Workbox $workbox;
@@ -102,11 +104,6 @@ DEBUG_COMMENT;
         ]);
 
         return $declaration;
-    }
-
-    public static function getPriority(): int
-    {
-        return 1024;
     }
 
     public function setLogger(LoggerInterface $logger): void

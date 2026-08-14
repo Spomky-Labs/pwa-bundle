@@ -6,7 +6,9 @@ namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
+#[AsTaggedItem(priority: 1023)]
 final readonly class WorkboxHelpers implements ServiceWorkerRuleInterface
 {
     private Workbox $workbox;
@@ -408,10 +410,5 @@ async function openCache(name) {
 }
 
 CUSTOM_HELPERS;
-    }
-
-    public static function getPriority(): int
-    {
-        return 1023;
     }
 }
