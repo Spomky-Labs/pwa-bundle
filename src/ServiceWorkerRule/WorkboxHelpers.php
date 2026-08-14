@@ -182,6 +182,14 @@ function registerCacheName(name) {
   return name;
 }
 
+// Called on install by the cache clearing rule, with every cache name currently stored.
+// Return the ones to delete. Caches opened by the application are unknown to
+// registerCacheName(), so this is how they get purged.
+const clearCacheListeners = [];
+function registerClearCacheListener(callback) {
+  clearCacheListeners.push(callback);
+}
+
 async function openBackgroundFetchDatabase() {
   return await self.idb.openDB('{$bgFetchDbName}', 1, {
     upgrade(db) {
