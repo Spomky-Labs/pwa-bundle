@@ -4,18 +4,36 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle;
 
+use function extension_loaded;
 use function in_array;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
+use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImagickImageProcessor;
+use function sprintf;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 final class SpomkyLabsPwaBundle extends AbstractBundle
 {
+    /**
+     * The built-in image processors are only registered when the PHP extension they
+     * are built on is loaded (see Resources/config/services.php).
+     *
+     * @var array<string, string>
+     */
+    private const IMAGE_PROCESSOR_EXTENSIONS = [
+        'pwa.image_processor.imagick' => 'imagick',
+        ImagickImageProcessor::class => 'imagick',
+        'pwa.image_processor.gd' => 'gd',
+        GDImageProcessor::class => 'gd',
+    ];
+
     protected string $extensionAlias = 'pwa';
 
     public function configure(DefinitionConfigurator $definition): void
@@ -39,6 +57,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         /** @var string|null $imageProcessor */
         $imageProcessor = $config['image_processor'];
         if ($imageProcessor !== null) {
+            $this->checkImageProcessorRequirements($imageProcessor);
             $builder->setAlias(ImageProcessorInterface::class, $imageProcessor);
         }
 
@@ -116,6 +135,26 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $this->setAssetMapperPath($builder);
+    }
+
+    /**
+     * Aliasing a built-in processor whose PHP extension is missing would otherwise fail
+     * much later, inside AutowirePass, with a bare "You have requested a non-existent
+     * service pwa.image_processor.imagick" that points at the container instead of at
+     * the missing extension.
+     */
+    private function checkImageProcessorRequirements(string $imageProcessor): void
+    {
+        $extension = self::IMAGE_PROCESSOR_EXTENSIONS[$imageProcessor] ?? null;
+        if ($extension === null || extension_loaded($extension)) {
+            return;
+        }
+
+        throw new InvalidConfigurationException(sprintf(
+            'The image processor "%s" is configured under "pwa.image_processor" but the "%s" PHP extension is not loaded. Enable it, or select another image processor.',
+            $imageProcessor,
+            $extension
+        ));
     }
 
     private function setAssetMapperPath(ContainerBuilder $builder): void
