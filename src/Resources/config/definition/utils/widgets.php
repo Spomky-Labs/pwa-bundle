@@ -33,7 +33,7 @@ function setupWidgets(): ArrayNodeDefinition
                 'An array of icons to be used for the widget. If missing, the icons manifest member is used instead. Icons larger than 1024x1024 are ignored.'
             )
         )
-        ->append(getScreenshotsNode('The screenshots of the widget') ->requiresAtLeastOneElement())
+        ->append(getScreenshotsNode('The screenshots of the widget')->requiresAtLeastOneElement())
         ->scalarNode('tag')
         ->isRequired()
         ->info('A string used to reference the widget in the PWA service worker.')

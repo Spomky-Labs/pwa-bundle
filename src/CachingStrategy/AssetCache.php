@@ -62,7 +62,6 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
         ]), true);
         assert(is_array($urls));
         /** @var array<string> $urls */
-
         $cacheName = $this->workbox->assetCache->cacheName ?? 'assets';
         $strategy = WorkboxCacheStrategy::create(
             $this->workbox->enabled && $this->workbox->assetCache->enabled,

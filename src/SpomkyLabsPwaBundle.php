@@ -91,36 +91,36 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
             $builder->setAlias('spomky_labs_pwa.logger', $logger);
         }
 
-        /*** Manifest ***/
+        /* Manifest */
         $builder->setParameter('spomky_labs_pwa.manifest.enabled', $manifestConfig['enabled']);
         $builder->setParameter('spomky_labs_pwa.manifest.public_url', $manifestConfig['public_url'] ?? null);
         $builder->setParameter('spomky_labs_pwa.manifest.config', $manifestConfig);
 
-        /*** Favicons ***/
+        /* Favicons */
         /** @var array<string, mixed> $faviconsConfig */
         $faviconsConfig = $config['favicons'];
         $builder->setParameter('spomky_labs_pwa.favicons.config', $faviconsConfig);
 
-        /*** Service Worker ***/
+        /* Service Worker */
         $builder->setParameter('spomky_labs_pwa.sw.enabled', $serviceWorkerConfig['enabled']);
         $builder->setParameter('spomky_labs_pwa.sw.public_url', $serviceWorkerConfig['dest'] ?? null);
         $builder->setParameter('spomky_labs_pwa.sw.config', $serviceWorkerConfig);
 
-        /*** Resource Hints ***/
+        /* Resource Hints */
         /** @var array{enabled: bool} $resourceHintsConfig */
         $resourceHintsConfig = $config['resource_hints'] ?? [
             'enabled' => false,
         ];
         $builder->setParameter('spomky_labs_pwa.resource_hints.config', $resourceHintsConfig);
 
-        /*** Early Hints ***/
+        /* Early Hints */
         /** @var array{enabled: bool} $earlyHintsConfig */
         $earlyHintsConfig = $config['early_hints'] ?? [
             'enabled' => false,
         ];
         $builder->setParameter('spomky_labs_pwa.early_hints.config', $earlyHintsConfig);
 
-        /*** Speculation Rules ***/
+        /* Speculation Rules */
         /** @var array{enabled: bool} $speculationRulesConfig */
         $speculationRulesConfig = $config['speculation_rules'] ?? [
             'enabled' => false,

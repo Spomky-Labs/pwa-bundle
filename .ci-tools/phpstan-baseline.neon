@@ -520,7 +520,7 @@ parameters:
 			path: ../src/SpomkyLabsPwaBundle.php
 
 		-
-			rawMessage: 'Parameter #1 $config (array<string, mixed>) of method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::loadExtension() should be contravariant with parameter $config (array) of method Symfony\Component\HttpKernel\Bundle\AbstractBundle::loadExtension()'
+			rawMessage: 'Parameter #1 $config (array<string, mixed>) of method SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::loadExtension() should be contravariant with parameter $config (array) of method Symfony\Component\DependencyInjection\Kernel\AbstractBundle::loadExtension()'
 			identifier: method.childParameterType
 			count: 1
 			path: ../src/SpomkyLabsPwaBundle.php

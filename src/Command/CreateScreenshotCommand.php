@@ -6,7 +6,6 @@ namespace SpomkyLabs\PwaBundle\Command;
 
 use function assert;
 use Facebook\WebDriver\WebDriverDimension;
-use function is_int;
 use function is_string;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
@@ -145,8 +144,8 @@ final class CreateScreenshotCommand extends Command
         $data = file_get_contents($tmpName);
         assert(is_string($data));
         ['width' => $width, 'height' => $height] = $this->imageProcessor->getSizes($data);
-        assert(is_int($width) && $width >= 1);
-        assert(is_int($height) && $height >= 1);
+        assert($width >= 1);
+        assert($height >= 1);
         $configuration = Configuration::create($width, $height, $format);
         $data = $this->imageProcessor->process($data, null, null, null, $configuration);
         file_put_contents($tmpName, $data);

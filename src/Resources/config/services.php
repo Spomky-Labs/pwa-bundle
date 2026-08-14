@@ -57,7 +57,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->instanceof(CanLogInterface::class)->tag(LoggerCompilerPass::TAG);
     $container->instanceof(FileCompilerInterface::class)->tag('spomky_labs_pwa.compiler');
 
-    /*** Manifest ***/
+    /* Manifest */
     $container->set(ManifestBuilder::class)
         ->args([
             '$config' => param('spomky_labs_pwa.manifest.config'),
@@ -65,7 +65,7 @@ return static function (ContainerConfigurator $configurator): void {
     ;
     $container->set(ManifestCompiler::class);
 
-    /*** Favicons ***/
+    /* Favicons */
     $container->set(FaviconsBuilder::class)
         ->args([
             '$config' => param('spomky_labs_pwa.favicons.config'),
@@ -78,7 +78,7 @@ return static function (ContainerConfigurator $configurator): void {
     $container->set(ScreenshotUrlGenerator::class);
     $container->set(ScreenshotAttributeCollector::class);
 
-    /*** Service Worker ***/
+    /* Service Worker */
     $container->set(ServiceWorkerBuilder::class)
         ->args([
             '$config' => param('spomky_labs_pwa.sw.config'),
@@ -86,7 +86,7 @@ return static function (ContainerConfigurator $configurator): void {
     ;
     $container->set(ServiceWorkerCompiler::class);
 
-    /*** Resource Hints ***/
+    /* Resource Hints */
     $container->set(ResourceHintsBuilder::class)
         ->args([
             '$config' => param('spomky_labs_pwa.resource_hints.config'),
@@ -94,14 +94,14 @@ return static function (ContainerConfigurator $configurator): void {
         ])
     ;
 
-    /*** Speculation Rules ***/
+    /* Speculation Rules */
     $container->set(SpeculationRulesBuilder::class)
         ->args([
             '$config' => param('spomky_labs_pwa.speculation_rules.config'),
         ])
     ;
 
-    /*** Commands ***/
+    /* Commands */
     $container->set(CompileCommand::class);
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
         $container->set(CreateScreenshotCommand::class);
@@ -112,14 +112,14 @@ return static function (ContainerConfigurator $configurator): void {
     }
     $container->set(ListCacheStrategiesCommand::class);
 
-    /*** Normalizers ***/
+    /* Normalizers */
     $container->load('SpomkyLabs\\PwaBundle\\Normalizer\\', '../../Normalizer/*')
         ->tag('serializer.normalizer', [
             'priority' => 1024,
         ])
     ;
 
-    /*** Image Processors ***/
+    /* Image Processors */
     if (extension_loaded('imagick')) {
         $container
             ->set(ImagickImageProcessor::class)
@@ -133,7 +133,7 @@ return static function (ContainerConfigurator $configurator): void {
         ;
     }
 
-    /*** Event Listeners and Subscribers ***/
+    /* Event Listeners and Subscribers */
     $container->set(FileCompiler::class);
     $container->set(FileCompileEventListener::class);
     $container->set(ManifestScreenshotListener::class);
@@ -151,7 +151,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->tag('twig.runtime')
     ;
 
-    /*** Service Worker Compiler Rules ***/
+    /* Service Worker Compiler Rules */
     $container->instanceof(ServiceWorkerRuleInterface::class)
         ->tag('spomky_labs_pwa.service_worker_rule')
     ;

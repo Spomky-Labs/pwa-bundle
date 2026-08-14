@@ -12,7 +12,7 @@ final readonly class CacheableResponsePlugin implements CachePluginInterface, Ha
     private const NAME = 'CacheableResponsePlugin';
 
     /**
-     * @var array{options?: array{statuses: array<int>, headers?: array<string, string>}}
+     * @var array{statuses?: array<int>, headers?: array<string, string>}
      */
     private array $options;
 

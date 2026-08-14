@@ -37,7 +37,7 @@ final readonly class ScreenshotConfiguration
     }
 
     /**
-     * @param array{url?: string, route?: string, parameters?: array<string, mixed>, output?: string, filename?: string, sizes?: array<string>|string, platform?: string} $data
+     * @param array{url?: string, route?: string, parameters?: array<string, mixed>, output?: string, filename?: string, sizes?: array<string>|string, platform?: string, locale?: null|string, label?: null|string, format?: string} $data
      */
     public static function fromArray(array $data, string $defaultOutput): self
     {

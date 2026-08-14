@@ -48,8 +48,8 @@ final readonly class ExpirationPlugin implements CachePluginInterface, HasDebugI
     public function getDebug(): array
     {
         return [
-            'maxEntries' => $this->options['maxEntries'] ?? null,
-            'maxAgeSeconds' => $this->options['maxAgeSeconds'] ?? null,
+            'maxEntries' => $this->options['maxEntries'],
+            'maxAgeSeconds' => $this->options['maxAgeSeconds'],
         ];
     }
 }

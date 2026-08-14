@@ -373,8 +373,15 @@ XML;
         $tempOutput = tempnam(sys_get_temp_dir(), 'safari-pinned-tab');
         assert($tempOutput !== false, 'Unable to create a temporary file');
 
+        $potrace = $this->favicons->potrace;
+        if ($potrace === null) {
+            throw new RuntimeException(
+                'Unable to generate the silhouette: no potrace binary configured. Set "pwa.favicons.potrace" or disable "use_silhouette".'
+            );
+        }
+
         $command = [
-            $this->favicons->potrace,
+            $potrace,
             '--alphamax', '0',
             '--opttolerance', '0',
             '--turdsize', '0',
@@ -429,12 +436,12 @@ XML;
     }
 
     /**
-     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string}[]
      */
     private function getFaviconSizes(): array
     {
         $sizes = [
-            //Always
+            // Always
             [
                 'url' => '/favicon.ico',
                 'width' => 16,
@@ -459,7 +466,7 @@ XML;
                 'mimetype' => 'image/png',
                 'rel' => 'icon',
             ],
-            //High resolution iOS
+            // High resolution iOS
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 180,
@@ -468,7 +475,7 @@ XML;
                 'mimetype' => 'image/png',
                 'rel' => 'apple-touch-icon',
             ],
-            //High resolution chrome
+            // High resolution chrome
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
                 'width' => 192,
@@ -701,7 +708,7 @@ XML;
         if ($this->favicons->lowResolution === true) {
             $sizes = [
                 ...$sizes,
-                //Prior iOS 6
+                // Prior iOS 6
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 57,
@@ -727,7 +734,7 @@ XML;
                     'rel' => 'apple-touch-icon',
                 ],
 
-                //Prior iOS 7
+                // Prior iOS 7
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 60,
@@ -761,7 +768,7 @@ XML;
                     'rel' => 'apple-touch-icon',
                 ],
 
-                //Other resolution
+                // Other resolution
                 [
                     'url' => '/pwa/favicon-%dx%d-%s.png',
                     'width' => 36,

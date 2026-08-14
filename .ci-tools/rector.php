@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveDeadInstanceOfAssertRector;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\ValueObject\PhpVersion;
@@ -33,7 +35,15 @@ $builder->withPaths(
         __DIR__ . '/rector.php',
     ]
 );
-$builder->withSkip([PreferPHPUnitThisCallRector::class]);
+$builder->withSkip([
+    PreferPHPUnitThisCallRector::class,
+    // Rector only sees the highest installed Symfony version, where these assertions are
+    // redundant. The bundle still supports Symfony 6.4 and 7.x, whose signatures are wider.
+    RemoveDeadInstanceOfAssertRector::class,
+    // Symfony 8.1 moved the bundle classes to the DependencyInjection component. The new FQCNs
+    // do not exist on Symfony 6.4 and 7.x, which the bundle still supports.
+    RenameClassRector::class => [__DIR__ . '/../tests/AppKernel.php'],
+]);
 $builder->withParallel();
 $builder->withImportNames();
 
