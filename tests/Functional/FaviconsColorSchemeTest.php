@@ -17,31 +17,6 @@ final class FaviconsColorSchemeTest extends KernelTestCase
     use DarkThemeFaviconsTrait;
 
     #[Test]
-    public function startupImageMediaQueriesAreNotNested(): void
-    {
-        // Given
-        static::bootKernel();
-        $compiler = $this->createCompilerWithDarkTheme();
-
-        // When
-        $medias = $this->getMediaAttributes($compiler, 'apple-touch-startup-image');
-
-        // Then
-        static::assertNotEmpty($medias, 'no startup image was generated');
-        foreach ($medias as $media) {
-            static::assertStringStartsNotWith(
-                '((',
-                $media,
-                'the media query nests a condition in parentheses, which Safari only parses from 16.4 on: ' . $media
-            );
-            static::assertMatchesRegularExpression(
-                '/^\(device-width: .+\) and \(prefers-color-scheme: (light|dark)\)$/',
-                $media
-            );
-        }
-    }
-
-    #[Test]
     public function faviconsAreDeclinedForBothColorSchemes(): void
     {
         // Given

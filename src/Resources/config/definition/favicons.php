@@ -162,6 +162,11 @@ return static function (DefinitionConfigurator $definition): void {
         ->end()
         ->booleanNode('use_start_image')
         ->defaultTrue()
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.6.0',
+            'The "%node%" configuration key is deprecated. Use the "pwa.startup_images.enabled" configuration key instead.'
+        )
         ->info('Use the icon as a start image for the iOS splash screen.')
         ->end()
         ->scalarNode('svg_color')

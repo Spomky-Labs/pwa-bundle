@@ -15,12 +15,9 @@ use SpomkyLabs\PwaBundle\Dto\Favicons;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use function sprintf;
-use Symfony\Component\AssetMapper\AssetMapperInterface;
-use Symfony\Component\AssetMapper\MappedAsset;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use Symfony\UX\Icons\IconRendererInterface;
 
 final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
@@ -31,8 +28,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     public function __construct(
         private readonly null|ImageProcessorInterface $imageProcessor,
         FaviconsBuilder $faviconsBuilder,
-        private readonly AssetMapperInterface $assetMapper,
-        private readonly ?IconRendererInterface $renderer,
+        private readonly SourceImageResolver $sourceImageResolver,
         private readonly BasePathResolver $basePathResolver,
         #[Autowire(param: 'kernel.debug')]
         public readonly bool $debug,
@@ -96,14 +92,12 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     $size['format'],
                     $theme->backgroundColor,
                     $theme->borderRadius,
-                    $size['imageScale'] ?? $theme->imageScale,
+                    $theme->imageScale,
                     $this->favicons->monochrome
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-                $media = $hasFixedUrl
-                    ? ($size['media'] ?? null)
-                    : $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
+                $media = $hasFixedUrl ? null : $this->getColorSchemeMediaQuery($sourceInfo['media']);
 
                 // Two sizes can describe the very same file: the low resolution block declares 72x72 both
                 // as an apple-touch-icon and as an icon, for one identical configuration. Both links are
@@ -152,26 +146,17 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     }
 
     /**
-     * Combines the media query carried by a size with the one of the color scheme it is generated for.
-     *
-     * The two conditions are concatenated as-is: each of them is already a chain of parenthesized media
-     * features, and wrapping the whole in an extra pair of parentheses would turn it into a Media Queries
-     * Level 4 nested condition. Safari only parses that syntax from 16.4 on, and a browser that fails to
-     * parse a media query discards it entirely, together with the startup image it carries.
+     * The condition an icon is declined under, which is the color scheme it is generated for, and nothing
+     * else as long as no dark theme is configured.
      */
-    private function combineMediaQueries(null|string $sizeMedia, null|string $schemeMedia): null|string
+    private function getColorSchemeMediaQuery(null|string $schemeMedia): null|string
     {
         if ($this->favicons->dark === null) {
-            return $sizeMedia;
+            return null;
         }
 
         // The default theme is the light one as soon as a dark theme is defined.
-        $schemeMedia ??= '(prefers-color-scheme: light)';
-        if ($sizeMedia === null) {
-            return $schemeMedia;
-        }
-
-        return $sizeMedia . ' and ' . $schemeMedia;
+        return $schemeMedia ?? '(prefers-color-scheme: light)';
     }
 
     /**
@@ -436,35 +421,12 @@ XML;
      */
     private function getFaviconAsset(Asset $asset, array $attributes): string
     {
-        if (str_starts_with($asset->src, '/')) {
-            return $this->readAssetFile($asset->src);
-        }
-        if ($this->renderer !== null && str_contains($asset->src, ':')) {
-            return $this->renderer->renderIcon($asset->src, $attributes);
-        }
-
-        // Guarded rather than asserted: assertions are compiled out in production, where a missing asset
-        // used to surface as a property read on null from inside this method.
-        $mappedAsset = $this->assetMapper->getAsset($asset->src);
-        if (! $mappedAsset instanceof MappedAsset) {
-            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be found.', $asset->src));
-        }
-
-        return $mappedAsset->content ?? $this->readAssetFile($mappedAsset->sourcePath);
-    }
-
-    private function readAssetFile(string $path): string
-    {
-        $content = @file_get_contents($path);
-        if ($content === false) {
-            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be read.', $path));
-        }
-
-        return $content;
+        return $this->sourceImageResolver->resolve($asset, $attributes)
+            ->content;
     }
 
     /**
-     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string, fixedUrl?: bool}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, fixedUrl?: bool}[]
      */
     private function getFaviconSizes(): array
     {
@@ -524,243 +486,6 @@ XML;
                 'rel' => 'icon',
             ],
         ];
-
-        if ($this->favicons->useStartImage === true) {
-
-            // iOS only shows a startup image whose dimensions match the screen exactly, so an entry is
-            // needed for every distinct point size Apple ships. In portrait the image is
-            // device-width x device-height, in landscape the two are swapped: device-width and
-            // device-height always describe the screen in its natural, portrait orientation.
-            $startupImages = [
-                // iPad Pro 13" (M4)
-                [
-                    'width' => 2064,
-                    'height' => 2752,
-                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2752,
-                    'height' => 2064,
-                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                // iPad Pro 11" (M4)
-                [
-                    'width' => 1668,
-                    'height' => 2420,
-                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2420,
-                    'height' => 1668,
-                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 2048,
-                    'height' => 2732,
-                    'media' => '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2732,
-                    'height' => 2048,
-                    'media' => '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1668,
-                    'height' => 2388,
-                    'media' => '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2388,
-                    'height' => 1668,
-                    'media' => '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1536,
-                    'height' => 2048,
-                    'media' => '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2048,
-                    'height' => 1536,
-                    'media' => '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1640,
-                    'height' => 2360,
-                    'media' => '(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2360,
-                    'height' => 1640,
-                    'media' => '(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1668,
-                    'height' => 2224,
-                    'media' => '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2224,
-                    'height' => 1668,
-                    'media' => '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1620,
-                    'height' => 2160,
-                    'media' => '(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2160,
-                    'height' => 1620,
-                    'media' => '(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1488,
-                    'height' => 2266,
-                    'media' => '(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2266,
-                    'height' => 1488,
-                    'media' => '(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1320,
-                    'height' => 2868,
-                    'media' => '(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2868,
-                    'height' => 1320,
-                    'media' => '(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1206,
-                    'height' => 2622,
-                    'media' => '(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2622,
-                    'height' => 1206,
-                    'media' => '(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1290,
-                    'height' => 2796,
-                    'media' => '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2796,
-                    'height' => 1290,
-                    'media' => '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1179,
-                    'height' => 2556,
-                    'media' => '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2556,
-                    'height' => 1179,
-                    'media' => '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1170,
-                    'height' => 2532,
-                    'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2532,
-                    'height' => 1170,
-                    'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1284,
-                    'height' => 2778,
-                    'media' => '(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2778,
-                    'height' => 1284,
-                    'media' => '(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1125,
-                    'height' => 2436,
-                    'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2436,
-                    'height' => 1125,
-                    'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1242,
-                    'height' => 2688,
-                    'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2688,
-                    'height' => 1242,
-                    'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 828,
-                    'height' => 1792,
-                    'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 1792,
-                    'height' => 828,
-                    'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 1242,
-                    'height' => 2208,
-                    'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 2208,
-                    'height' => 1242,
-                    'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 750,
-                    'height' => 1334,
-                    'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 1334,
-                    'height' => 750,
-                    'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-                [
-                    'width' => 640,
-                    'height' => 1136,
-                    'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
-                ],
-                [
-                    'width' => 1136,
-                    'height' => 640,
-                    'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
-                ],
-            ];
-            foreach ($startupImages as $startupImage) {
-                ['width' => $width, 'height' => $height, 'media' => $media] = $startupImage;
-                $diagonal = sqrt($width ** 2 + $height ** 2);
-                $scale = 30 + 10 * exp(-$diagonal / 1500);
-                $sizes[] = [
-                    'url' => '/pwa/start-image-%dx%d-%s.png',
-                    'width' => $width,
-                    'height' => $height,
-                    'format' => 'png',
-                    'mimetype' => 'image/png',
-                    'rel' => 'apple-touch-startup-image',
-                    'imageScale' => (int) $scale,
-                    'media' => $media,
-                ];
-            }
-        }
 
         if ($this->favicons->lowResolution === true) {
             $sizes = [
