@@ -82,6 +82,12 @@ final class Manifest
     public array $icons = [];
 
     /**
+     * @var array<string, array<Icon>>
+     */
+    #[SerializedName('icons_localized')]
+    public array $iconsLocalized = [];
+
+    /**
      * @var array<Screenshot>
      */
     public array $screenshots = [];

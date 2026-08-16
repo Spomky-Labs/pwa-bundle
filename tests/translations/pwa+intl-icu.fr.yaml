@@ -1,0 +1,4 @@
+pwa.name: "L'application SuperSausage"
+pwa.short_name: 'SuperSaucisse'
+pwa.description: 'Une application de saucisse'
+pwa.shortcuts.agenda: "L'agenda du jour"

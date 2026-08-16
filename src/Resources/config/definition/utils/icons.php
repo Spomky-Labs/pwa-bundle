@@ -41,8 +41,42 @@ function getIconsNode(string $info): ArrayNodeDefinition
     $node->info($info)
         ->treatFalseLike([])
         ->treatTrueLike([])
-        ->treatNullLike([])
-        ->arrayPrototype()
+        ->treatNullLike([]);
+    configureIconPrototype($node->arrayPrototype());
+
+    return $node;
+}
+
+/**
+ * The same icons, declined per locale. Unlike the textual members, they cannot be derived from the translation
+ * catalogues and therefore have to be configured explicitly.
+ */
+function getLocalizedIconsNode(string $info): ArrayNodeDefinition
+{
+    $treeBuilder = new TreeBuilder('icons_localized');
+    $node = $treeBuilder->getRootNode();
+    assert($node instanceof ArrayNodeDefinition);
+    $node->info($info)
+        ->useAttributeAsKey('locale')
+        ->normalizeKeys(false)
+        ->treatFalseLike([])
+        ->treatTrueLike([])
+        ->treatNullLike([]);
+
+    $localeNode = $node->arrayPrototype();
+    $localeNode
+        ->beforeNormalization()
+        ->ifArray()
+        ->then(static fn (array $v): array => expandIcons($v))
+        ->end();
+    configureIconPrototype($localeNode->arrayPrototype());
+
+    return $node;
+}
+
+function configureIconPrototype(ArrayNodeDefinition $prototype): void
+{
+    $prototype
         ->beforeNormalization()
         ->ifString()
         ->then(static fn (string $v): array => [
@@ -120,8 +154,6 @@ function getIconsNode(string $info): ArrayNodeDefinition
         ->end()
         ->end()
         ->end();
-
-    return $node;
 }
 
 function getFaviconNode(string $nodeName, string $info): ArrayNodeDefinition

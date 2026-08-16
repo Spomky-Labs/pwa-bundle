@@ -10,6 +10,7 @@ use function is_array;
 use function is_string;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
+use SpomkyLabs\PwaBundle\Dto\LocalizationStrategy;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
@@ -81,7 +82,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
         /** @var array{enabled: bool, dest?: string} $serviceWorkerConfig */
         $serviceWorkerConfig = $config['serviceworker'];
-        /** @var array{enabled: bool, public_url?: string} $manifestConfig */
+        /** @var array{enabled: bool, public_url?: string, localization_strategy?: string, locale_directions?: array<string, string>} $manifestConfig */
         $manifestConfig = $config['manifest'];
         if ($serviceWorkerConfig['enabled'] === true) {
             $manifestConfig['serviceworker'] = $serviceWorkerConfig;
@@ -96,6 +97,14 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         /* Manifest */
         $builder->setParameter('spomky_labs_pwa.manifest.enabled', $manifestConfig['enabled']);
         $builder->setParameter('spomky_labs_pwa.manifest.public_url', $manifestConfig['public_url'] ?? null);
+        $builder->setParameter(
+            'spomky_labs_pwa.manifest.localization_strategy',
+            $manifestConfig['localization_strategy'] ?? LocalizationStrategy::FILES->value
+        );
+        $builder->setParameter(
+            'spomky_labs_pwa.manifest.locale_directions',
+            $manifestConfig['locale_directions'] ?? []
+        );
         $builder->setParameter('spomky_labs_pwa.manifest.config', $manifestConfig);
 
         /* Favicons */

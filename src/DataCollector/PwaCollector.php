@@ -14,6 +14,7 @@ use const JSON_UNESCAPED_UNICODE;
 use SpomkyLabs\PwaBundle\CachingStrategy\CacheStrategyInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\HasCacheStrategiesInterface;
 use SpomkyLabs\PwaBundle\Dto\Favicons;
+use SpomkyLabs\PwaBundle\Dto\LocalizationStrategy;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
@@ -52,6 +53,8 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
 
     private readonly Favicons $favicons;
 
+    private readonly LocalizationStrategy $localizationStrategy;
+
     /**
      * @param iterable<HasCacheStrategiesInterface> $cachingServices
      * @param array<string> $locales
@@ -70,7 +73,10 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
         private readonly string $manifestPublicUrl,
         #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
+        #[Autowire(param: 'spomky_labs_pwa.manifest.localization_strategy')]
+        string $localizationStrategy = LocalizationStrategy::FILES->value,
     ) {
+        $this->localizationStrategy = LocalizationStrategy::from($localizationStrategy);
         $this->favicons = $faviconsBuilder->create();
         $this->manifest = $manifestBuilder->create();
         $this->serviceWorker = $serviceWorkerBuilder->create();
@@ -114,7 +120,8 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
             'publicUrl' => $this->manifestPublicUrl,
             'locales' => $this->locales,
         ];
-        if ($this->locales === []) {
+        if ($this->locales === [] || ! $this->localizationStrategy->compilesOneFilePerLocale()) {
+            // A single manifest is served to every locale, so there is only one output to show.
             $this->data['manifest']['outputs'] = [
                 '*' => $this->serializer->serialize($this->manifest, 'json', $jsonOptions),
             ];

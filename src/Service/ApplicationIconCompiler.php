@@ -34,9 +34,15 @@ final readonly class ApplicationIconCompiler implements FileCompilerInterface
         if (count($this->manifest->icons) !== 0) {
             $icons = array_merge($icons, $this->manifest->icons);
         }
+        foreach ($this->manifest->iconsLocalized as $localizedIcons) {
+            $icons = array_merge($icons, $localizedIcons);
+        }
         if (count($this->manifest->shortcuts) !== 0) {
             foreach ($this->manifest->shortcuts as $shortcut) {
                 $icons = array_merge($icons, $shortcut->icons);
+                foreach ($shortcut->iconsLocalized as $localizedIcons) {
+                    $icons = array_merge($icons, $localizedIcons);
+                }
             }
         }
         if (count($this->manifest->widgets) !== 0) {

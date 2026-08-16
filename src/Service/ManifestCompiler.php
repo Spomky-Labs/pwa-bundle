@@ -12,6 +12,7 @@ use const JSON_UNESCAPED_UNICODE;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use SpomkyLabs\PwaBundle\Dto\LocalizationStrategy;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Event\NullEventDispatcher;
 use SpomkyLabs\PwaBundle\Event\PostManifestCompileEvent;
@@ -38,6 +39,8 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
 
     private readonly Manifest $manifest;
 
+    private readonly LocalizationStrategy $localizationStrategy;
+
     /**
      * @param array<string> $locales
      */
@@ -51,7 +54,12 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         null|EventDispatcherInterface $dispatcher,
         #[Autowire(param: 'kernel.enabled_locales')]
         private readonly array $locales,
+        #[Autowire(param: 'spomky_labs_pwa.manifest.localization_strategy')]
+        string $localizationStrategy = LocalizationStrategy::FILES->value,
+        #[Autowire(param: 'kernel.default_locale')]
+        private readonly string $defaultLocale = 'en',
     ) {
+        $this->localizationStrategy = LocalizationStrategy::from($localizationStrategy);
         $this->manifest = $manifestBuilder->create();
         $this->dispatcher = $dispatcher ?? new NullEventDispatcher();
         $this->manifestPublicUrl = '/' . trim($manifestPublicUrl, '/');
@@ -82,16 +90,24 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
 
             return;
         }
+        if (! $this->localizationStrategy->compilesOneFilePerLocale()) {
+            $this->logger->debug('Compiling a single manifest carrying every translation.');
+            $manifest = $this->compileManifest($this->defaultLocale, null);
+            yield $manifest->url => $manifest;
+            $this->logger->debug('Manifest files compiled.');
+
+            return;
+        }
         if ($this->locales === []) {
             $this->logger->debug('No locale defined. Compiling default manifest.');
-            $manifest = $this->compileManifest(null);
+            $manifest = $this->compileManifest(null, null);
             yield $manifest->url => $manifest;
         }
         foreach ($this->locales as $locale) {
             $this->logger->debug('Compiling manifest for locale.', [
                 'locale' => $locale,
             ]);
-            $manifest = $this->compileManifest($locale);
+            $manifest = $this->compileManifest($locale, $locale);
             yield $manifest->url => $manifest;
         }
         $this->logger->debug('Manifest files compiled.');
@@ -102,15 +118,19 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         $this->logger = $logger;
     }
 
-    private function compileManifest(null|string $locale): Data
+    /**
+     * @param null|string $locale    The locale the translatable members are resolved against
+     * @param null|string $urlLocale The locale the `{locale}` placeholder of the public URL is replaced with
+     */
+    private function compileManifest(null|string $locale, null|string $urlLocale): Data
     {
         $this->logger->debug('Compiling manifest.', [
             'locale' => $locale,
         ]);
         $manifest = clone $this->manifest;
         $manifestPublicUrl = $this->manifestPublicUrl;
-        if ($locale !== null) {
-            $manifestPublicUrl = str_replace('{locale}', $locale, $this->manifestPublicUrl);
+        if ($urlLocale !== null) {
+            $manifestPublicUrl = str_replace('{locale}', $urlLocale, $this->manifestPublicUrl);
         }
 
         $callback = function () use ($manifest, $locale): string {
