@@ -13,7 +13,7 @@ final readonly class TestFilesystem implements PublicAssetsFilesystemInterface
 {
     private string $output;
 
-    public function __construct(#[Autowire('%kernel.cache_dir%')] string $cacheDir)
+    public function __construct(#[Autowire(param: 'kernel.cache_dir')] string $cacheDir)
     {
         $this->output = sprintf('%s/output', $cacheDir);
     }

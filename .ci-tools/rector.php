@@ -10,6 +10,7 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Symfony72\Rector\StmtsAwareInterface\PushRequestToRequestStackConstructorRector;
 use Rector\ValueObject\PhpVersion;
 
 $builder = RectorConfig::configure();
@@ -43,6 +44,9 @@ $builder->withSkip([
     // Symfony 8.1 moved the bundle classes to the DependencyInjection component. The new FQCNs
     // do not exist on Symfony 6.4 and 7.x, which the bundle still supports.
     RenameClassRector::class => [__DIR__ . '/../tests/AppKernel.php'],
+    // The $requests argument of RequestStack::__construct() only exists from Symfony 7.2 on, while
+    // composer.json allows ^7.0. Applying this would break the --prefer-lowest test job.
+    PushRequestToRequestStackConstructorRector::class,
 ]);
 $builder->withParallel();
 $builder->withImportNames();

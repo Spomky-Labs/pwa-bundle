@@ -61,7 +61,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
             AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials', 'locales'],
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
-        if ($debug === true) {
+        if ($debug) {
             $options[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;

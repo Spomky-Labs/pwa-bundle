@@ -10,6 +10,7 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
@@ -35,47 +36,31 @@ final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
             $this->logger->debug('Workbox is disabled. The rule will not be applied.');
             return '';
         }
-        $declaration = '';
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
+        $section = ScriptSection::create('WORKBOX IMPORT', $debug)
+            ->comment(
+                'The configuration is set to use Workbox',
+                'The following code will import Workbox from CDN or public URL'
+            );
 
-
-/**************************************************** WORKBOX IMPORT ****************************************************/
-// The configuration is set to use Workbox
-// The following code will import Workbox from CDN or public URL
-
-DEBUG_COMMENT;
-        }
-        if ($this->workbox->config->useCDN === true) {
-            if ($debug === true) {
-                $declaration .= <<<DEBUG_COMMENT
-// Import from CDN
-
-
-DEBUG_COMMENT;
-            }
-            $declaration .= <<<IMPORT_CDN_STRATEGY
+        if ($this->workbox->config->useCDN) {
+            $section->comment('Import from CDN')
+                ->code(<<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->config->version}/workbox-sw.js');
 importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
-IMPORT_CDN_STRATEGY;
+
+IMPORT_CDN_STRATEGY);
         } else {
             $workboxPublicUrl = $this->basePathResolver->prefix(
                 '/' . trim($this->workbox->config->workboxPublicUrl, '/')
             );
             $idbPublicUrl = $this->basePathResolver->prefix('/' . trim($this->workbox->indexDBPublicUrl, '/'));
-            if ($debug === true) {
-                $declaration .= <<<DEBUG_COMMENT
-// Import from public URL
-
-
-DEBUG_COMMENT;
-            }
-            $declaration .= <<<IMPORT_CDN_STRATEGY
+            $section->comment('Import from public URL')
+                ->code(<<<IMPORT_PUBLIC_URL_STRATEGY
 importScripts('{$workboxPublicUrl}/workbox-sw.js');
 importScripts('{$idbPublicUrl}/umd.js');
 workbox.setConfig({modulePathPrefix: '{$workboxPublicUrl}'});
 
-IMPORT_CDN_STRATEGY;
+IMPORT_PUBLIC_URL_STRATEGY);
         }
 
         // Add workbox configuration
@@ -86,24 +71,11 @@ IMPORT_CDN_STRATEGY;
 
         if ($configOptions !== []) {
             $configJson = json_encode($configOptions, JSON_UNESCAPED_SLASHES);
-            if ($debug === true) {
-                $declaration .= <<<DEBUG_COMMENT
-// Additional Workbox configuration
-
-DEBUG_COMMENT;
-            }
-            $declaration .= "workbox.setConfig({$configJson});\n";
+            $section->comment('Additional Workbox configuration')
+                ->code("workbox.setConfig({$configJson});\n");
         }
 
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END WORKBOX IMPORT ****************************************************/
-
-
-
-
-DEBUG_COMMENT;
-        }
+        $declaration = $section->render();
         $this->logger->debug('Workbox import rule added.', [
             'declaration' => $declaration,
         ]);

@@ -49,7 +49,7 @@ final class AssetCache implements HasCacheStrategiesInterface, CanLogInterface
             ->workbox;
         $this->assetPublicPrefix = rtrim($publicAssetsPathResolver->resolvePublicPath(''), '/');
         $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
-        if ($debug === true) {
+        if ($debug) {
             $options |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;

@@ -11,9 +11,11 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use const PHP_EOL;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\CachePluginInterface;
 use SpomkyLabs\PwaBundle\WorkboxPlugin\HasBodyInterface;
 use function sprintf;
+use function var_export;
 
 final class WorkboxCacheStrategy implements CacheStrategyInterface
 {
@@ -109,7 +111,7 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
             return '';
         }
         $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
-        if ($debug === true) {
+        if ($debug) {
             $jsonOptions |= JSON_PRETTY_PRINT;
         }
 
@@ -147,28 +149,21 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
 
         $method = $this->method !== null ? ",'{$this->method}'" : '';
 
-        $declaration = '';
-        if ($debug) {
-            $matchCallbackComment = str_replace(['*/', '/*'], ['*\\/', '/\\*'], $this->matchCallback);
-            $declaration .= <<<DEBUG_STATEMENT
-
-
-/**************************************************** CACHE STRATEGY ****************************************************/
-// Strategy: {$this->strategy}
-/* Match: {$matchCallbackComment} */
-// Cache Name: {$this->getName()}
-// Enabled: {$this->enabled}
-// Needs Workbox: {$this->needsWorkbox()}
-// Method: {$this->method}
-
-// 1. Creation of the Workbox Cache Strategy object
-// 2. Register the route with the Workbox Router
-// 3. Add the assets to the cache when the service worker is installed
-
-DEBUG_STATEMENT;
-        }
-
-        $declaration .= <<<ROUTE_REGISTRATION
+        $section = ScriptSection::create('CACHE STRATEGY', $debug)
+            ->comment(
+                sprintf('Strategy: %s', $this->strategy),
+                sprintf('Match: %s', $this->matchCallback),
+                sprintf('Cache Name: %s', $this->getName()),
+                sprintf('Enabled: %s', var_export($this->enabled, true)),
+                sprintf('Needs Workbox: %s', var_export($this->needsWorkbox(), true)),
+                sprintf('Method: %s', $this->method)
+            )
+            ->comment(
+                '1. Creation of the Workbox Cache Strategy object',
+                '2. Register the route with the Workbox Router',
+                '3. Add the assets to the cache when the service worker is installed'
+            )
+            ->code(<<<ROUTE_REGISTRATION
 {$pluginBody}
 
 const {$cacheObjectName} = new workbox.strategies.{$this->strategy}({
@@ -176,26 +171,19 @@ const {$cacheObjectName} = new workbox.strategies.{$this->strategy}({
 });
 workbox.routing.registerRoute({$this->matchCallback},{$cacheObjectName}{$method});
 
-ROUTE_REGISTRATION;
+ROUTE_REGISTRATION);
 
         if ($this->preloadUrls !== []) {
             $urls = json_encode($this->preloadUrls, $jsonOptions);
-            $declaration .= <<<ASSET_CACHE_RULE_PRELOAD
+            $section->code(<<<ASSET_CACHE_RULE_PRELOAD
 registerInstallTask((event) => precacheResources({$cacheObjectName}, {$urls}, event));
 
-ASSET_CACHE_RULE_PRELOAD;
+ASSET_CACHE_RULE_PRELOAD);
         }
 
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_STATEMENT
-/**************************************************** END CACHE STRATEGY ****************************************************/
+        $declaration = $section->render();
 
-
-
-DEBUG_STATEMENT;
-        }
-
-        return $debug === true ? $declaration : trim($declaration);
+        return $debug ? $declaration : trim($declaration);
     }
 
     public function getMethod(): ?string

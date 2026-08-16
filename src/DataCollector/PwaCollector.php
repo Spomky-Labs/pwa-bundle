@@ -232,7 +232,7 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
                 true
             ),
             'At least one icon' => count($this->manifest->icons) === 0,
-            '"prefer_related_applications" property set to a value other than "true"' => $this->manifest->preferRelatedApplications === true,
+            '"prefer_related_applications" property set to a value other than "true"' => $this->manifest->preferRelatedApplications,
         ];
 
         return [

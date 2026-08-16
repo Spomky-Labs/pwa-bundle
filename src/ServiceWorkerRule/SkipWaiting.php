@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 
 final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
@@ -29,33 +30,19 @@ final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
             return '';
         }
 
-        $declaration = '';
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-
-
-/**************************************************** SKIP WAITING ****************************************************/
-// The configuration is set to skip waiting on each install event
-
-DEBUG_COMMENT;
-        }
-
-        $declaration .= <<<SKIP_WAITING
+        $skipWaiting = <<<'SKIP_WAITING'
 registerInstallTask(() => self.skipWaiting(), 5);
 self.addEventListener("activate", function (event) {
   event.waitUntil(self.clients.claim());
 });
 
 SKIP_WAITING;
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END SKIP WAITING ****************************************************/
 
+        $declaration = ScriptSection::create('SKIP WAITING', $debug)
+            ->comment('The configuration is set to skip waiting on each install event')
+            ->code($skipWaiting)
+            ->render();
 
-
-
-DEBUG_COMMENT;
-        }
         $this->logger->debug('Skip waiting rule applied.', [
             'declaration' => $declaration,
         ]);

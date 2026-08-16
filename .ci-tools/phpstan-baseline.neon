@@ -346,32 +346,8 @@ parameters:
 			path: ../src/Service/Data.php
 
 		-
-			rawMessage: 'Call to function assert() with true and string will always evaluate to true.'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
 			rawMessage: 'Cannot call method process() on SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface|null.'
 			identifier: method.nonObject
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: Instanceof between Symfony\Component\AssetMapper\MappedAsset and Symfony\Component\AssetMapper\MappedAsset will always evaluate to true.
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Method SpomkyLabs\PwaBundle\Service\FaviconsCompiler::getFaviconAsset() should return string but returns string|false.'
-			identifier: return.type
-			count: 2
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Parameter #1 $assertion of function assert expects bool|string, Symfony\Component\AssetMapper\MappedAsset|null given.'
-			identifier: argument.type
 			count: 1
 			path: ../src/Service/FaviconsCompiler.php
 
@@ -379,12 +355,6 @@ parameters:
 			rawMessage: 'Parameter #2 $attributes of method Symfony\UX\Icons\IconRendererInterface::renderIcon() expects array<string, bool|string>, array<string, mixed> given.'
 			identifier: argument.type
 			count: 1
-			path: ../src/Service/FaviconsCompiler.php
-
-		-
-			rawMessage: 'Strict comparison using !== between SpomkyLabs\PwaBundle\Dto\Asset and null will always evaluate to true.'
-			identifier: notIdentical.alwaysTrue
-			count: 2
 			path: ../src/Service/FaviconsCompiler.php
 
 		-

@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 
 final class ClearCache implements ServiceWorkerRuleInterface, CanLogInterface
@@ -36,20 +37,7 @@ final class ClearCache implements ServiceWorkerRuleInterface, CanLogInterface
             return '';
         }
 
-        $declaration = '';
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-
-
-/**************************************************** CACHE CLEAR ****************************************************/
-// The configuration is set to clear the cache on each install event
-// Caches registered through registerCacheName() are removed. To also remove a cache
-// opened by the application, use registerClearCacheListener((names) => names.filter(...))
-
-DEBUG_COMMENT;
-        }
-
-        $declaration .= <<<CLEAR_CACHE
+        $clearCache = <<<'CLEAR_CACHE'
 registerInstallTask(async () => {
   const keys = await caches.keys();
   const doomed = new Set(keys.filter(k => usedCacheNames.has(k)));
@@ -69,15 +57,15 @@ registerInstallTask(async () => {
 
 CLEAR_CACHE;
 
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END CACHE CLEAR ****************************************************/
+        $declaration = ScriptSection::create('CACHE CLEAR', $debug)
+            ->comment(
+                'The configuration is set to clear the cache on each install event',
+                'Caches registered through registerCacheName() are removed. To also remove a cache',
+                'opened by the application, use registerClearCacheListener((names) => names.filter(...))'
+            )
+            ->code($clearCache)
+            ->render();
 
-
-
-
-DEBUG_COMMENT;
-        }
         $this->logger->debug('Cache clear rule added.', [
             'declaration' => $declaration,
         ]);

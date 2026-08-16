@@ -311,7 +311,7 @@ final class EarlyHintsListenerTest extends TestCase
             'preload_manifest' => true,
         ]);
 
-        $existingLink = new Link('preload', '/existing-resource.js');
+        $existingLink = new Link(Link::REL_PRELOAD, '/existing-resource.js');
         $existingProvider = (new GenericLinkProvider())->withLink($existingLink);
 
         $request = new Request();

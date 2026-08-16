@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
@@ -38,33 +39,14 @@ final class NavigationPreload implements ServiceWorkerRuleInterface, CanLogInter
             return '';
         }
 
-        $declaration = '';
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-
-
-/**************************************************** NAVIGATION PRELOAD ****************************************************/
-// Navigation Preload is enabled
-// This speeds up navigation requests by making the network request in parallel with service worker boot-up
-// See: https://developer.chrome.com/docs/workbox/modules/workbox-navigation-preload/
-
-DEBUG_COMMENT;
-        }
-
-        $declaration .= <<<NAVIGATION_PRELOAD
-workbox.navigationPreload.enable();
-
-NAVIGATION_PRELOAD;
-
-        if ($debug === true) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END NAVIGATION PRELOAD ****************************************************/
-
-
-
-
-DEBUG_COMMENT;
-        }
+        $declaration = ScriptSection::create('NAVIGATION PRELOAD', $debug)
+            ->comment(
+                'Navigation Preload is enabled',
+                'This speeds up navigation requests by making the network request in parallel with service worker boot-up',
+                'See: https://developer.chrome.com/docs/workbox/modules/workbox-navigation-preload/'
+            )
+            ->code("workbox.navigationPreload.enable();\n")
+            ->render();
 
         $this->logger->debug('Navigation preload rule applied.', [
             'declaration' => $declaration,
