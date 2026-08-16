@@ -80,6 +80,15 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $hash = hash('xxh128', $asset);
 
             foreach ($sizes as $size) {
+                // A fixed URL carries no content hash, so it cannot be declined per color scheme: the dark
+                // variant would be written over the light one under the very same name, and both links would
+                // end up pointing at whichever was generated last. Such an entry is emitted once, from the
+                // default theme, and stays free of any color scheme condition.
+                $hasFixedUrl = ($size['fixedUrl'] ?? false) === true;
+                if ($hasFixedUrl && $mode !== 'light') {
+                    continue;
+                }
+
                 $configuration = Configuration::create(
                     $size['width'],
                     $size['height'],
@@ -91,7 +100,9 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-                $media = $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
+                $media = $hasFixedUrl
+                    ? ($size['media'] ?? null)
+                    : $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
 
                 yield $filename => $this->processIcon(
                     $asset,
@@ -480,7 +491,7 @@ XML;
     }
 
     /**
-     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string, fixedUrl?: bool}[]
      */
     private function getFaviconSizes(): array
     {
@@ -493,6 +504,9 @@ XML;
                 'format' => 'ico',
                 'mimetype' => 'image/x-icon',
                 'rel' => 'icon',
+                // Browsers fetch this URL by convention, with or without a link tag: it has to stay at that
+                // exact path, which rules out both a content hash and a per-color-scheme variant.
+                'fixedUrl' => true,
             ],
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
