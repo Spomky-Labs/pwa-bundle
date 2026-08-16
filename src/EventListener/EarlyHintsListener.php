@@ -43,7 +43,7 @@ final readonly class EarlyHintsListener
 
     public function __invoke(RequestEvent $event): void
     {
-        if ((bool) ($this->config['enabled'] ?? false) !== true) {
+        if (! (bool) ($this->config['enabled'] ?? false)) {
             return;
         }
 

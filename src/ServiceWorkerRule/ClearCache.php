@@ -37,7 +37,7 @@ final class ClearCache implements ServiceWorkerRuleInterface, CanLogInterface
         }
 
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -61,7 +61,7 @@ registerInstallTask(() =>
 
 CLEAR_CACHE;
 
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END CACHE CLEAR ****************************************************/
 

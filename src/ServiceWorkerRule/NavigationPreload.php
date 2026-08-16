@@ -39,7 +39,7 @@ final class NavigationPreload implements ServiceWorkerRuleInterface, CanLogInter
         }
 
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -56,7 +56,7 @@ workbox.navigationPreload.enable();
 
 NAVIGATION_PRELOAD;
 
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END NAVIGATION PRELOAD ****************************************************/
 

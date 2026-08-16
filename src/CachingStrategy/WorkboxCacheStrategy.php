@@ -109,7 +109,7 @@ final class WorkboxCacheStrategy implements CacheStrategyInterface
             return '';
         }
         $jsonOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
-        if ($debug === true) {
+        if ($debug) {
             $jsonOptions |= JSON_PRETTY_PRINT;
         }
 
@@ -186,7 +186,7 @@ registerInstallTask((event) => precacheResources({$cacheObjectName}, {$urls}, ev
 ASSET_CACHE_RULE_PRELOAD;
         }
 
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_STATEMENT
 /**************************************************** END CACHE STRATEGY ****************************************************/
 
@@ -195,7 +195,7 @@ ASSET_CACHE_RULE_PRELOAD;
 DEBUG_STATEMENT;
         }
 
-        return $debug === true ? $declaration : trim($declaration);
+        return $debug ? $declaration : trim($declaration);
     }
 
     public function getMethod(): ?string

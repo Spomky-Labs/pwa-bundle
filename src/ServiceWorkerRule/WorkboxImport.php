@@ -36,7 +36,7 @@ final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
             return '';
         }
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -46,8 +46,8 @@ final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
 
 DEBUG_COMMENT;
         }
-        if ($this->workbox->config->useCDN === true) {
-            if ($debug === true) {
+        if ($this->workbox->config->useCDN) {
+            if ($debug) {
                 $declaration .= <<<DEBUG_COMMENT
 // Import from CDN
 
@@ -63,7 +63,7 @@ IMPORT_CDN_STRATEGY;
                 '/' . trim($this->workbox->config->workboxPublicUrl, '/')
             );
             $idbPublicUrl = $this->basePathResolver->prefix('/' . trim($this->workbox->indexDBPublicUrl, '/'));
-            if ($debug === true) {
+            if ($debug) {
                 $declaration .= <<<DEBUG_COMMENT
 // Import from public URL
 
@@ -86,7 +86,7 @@ IMPORT_CDN_STRATEGY;
 
         if ($configOptions !== []) {
             $configJson = json_encode($configOptions, JSON_UNESCAPED_SLASHES);
-            if ($debug === true) {
+            if ($debug) {
                 $declaration .= <<<DEBUG_COMMENT
 // Additional Workbox configuration
 
@@ -95,7 +95,7 @@ DEBUG_COMMENT;
             $declaration .= "workbox.setConfig({$configJson});\n";
         }
 
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END WORKBOX IMPORT ****************************************************/
 

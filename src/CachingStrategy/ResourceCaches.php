@@ -50,7 +50,7 @@ final class ResourceCaches implements HasCacheStrategiesInterface, CanLogInterfa
         $this->workbox = $serviceWorkerBuilder->create()
             ->workbox;
         $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
-        if ($debug === true) {
+        if ($debug) {
             $options |= JSON_PRETTY_PRINT;
         }
         $this->jsonOptions = $options;

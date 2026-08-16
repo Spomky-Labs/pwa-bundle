@@ -68,7 +68,7 @@ final readonly class PwaRuntime
     ): string {
         $output = '';
         $output = $this->injectResourceHints($output, $injectResourceHints);
-        if ($this->manifest->enabled === true) {
+        if ($this->manifest->enabled) {
             $output = $this->injectManifestFile($output, $locale);
         }
         if ($this->manifest->serviceWorker?->enabled === true) {
@@ -92,7 +92,7 @@ final readonly class PwaRuntime
         $url = $this->basePathResolver->prefix(
             $this->assetMapper->getPublicPath($manifestPublicUrl) ?? $manifestPublicUrl
         );
-        if ($this->manifest->useCredentials === true) {
+        if ($this->manifest->useCredentials) {
             $useCredentials = ' crossorigin="use-credentials"';
         } else {
             $useCredentials = ' crossorigin="anonymous"';
@@ -148,7 +148,7 @@ final readonly class PwaRuntime
         if ($registerOptions !== '') {
             $registerOptions = sprintf(', {%s}', mb_substr($registerOptions, 2));
         }
-        if ($serviceWorker->workbox->enabled === true) {
+        if ($serviceWorker->workbox->enabled) {
             $workboxUrl = $this->basePathResolver->prefix(sprintf(
                 '%s%s',
                 '/' . trim($serviceWorker->workbox->config->workboxPublicUrl, '/'),

@@ -47,7 +47,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         $this->serviceWorker = $serviceWorkerBuilder->create();
         $serviceWorkerPublicUrl = $this->serviceWorker->dest;
         $this->serviceWorkerPublicUrl = '/' . trim($serviceWorkerPublicUrl, '/');
-        if ($this->serviceWorker->enabled === true && $this->serviceWorker->workbox->enabled === true) {
+        if ($this->serviceWorker->enabled && $this->serviceWorker->workbox->enabled) {
             $this->workboxVersion = $this->serviceWorker->workbox->config->version;
             $this->workboxPublicUrl = '/' . trim($this->serviceWorker->workbox->config->workboxPublicUrl, '/');
             $this->idbPublicUrl = '/' . trim($this->serviceWorker->workbox->indexDBPublicUrl, '/');
@@ -142,7 +142,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         if ($this->serviceWorker->workbox->enabled === false) {
             return [];
         }
-        if ($this->serviceWorker->workbox->config->useCDN === true) {
+        if ($this->serviceWorker->workbox->config->useCDN) {
             return [];
         }
         $fileLocator = new FileLocator(__DIR__ . '/../Resources');
@@ -179,7 +179,7 @@ final class ServiceWorkerCompiler implements FileCompilerInterface, CanLogInterf
         if ($this->serviceWorker->workbox->enabled === false) {
             return [];
         }
-        if ($this->serviceWorker->workbox->config->useCDN === true) {
+        if ($this->serviceWorker->workbox->config->useCDN) {
             return [];
         }
         $fileLocator = new FileLocator(__DIR__ . '/../Resources');

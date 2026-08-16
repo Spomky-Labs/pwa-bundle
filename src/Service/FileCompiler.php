@@ -49,7 +49,7 @@ final class FileCompiler implements CanLogInterface
             $progressBar?->setMessage('Start');
             $progressBar?->start();
             foreach ($fileCompiler->getFiles() as $data) {
-                if ($contextDependentOnly === true && $data->contextFree === true) {
+                if ($contextDependentOnly && $data->contextFree === true) {
                     continue;
                 }
                 $progressBar?->advance();

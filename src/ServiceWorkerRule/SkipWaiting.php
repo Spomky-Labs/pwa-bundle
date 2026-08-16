@@ -30,7 +30,7 @@ final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
         }
 
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -47,7 +47,7 @@ self.addEventListener("activate", function (event) {
 });
 
 SKIP_WAITING;
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END SKIP WAITING ****************************************************/
 

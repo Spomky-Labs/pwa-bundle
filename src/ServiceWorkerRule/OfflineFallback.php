@@ -53,7 +53,7 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
         $fallbacks = $this->serializer->serialize($options, 'json', $this->serializerOptions($debug));
 
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -90,7 +90,7 @@ workbox.routing.setCatchHandler(async ({ request }) => {
 
 OFFLINE_FALLBACK_STRATEGY;
 
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END OFFLINE FALLBACK ****************************************************/
 
@@ -121,7 +121,7 @@ DEBUG_COMMENT;
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
-        if ($debug === true) {
+        if ($debug) {
             $jsonOptions[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
         }
 

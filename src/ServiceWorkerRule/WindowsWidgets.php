@@ -45,7 +45,7 @@ final class WindowsWidgets implements ServiceWorkerRuleInterface, CanLogInterfac
         }
         $data = $this->serializer->serialize($tags, 'json', $this->serializerOptions($debug));
         $declaration = '';
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 
 
@@ -116,7 +116,7 @@ async function updateWidgets() {
 }
 
 OFFLINE_FALLBACK_STRATEGY;
-        if ($debug === true) {
+        if ($debug) {
             $declaration .= <<<DEBUG_COMMENT
 /**************************************************** END WINDOWS WIDGETS ****************************************************/
 
@@ -147,7 +147,7 @@ DEBUG_COMMENT;
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
-        if ($debug === true) {
+        if ($debug) {
             $jsonOptions[JsonEncode::OPTIONS] |= JSON_PRETTY_PRINT;
         }
 
