@@ -91,18 +91,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-                $media = $size['media'] ?? null;
-                if ($this->favicons->dark !== null) {
-                    if ($media !== null) {
-                        $media = sprintf(
-                            '(%s) and %s',
-                            $media,
-                            $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null)
-                        );
-                    } else {
-                        $media = $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null);
-                    }
-                }
+                $media = $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
 
                 yield $filename => $this->processIcon(
                     $asset,
@@ -134,6 +123,29 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Combines the media query carried by a size with the one of the color scheme it is generated for.
+     *
+     * The two conditions are concatenated as-is: each of them is already a chain of parenthesized media
+     * features, and wrapping the whole in an extra pair of parentheses would turn it into a Media Queries
+     * Level 4 nested condition. Safari only parses that syntax from 16.4 on, and a browser that fails to
+     * parse a media query discards it entirely, together with the startup image it carries.
+     */
+    private function combineMediaQueries(null|string $sizeMedia, null|string $schemeMedia): null|string
+    {
+        if ($this->favicons->dark === null) {
+            return $sizeMedia;
+        }
+
+        // The default theme is the light one as soon as a dark theme is defined.
+        $schemeMedia ??= '(prefers-color-scheme: light)';
+        if ($sizeMedia === null) {
+            return $schemeMedia;
+        }
+
+        return $sizeMedia . ' and ' . $schemeMedia;
     }
 
     private function processIcon(
