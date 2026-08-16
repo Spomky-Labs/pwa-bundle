@@ -26,7 +26,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
     private LoggerInterface $logger;
 
-    private Favicons $favicons;
+    private readonly Favicons $favicons;
 
     public function __construct(
         private readonly null|ImageProcessorInterface $imageProcessor,
@@ -83,7 +83,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 // variant would be written over the light one under the very same name, and both links would
                 // end up pointing at whichever was generated last. Such an entry is emitted once, from the
                 // default theme, and stays free of any color scheme condition.
-                $hasFixedUrl = ($size['fixedUrl'] ?? false) === true;
+                $hasFixedUrl = $size['fixedUrl'] ?? false;
                 if ($hasFixedUrl && $mode !== 'light') {
                     continue;
                 }

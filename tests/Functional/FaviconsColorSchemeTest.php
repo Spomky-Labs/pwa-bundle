@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use function sprintf;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
