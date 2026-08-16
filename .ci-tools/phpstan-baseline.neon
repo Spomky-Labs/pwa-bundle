@@ -127,15 +127,6 @@ parameters:
 			path: ../src/Dto/Workbox.php
 
 		-
-			rawMessage: '''
-				Property $resourceCaches references deprecated class SpomkyLabs\PwaBundle\Dto\PageCache in its type:
-				since 1.2.0 and will be removed in 2.0.0. Use ResourceCache instead.
-			'''
-			identifier: property.deprecatedClass
-			count: 1
-			path: ../src/Dto/Workbox.php
-
-		-
 			rawMessage: 'Call to function assert() with true will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1

@@ -23,7 +23,7 @@ final class Workbox
     public FontCache $fontCache;
 
     /**
-     * @var array<PageCache>
+     * @var array<ResourceCache>
      */
     #[SerializedName('resource_caches')]
     public array $resourceCaches = [];
