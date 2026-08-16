@@ -77,8 +77,8 @@ final class BasePathResolverTest extends TestCase
         yield 'relative path' => ['favicon.ico', 'favicon.ico'];
         yield 'empty path' => ['', ''];
         yield 'absolute URL' => [
-            'https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js',
-            'https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js',
+            'https://storage.googleapis.com/workbox-cdn/releases/7.4.1/workbox-sw.js',
+            'https://storage.googleapis.com/workbox-cdn/releases/7.4.1/workbox-sw.js',
         ];
         yield 'protocol relative URL' => ['//example.com/sw.js', '//example.com/sw.js'];
         yield 'data URI' => ['data:image/png;base64,AAAA', 'data:image/png;base64,AAAA'];

@@ -46,7 +46,7 @@ final class WorkboxImportTest extends TestCase
         $workbox->enabled = true;
         $workbox->config = new WorkboxConfig();
         $workbox->config->useCDN = true;
-        $workbox->config->version = '7.3.0';
+        $workbox->config->version = '7.4.1';
 
         $rule = $this->createWorkboxImportRule($workbox);
 
@@ -55,7 +55,7 @@ final class WorkboxImportTest extends TestCase
 
         // Then
         static::assertStringContainsString(
-            "importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');",
+            "importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.4.1/workbox-sw.js');",
             $result
         );
         static::assertStringContainsString(
@@ -95,7 +95,7 @@ final class WorkboxImportTest extends TestCase
         $workbox->enabled = true;
         $workbox->config = new WorkboxConfig();
         $workbox->config->useCDN = true;
-        $workbox->config->version = '7.3.0';
+        $workbox->config->version = '7.4.1';
         $workbox->config->debug = false;
 
         $rule = $this->createWorkboxImportRule($workbox);
@@ -115,7 +115,7 @@ final class WorkboxImportTest extends TestCase
         $workbox->enabled = true;
         $workbox->config = new WorkboxConfig();
         $workbox->config->useCDN = true;
-        $workbox->config->version = '7.3.0';
+        $workbox->config->version = '7.4.1';
 
         $rule = $this->createWorkboxImportRule($workbox);
 
@@ -136,7 +136,7 @@ final class WorkboxImportTest extends TestCase
         $workbox->enabled = true;
         $workbox->config = new WorkboxConfig();
         $workbox->config->useCDN = true;
-        $workbox->config->version = '7.3.0';
+        $workbox->config->version = '7.4.1';
         // Don't set config to simulate old behavior
 
         $rule = $this->createWorkboxImportRule($workbox);
@@ -147,7 +147,7 @@ final class WorkboxImportTest extends TestCase
         // Then
         static::assertStringNotContainsString('workbox.setConfig({"debug', $result);
         static::assertStringContainsString(
-            "importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');",
+            "importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.4.1/workbox-sw.js');",
             $result
         );
     }
@@ -160,7 +160,7 @@ final class WorkboxImportTest extends TestCase
         $workbox->enabled = true;
         $workbox->config = new WorkboxConfig();
         $workbox->config->useCDN = true;
-        $workbox->config->version = '7.3.0';
+        $workbox->config->version = '7.4.1';
 
         $rule = $this->createWorkboxImportRule($workbox);
 

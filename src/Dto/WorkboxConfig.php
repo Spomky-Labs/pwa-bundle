@@ -11,7 +11,7 @@ final class WorkboxConfig
     #[SerializedName('use_cdn')]
     public bool $useCDN = false;
 
-    public string $version = '7.3.0';
+    public string $version = '7.4.1';
 
     #[SerializedName('workbox_public_url')]
     public string $workboxPublicUrl = '/workbox';
