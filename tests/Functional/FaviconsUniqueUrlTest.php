@@ -45,6 +45,40 @@ final class FaviconsUniqueUrlTest extends KernelTestCase
     }
 
     #[Test]
+    public function aFileIsGeneratedOnceButKeepsEveryLinkPointingAtIt(): void
+    {
+        // The low resolution block declares 72x72 both as an apple-touch-icon and as an icon, for one
+        // identical configuration. Both links belong in the page; the bytes belong on disk once.
+
+        // Given
+        static::bootKernel();
+        $compiler = $this->createCompilerWithDarkTheme();
+
+        // When
+        $urls = [];
+        $links = [];
+        foreach ($compiler->getFiles() as $url => $file) {
+            $urls[] = $url;
+            preg_match_all('/<link[^>]*>/', (string) $file->html, $matches);
+            foreach ($matches[0] as $link) {
+                $links[] = $link;
+            }
+        }
+
+        // Then
+        static::assertSame($urls, array_unique($urls), 'a file is generated more than once');
+
+        $rels = [];
+        foreach ($links as $link) {
+            if (preg_match('/sizes="72x72"/', $link) === 1 && preg_match('/rel="([^"]+)"/', $link, $m) === 1) {
+                $rels[] = $m[1];
+            }
+        }
+        static::assertContains('apple-touch-icon', $rels);
+        static::assertContains('icon', $rels);
+    }
+
+    #[Test]
     public function theFaviconIcoIsEmittedOnceAndForEveryColorScheme(): void
     {
         // Given

@@ -78,6 +78,8 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset = $this->getFaviconAsset($sourceInfo['asset'], $theme->svgAttributes);
             $hash = hash('xxh128', $asset);
 
+            /** @var array<string, array{configuration: Configuration, mimetype: string, links: list<array{rel: string, media: null|string}>}> $icons */
+            $icons = [];
             foreach ($sizes as $size) {
                 // A fixed URL carries no content hash, so it cannot be declined per color scheme: the dark
                 // variant would be written over the light one under the very same name, and both links would
@@ -103,13 +105,27 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     ? ($size['media'] ?? null)
                     : $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
 
+                // Two sizes can describe the very same file: the low resolution block declares 72x72 both
+                // as an apple-touch-icon and as an icon, for one identical configuration. Both links are
+                // wanted, the second copy of the bytes is not, so the links are gathered per file name.
+                $icons[$filename] ??= [
+                    'configuration' => $configuration,
+                    'mimetype' => $size['mimetype'],
+                    'links' => [],
+                ];
+                $icons[$filename]['links'][] = [
+                    'rel' => $size['rel'],
+                    'media' => $media,
+                ];
+            }
+
+            foreach ($icons as $filename => $icon) {
                 yield $filename => $this->processIcon(
                     $asset,
                     $filename,
-                    $configuration,
-                    $size['mimetype'],
-                    $size['rel'],
-                    $media
+                    $icon['configuration'],
+                    $icon['mimetype'],
+                    $icon['links']
                 );
             }
         }
@@ -158,33 +174,36 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         return $sizeMedia . ' and ' . $schemeMedia;
     }
 
+    /**
+     * @param list<array{rel: string, media: null|string}> $links
+     */
     private function processIcon(
         string $asset,
         string $publicUrl,
         Configuration $configuration,
         string $mimeType,
-        null|string $rel,
-        null|string $media = null,
+        array $links = [],
     ): Data {
         $this->logger->debug('Processing icon.', [
             'publicUrl' => $publicUrl,
             'configuration' => $configuration,
             'mimeType' => $mimeType,
-            'rel' => $rel,
-            'media' => $media,
+            'links' => $links,
         ]);
         $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
 
-        $mediaAttr = is_string($media) ? sprintf(' media="%s"', $media) : '';
-        $html = $rel === null ? null : sprintf(
-            '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
-            $rel,
-            $configuration->width,
-            $configuration->height,
-            $mimeType,
-            $this->basePathResolver->prefix($publicUrl),
-            $mediaAttr
-        );
+        $html = $links === [] ? null : implode(PHP_EOL, array_map(
+            fn (array $link): string => sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
+                $link['rel'],
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $this->basePathResolver->prefix($publicUrl),
+                is_string($link['media']) ? sprintf(' media="%s"', $link['media']) : ''
+            ),
+            $links
+        ));
 
         $headers = [];
         if ($this->debug) {
@@ -222,8 +241,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset,
             sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
             $configuration,
-            'image/png',
-            null
+            'image/png'
         );
 
         $configuration = Configuration::create(
@@ -241,8 +259,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset,
             sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
             $configuration,
-            'image/png',
-            null
+            'image/png'
         );
 
         $configuration = Configuration::create(
@@ -260,8 +277,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset,
             sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
             $configuration,
-            'image/png',
-            null
+            'image/png'
         );
 
         $configuration = Configuration::create(
@@ -279,8 +295,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset,
             sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
             $configuration,
-            'image/png',
-            null
+            'image/png'
         );
 
         $configuration = Configuration::create(
@@ -298,8 +313,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset,
             sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
             $configuration,
-            'image/png',
-            null
+            'image/png'
         );
 
         if ($this->favicons->tileColor === null) {
