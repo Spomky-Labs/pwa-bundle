@@ -80,7 +80,6 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
         assert($image !== false);
         $width = imagesx($image);
         $height = imagesy($image);
-        imagedestroy($image);
 
         return [
             'width' => $width,
@@ -181,14 +180,14 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
             return $background;
         }
 
-        $hex = ltrim($configuration->backgroundColor, '#');
-        /** @var int<0, 255> $r */
-        $r = max(0, min(255, (int) hexdec(mb_substr($hex, 0, 2))));
-        /** @var int<0, 255> $g */
-        $g = max(0, min(255, (int) hexdec(mb_substr($hex, 2, 2))));
-        /** @var int<0, 255> $b */
-        $b = max(0, min(255, (int) hexdec(mb_substr($hex, 4, 2))));
-        $color = imagecolorallocate($background, $r, $g, $b);
+        $backgroundColor = Color::fromString($configuration->backgroundColor);
+        $color = imagecolorallocatealpha(
+            $background,
+            $backgroundColor->red,
+            $backgroundColor->green,
+            $backgroundColor->blue,
+            $backgroundColor->alpha
+        );
         assert($color !== false);
         imagefill($background, 0, 0, $color);
 
@@ -196,13 +195,15 @@ final readonly class GDImageProcessor implements ImageProcessorInterface
             return $background;
         }
 
-        // Choose a ghost color (not used in the image)
-        do {
-            $r = random_int(0, 255);
-            $g = random_int(0, 255);
-            $b = random_int(0, 255);
-        } while (imagecolorexact($background, $r, $g, $b) < 0);
-        $ghostColor = imagecolorallocate($background, $r, $g, $b);
+        // The corners are cut out by flooding each of them up to a ghost outline, so that outline has to stand out
+        // from the flat background it is drawn over. Complementing the background always gives a distinct colour:
+        // 255 - n only equals n for a fractional n.
+        $ghostColor = imagecolorallocate(
+            $background,
+            255 - $backgroundColor->red,
+            255 - $backgroundColor->green,
+            255 - $backgroundColor->blue
+        );
         assert($ghostColor !== false);
 
         // Draw the border radius
