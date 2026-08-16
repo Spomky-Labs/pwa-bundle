@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -52,18 +53,7 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
         $urls = $this->serializer->serialize(array_values($options), 'json', $this->serializerOptions($debug));
         $fallbacks = $this->serializer->serialize($options, 'json', $this->serializerOptions($debug));
 
-        $declaration = '';
-        if ($debug) {
-            $declaration .= <<<DEBUG_COMMENT
-
-
-/**************************************************** OFFLINE FALLBACK ****************************************************/
-// The configuration is set to provide offline fallbacks
-
-DEBUG_COMMENT;
-        }
-
-        $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
+        $offlineFallback = <<<OFFLINE_FALLBACK_STRATEGY
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 registerInstallTask(() => {
   return openCache(registerCacheName('{$cacheName}')).then(cache =>
@@ -90,15 +80,11 @@ workbox.routing.setCatchHandler(async ({ request }) => {
 
 OFFLINE_FALLBACK_STRATEGY;
 
-        if ($debug) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END OFFLINE FALLBACK ****************************************************/
+        $declaration = ScriptSection::create('OFFLINE FALLBACK', $debug)
+            ->comment('The configuration is set to provide offline fallbacks')
+            ->code($offlineFallback)
+            ->render();
 
-
-
-
-DEBUG_COMMENT;
-        }
         $this->logger->debug('Offline fallback rule added.', [
             'declaration' => $declaration,
         ]);

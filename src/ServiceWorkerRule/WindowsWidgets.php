@@ -14,6 +14,7 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
+use SpomkyLabs\PwaBundle\Service\ScriptSection;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -44,19 +45,7 @@ final class WindowsWidgets implements ServiceWorkerRuleInterface, CanLogInterfac
             return '';
         }
         $data = $this->serializer->serialize($tags, 'json', $this->serializerOptions($debug));
-        $declaration = '';
-        if ($debug) {
-            $declaration .= <<<DEBUG_COMMENT
-
-
-/**************************************************** END WINDOWS WIDGETS ****************************************************/
-// The following code will manage the installation and uninstallation of widgets
-// NOTE: this feature is experimental and may not work as expected
-
-DEBUG_COMMENT;
-        }
-
-        $declaration .= <<<OFFLINE_FALLBACK_STRATEGY
+        $windowsWidgets = <<<WINDOWS_WIDGETS
 self.addEventListener("widgetinstall", event => {
     event.waitUntil(renderWidget(event.widget));
 });
@@ -115,16 +104,16 @@ async function updateWidgets() {
     }
 }
 
-OFFLINE_FALLBACK_STRATEGY;
-        if ($debug) {
-            $declaration .= <<<DEBUG_COMMENT
-/**************************************************** END WINDOWS WIDGETS ****************************************************/
+WINDOWS_WIDGETS;
 
+        $declaration = ScriptSection::create('WINDOWS WIDGETS', $debug)
+            ->comment(
+                'The following code will manage the installation and uninstallation of widgets',
+                'NOTE: this feature is experimental and may not work as expected'
+            )
+            ->code($windowsWidgets)
+            ->render();
 
-
-
-DEBUG_COMMENT;
-        }
         $this->logger->debug('Windows widgets rule added.', [
             'declaration' => $declaration,
         ]);
