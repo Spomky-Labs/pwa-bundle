@@ -39,7 +39,6 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     ) {
         $this->favicons = $faviconsBuilder->create();
         $this->logger = new NullLogger();
-        $this->favicons = $faviconsBuilder->create();
     }
 
     /**
@@ -473,18 +472,27 @@ XML;
     private function getFaviconAsset(Asset $asset, array $attributes): string
     {
         if (str_starts_with($asset->src, '/')) {
-            return file_get_contents($asset->src);
+            return $this->readAssetFile($asset->src);
         }
         if ($this->renderer !== null && str_contains($asset->src, ':')) {
             return $this->renderer->renderIcon($asset->src, $attributes);
         }
-        $mappedAsset = $this->assetMapper->getAsset($asset->src);
-        assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));
-        assert($mappedAsset instanceof MappedAsset, sprintf('Invalid asset "%s"', $mappedAsset->sourcePath));
 
-        $content = $mappedAsset->content;
-        if ($content === null) {
-            $content = file_get_contents($mappedAsset->sourcePath);
+        // Guarded rather than asserted: assertions are compiled out in production, where a missing asset
+        // used to surface as a property read on null from inside this method.
+        $mappedAsset = $this->assetMapper->getAsset($asset->src);
+        if (! $mappedAsset instanceof MappedAsset) {
+            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be found.', $asset->src));
+        }
+
+        return $mappedAsset->content ?? $this->readAssetFile($mappedAsset->sourcePath);
+    }
+
+    private function readAssetFile(string $path): string
+    {
+        $content = @file_get_contents($path);
+        if ($content === false) {
+            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be read.', $path));
         }
 
         return $content;
