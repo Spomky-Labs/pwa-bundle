@@ -120,7 +120,7 @@ return static function (DefinitionConfigurator $definition): void {
             }
             $v['config'] = [
                 'use_cdn' => $v['use_cdn'] ?? false,
-                'version' => $v['version'] ?? '7.3.0',
+                'version' => $v['version'] ?? '7.4.1',
                 'workbox_public_url' => $v['workbox_public_url'] ?? '/workbox',
                 'debug' => $v['debug'] ?? true,
             ];
@@ -160,13 +160,13 @@ return static function (DefinitionConfigurator $definition): void {
         ->info('Whether to cache the manifest file.')
         ->end()
         ->scalarNode('version')
-        ->defaultValue('7.3.0')
+        ->defaultValue('7.4.1')
         ->setDeprecated(
             'spomky-labs/phpwa',
             '1.5.0',
             'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.version" instead.'
         )
-        ->info('The version of workbox. When using local files, the version shall be "7.0.0."')
+        ->info('The version of workbox. Only "7.4.1" is shipped with the bundle: any other version requires the CDN.')
         ->end()
         ->scalarNode('workbox_public_url')
         ->defaultValue('/workbox')
@@ -241,8 +241,8 @@ return static function (DefinitionConfigurator $definition): void {
         ->example([true, false])
         ->end()
         ->scalarNode('version')
-        ->defaultValue('7.3.0')
-        ->info('The version of workbox. When using local files, the version shall be "7.0.0."')
+        ->defaultValue('7.4.1')
+        ->info('The version of workbox. Only "7.4.1" is shipped with the bundle: any other version requires the CDN.')
         ->end()
         ->booleanNode('use_cdn')
         ->defaultFalse()
