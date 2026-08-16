@@ -226,95 +226,12 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset = $this->generateSilhouette($asset);
         }
         $this->logger->debug('Processing browserconfig.xml.');
-        $configuration = Configuration::create(
-            70,
-            70,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon70x70 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
-            $configuration,
-            'image/png'
-        );
 
-        $configuration = Configuration::create(
-            150,
-            150,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon150x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
-            $configuration,
-            'image/png'
-        );
-
-        $configuration = Configuration::create(
-            310,
-            310,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x310 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
-            $configuration,
-            'image/png'
-        );
-
-        $configuration = Configuration::create(
-            310,
-            150,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
-            $configuration,
-            'image/png'
-        );
-
-        $configuration = Configuration::create(
-            144,
-            144,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon144x144 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
-            $configuration,
-            'image/png'
-        );
+        $icon70x70 = $this->createTile($asset, 70, 70, $hash);
+        $icon150x150 = $this->createTile($asset, 150, 150, $hash);
+        $icon310x310 = $this->createTile($asset, 310, 310, $hash);
+        $icon310x150 = $this->createTile($asset, 310, 150, $hash);
+        $icon144x144 = $this->createTile($asset, 144, 144, $hash);
 
         if ($this->favicons->tileColor === null) {
             $this->logger->debug('No tile color defined.');
@@ -378,6 +295,36 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ),
             $browserConfig->url => $browserConfig,
         ];
+    }
+
+    /**
+     * Builds one browserconfig tile, hashed from the asset and from its own configuration alone.
+     *
+     * The five hashes used to be chained, each one folding the previous, so inserting or removing a tile
+     * renamed every file declared after it.
+     *
+     * @param int<1, max> $width
+     * @param int<1, max> $height
+     */
+    private function createTile(string $asset, int $width, int $height, string $hash): Data
+    {
+        $configuration = Configuration::create(
+            $width,
+            $height,
+            'png',
+            null,
+            null,
+            $this->favicons->default->imageScale,
+            false,
+            $this->favicons->default->svgAttributes
+        );
+
+        return $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', $width, $height, hash('xxh128', $hash . $configuration)),
+            $configuration,
+            'image/png'
+        );
     }
 
     private function renderBrowserConfig(
