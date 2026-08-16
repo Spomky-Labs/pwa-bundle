@@ -16,7 +16,7 @@ enum ScreenshotSize: string
     case UHD_8K = '8k';                // 7680x4320
 
     // Portrait resolutions (narrow)
-    case P_480 = '480p';               // 640x480
+    case P_480 = '480p';               // 480x640
     case P_720 = '720p';               // 720x1280
     case P_1080 = '1080p';             // 1080x1920
     case P_1440 = '1440p';             // 1440x2560
@@ -87,8 +87,8 @@ enum ScreenshotSize: string
 
             // Portrait resolutions
             self::P_480 => [
-                'width' => 640,
-                'height' => 480,
+                'width' => 480,
+                'height' => 640,
             ],
             self::P_720 => [
                 'width' => 720,
@@ -208,7 +208,7 @@ enum ScreenshotSize: string
             self::UHD => '4K/UHD (3840×2160)',
             self::UHD_8K => '8K (7680×4320)',
 
-            self::P_480 => '480p Portrait (640×480)',
+            self::P_480 => '480p Portrait (480×640)',
             self::P_720 => '720p Portrait (720×1280)',
             self::P_1080 => '1080p Portrait (1080×1920)',
             self::P_1440 => '1440p Portrait (1440×2560)',
