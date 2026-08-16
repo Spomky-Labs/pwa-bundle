@@ -554,7 +554,33 @@ XML;
 
         if ($this->favicons->useStartImage === true) {
 
+            // iOS only shows a startup image whose dimensions match the screen exactly, so an entry is
+            // needed for every distinct point size Apple ships. In portrait the image is
+            // device-width x device-height, in landscape the two are swapped: device-width and
+            // device-height always describe the screen in its natural, portrait orientation.
             $startupImages = [
+                // iPad Pro 13" (M4)
+                [
+                    'width' => 2064,
+                    'height' => 2752,
+                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'width' => 2752,
+                    'height' => 2064,
+                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                // iPad Pro 11" (M4)
+                [
+                    'width' => 1668,
+                    'height' => 2420,
+                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'width' => 2420,
+                    'height' => 1668,
+                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
                 [
                     'width' => 2048,
                     'height' => 2732,
