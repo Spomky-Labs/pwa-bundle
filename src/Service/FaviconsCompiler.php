@@ -26,7 +26,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
 {
     private LoggerInterface $logger;
 
-    private Favicons $favicons;
+    private readonly Favicons $favicons;
 
     public function __construct(
         private readonly null|ImageProcessorInterface $imageProcessor,
@@ -39,7 +39,6 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
     ) {
         $this->favicons = $faviconsBuilder->create();
         $this->logger = new NullLogger();
-        $this->favicons = $faviconsBuilder->create();
     }
 
     /**
@@ -79,7 +78,18 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset = $this->getFaviconAsset($sourceInfo['asset'], $theme->svgAttributes);
             $hash = hash('xxh128', $asset);
 
+            /** @var array<string, array{configuration: Configuration, mimetype: string, links: list<array{rel: string, media: null|string}>}> $icons */
+            $icons = [];
             foreach ($sizes as $size) {
+                // A fixed URL carries no content hash, so it cannot be declined per color scheme: the dark
+                // variant would be written over the light one under the very same name, and both links would
+                // end up pointing at whichever was generated last. Such an entry is emitted once, from the
+                // default theme, and stays free of any color scheme condition.
+                $hasFixedUrl = $size['fixedUrl'] ?? false;
+                if ($hasFixedUrl && $mode !== 'light') {
+                    continue;
+                }
+
                 $configuration = Configuration::create(
                     $size['width'],
                     $size['height'],
@@ -91,26 +101,31 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 );
                 $completeHash = hash('xxh128', $hash . $configuration);
                 $filename = sprintf($size['url'], $size['width'], $size['height'], $completeHash);
-                $media = $size['media'] ?? null;
-                if ($this->favicons->dark !== null) {
-                    if ($media !== null) {
-                        $media = sprintf(
-                            '(%s) and %s',
-                            $media,
-                            $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null)
-                        );
-                    } else {
-                        $media = $sourceInfo['media'] ?? ($this->favicons->dark->src !== null ? '(prefers-color-scheme: light)' : null);
-                    }
-                }
+                $media = $hasFixedUrl
+                    ? ($size['media'] ?? null)
+                    : $this->combineMediaQueries($size['media'] ?? null, $sourceInfo['media']);
 
+                // Two sizes can describe the very same file: the low resolution block declares 72x72 both
+                // as an apple-touch-icon and as an icon, for one identical configuration. Both links are
+                // wanted, the second copy of the bytes is not, so the links are gathered per file name.
+                $icons[$filename] ??= [
+                    'configuration' => $configuration,
+                    'mimetype' => $size['mimetype'],
+                    'links' => [],
+                ];
+                $icons[$filename]['links'][] = [
+                    'rel' => $size['rel'],
+                    'media' => $media,
+                ];
+            }
+
+            foreach ($icons as $filename => $icon) {
                 yield $filename => $this->processIcon(
                     $asset,
                     $filename,
-                    $configuration,
-                    $size['mimetype'],
-                    $size['rel'],
-                    $media
+                    $icon['configuration'],
+                    $icon['mimetype'],
+                    $icon['links']
                 );
             }
         }
@@ -136,33 +151,59 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $this->logger = $logger;
     }
 
+    /**
+     * Combines the media query carried by a size with the one of the color scheme it is generated for.
+     *
+     * The two conditions are concatenated as-is: each of them is already a chain of parenthesized media
+     * features, and wrapping the whole in an extra pair of parentheses would turn it into a Media Queries
+     * Level 4 nested condition. Safari only parses that syntax from 16.4 on, and a browser that fails to
+     * parse a media query discards it entirely, together with the startup image it carries.
+     */
+    private function combineMediaQueries(null|string $sizeMedia, null|string $schemeMedia): null|string
+    {
+        if ($this->favicons->dark === null) {
+            return $sizeMedia;
+        }
+
+        // The default theme is the light one as soon as a dark theme is defined.
+        $schemeMedia ??= '(prefers-color-scheme: light)';
+        if ($sizeMedia === null) {
+            return $schemeMedia;
+        }
+
+        return $sizeMedia . ' and ' . $schemeMedia;
+    }
+
+    /**
+     * @param list<array{rel: string, media: null|string}> $links
+     */
     private function processIcon(
         string $asset,
         string $publicUrl,
         Configuration $configuration,
         string $mimeType,
-        null|string $rel,
-        null|string $media = null,
+        array $links = [],
     ): Data {
         $this->logger->debug('Processing icon.', [
             'publicUrl' => $publicUrl,
             'configuration' => $configuration,
             'mimeType' => $mimeType,
-            'rel' => $rel,
-            'media' => $media,
+            'links' => $links,
         ]);
         $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
 
-        $mediaAttr = is_string($media) ? sprintf(' media="%s"', $media) : '';
-        $html = $rel === null ? null : sprintf(
-            '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
-            $rel,
-            $configuration->width,
-            $configuration->height,
-            $mimeType,
-            $this->basePathResolver->prefix($publicUrl),
-            $mediaAttr
-        );
+        $html = $links === [] ? null : implode(PHP_EOL, array_map(
+            fn (array $link): string => sprintf(
+                '<link rel="%s" sizes="%dx%d" type="%s" href="%s"%s>',
+                $link['rel'],
+                $configuration->width,
+                $configuration->height,
+                $mimeType,
+                $this->basePathResolver->prefix($publicUrl),
+                is_string($link['media']) ? sprintf(' media="%s"', $link['media']) : ''
+            ),
+            $links
+        ));
 
         $headers = [];
         if ($this->debug) {
@@ -185,100 +226,12 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset = $this->generateSilhouette($asset);
         }
         $this->logger->debug('Processing browserconfig.xml.');
-        $configuration = Configuration::create(
-            70,
-            70,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon70x70 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 70, 70, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
 
-        $configuration = Configuration::create(
-            150,
-            150,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon150x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 150, 150, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(
-            310,
-            310,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x310 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 310, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(
-            310,
-            150,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon310x150 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 310, 150, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
-
-        $configuration = Configuration::create(
-            144,
-            144,
-            'png',
-            null,
-            null,
-            $this->favicons->default->imageScale,
-            false,
-            $this->favicons->default->svgAttributes
-        );
-        $hash = hash('xxh128', $hash . $configuration);
-        $icon144x144 = $this->processIcon(
-            $asset,
-            sprintf('/pwa/favicon-%dx%d-%s.png', 144, 144, $hash),
-            $configuration,
-            'image/png',
-            null
-        );
+        $icon70x70 = $this->createTile($asset, 70, 70, $hash);
+        $icon150x150 = $this->createTile($asset, 150, 150, $hash);
+        $icon310x310 = $this->createTile($asset, 310, 310, $hash);
+        $icon310x150 = $this->createTile($asset, 310, 150, $hash);
+        $icon144x144 = $this->createTile($asset, 144, 144, $hash);
 
         if ($this->favicons->tileColor === null) {
             $this->logger->debug('No tile color defined.');
@@ -342,6 +295,36 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             ),
             $browserConfig->url => $browserConfig,
         ];
+    }
+
+    /**
+     * Builds one browserconfig tile, hashed from the asset and from its own configuration alone.
+     *
+     * The five hashes used to be chained, each one folding the previous, so inserting or removing a tile
+     * renamed every file declared after it.
+     *
+     * @param int<1, max> $width
+     * @param int<1, max> $height
+     */
+    private function createTile(string $asset, int $width, int $height, string $hash): Data
+    {
+        $configuration = Configuration::create(
+            $width,
+            $height,
+            'png',
+            null,
+            null,
+            $this->favicons->default->imageScale,
+            false,
+            $this->favicons->default->svgAttributes
+        );
+
+        return $this->processIcon(
+            $asset,
+            sprintf('/pwa/favicon-%dx%d-%s.png', $width, $height, hash('xxh128', $hash . $configuration)),
+            $configuration,
+            'image/png'
+        );
     }
 
     private function renderBrowserConfig(
@@ -450,25 +433,34 @@ XML;
     private function getFaviconAsset(Asset $asset, array $attributes): string
     {
         if (str_starts_with($asset->src, '/')) {
-            return file_get_contents($asset->src);
+            return $this->readAssetFile($asset->src);
         }
         if ($this->renderer !== null && str_contains($asset->src, ':')) {
             return $this->renderer->renderIcon($asset->src, $attributes);
         }
-        $mappedAsset = $this->assetMapper->getAsset($asset->src);
-        assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));
-        assert($mappedAsset instanceof MappedAsset, sprintf('Invalid asset "%s"', $mappedAsset->sourcePath));
 
-        $content = $mappedAsset->content;
-        if ($content === null) {
-            $content = file_get_contents($mappedAsset->sourcePath);
+        // Guarded rather than asserted: assertions are compiled out in production, where a missing asset
+        // used to surface as a property read on null from inside this method.
+        $mappedAsset = $this->assetMapper->getAsset($asset->src);
+        if (! $mappedAsset instanceof MappedAsset) {
+            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be found.', $asset->src));
+        }
+
+        return $mappedAsset->content ?? $this->readAssetFile($mappedAsset->sourcePath);
+    }
+
+    private function readAssetFile(string $path): string
+    {
+        $content = @file_get_contents($path);
+        if ($content === false) {
+            throw new RuntimeException(sprintf('The favicon asset "%s" cannot be read.', $path));
         }
 
         return $content;
     }
 
     /**
-     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string}[]
+     * @return array{url: string, width: int<1, max>, height: int<1, max>, format: string, mimetype: string, rel: string, imageScale?: int, media?: string, fixedUrl?: bool}[]
      */
     private function getFaviconSizes(): array
     {
@@ -481,6 +473,9 @@ XML;
                 'format' => 'ico',
                 'mimetype' => 'image/x-icon',
                 'rel' => 'icon',
+                // Browsers fetch this URL by convention, with or without a link tag: it has to stay at that
+                // exact path, which rules out both a content hash and a per-color-scheme variant.
+                'fixedUrl' => true,
             ],
             [
                 'url' => '/pwa/favicon-%dx%d-%s.png',
@@ -528,200 +523,226 @@ XML;
 
         if ($this->favicons->useStartImage === true) {
 
+            // iOS only shows a startup image whose dimensions match the screen exactly, so an entry is
+            // needed for every distinct point size Apple ships. In portrait the image is
+            // device-width x device-height, in landscape the two are swapped: device-width and
+            // device-height always describe the screen in its natural, portrait orientation.
             $startupImages = [
+                // iPad Pro 13" (M4)
                 [
-                    'height' => 2048,
-                    'width' => 2732,
+                    'width' => 2064,
+                    'height' => 2752,
+                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'width' => 2752,
+                    'height' => 2064,
+                    'media' => '(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                // iPad Pro 11" (M4)
+                [
+                    'width' => 1668,
+                    'height' => 2420,
+                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
+                ],
+                [
+                    'width' => 2420,
+                    'height' => 1668,
+                    'media' => '(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
+                ],
+                [
+                    'width' => 2048,
+                    'height' => 2732,
                     'media' => '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2732,
-                    'width' => 2048,
+                    'width' => 2732,
+                    'height' => 2048,
                     'media' => '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1668,
-                    'width' => 2388,
+                    'width' => 1668,
+                    'height' => 2388,
                     'media' => '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2388,
-                    'width' => 1668,
+                    'width' => 2388,
+                    'height' => 1668,
                     'media' => '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1536,
-                    'width' => 2048,
+                    'width' => 1536,
+                    'height' => 2048,
                     'media' => '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2048,
-                    'width' => 1536,
+                    'width' => 2048,
+                    'height' => 1536,
                     'media' => '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1640,
-                    'width' => 2360,
+                    'width' => 1640,
+                    'height' => 2360,
                     'media' => '(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2360,
-                    'width' => 1640,
+                    'width' => 2360,
+                    'height' => 1640,
                     'media' => '(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1668,
-                    'width' => 2224,
+                    'width' => 1668,
+                    'height' => 2224,
                     'media' => '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2224,
-                    'width' => 1668,
+                    'width' => 2224,
+                    'height' => 1668,
                     'media' => '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1620,
-                    'width' => 2160,
+                    'width' => 1620,
+                    'height' => 2160,
                     'media' => '(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2160,
-                    'width' => 1620,
+                    'width' => 2160,
+                    'height' => 1620,
                     'media' => '(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1488,
-                    'width' => 2266,
+                    'width' => 1488,
+                    'height' => 2266,
                     'media' => '(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2266,
-                    'width' => 1488,
+                    'width' => 2266,
+                    'height' => 1488,
                     'media' => '(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1320,
-                    'width' => 2868,
+                    'width' => 1320,
+                    'height' => 2868,
                     'media' => '(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2868,
-                    'width' => 1320,
+                    'width' => 2868,
+                    'height' => 1320,
                     'media' => '(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1206,
-                    'width' => 2622,
+                    'width' => 1206,
+                    'height' => 2622,
                     'media' => '(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2622,
-                    'width' => 1206,
+                    'width' => 2622,
+                    'height' => 1206,
                     'media' => '(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1290,
-                    'width' => 2796,
+                    'width' => 1290,
+                    'height' => 2796,
                     'media' => '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2796,
-                    'width' => 1290,
+                    'width' => 2796,
+                    'height' => 1290,
                     'media' => '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1179,
-                    'width' => 2556,
+                    'width' => 1179,
+                    'height' => 2556,
                     'media' => '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2556,
-                    'width' => 1179,
+                    'width' => 2556,
+                    'height' => 1179,
                     'media' => '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1170,
-                    'width' => 2532,
+                    'width' => 1170,
+                    'height' => 2532,
                     'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2532,
-                    'width' => 1170,
+                    'width' => 2532,
+                    'height' => 1170,
                     'media' => '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1284,
-                    'width' => 2778,
+                    'width' => 1284,
+                    'height' => 2778,
                     'media' => '(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2778,
-                    'width' => 1284,
+                    'width' => 2778,
+                    'height' => 1284,
                     'media' => '(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1125,
-                    'width' => 2436,
+                    'width' => 1125,
+                    'height' => 2436,
                     'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2436,
-                    'width' => 1125,
+                    'width' => 2436,
+                    'height' => 1125,
                     'media' => '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1242,
-                    'width' => 2688,
+                    'width' => 1242,
+                    'height' => 2688,
                     'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2688,
-                    'width' => 1242,
+                    'width' => 2688,
+                    'height' => 1242,
                     'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 828,
-                    'width' => 1792,
+                    'width' => 828,
+                    'height' => 1792,
                     'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 1792,
-                    'width' => 828,
+                    'width' => 1792,
+                    'height' => 828,
                     'media' => '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 1242,
-                    'width' => 2208,
+                    'width' => 1242,
+                    'height' => 2208,
                     'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 2208,
-                    'width' => 1242,
+                    'width' => 2208,
+                    'height' => 1242,
                     'media' => '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 750,
-                    'width' => 1334,
+                    'width' => 750,
+                    'height' => 1334,
                     'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 1334,
-                    'width' => 750,
+                    'width' => 1334,
+                    'height' => 750,
                     'media' => '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
                 [
-                    'height' => 640,
-                    'width' => 1136,
+                    'width' => 640,
+                    'height' => 1136,
                     'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)',
                 ],
                 [
-                    'height' => 1136,
-                    'width' => 640,
+                    'width' => 1136,
+                    'height' => 640,
                     'media' => '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)',
                 ],
             ];
             foreach ($startupImages as $startupImage) {
-                [$height, $width, $media] = array_values($startupImage);
+                ['width' => $width, 'height' => $height, 'media' => $media] = $startupImage;
                 $diagonal = sqrt($width ** 2 + $height ** 2);
                 $scale = 30 + 10 * exp(-$diagonal / 1500);
                 $sizes[] = [

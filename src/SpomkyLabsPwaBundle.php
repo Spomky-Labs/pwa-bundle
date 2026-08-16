@@ -6,6 +6,8 @@ namespace SpomkyLabs\PwaBundle;
 
 use function extension_loaded;
 use function in_array;
+use function is_array;
+use function is_string;
 use SpomkyLabs\PwaBundle\CompilerPass\LoggerCompilerPass;
 use SpomkyLabs\PwaBundle\CompilerPass\PreloadUrlCompilerPass;
 use SpomkyLabs\PwaBundle\EventListener\PwaDevServerListener;
@@ -99,6 +101,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         /* Favicons */
         /** @var array<string, mixed> $faviconsConfig */
         $faviconsConfig = $config['favicons'];
+        $faviconsConfig = $this->applyManifestBackgroundColor($faviconsConfig, $manifestConfig);
         $builder->setParameter('spomky_labs_pwa.favicons.config', $faviconsConfig);
 
         /* Service Worker */
@@ -155,6 +158,36 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
             $imageProcessor,
             $extension
         ));
+    }
+
+    /**
+     * The favicon themes document their background color as falling back to the manifest one. Without that
+     * fallback a generated image is composited on a fully transparent background: an iOS startup image then
+     * shows the application logo over whatever the system paints behind it, instead of over the color the
+     * application declares.
+     *
+     * @param array<string, mixed> $faviconsConfig
+     * @param array<string, mixed> $manifestConfig
+     *
+     * @return array<string, mixed>
+     */
+    private function applyManifestBackgroundColor(array $faviconsConfig, array $manifestConfig): array
+    {
+        $backgroundColor = $manifestConfig['background_color'] ?? null;
+        if (! is_string($backgroundColor)) {
+            return $faviconsConfig;
+        }
+
+        foreach (['default', 'dark'] as $themeName) {
+            $theme = $faviconsConfig[$themeName] ?? null;
+            if (! is_array($theme) || ($theme['background_color'] ?? null) !== null) {
+                continue;
+            }
+            $theme['background_color'] = $backgroundColor;
+            $faviconsConfig[$themeName] = $theme;
+        }
+
+        return $faviconsConfig;
     }
 
     private function setAssetMapperPath(ContainerBuilder $builder): void
