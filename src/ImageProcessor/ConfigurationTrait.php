@@ -9,6 +9,8 @@ use function is_int;
 use function is_string;
 
 /**
+ * The plumbing the bundled processors share.
+ *
  * @internal
  */
 trait ConfigurationTrait
@@ -17,6 +19,15 @@ trait ConfigurationTrait
      * @return array{width: int, height: int}
      */
     abstract public function getSizes(string $image): array;
+
+    /**
+     * Whether the source is an SVG document, which the two processors decline for reasons of their own: GD cannot
+     * rasterize one at all, and ImageMagick needs a delegate that is not always built in.
+     */
+    private function isSvg(string $image): bool
+    {
+        return str_contains(mb_strtolower(mb_substr($image, 0, 1024, '8bit')), '<svg');
+    }
 
     private function getConfiguration(
         string $image,

@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Tests\Unit\ImageProcessor;
 
-use function assert;
+use function function_exists;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use function restore_error_handler;
 use function set_error_handler;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\GDImageProcessor;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageFormat;
+use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use function sprintf;
 
 /**
  * @internal
  */
 #[RequiresPhpExtension('gd')]
-final class GDImageProcessorTest extends TestCase
+final class GDImageProcessorTest extends ImageProcessorTestCase
 {
     /**
      * PHP 8.5 deprecated imagedestroy(), and hexdec() has been complaining about non hexadecimal characters since 7.4.
@@ -60,107 +61,55 @@ final class GDImageProcessorTest extends TestCase
         yield 'ico' => [Configuration::create(64, 64, 'ico')];
         yield 'jpeg' => [Configuration::create(64, 64, 'jpeg')];
         yield 'gif' => [Configuration::create(64, 64, 'gif')];
+        foreach ([
+            'bmp' => 'imagebmp',
+            'webp' => 'imagewebp',
+            'avif' => 'imageavif',
+        ] as $format => $encoder) {
+            if (function_exists($encoder)) {
+                yield $format => [Configuration::create(64, 64, $format)];
+            }
+        }
         yield 'a hexadecimal background' => [Configuration::create(64, 64, 'png', '#f5ef06')];
         yield 'a named background' => [Configuration::create(64, 64, 'png', 'red')];
         yield 'a rounded background' => [Configuration::create(64, 64, 'png', 'red', 25)];
         yield 'a scaled image' => [Configuration::create(64, 64, 'png', null, null, 50)];
+        yield 'a monochrome icon' => [Configuration::create(64, 64, 'png', null, null, null, true)];
         yield 'a non square target' => [Configuration::create(310, 150, 'png')];
     }
 
-    /**
-     * The background colour notations the configuration documents have to reach the generated icon untouched.
-     */
     #[Test]
-    #[DataProvider('backgroundColors')]
-    public function itPaintsTheConfiguredBackgroundColor(string $notation, int $expected): void
+    public function itNamesTheAlternativeWhenHandedAnSvg(): void
     {
-        $processor = new GDImageProcessor();
-        // A fully transparent source lets the background show through.
-        $result = $processor->process(
-            self::sourceImage(8, 8, true),
-            null,
-            null,
-            null,
-            Configuration::create(64, 64, 'png', $notation)
-        );
-
-        static::assertSame($expected, self::pixelAt($result, 32, 32));
-    }
-
-    /**
-     * @return iterable<string, array{string, int}>
-     */
-    public static function backgroundColors(): iterable
-    {
-        yield 'a colour name' => ['red', 0x00FF0000];
-        yield 'the name used by the safari pinned tab' => ['white', 0x00FFFFFF];
-        yield 'the hexadecimal notation of the documentation' => ['#f5ef06', 0x00F5EF06];
-        yield 'the short hexadecimal notation' => ['#f00', 0x00FF0000];
-        yield 'the hexadecimal notation without a hash' => ['f5ef06', 0x00F5EF06];
-        yield 'a half transparent colour' => ['#ff000080', 0x3FFF0000];
-    }
-
-    #[Test]
-    public function itRejectsABackgroundColorItCannotResolve(): void
-    {
-        $processor = new GDImageProcessor();
-
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('The color "rgb(255, 0, 0)" is not supported.');
+        $this->expectExceptionMessageIsOrContains('Use the Imagick image processor');
 
-        $processor->process(
-            self::sourceImage(8, 8),
-            null,
-            null,
-            null,
-            Configuration::create(64, 64, 'png', 'rgb(255, 0, 0)')
-        );
+        $this->processor()
+            ->getSizes('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"></svg>');
     }
 
     #[Test]
-    public function itCutsTheCornersOutOfARoundedBackground(): void
+    public function itListsTheFormatsItWritesWhenHandedAnotherOne(): void
     {
-        $processor = new GDImageProcessor();
-        $result = $processor->process(
-            self::sourceImage(8, 8, true),
-            null,
-            null,
-            null,
-            Configuration::create(64, 64, 'png', 'red', 25)
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageIsOrContains('Supported formats are: png, jpeg, gif, ico, bmp, webp, avif.');
 
-        // Transparent on the corner, opaque halfway along the edge.
-        static::assertSame(127, self::pixelAt($result, 0, 0) >> 24);
-        static::assertSame(0x00FF0000, self::pixelAt($result, 32, 0));
+        $this->processor()
+            ->process(self::sourceImage(8, 8), null, null, null, Configuration::create(8, 8, 'tiff'));
     }
 
-    private static function sourceImage(int $width, int $height, bool $transparent = false): string
+    protected function processor(): ImageProcessorInterface
     {
-        $image = imagecreatetruecolor($width, $height);
-        assert($image !== false);
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
-        $color = imagecolorallocatealpha($image, 0, 128, 255, $transparent ? 127 : 0);
-        assert($color !== false);
-        imagefill($image, 0, 0, $color);
-
-        ob_start();
-        imagepng($image);
-        $result = ob_get_clean();
-        assert($result !== false);
-
-        return $result;
+        return new GDImageProcessor();
     }
 
-    /**
-     * @return int The pixel as GD packs it: alpha on the high byte, then red, green and blue.
-     */
-    private static function pixelAt(string $png, int $x, int $y): int
+    protected function canWrite(string $format): bool
     {
-        $image = imagecreatefromstring($png);
-        assert($image !== false);
-        imagealphablending($image, false);
-
-        return imagecolorat($image, $x, $y);
+        return match (ImageFormat::normalize($format)) {
+            'bmp' => function_exists('imagebmp'),
+            'webp' => function_exists('imagewebp'),
+            'avif' => function_exists('imageavif'),
+            default => true,
+        };
     }
 }

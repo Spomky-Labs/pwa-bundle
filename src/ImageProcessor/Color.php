@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ImageProcessor;
 
+use function count;
 use InvalidArgumentException;
 use function mb_str_split;
 use function mb_strlen;
 use function mb_strtolower;
+use const PREG_SPLIT_NO_EMPTY;
 use function sprintf;
 
 /**
@@ -185,25 +187,28 @@ final readonly class Color
      * @param int<0, 255> $red
      * @param int<0, 255> $green
      * @param int<0, 255> $blue
-     * @param int<0, 127> $alpha On the GD scale: 0 is fully opaque, 127 fully transparent.
+     * @param int<0, 255> $opacity 0 is fully transparent, 255 fully opaque, as CSS states it.
      */
     private function __construct(
         public int $red,
         public int $green,
         public int $blue,
-        public int $alpha,
+        public int $opacity,
     ) {
     }
 
     /**
-     * Accepts a CSS colour name, the "transparent" keyword, or an hexadecimal notation with 3, 4, 6 or 8 digits and an
-     * optional leading "#".
+     * Accepts a CSS colour name, the "transparent" keyword, an hexadecimal notation with 3, 4, 6 or 8 digits and an
+     * optional leading "#", or one of the rgb(), rgba(), hsl() and hsla() functional notations.
      */
     public static function fromString(string $color): self
     {
         $normalized = mb_strtolower(trim($color));
         if ($normalized === 'transparent') {
-            return new self(0, 0, 0, 127);
+            return new self(0, 0, 0, 0);
+        }
+        if (str_contains($normalized, '(')) {
+            return self::fromFunctionalNotation($color, $normalized);
         }
         $normalized = self::NAMED_COLORS[$normalized] ?? $normalized;
 
@@ -219,41 +224,142 @@ final readonly class Color
         };
 
         return new self(
-            self::channel($channels[0]),
-            self::channel($channels[1]),
-            self::channel($channels[2]),
-            // CSS states the opacity, GD the transparency, on a 128 step scale.
-            isset($channels[3]) ? self::alpha(self::channel($channels[3])) : 0,
+            self::clamp((int) hexdec($channels[0])),
+            self::clamp((int) hexdec($channels[1])),
+            self::clamp((int) hexdec($channels[2])),
+            isset($channels[3]) ? self::clamp((int) hexdec($channels[3])) : 255,
         );
+    }
+
+    /**
+     * The transparency of the colour on the scale the GD extension uses: 0 is fully opaque, 127 fully transparent.
+     *
+     * @return int<0, 127>
+     */
+    public function gdAlpha(): int
+    {
+        return max(0, min(127, (int) round((255 - $this->opacity) * 127 / 255)));
     }
 
     public function isTransparent(): bool
     {
-        return $this->alpha === 127;
+        return $this->opacity === 0;
+    }
+
+    /**
+     * The "#RRGGBBAA" notation, which every ImagickPixel understands.
+     */
+    public function toHex(): string
+    {
+        return sprintf('#%02X%02X%02X%02X', $this->red, $this->green, $this->blue, $this->opacity);
+    }
+
+    private static function fromFunctionalNotation(string $color, string $normalized): self
+    {
+        if (preg_match('/^(rgba?|hsla?)\(\s*([^()]*?)\s*\)$/', $normalized, $matches) !== 1) {
+            throw self::unsupported($color);
+        }
+        // Both the legacy "rgb(255, 0, 0)" and the modern "rgb(255 0 0 / 50%)" separators are accepted.
+        $arguments = preg_split('#[\s,/]+#', $matches[2], -1, PREG_SPLIT_NO_EMPTY);
+        if ($arguments === false || count($arguments) < 3 || count($arguments) > 4) {
+            throw self::unsupported($color);
+        }
+        $opacity = isset($arguments[3]) ? self::opacity($color, $arguments[3]) : 255;
+
+        if (str_starts_with($matches[1], 'rgb')) {
+            return new self(
+                self::rgbChannel($color, $arguments[0]),
+                self::rgbChannel($color, $arguments[1]),
+                self::rgbChannel($color, $arguments[2]),
+                $opacity,
+            );
+        }
+
+        return self::fromHsl(
+            self::number($color, $arguments[0], 'deg'),
+            self::number($color, $arguments[1], '%') / 100,
+            self::number($color, $arguments[2], '%') / 100,
+            $opacity,
+        );
+    }
+
+    /**
+     * @param int<0, 255> $opacity
+     */
+    private static function fromHsl(float $hue, float $saturation, float $lightness, int $opacity): self
+    {
+        $hue = fmod(fmod($hue, 360) + 360, 360) / 60;
+        $saturation = max(0.0, min(1.0, $saturation));
+        $lightness = max(0.0, min(1.0, $lightness));
+
+        $chroma = (1 - abs(2 * $lightness - 1)) * $saturation;
+        $second = $chroma * (1 - abs(fmod($hue, 2.0) - 1));
+        $offset = $lightness - $chroma / 2;
+
+        [$red, $green, $blue] = match ((int) $hue) {
+            0 => [$chroma, $second, 0.0],
+            1 => [$second, $chroma, 0.0],
+            2 => [0.0, $chroma, $second],
+            3 => [0.0, $second, $chroma],
+            4 => [$second, 0.0, $chroma],
+            default => [$chroma, 0.0, $second],
+        };
+
+        return new self(
+            self::clamp((int) round(($red + $offset) * 255)),
+            self::clamp((int) round(($green + $offset) * 255)),
+            self::clamp((int) round(($blue + $offset) * 255)),
+            $opacity,
+        );
     }
 
     /**
      * @return int<0, 255>
      */
-    private static function channel(string $hex): int
+    private static function rgbChannel(string $color, string $argument): int
     {
-        return max(0, min(255, (int) hexdec($hex)));
+        return self::clamp((int) round(
+            str_ends_with($argument, '%')
+                ? self::number($color, $argument, '%') * 255 / 100
+                : self::number($color, $argument)
+        ));
     }
 
     /**
-     * @param int<0, 255> $opacity
-     *
-     * @return int<0, 127>
+     * @return int<0, 255>
      */
-    private static function alpha(int $opacity): int
+    private static function opacity(string $color, string $argument): int
     {
-        return max(0, min(127, (int) round((255 - $opacity) * 127 / 255)));
+        // The alpha channel is a fraction of one, unless it carries a percent sign.
+        return self::clamp((int) round(
+            str_ends_with($argument, '%')
+                ? self::number($color, $argument, '%') * 255 / 100
+                : self::number($color, $argument) * 255
+        ));
+    }
+
+    private static function number(string $color, string $argument, null|string $unit = null): float
+    {
+        $value = $unit === null ? $argument : rtrim($argument, $unit);
+        if (preg_match('/^[+-]?(?:\d+\.?\d*|\.\d+)$/', $value) !== 1) {
+            throw self::unsupported($color);
+        }
+
+        return (float) $value;
+    }
+
+    /**
+     * @return int<0, 255>
+     */
+    private static function clamp(int $value): int
+    {
+        return max(0, min(255, $value));
     }
 
     private static function unsupported(string $color): InvalidArgumentException
     {
         return new InvalidArgumentException(sprintf(
-            'The color "%s" is not supported. Use a CSS color name, "transparent", or an hexadecimal notation such as "#f00", "#f00c", "#ff0000" or "#ff0000cc".',
+            'The color "%s" is not supported. Use a CSS color name, "transparent", an hexadecimal notation such as "#f00", "#f00c", "#ff0000" or "#ff0000cc", or one of the rgb(), rgba(), hsl() and hsla() notations.',
             $color
         ));
     }
