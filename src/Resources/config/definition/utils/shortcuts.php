@@ -41,6 +41,7 @@ function setupShortcuts(): ArrayNodeDefinition
         ->end()
         ->append(getUrlNode('url', 'The URL of the shortcut.'))
         ->append(getIconsNode('The icons of the shortcut.'))
+        ->append(getLocalizedIconsNode('The icons of the shortcut, per locale.'))
         ->end()
         ->end();
 

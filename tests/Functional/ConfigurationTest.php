@@ -70,6 +70,37 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
         ]];
+        yield 'Localized manifest members' => [[
+            'pwa' => [
+                'manifest' => [
+                    'enabled' => true,
+                    'localization_strategy' => 'both',
+                    'public_url' => '/site.{locale}.webmanifest',
+                    'locale_directions' => [
+                        'ar' => 'rtl',
+                        'pt-BR' => 'ltr',
+                    ],
+                    'icons_localized' => [
+                        'de' => [
+                            [
+                                'src' => 'pwa/logo.de.svg',
+                                'sizes' => [48, 96],
+                            ],
+                        ],
+                        'ar' => ['pwa/logo.ar.svg'],
+                    ],
+                    'shortcuts' => [
+                        [
+                            'name' => 'pwa.shortcuts.agenda',
+                            'url' => '/agenda',
+                            'icons_localized' => [
+                                'de' => ['pwa/agenda.de.svg'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]];
         yield 'Service Worker only' => [[
             'pwa' => [
                 'serviceworker' => [
@@ -328,6 +359,42 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
             'Invalid configuration for path "pwa.favicons": The default theme favicon shall be defined',
+        ];
+        yield 'Inline localization with a locale placeholder' => [
+            [
+                'pwa' => [
+                    'manifest' => [
+                        'enabled' => true,
+                        'localization_strategy' => 'inline',
+                        'public_url' => '/site.{locale}.webmanifest',
+                    ],
+                ],
+            ],
+            'The "{locale}" placeholder cannot be used in "pwa.manifest.public_url" with the "inline" localization strategy',
+        ];
+        yield 'Unknown localization strategy' => [
+            [
+                'pwa' => [
+                    'manifest' => [
+                        'enabled' => true,
+                        'localization_strategy' => 'per_request',
+                    ],
+                ],
+            ],
+            'The value "per_request" is not allowed for path "pwa.manifest.localization_strategy"',
+        ];
+        yield 'Unknown text direction' => [
+            [
+                'pwa' => [
+                    'manifest' => [
+                        'enabled' => true,
+                        'locale_directions' => [
+                            'ar' => 'right-to-left',
+                        ],
+                    ],
+                ],
+            ],
+            'The value "right-to-left" is not allowed for path "pwa.manifest.locale_directions.ar"',
         ];
     }
 

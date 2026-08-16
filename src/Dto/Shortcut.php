@@ -25,6 +25,12 @@ final class Shortcut
      */
     public array $icons = [];
 
+    /**
+     * @var array<string, array<Icon>>
+     */
+    #[SerializedName('icons_localized')]
+    public array $iconsLocalized = [];
+
     public function getName(): string|TranslatableInterface
     {
         return $this->provideTranslation($this->name);

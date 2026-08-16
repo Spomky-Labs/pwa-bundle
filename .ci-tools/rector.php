@@ -44,7 +44,10 @@ $builder->withSkip([
     RemoveDeadInstanceOfAssertRector::class,
     // Symfony 8.1 moved the bundle classes to the DependencyInjection component. The new FQCNs
     // do not exist on Symfony 6.4 and 7.x, which the bundle still supports.
-    RenameClassRector::class => [__DIR__ . '/../tests/AppKernel.php'],
+    RenameClassRector::class => [
+        __DIR__ . '/../tests/AppKernel.php',
+        __DIR__ . '/../tests/LocalizedManifestKernel.php',
+    ],
     // The $requests argument of RequestStack::__construct() only exists from Symfony 7.2 on, while
     // composer.json allows ^7.0. Applying this would break the --prefer-lowest test job.
     PushRequestToRequestStackConstructorRector::class,

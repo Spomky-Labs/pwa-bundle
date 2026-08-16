@@ -28,6 +28,19 @@ return static function (DefinitionConfigurator $definition): void {
             return $v;
         })
         ->end()
+        ->validate()
+        ->ifTrue(static function (array $v): bool {
+            if (($v['localization_strategy'] ?? 'files') !== 'inline') {
+                return false;
+            }
+            $publicUrl = $v['public_url'] ?? '';
+
+            return is_string($publicUrl) && str_contains($publicUrl, '{locale}');
+        })
+        ->thenInvalid(
+            'The "{locale}" placeholder cannot be used in "pwa.manifest.public_url" with the "inline" localization strategy: a single, locale agnostic manifest is compiled. Remove the placeholder or use the "both" strategy.'
+        )
+        ->end()
         ->canBeEnabled()
         ->children()
         ->scalarNode('public_url')
@@ -39,6 +52,33 @@ return static function (DefinitionConfigurator $definition): void {
         ->booleanNode('use_credentials')
         ->defaultTrue()
         ->info('Indicates whether the manifest should be fetched with credentials.')
+        ->end()
+        ->enumNode('localization_strategy')
+        ->values(['files', 'inline', 'both'])
+        ->defaultValue('files')
+        ->info(
+            <<<'INFO'
+            How the translations of the manifest members are delivered.
+            "files" compiles one manifest per enabled locale and requires the "{locale}" placeholder in the public URL.
+            "inline" compiles a single, locale agnostic manifest carrying every translation in the "*_localized" members.
+            "both" compiles one manifest per locale, each of them also carrying the "*_localized" members.
+            INFO
+        )
+        ->example(['files', 'inline', 'both'])
+        ->end()
+        ->arrayNode('locale_directions')
+        ->info(
+            'Overrides the writing direction detected for a locale. Only the locales whose direction differs from the one of the manifest are declined with an explicit "dir" in the localized members.'
+        )
+        ->example([[
+            'ar' => 'rtl',
+            'ku' => 'rtl',
+        ]])
+        ->useAttributeAsKey('locale')
+        ->normalizeKeys(false)
+        ->enumPrototype()
+        ->values(['ltr', 'rtl', 'auto'])
+        ->end()
         ->end()
         ->scalarNode('background_color')
         ->info(
@@ -148,6 +188,7 @@ return static function (DefinitionConfigurator $definition): void {
         ->append(getUrlNode('note_taking_url', 'The URL to the note-taking service.'))
         ->end()
         ->append(getIconsNode('The icons of the application.'))
+        ->append(getLocalizedIconsNode('The icons of the application, per locale.'))
         ->append(getScreenshotsNode('The screenshots of the application.'))
         ->append(getFileHandlersNode())
         ->append(getLaunchHandlerNode())

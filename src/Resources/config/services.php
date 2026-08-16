@@ -28,6 +28,7 @@ use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompiler;
 use SpomkyLabs\PwaBundle\Service\FileCompilerInterface;
 use SpomkyLabs\PwaBundle\Service\IconResolver;
+use SpomkyLabs\PwaBundle\Service\LocalizedMembersBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ResourceHintsBuilder;
@@ -37,6 +38,7 @@ use SpomkyLabs\PwaBundle\Service\ScreenshotUrlGenerator;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
 use SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder;
+use SpomkyLabs\PwaBundle\Service\TextDirectionResolver;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
@@ -73,6 +75,17 @@ return static function (ContainerConfigurator $configurator): void {
         ])
     ;
     $container->set(ManifestCompiler::class);
+    $container->set(TextDirectionResolver::class)
+        ->args([
+            '$directions' => param('spomky_labs_pwa.manifest.locale_directions'),
+        ])
+    ;
+    $container->set(LocalizedMembersBuilder::class)
+        ->args([
+            '$translator' => service('translator')
+                ->nullOnInvalid(),
+        ])
+    ;
 
     /* Favicons */
     $container->set(FaviconsBuilder::class)
