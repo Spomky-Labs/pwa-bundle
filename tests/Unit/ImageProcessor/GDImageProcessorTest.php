@@ -82,7 +82,7 @@ final class GDImageProcessorTest extends ImageProcessorTestCase
     public function itNamesTheAlternativeWhenHandedAnSvg(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('Use the Imagick image processor');
+        $this->expectExceptionMessage('Use the Imagick image processor');
 
         $this->processor()
             ->getSizes('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"></svg>');
@@ -92,7 +92,7 @@ final class GDImageProcessorTest extends ImageProcessorTestCase
     public function itListsTheFormatsItWritesWhenHandedAnotherOne(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('Supported formats are: png, jpeg, gif, ico, bmp, webp, avif.');
+        $this->expectExceptionMessage('Supported formats are: png, jpeg, gif, ico, bmp, webp, avif.');
 
         $this->processor()
             ->process(self::sourceImage(8, 8), null, null, null, Configuration::create(8, 8, 'tiff'));

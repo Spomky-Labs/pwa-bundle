@@ -79,7 +79,7 @@ abstract class ImageProcessorTestCase extends TestCase
     public function itRejectsAFormatItCannotWrite(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('not-a-format');
+        $this->expectExceptionMessage('not-a-format');
 
         $this->processor()
             ->process(self::sourceImage(32, 32), null, null, null, Configuration::create(32, 32, 'not-a-format'));
@@ -122,7 +122,7 @@ abstract class ImageProcessorTestCase extends TestCase
     public function itRejectsABackgroundColorItCannotResolve(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('not-a-color');
+        $this->expectExceptionMessage('not-a-color');
 
         $this->processor()
             ->process(
@@ -187,24 +187,18 @@ abstract class ImageProcessorTestCase extends TestCase
 
         static::assertSame(127, self::alphaAt($result, 0, 0), 'the corner should be cut out');
         static::assertSame(0, self::alphaAt($result, 64, 0), 'the middle of the edge should be kept');
-
-        $antialiased = 0;
-        for ($x = 0; $x < 128; $x++) {
-            for ($y = 0; $y < 128; $y++) {
-                $alpha = self::alphaAt($result, $x, $y);
-                if ($alpha > 0 && $alpha < 127) {
-                    $antialiased++;
-                }
-            }
-        }
-        static::assertGreaterThan(100, $antialiased, 'the rounded edge should be antialiased');
+        static::assertGreaterThan(
+            100,
+            self::countPartiallyTransparentPixels($result),
+            'the rounded edge should be antialiased'
+        );
     }
 
     #[Test]
     public function itRejectsASourceItCannotRead(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('The image cannot be read');
+        $this->expectExceptionMessage('The image cannot be read');
 
         $this->processor()
             ->getSizes('not an image at all');
@@ -256,5 +250,29 @@ abstract class ImageProcessorTestCase extends TestCase
     protected static function alphaAt(string $png, int $x, int $y): int
     {
         return (self::pixelAt($png, $x, $y) >> 24) & 0x7F;
+    }
+
+    /**
+     * The pixels an antialiased edge leaves between the two extremes, over a single decoding of the image.
+     */
+    protected static function countPartiallyTransparentPixels(string $png): int
+    {
+        $image = imagecreatefromstring($png);
+        assert($image !== false);
+        imagealphablending($image, false);
+        $width = imagesx($image);
+        $height = imagesy($image);
+
+        $count = 0;
+        for ($x = 0; $x < $width; $x++) {
+            for ($y = 0; $y < $height; $y++) {
+                $alpha = (imagecolorat($image, $x, $y) >> 24) & 0x7F;
+                if ($alpha > 0 && $alpha < 127) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
     }
 }

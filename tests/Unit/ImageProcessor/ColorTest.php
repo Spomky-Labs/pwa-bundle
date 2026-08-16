@@ -95,7 +95,7 @@ final class ColorTest extends TestCase
     public function itRejectsWhatItCannotResolve(string $notation): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains(sprintf('The color "%s" is not supported.', $notation));
+        $this->expectExceptionMessage(sprintf('The color "%s" is not supported.', $notation));
 
         Color::fromString($notation);
     }
