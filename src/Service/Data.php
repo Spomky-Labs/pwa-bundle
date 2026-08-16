@@ -12,6 +12,7 @@ use Closure;
 final class Data
 {
     /**
+     * @param string|Closure(): string $data
      * @param array<string, string|bool> $headers
      */
     public function __construct(
@@ -24,6 +25,7 @@ final class Data
     }
 
     /**
+     * @param string|Closure(): string $data
      * @param array<string, string|bool> $headers
      */
     public static function create(
@@ -38,13 +40,18 @@ final class Data
 
     public function getData(): string
     {
-        if ($this->data instanceof Closure) {
-            $this->data = ($this->data)();
+        $data = $this->data;
+        if ($data instanceof Closure) {
+            $data = $data();
+            $this->data = $data;
         }
 
-        return $this->data;
+        return $data;
     }
 
+    /**
+     * @return string|Closure(): string
+     */
     public function getRawData(): string|Closure
     {
         return $this->data;

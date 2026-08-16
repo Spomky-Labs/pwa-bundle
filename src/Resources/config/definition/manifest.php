@@ -20,9 +20,11 @@ return static function (DefinitionConfigurator $definition): void {
         ->children()
         ->arrayNode('manifest')
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => array_key_exists('icons', $v) && is_array($v['icons']))
+        ->ifTrue(static fn (mixed $v): bool => is_array($v) && is_array($v['icons'] ?? null))
         ->then(static function (array $v): array {
-            $v['icons'] = expandIcons($v['icons'] ?? []);
+            $icons = $v['icons'];
+            assert(is_array($icons));
+            $v['icons'] = expandIcons($icons);
             return $v;
         })
         ->end()

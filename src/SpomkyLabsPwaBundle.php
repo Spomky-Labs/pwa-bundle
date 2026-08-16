@@ -50,7 +50,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param array<array-key, mixed> $config
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {

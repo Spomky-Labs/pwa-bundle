@@ -31,6 +31,9 @@ final readonly class ScreenshotConfiguration
     ) {
     }
 
+    /**
+     * @phpstan-assert-if-true !null $this->route
+     */
     public function isRoute(): bool
     {
         return $this->route !== null;

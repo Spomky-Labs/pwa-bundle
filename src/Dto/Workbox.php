@@ -23,7 +23,7 @@ final class Workbox
     public FontCache $fontCache;
 
     /**
-     * @var array<PageCache>
+     * @var array<ResourceCache>
      */
     #[SerializedName('resource_caches')]
     public array $resourceCaches = [];
@@ -57,5 +57,10 @@ final class Workbox
     public function __construct()
     {
         $this->config = new WorkboxConfig();
+        $this->imageCache = new ImageCache();
+        $this->fontCache = new FontCache();
+        $this->assetCache = new AssetCache();
+        $this->googleFontCache = new GoogleFontCache();
+        $this->offlineFallback = new OfflineFallback();
     }
 }

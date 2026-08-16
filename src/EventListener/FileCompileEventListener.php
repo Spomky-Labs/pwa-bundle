@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\EventListener;
 
-use function assert;
 use SpomkyLabs\PwaBundle\Service\FileCompiler;
 use Symfony\Component\AssetMapper\Event\PreAssetsCompileEvent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -20,9 +19,8 @@ final readonly class FileCompileEventListener
     }
 
     #[AsEventListener(PreAssetsCompileEvent::class)]
-    public function __invoke(PreAssetsCompileEvent $event): void
+    public function __invoke(): void
     {
-        assert($event instanceof PreAssetsCompileEvent);
         if (! $this->enabled) {
             return;
         }

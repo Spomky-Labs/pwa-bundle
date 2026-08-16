@@ -190,7 +190,11 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             'mimeType' => $mimeType,
             'links' => $links,
         ]);
-        $closure = fn (): string => $this->imageProcessor->process($asset, null, null, null, $configuration);
+        $imageProcessor = $this->imageProcessor;
+        if ($imageProcessor === null) {
+            throw new RuntimeException('The image processor is not available.');
+        }
+        $closure = static fn (): string => $imageProcessor->process($asset, null, null, null, $configuration);
 
         $html = $links === [] ? null : implode(PHP_EOL, array_map(
             fn (array $link): string => sprintf(
@@ -428,7 +432,7 @@ XML;
     }
 
     /**
-     * @param array<string, mixed> $attributes
+     * @param array<string, bool|string> $attributes
      */
     private function getFaviconAsset(Asset $asset, array $attributes): string
     {

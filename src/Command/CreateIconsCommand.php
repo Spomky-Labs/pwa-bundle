@@ -95,7 +95,12 @@ final class CreateIconsCommand extends Command
             $io->error('The source must be a string.');
             return self::FAILURE;
         }
-        $dest = rtrim((string) $input->getOption('output'), '/');
+        $outputOption = $input->getOption('output');
+        if (! is_string($outputOption)) {
+            $io->error('The output directory must be a string.');
+            return self::FAILURE;
+        }
+        $dest = rtrim($outputOption, '/');
         $filename = $input->getOption('filename');
         if (! is_string($filename)) {
             $io->error('The filename must be a string.');
@@ -127,7 +132,7 @@ final class CreateIconsCommand extends Command
 
         $generatedIcons = [];
         foreach ($sizes as $size) {
-            $size = (int) $size;
+            $size = is_numeric($size) ? (int) $size : 0;
             if ($size < 1) {
                 $io->warning(sprintf('Invalid size %d, skipping (size must be >= 1)', $size));
                 continue;

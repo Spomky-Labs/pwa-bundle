@@ -22,7 +22,7 @@ final readonly class ApplicationIconCompiler implements FileCompilerInterface
     }
 
     /**
-     * @return iterable<Data>
+     * @return iterable<string, Data>
      */
     public function getFiles(): iterable
     {
@@ -46,7 +46,8 @@ final readonly class ApplicationIconCompiler implements FileCompilerInterface
         }
 
         foreach ($icons as $icon) {
-            yield $this->iconResolver->getIcon($icon);
+            $data = $this->iconResolver->getIcon($icon);
+            yield $data->url => $data;
         }
     }
 }

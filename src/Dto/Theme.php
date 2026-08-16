@@ -26,7 +26,7 @@ final class Theme
     public null|int $imageScale = null;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, bool|string>
      */
     #[SerializedName('svg_attr')]
     public array $svgAttributes = [];

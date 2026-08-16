@@ -32,7 +32,7 @@ final class Icon
     public null|string $purpose = null;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, bool|string>
      */
     #[SerializedName('svg_attr')]
     public array $svgAttributes = [];

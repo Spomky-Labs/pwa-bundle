@@ -48,73 +48,73 @@ return static function (DefinitionConfigurator $definition): void {
         ->info('The configuration of the workbox.')
         ->canBeDisabled()
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => true)
-        ->then(static function (mixed $v): array {
+        ->ifTrue(is_array(...))
+        ->then(static function (array $v): array {
             if (isset($v['asset_cache'])) {
                 return $v;
             }
-            $v['asset_cache'] = array_filter([
+            $v['asset_cache'] = [
                 'enabled' => true,
                 'cache_name' => $v['asset_cache_name'] ?? 'assets',
                 'regex' => $v['static_regex'] ?? '/\.(css|js|json|xml|txt|map|ico|png|jpe?g|gif|svg|webp|bmp)$/',
-            ], static fn (mixed $v): bool => $v !== null);
-
-            return $v;
-        })
-        ->end()
-        ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => true)
-        ->then(static function (mixed $v): array {
-            if (isset($v['image_cache'])) {
-                return $v;
-            }
-            $v['image_cache'] = array_filter([
-                'enabled' => true,
-                'cache_name' => $v['image_cache_name'] ?? 'images',
-                'regex' => $v['image_regex'] ?? '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/',
-                'max_entries' => $v['max_image_cache_entries'] ?? 60,
-                'max_age' => $v['max_image_age'] ?? 60 * 60 * 24 * 365,
-            ], static fn (mixed $v): bool => $v !== null);
-
-            return $v;
-        })
-        ->end()
-        ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => true)
-        ->then(static function (mixed $v): array {
-            if (isset($v['font_cache'])) {
-                return $v;
-            }
-            $v['font_cache'] = array_filter([
-                'enabled' => true,
-                'cache_name' => $v['font_cache_name'] ?? 'fonts',
-                'regex' => $v['font_regex'] ?? '/\.(ttf|eot|otf|woff2)$/',
-                'max_entries' => $v['max_font_cache_entries'] ?? 60,
-                'max_age' => $v['max_font_age'] ?? 60 * 60 * 24 * 365,
-            ], static fn (mixed $v): bool => $v !== null);
-
-            return $v;
-        })
-        ->end()
-        ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => true)
-        ->then(static function (mixed $v): array {
-            if (isset($v['resource_caches'])) {
-                return $v;
-            }
-            $v['resource_caches'][] = [
-                'match_callback' => 'navigate',
-                'preload_urls' => $v['warm_cache_urls'] ?? [],
-                'cache_name' => $v['page_cache_name'] ?? 'pages',
-                'network_timeout' => $v['network_timeout_seconds'] ?? 3,
             ];
 
             return $v;
         })
         ->end()
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => true)
-        ->then(static function (mixed $v): array {
+        ->ifTrue(is_array(...))
+        ->then(static function (array $v): array {
+            if (isset($v['image_cache'])) {
+                return $v;
+            }
+            $v['image_cache'] = [
+                'enabled' => true,
+                'cache_name' => $v['image_cache_name'] ?? 'images',
+                'regex' => $v['image_regex'] ?? '/\.(ico|png|jpe?g|gif|svg|webp|bmp)$/',
+                'max_entries' => $v['max_image_cache_entries'] ?? 60,
+                'max_age' => $v['max_image_age'] ?? 60 * 60 * 24 * 365,
+            ];
+
+            return $v;
+        })
+        ->end()
+        ->beforeNormalization()
+        ->ifTrue(is_array(...))
+        ->then(static function (array $v): array {
+            if (isset($v['font_cache'])) {
+                return $v;
+            }
+            $v['font_cache'] = [
+                'enabled' => true,
+                'cache_name' => $v['font_cache_name'] ?? 'fonts',
+                'regex' => $v['font_regex'] ?? '/\.(ttf|eot|otf|woff2)$/',
+                'max_entries' => $v['max_font_cache_entries'] ?? 60,
+                'max_age' => $v['max_font_age'] ?? 60 * 60 * 24 * 365,
+            ];
+
+            return $v;
+        })
+        ->end()
+        ->beforeNormalization()
+        ->ifTrue(is_array(...))
+        ->then(static function (array $v): array {
+            if (isset($v['resource_caches'])) {
+                return $v;
+            }
+            $v['resource_caches'] = [[
+                'match_callback' => 'navigate',
+                'preload_urls' => $v['warm_cache_urls'] ?? [],
+                'cache_name' => $v['page_cache_name'] ?? 'pages',
+                'network_timeout' => $v['network_timeout_seconds'] ?? 3,
+            ]];
+
+            return $v;
+        })
+        ->end()
+        ->beforeNormalization()
+        ->ifTrue(is_array(...))
+        ->then(static function (array $v): array {
             if (isset($v['config'])) {
                 return $v;
             }

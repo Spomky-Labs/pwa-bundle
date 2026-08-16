@@ -23,4 +23,9 @@ final class ServiceWorker
     public bool $skipWaiting = false;
 
     public Workbox $workbox;
+
+    public function __construct()
+    {
+        $this->workbox = new Workbox();
+    }
 }
