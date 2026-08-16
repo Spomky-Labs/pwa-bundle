@@ -6,8 +6,8 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
- * @param array<int, array<string, mixed>|string> $icons
- * @return array<int, array<string, mixed>>
+ * @param array<mixed> $icons
+ * @return list<array<mixed>>
  */
 function expandIcons(array $icons): array
 {

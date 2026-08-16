@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Service;
 
+use InvalidArgumentException;
 use SpomkyLabs\PwaBundle\Dto\ScreenshotConfiguration;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -31,6 +32,10 @@ final readonly class ScreenshotUrlGenerator
         }
 
         // Otherwise, return the URL as-is
+        if ($config->url === null) {
+            throw new InvalidArgumentException('Either "url" or "route" must be specified.');
+        }
+
         return $config->url;
     }
 }

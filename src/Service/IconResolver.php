@@ -39,10 +39,7 @@ final readonly class IconResolver
             );
         }
         $asset = $this->getAsset($icon->src, $icon->svgAttributes);
-        $content = $asset->content;
-        if ($content === null) {
-            $content = file_get_contents($asset->sourcePath);
-        }
+        $content = $asset->content ?? $this->readAssetFile($asset->sourcePath);
 
         $imageProcessor = fn (Configuration $configuration): string => $this->imageProcessor->process(
             $content,
@@ -58,15 +55,7 @@ final readonly class IconResolver
         $size = max($sizeList);
         if ($size === 0) {
             $url = sprintf('/pwa/icon-any-%s.%s', $asset->digest, $asset->publicExtension);
-            return new Data(
-                $url,
-                fn () => $content,
-                [
-                    'Cache-Control' => 'public, max-age=604800, immutable',
-                    'Content-Type' => $this->getType($icon->type, $url),
-                    'X-Pwa-Dev' => true,
-                ],
-            );
+            return new Data($url, static fn (): string => $content, $this->getHeaders($icon->type, $url));
         }
         assert($size >= 1);
 
@@ -97,12 +86,8 @@ final readonly class IconResolver
 
         return new Data(
             $url,
-            fn () => $imageProcessor($configuration),
-            [
-                'Cache-Control' => 'public, max-age=604800, immutable',
-                'Content-Type' => $this->getType($icon->type, $url),
-                'X-Pwa-Dev' => true,
-            ],
+            static fn (): string => $imageProcessor($configuration),
+            $this->getHeaders($icon->type, $url)
         );
     }
 
@@ -129,12 +114,32 @@ final readonly class IconResolver
     }
 
     /**
-     * @param array<string, mixed> $attributes
+     * The content type is only advertised when it can be determined: a null value would end up as an empty
+     * Content-Type header on the development server.
+     *
+     * @return array<string, string|bool>
+     */
+    private function getHeaders(?string $type, string $url): array
+    {
+        $headers = [
+            'Cache-Control' => 'public, max-age=604800, immutable',
+            'X-Pwa-Dev' => true,
+        ];
+        $contentType = $this->getType($type, $url);
+        if ($contentType !== null) {
+            $headers['Content-Type'] = $contentType;
+        }
+
+        return $headers;
+    }
+
+    /**
+     * @param array<string, bool|string> $attributes
      */
     private function getAsset(Asset $asset, array $attributes): MappedAsset
     {
         if (str_starts_with($asset->src, '/')) {
-            $content = file_get_contents($asset->src);
+            $content = $this->readAssetFile($asset->src);
             $hash = hash('xxh128', $content);
             $fileinfo = pathinfo($asset->src);
             assert(is_array($fileinfo), 'Invalid file.');
@@ -167,9 +172,18 @@ final readonly class IconResolver
             );
         }
         $mappedAsset = $this->assetMapper->getAsset($asset->src);
-        assert($mappedAsset, sprintf('Invalid asset "%s"', $asset->src));
-        assert($mappedAsset instanceof MappedAsset, sprintf('Invalid asset "%s"', $mappedAsset->sourcePath));
+        assert($mappedAsset !== null, sprintf('Invalid asset "%s"', $asset->src));
 
         return $mappedAsset;
+    }
+
+    private function readAssetFile(string $path): string
+    {
+        $content = file_get_contents($path);
+        if ($content === false) {
+            throw new RuntimeException(sprintf('The asset "%s" cannot be read.', $path));
+        }
+
+        return $content;
     }
 }

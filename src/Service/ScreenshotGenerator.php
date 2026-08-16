@@ -8,6 +8,7 @@ use function assert;
 use function count;
 use Facebook\WebDriver\WebDriverDimension;
 use function function_exists;
+use function is_int;
 use function is_string;
 use SpomkyLabs\PwaBundle\Dto\ScreenshotConfiguration;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
@@ -139,6 +140,11 @@ final readonly class ScreenshotGenerator
             $this->filesystem->mkdir($config->output);
         }
 
+        assert($width >= 1);
+        assert($height >= 1);
+        $imageProcessor = $this->imageProcessor;
+        assert($imageProcessor !== null);
+
         $tmpName = $this->filesystem->tempnam('', 'pwa-');
 
         try {
@@ -173,7 +179,7 @@ final readonly class ScreenshotGenerator
             $data = file_get_contents($tmpName);
             assert(is_string($data));
             $configuration = Configuration::create($width, $height, $config->format);
-            $data = $this->imageProcessor->process($data, null, null, null, $configuration);
+            $data = $imageProcessor->process($data, null, null, null, $configuration);
             file_put_contents($tmpName, $data);
 
             $filename = sprintf(
@@ -231,14 +237,18 @@ final readonly class ScreenshotGenerator
         assert($socket !== false, 'Unable to create a socket.');
         socket_getsockname($socket, $address, $port);
         socket_close($socket);
+        assert(is_int($port), 'Unable to determine the socket port.');
 
         return $port;
     }
 
+    /**
+     * @return list<string>
+     */
     private function getDefaultArguments(): array
     {
         $args = [];
-        $headless = ! ($_SERVER['PANTHER_NO_HEADLESS'] ?? false);
+        $headless = ! (bool) ($_SERVER['PANTHER_NO_HEADLESS'] ?? false);
 
         if ($headless) {
             $args[] = '--headless';
@@ -247,20 +257,20 @@ final readonly class ScreenshotGenerator
         }
 
         // Only open devtools if not in headless mode
-        if (! $headless && ($_SERVER['PANTHER_DEVTOOLS'] ?? false)) {
+        if (! $headless && (bool) ($_SERVER['PANTHER_DEVTOOLS'] ?? false)) {
             $args[] = '--auto-open-devtools-for-tabs';
         }
 
-        if ($_SERVER['PANTHER_NO_SANDBOX'] ?? $_SERVER['HAS_JOSH_K_SEAL_OF_APPROVAL'] ?? false) {
+        if ((bool) ($_SERVER['PANTHER_NO_SANDBOX'] ?? $_SERVER['HAS_JOSH_K_SEAL_OF_APPROVAL'] ?? false)) {
             $args[] = '--no-sandbox';
         }
 
         // Hide scrollbars in screenshots
         $args[] = '--hide-scrollbars';
 
-        if ($_SERVER['PANTHER_CHROME_ARGUMENTS'] ?? false) {
-            $arguments = explode(' ', (string) $_SERVER['PANTHER_CHROME_ARGUMENTS']);
-            $args = array_merge($args, $arguments);
+        $chromeArguments = $_SERVER['PANTHER_CHROME_ARGUMENTS'] ?? null;
+        if (is_string($chromeArguments) && $chromeArguments !== '') {
+            $args = array_merge($args, explode(' ', $chromeArguments));
         }
 
         return $args;
@@ -285,6 +295,10 @@ final readonly class ScreenshotGenerator
         // Allow specifying chromedriver binary via environment variable
         $chromeDriverBinary = $_SERVER['PANTHER_CHROME_DRIVER_BINARY'] ?? $_ENV['PANTHER_CHROME_DRIVER_BINARY'] ?? null;
 
-        return Client::createChromeClient($chromeDriverBinary, $arguments, $options);
+        return Client::createChromeClient(
+            is_string($chromeDriverBinary) ? $chromeDriverBinary : null,
+            $arguments,
+            $options
+        );
     }
 }

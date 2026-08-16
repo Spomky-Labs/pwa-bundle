@@ -6,6 +6,7 @@ namespace SpomkyLabs\PwaBundle\Command;
 
 use function assert;
 use Facebook\WebDriver\WebDriverDimension;
+use function is_int;
 use function is_string;
 use SpomkyLabs\PwaBundle\ImageProcessor\Configuration;
 use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
@@ -93,7 +94,12 @@ final class CreateScreenshotCommand extends Command
             $io->error('The URL must be a string.');
             return self::FAILURE;
         }
-        $dest = rtrim((string) $input->getOption('output'), '/');
+        $outputOption = $input->getOption('output');
+        if (! is_string($outputOption)) {
+            $io->error('The output directory must be a string.');
+            return self::FAILURE;
+        }
+        $dest = rtrim($outputOption, '/');
         $heightOption = $input->getOption('height');
         $widthOption = $input->getOption('width');
         $format = $input->getOption('format');
@@ -119,8 +125,8 @@ final class CreateScreenshotCommand extends Command
             return self::FAILURE;
         }
         if ($widthOption !== null && $heightOption !== null) {
-            $windowWidth = (int) $widthOption;
-            $windowHeight = (int) $heightOption;
+            $windowWidth = is_numeric($widthOption) ? (int) $widthOption : 0;
+            $windowHeight = is_numeric($heightOption) ? (int) $heightOption : 0;
             if ($windowWidth <= 0 || $windowHeight <= 0) {
                 $io->error('Width and height must be positive integers.');
                 return self::FAILURE;
@@ -187,8 +193,9 @@ final class CreateScreenshotCommand extends Command
         assert($socket !== false, 'Unable to create a socket.');
         socket_getsockname($socket, $address, $port);
         socket_close($socket);
+        assert(is_int($port), 'Unable to determine the socket port.');
 
-        return (int) $port;
+        return $port;
     }
 
     /**

@@ -17,9 +17,11 @@ function setupShortcuts(): ArrayNodeDefinition
         ->info('The shortcuts of the application.')
         ->arrayPrototype()
         ->beforeNormalization()
-        ->ifTrue(static fn (mixed $v): bool => array_key_exists('icons', $v) && is_array($v['icons']))
+        ->ifTrue(static fn (mixed $v): bool => is_array($v) && is_array($v['icons'] ?? null))
         ->then(static function (array $v): array {
-            $v['icons'] = expandIcons($v['icons'] ?? []);
+            $icons = $v['icons'];
+            assert(is_array($icons));
+            $v['icons'] = expandIcons($icons);
             return $v;
         })
         ->end()
