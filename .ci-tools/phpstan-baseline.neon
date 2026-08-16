@@ -55,6 +55,18 @@ parameters:
 			path: ../src/Dto/Shortcut.php
 
 		-
+			rawMessage: Class SpomkyLabs\PwaBundle\Dto\StartupImageTheme has an uninitialized property $src. Give it default value or assign it in the constructor.
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/StartupImageTheme.php
+
+		-
+			rawMessage: Class SpomkyLabs\PwaBundle\Dto\StartupImages has an uninitialized property $default. Give it default value or assign it in the constructor.
+			identifier: property.uninitialized
+			count: 1
+			path: ../src/Dto/StartupImages.php
+
+		-
 			rawMessage: Class SpomkyLabs\PwaBundle\Dto\Theme has an uninitialized property $src. Give it default value or assign it in the constructor.
 			identifier: property.uninitialized
 			count: 1

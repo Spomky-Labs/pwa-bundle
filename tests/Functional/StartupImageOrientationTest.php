@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
-use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\StartupImagesCompiler;
 use function sprintf;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -19,8 +19,8 @@ final class StartupImageOrientationTest extends KernelTestCase
     {
         // Given
         self::bootKernel();
-        $compiler = self::getContainer()->get(FaviconsCompiler::class);
-        static::assertInstanceOf(FaviconsCompiler::class, $compiler);
+        $compiler = self::getContainer()->get(StartupImagesCompiler::class);
+        static::assertInstanceOf(StartupImagesCompiler::class, $compiler);
 
         // When
         $html = '';

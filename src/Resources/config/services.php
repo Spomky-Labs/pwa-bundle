@@ -37,9 +37,17 @@ use SpomkyLabs\PwaBundle\Service\ScreenshotGenerator;
 use SpomkyLabs\PwaBundle\Service\ScreenshotUrlGenerator;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use SpomkyLabs\PwaBundle\Service\SourceImageResolver;
 use SpomkyLabs\PwaBundle\Service\SpeculationRulesBuilder;
+use SpomkyLabs\PwaBundle\Service\StartupImagesBuilder;
+use SpomkyLabs\PwaBundle\Service\StartupImagesCompiler;
 use SpomkyLabs\PwaBundle\Service\TextDirectionResolver;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\ServiceWorkerRuleInterface;
+use SpomkyLabs\PwaBundle\StartupImage\ChromeHtmlRenderer;
+use SpomkyLabs\PwaBundle\StartupImage\DeviceCatalog;
+use SpomkyLabs\PwaBundle\StartupImage\HtmlRendererInterface;
+use SpomkyLabs\PwaBundle\StartupImage\IconStartupImageRenderer;
+use SpomkyLabs\PwaBundle\StartupImage\TemplateStartupImageRenderer;
 use SpomkyLabs\PwaBundle\Twig\InstanceOfExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaExtension;
 use SpomkyLabs\PwaBundle\Twig\PwaRuntime;
@@ -48,6 +56,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
+use Symfony\UX\Icons\IconRendererInterface;
 
 return static function (ContainerConfigurator $configurator): void {
     $container = $configurator->services()
@@ -95,6 +104,35 @@ return static function (ContainerConfigurator $configurator): void {
     ;
     $container->set(FaviconsCompiler::class);
 
+    /* Startup images */
+    $container->set(StartupImagesBuilder::class)
+        ->args([
+            '$config' => param('spomky_labs_pwa.startup_images.config'),
+        ])
+    ;
+    $container->set(DeviceCatalog::class);
+    $container->set(IconStartupImageRenderer::class);
+    $container->set(TemplateStartupImageRenderer::class)
+        ->args([
+            '$twig' => service('twig')->nullOnInvalid(),
+            '$htmlRenderer' => service(HtmlRendererInterface::class)->nullOnInvalid(),
+        ])
+    ;
+    if (class_exists(Client::class) && class_exists(WebDriverDimension::class)) {
+        $container->set(ChromeHtmlRenderer::class)
+            ->args([
+                '$webClient' => service('pwa.web_client')->nullOnInvalid(),
+            ])
+        ;
+        $container->alias(HtmlRendererInterface::class, ChromeHtmlRenderer::class);
+    }
+    $container->set(StartupImagesCompiler::class);
+
+    $container->set(SourceImageResolver::class)
+        ->args([
+            '$iconRenderer' => service(IconRendererInterface::class)->nullOnInvalid(),
+        ])
+    ;
     $container->set(IconResolver::class);
     $container->set(ApplicationIconCompiler::class);
     $container->set(ScreenshotUrlGenerator::class);

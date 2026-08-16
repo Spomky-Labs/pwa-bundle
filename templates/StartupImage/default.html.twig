@@ -1,0 +1,101 @@
+{#
+    The startup image iOS shows while the application boots.
+
+    Extend it rather than copy it when only a piece of it has to change:
+
+        {% extends '@SpomkyLabsPwa/StartupImage/default.html.twig' %}
+        {% block subtitle %}<p class="subtitle">{{ context.baseline }}</p>{% endblock %}
+
+    Everything is sized against `--unit`, a hundredth of the shorter side, so that a layout written once
+    holds from an iPhone SE to an iPad Pro. Lengths are in device pixels: the document is painted at the
+    exact pixel size of the screen, with no device pixel ratio applied on top.
+
+    Available variables: width, height, orientation, device_width, device_height, pixel_ratio, device_name,
+    color_scheme, background_color, theme_color, app_name, short_name, description, lang, dir, icon,
+    icon_svg, context.
+#}
+<!DOCTYPE html>
+<html lang="{{ lang|default('en') }}"{% if dir %} dir="{{ dir }}"{% endif %}>
+<head>
+    <meta charset="utf-8">
+    <title>{{ app_name|default('') }}</title>
+    <style>
+        {% block stylesheet %}
+        :root {
+            --unit: {{ min(width, height) / 100 }}px;
+            --background-color: {{ background_color|default('#ffffff') }};
+            --text-color: {{ theme_color|default('#000000') }};
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: {{ width }}px;
+            height: {{ height }}px;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--unit) * 4);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            text-align: center;
+            {# The safe area of a notched screen is not honoured by the startup image, so the content is
+               kept away from the edges by hand. #}
+            padding: calc(var(--unit) * 10);
+        }
+
+        .logo {
+            width: calc(var(--unit) * {{ orientation == 'portrait' ? 34 : 22 }});
+            height: auto;
+            max-height: calc(var(--unit) * 40);
+        }
+
+        .name {
+            margin: 0;
+            font-size: calc(var(--unit) * {{ orientation == 'portrait' ? 7 : 6 }});
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .subtitle {
+            margin: 0;
+            font-size: calc(var(--unit) * {{ orientation == 'portrait' ? 4 : 3.5 }});
+            font-weight: 400;
+            opacity: 0.7;
+            line-height: 1.3;
+        }
+        {% endblock %}
+    </style>
+</head>
+<body>
+{% block body %}
+    {% block logo %}
+        {% if icon is not empty %}
+            <img class="logo" src="{{ icon }}" alt="">
+        {% endif %}
+    {% endblock %}
+
+    {% block name %}
+        {% set displayed_name = context.name|default(app_name) %}
+        {% if displayed_name is not empty %}
+            <h1 class="name">{{ displayed_name }}</h1>
+        {% endif %}
+    {% endblock %}
+
+    {% block subtitle %}
+        {% if context.subtitle is defined and context.subtitle is not empty %}
+            <p class="subtitle">{{ context.subtitle }}</p>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+</body>
+</html>

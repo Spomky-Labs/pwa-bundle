@@ -113,6 +113,14 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         $faviconsConfig = $this->applyManifestBackgroundColor($faviconsConfig, $manifestConfig);
         $builder->setParameter('spomky_labs_pwa.favicons.config', $faviconsConfig);
 
+        /* Startup images */
+        /** @var array<string, mixed> $startupImagesConfig */
+        $startupImagesConfig = $config['startup_images'] ?? [];
+        $builder->setParameter(
+            'spomky_labs_pwa.startup_images.config',
+            $this->prepareStartupImagesConfig($startupImagesConfig, $faviconsConfig, $manifestConfig)
+        );
+
         /* Service Worker */
         $builder->setParameter('spomky_labs_pwa.sw.enabled', $serviceWorkerConfig['enabled']);
         $builder->setParameter('spomky_labs_pwa.sw.public_url', $serviceWorkerConfig['dest'] ?? null);
@@ -167,6 +175,59 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
             $imageProcessor,
             $extension
         ));
+    }
+
+    /**
+     * The startup images used to be a favicon setting, and they still borrow from it whatever they have
+     * not been told: whether to generate them at all, which image to draw, and the colors to draw it on.
+     *
+     * @param array<string, mixed> $config
+     * @param array<string, mixed> $faviconsConfig
+     * @param array<string, mixed> $manifestConfig
+     *
+     * @return array<string, mixed>
+     */
+    private function prepareStartupImagesConfig(array $config, array $faviconsConfig, array $manifestConfig): array
+    {
+        if (($config['enabled'] ?? null) === null) {
+            $config['enabled'] = ($faviconsConfig['enabled'] ?? false) === true
+                && ($faviconsConfig['use_start_image'] ?? true) === true;
+        }
+        /** @var array<string, mixed> $sharedContext */
+        $sharedContext = $config['context'] ?? [];
+        $config['monochrome'] = $faviconsConfig['monochrome'] ?? false;
+
+        foreach (['default', 'dark'] as $themeName) {
+            /** @var array<string, mixed> $theme */
+            $theme = $config[$themeName] ?? [];
+            $favicon = $faviconsConfig[$themeName] ?? null;
+            $favicon = is_array($favicon) ? $favicon : [];
+
+            $theme['src'] ??= $favicon['src'] ?? null;
+            if ($theme['src'] === null) {
+                // A color scheme nobody described an image for is simply not declined.
+                unset($config[$themeName]);
+                continue;
+            }
+            $theme['background_color'] ??= $favicon['background_color'] ?? $manifestConfig['background_color'] ?? null;
+            $theme['border_radius'] ??= $favicon['border_radius'] ?? null;
+            $theme['image_scale'] ??= $favicon['image_scale'] ?? null;
+            if (($theme['svg_attr'] ?? []) === []) {
+                $theme['svg_attr'] = $favicon['svg_attr'] ?? [];
+            }
+            /** @var array<string, mixed> $themeContext */
+            $themeContext = $theme['context'] ?? [];
+            $theme['context'] = [...$sharedContext, ...$themeContext];
+
+            $config[$themeName] = $theme;
+        }
+        unset($config['context']);
+
+        if (! isset($config['default'])) {
+            $config['enabled'] = false;
+        }
+
+        return $config;
     }
 
     /**

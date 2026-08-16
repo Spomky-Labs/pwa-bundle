@@ -13,6 +13,7 @@ use SpomkyLabs\PwaBundle\ImageProcessor\ImageProcessorInterface;
 use SpomkyLabs\PwaBundle\Service\BasePathResolver;
 use SpomkyLabs\PwaBundle\Service\FaviconsBuilder;
 use SpomkyLabs\PwaBundle\Service\FaviconsCompiler;
+use SpomkyLabs\PwaBundle\Service\SourceImageResolver;
 use function sprintf;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -64,7 +65,6 @@ final class BrowserConfigTest extends KernelTestCase
 
         $favicons = new Favicons();
         $favicons->enabled = true;
-        $favicons->useStartImage = false;
         $favicons->default = $default;
         $favicons->tileColor = '#ffffff';
 
@@ -75,8 +75,7 @@ final class BrowserConfigTest extends KernelTestCase
         return new FaviconsCompiler(
             static::getContainer()->get(ImageProcessorInterface::class),
             new FaviconsBuilder($denormalizer, []),
-            static::getContainer()->get('asset_mapper'),
-            null,
+            static::getContainer()->get(SourceImageResolver::class),
             static::getContainer()->get(BasePathResolver::class),
             false
         );
