@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveDeadInstanceOfAssertRector;
 use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
@@ -55,6 +56,9 @@ $builder->withSkip([
     // the phpqa image ships. Renaming an assertion to its later spelling — expectExceptionMessage() to
     // expectExceptionMessageIsOrContains(), added in PHPUnit 12 — passes here and fails there.
     RenameMethodRector::class => [__DIR__ . '/../tests'],
+    // "PageCache" is an alias of a class it declares deprecated, so it has to name itself. Written as
+    // a ::class constant, PHPStan reports the file for referencing the very class it deprecates.
+    StringClassNameToClassConstantRector::class => [__DIR__ . '/../src/Dto/PageCache.php'],
 ]);
 $builder->withParallel();
 $builder->withImportNames();
