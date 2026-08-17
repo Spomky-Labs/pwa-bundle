@@ -118,12 +118,18 @@ return static function (DefinitionConfigurator $definition): void {
             if (isset($v['config'])) {
                 return $v;
             }
-            $v['config'] = [
-                'use_cdn' => $v['use_cdn'] ?? false,
-                'version' => $v['version'] ?? '7.4.1',
-                'workbox_public_url' => $v['workbox_public_url'] ?? '/workbox',
-                'debug' => $v['debug'] ?? true,
-            ];
+            // Only the keys the application actually set are carried over. Writing the whole section with
+            // its defaults would make the bundle trigger its own deprecations, for options nobody
+            // configured. What is left out is what "WorkboxConfig" already defaults to.
+            $config = [];
+            foreach (['use_cdn', 'version', 'workbox_public_url'] as $key) {
+                if (array_key_exists($key, $v)) {
+                    $config[$key] = $v[$key];
+                }
+            }
+            if ($config !== []) {
+                $v['config'] = $config;
+            }
 
             return $v;
         })
@@ -131,11 +137,11 @@ return static function (DefinitionConfigurator $definition): void {
         ->children()
         ->booleanNode('use_cdn')
         ->defaultFalse()
-        ->info('Whether to use the local workbox or the CDN.')
+        ->info('Whether to use the local workbox or the CDN. Deprecated: the bundled files are the supported ones.')
         ->setDeprecated(
             'spomky-labs/phpwa',
             '1.5.0',
-            'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.use_cdn" instead.'
+            'The "%path%.%node%" option is deprecated and will be removed in 2.0.0. The bundle serves the Workbox version it ships from your own application.'
         )
         ->end()
         ->arrayNode('google_fonts')
@@ -164,9 +170,9 @@ return static function (DefinitionConfigurator $definition): void {
         ->setDeprecated(
             'spomky-labs/phpwa',
             '1.5.0',
-            'The "%node%" option is deprecated and will be removed in 2.0.0. use "config.version" instead.'
+            'The "%path%.%node%" option is deprecated and will be removed in 2.0.0. The bundle generates a service worker for the Workbox version it ships, and ships the only one it supports.'
         )
-        ->info('The version of workbox. Only "7.4.1" is shipped with the bundle: any other version requires the CDN.')
+        ->info('The version of workbox. Deprecated: the bundle ships "7.4.1" and generates code for it.')
         ->end()
         ->scalarNode('workbox_public_url')
         ->defaultValue('/workbox')
@@ -242,11 +248,21 @@ return static function (DefinitionConfigurator $definition): void {
         ->end()
         ->scalarNode('version')
         ->defaultValue('7.4.1')
-        ->info('The version of workbox. Only "7.4.1" is shipped with the bundle: any other version requires the CDN.')
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.6.0',
+            'The "%path%.%node%" option is deprecated and will be removed in 2.0.0. The bundle generates a service worker for the Workbox version it ships, and ships the only one it supports.'
+        )
+        ->info('The version of workbox. Deprecated: the bundle ships "7.4.1" and generates code for it.')
         ->end()
         ->booleanNode('use_cdn')
         ->defaultFalse()
-        ->info('Whether to use the local workbox or the CDN.')
+        ->setDeprecated(
+            'spomky-labs/phpwa',
+            '1.6.0',
+            'The "%path%.%node%" option is deprecated and will be removed in 2.0.0. The bundle serves the Workbox version it ships from your own application.'
+        )
+        ->info('Whether to use the local workbox or the CDN. Deprecated: the bundled files are the supported ones.')
         ->end()
         ->scalarNode('workbox_public_url')
         ->defaultValue('/workbox')
