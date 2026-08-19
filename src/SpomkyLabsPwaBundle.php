@@ -82,6 +82,7 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
 
         /** @var array{enabled: bool, dest?: string} $serviceWorkerConfig */
         $serviceWorkerConfig = $config['serviceworker'];
+        $this->checkDeprecatedHelpers($serviceWorkerConfig);
         /** @var array{enabled: bool, public_url?: string, localization_strategy?: string, locale_directions?: array<string, string>} $manifestConfig */
         $manifestConfig = $config['manifest'];
         if ($serviceWorkerConfig['enabled'] === true) {
@@ -155,6 +156,44 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $this->setAssetMapperPath($builder);
+    }
+
+    /**
+     * @param array<string, mixed> $serviceWorkerConfig
+     */
+    private function checkDeprecatedHelpers(array $serviceWorkerConfig): void
+    {
+        if (($serviceWorkerConfig['enabled'] ?? false) !== true) {
+            return;
+        }
+        $workbox = $serviceWorkerConfig['workbox'] ?? [];
+        if (! is_array($workbox) || ($workbox['enabled'] ?? true) !== true) {
+            return;
+        }
+
+        if (($workbox['keep_deprecated_helpers'] ?? true) !== false) {
+            // Not a deprecated node: leaving the option untouched is precisely what has
+            // to be reported, and setDeprecated() only fires when a node is written out.
+            trigger_deprecation(
+                'spomky-labs/phpwa',
+                '1.6.0',
+                'The service worker helpers "registerCacheFirst", "registerMessageTask", "registerPushTask", "registerNotificationAction", "registerPeriodicSyncTask", "registerBackgroundFetchTask" and "openBackgroundFetchDatabase" are deprecated and will be removed in 2.0.0. Replace them with plain "self.addEventListener()" calls in your own service worker source, then set "pwa.serviceworker.workbox.keep_deprecated_helpers" to false.'
+            );
+
+            return;
+        }
+
+        // The background fetch rule calls registerBackgroundFetchTask(), which lives in
+        // the deprecated helpers. Emitting one without the other produces a service
+        // worker that throws a bare ReferenceError at runtime, so refuse it up front.
+        $backgroundFetch = $workbox['background_fetch'] ?? [];
+        if (! is_array($backgroundFetch) || ($backgroundFetch['enabled'] ?? false) !== true) {
+            return;
+        }
+
+        throw new InvalidConfigurationException(
+            'The option "pwa.serviceworker.workbox.background_fetch" requires the deprecated service worker helpers, but "pwa.serviceworker.workbox.keep_deprecated_helpers" is set to false. Background fetch is deprecated since 1.6.0 and will be removed in 2.0.0: disable it and handle the "backgroundfetchsuccess" event in your own service worker source.'
+        );
     }
 
     /**
