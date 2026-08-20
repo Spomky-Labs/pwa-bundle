@@ -81,6 +81,7 @@
     "ext-imagick": "Required to generate icons (or GD).",
     "symfony/mime": "For generating and manipulating icons or screenshots",
     "symfony/filesystem": "For generating and manipulating icons or screenshots",
+    "symfony/translation": "To translate the manifest members (name, description, categories, shortcuts, screenshot labels)",
     "symfony/ux-icons": "For using SVG icons (e.g. for shortcuts)"
   }
 }

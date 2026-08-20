@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use function class_exists;
 use function is_array;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -19,7 +20,10 @@ trait TranslatableTrait
      */
     public function provideTranslation(null|string|array $data): null|string|TranslatableInterface|array
     {
-        if (! interface_exists(TranslatableInterface::class) || $data === null) {
+        // symfony/translation-contracts often comes along on its own (twig-bridge, security-core, …), so the
+        // interface being there proves nothing: TranslatableMessage lives in symfony/translation. Without that
+        // component there is nothing to translate with, and the configured text is the final text.
+        if ($data === null || ! class_exists(TranslatableMessage::class)) {
             return $data;
         }
         if (is_array($data)) {
