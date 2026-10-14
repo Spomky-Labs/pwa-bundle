@@ -13,6 +13,7 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Symfony72\Rector\StmtsAwareInterface\PushRequestToRequestStackConstructorRector;
+use Rector\Symfony\Symfony73\Rector\Class_\CommandHelpToAttributeRector;
 use Rector\ValueObject\PhpVersion;
 
 $builder = RectorConfig::configure();
@@ -52,6 +53,10 @@ $builder->withSkip([
     // The $requests argument of RequestStack::__construct() only exists from Symfony 7.2 on, while
     // composer.json allows ^7.0. Applying this would break the --prefer-lowest test job.
     PushRequestToRequestStackConstructorRector::class,
+    // The $help argument of the AsCommand attribute only exists from Symfony 7.3 on, while
+    // composer.json allows ^6.4. Instantiating the attribute would then fail with an unknown
+    // named parameter, so the help stays in configure() through setHelp().
+    CommandHelpToAttributeRector::class,
     // Rector sees the PHPUnit composer resolves, currently 13, while the test job runs the phpunit-11
     // the phpqa image ships. Renaming an assertion to its later spelling — expectExceptionMessage() to
     // expectExceptionMessageIsOrContains(), added in PHPUnit 12 — passes here and fails there.

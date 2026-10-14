@@ -8,6 +8,7 @@ use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorInterface;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsGeneratorManager;
 use SpomkyLabs\PwaBundle\CachingStrategy\PreloadUrlsTagGeneratorFactory;
 use SpomkyLabs\PwaBundle\Command\CompileCommand;
+use SpomkyLabs\PwaBundle\Command\CreateConfigCommand;
 use SpomkyLabs\PwaBundle\Command\CreateIconsCommand;
 use SpomkyLabs\PwaBundle\Command\CreateScreenshotCommand;
 use SpomkyLabs\PwaBundle\Command\ListCacheStrategiesCommand;
@@ -56,6 +57,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Panther\Client;
+use Symfony\Component\Yaml\Yaml;
 use Symfony\UX\Icons\IconRendererInterface;
 
 return static function (ContainerConfigurator $configurator): void {
@@ -163,6 +165,9 @@ return static function (ContainerConfigurator $configurator): void {
 
     /* Commands */
     $container->set(CompileCommand::class);
+    if (class_exists(Yaml::class)) {
+        $container->set(CreateConfigCommand::class);
+    }
     if (class_exists(Client::class) && class_exists(WebDriverDimension::class) && class_exists(MimeTypes::class)) {
         $container->set(CreateScreenshotCommand::class);
         $container->set(ScreenshotGenerator::class);
