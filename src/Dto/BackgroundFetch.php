@@ -6,6 +6,11 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
+/**
+ * @deprecated since 1.6.0, will be removed in 2.0.0. It imposes an IndexedDB schema and a
+ * client/service worker protocol that no application reuses as-is. Handle the
+ * "backgroundfetchsuccess" event in your own service worker source instead.
+ */
 final class BackgroundFetch
 {
     public bool $enabled = false;

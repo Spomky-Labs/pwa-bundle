@@ -46,9 +46,16 @@ final class WorkboxImport implements ServiceWorkerRuleInterface, CanLogInterface
             $section->comment('Import from CDN')
                 ->code(<<<IMPORT_CDN_STRATEGY
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/{$this->workbox->config->version}/workbox-sw.js');
-importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
 
 IMPORT_CDN_STRATEGY);
+            // Only the deprecated helpers rely on self.idb. Once they are switched off,
+            // shipping the library to every visitor buys nothing.
+            if ($this->workbox->keepDeprecatedHelpers) {
+                $section->code(<<<IMPORT_CDN_IDB
+importScripts('https://cdn.jsdelivr.net/npm/idb@8/build/umd.js');
+
+IMPORT_CDN_IDB);
+            }
         } else {
             $workboxPublicUrl = $this->basePathResolver->prefix(
                 '/' . trim($this->workbox->config->workboxPublicUrl, '/')
@@ -57,10 +64,18 @@ IMPORT_CDN_STRATEGY);
             $section->comment('Import from public URL')
                 ->code(<<<IMPORT_PUBLIC_URL_STRATEGY
 importScripts('{$workboxPublicUrl}/workbox-sw.js');
-importScripts('{$idbPublicUrl}/umd.js');
-workbox.setConfig({modulePathPrefix: '{$workboxPublicUrl}'});
 
 IMPORT_PUBLIC_URL_STRATEGY);
+            if ($this->workbox->keepDeprecatedHelpers) {
+                $section->code(<<<IMPORT_PUBLIC_URL_IDB
+importScripts('{$idbPublicUrl}/umd.js');
+
+IMPORT_PUBLIC_URL_IDB);
+            }
+            $section->code(<<<WORKBOX_MODULE_PATH
+workbox.setConfig({modulePathPrefix: '{$workboxPublicUrl}'});
+
+WORKBOX_MODULE_PATH);
         }
 
         // Add workbox configuration
