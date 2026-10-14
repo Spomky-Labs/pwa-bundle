@@ -1,4 +1,10 @@
+import { reportDeprecatedHelper } from './deprecation.js';
+
 function onPeriodicSync(tag, callback) {
+    reportDeprecatedHelper(
+        'onPeriodicSync',
+        'Listen to your own BroadcastChannel instead: the service worker side of this protocol goes away too.'
+    );
     const periodicChannel = new BroadcastChannel('periodic-sync');
     periodicChannel.addEventListener('message', (event) => {
         const { type, tag: receivedTag, ...data } = event.data || {};
@@ -9,6 +15,10 @@ function onPeriodicSync(tag, callback) {
 }
 
 async function registerPeriodicSync(tag, minInterval, options = {}) {
+    reportDeprecatedHelper(
+        'registerPeriodicSync',
+        'Call registration.periodicSync.register() directly, it is a handful of lines.'
+    );
     const reg = await navigator.serviceWorker.ready;
     const status = await navigator.permissions.query({
         name: 'periodic-background-sync',
