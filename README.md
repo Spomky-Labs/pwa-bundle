@@ -29,7 +29,12 @@ This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
 
-The documentation is available at https://pwa.spomky-labs.com/
+The documentation is at **<https://docs.spomky-labs.com/pwa/>**, one version per maintained branch.
+
+* [Installation](https://docs.spomky-labs.com/pwa/latest/installation/)
+* [How to create a PWA](https://docs.spomky-labs.com/pwa/latest/how-to-create-a-pwa/)
+* [Icons](https://docs.spomky-labs.com/pwa/latest/the-manifest/icons/) — and the rest of the manifest.
+* [Deployment](https://docs.spomky-labs.com/pwa/latest/deployment/)
 
 # Support
 
