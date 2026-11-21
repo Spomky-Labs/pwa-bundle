@@ -60,6 +60,45 @@ final class LocalizedManifestTest extends TestCase
     }
 
     #[Test]
+    public function aMinimalManifestCarriesOnlyItsConfiguredMembers(): void
+    {
+        // Given
+        $manifestConfig = [
+            'name' => 'My app',
+            'start_url' => '/',
+            'icons' => [
+                [
+                    'src' => 'pwa/1920x1920.svg',
+                    'sizes' => [48],
+                ],
+            ],
+        ];
+
+        // When
+        $manifests = $this->compile('minimal', $manifestConfig);
+        $members = array_keys($manifests['/site.webmanifest']);
+
+        // Then
+        static::assertEqualsCanonicalizing(['icons', 'lang', 'name', 'start_url'], $members);
+    }
+
+    #[Test]
+    public function anEmptyObjectMemberIsKept(): void
+    {
+        // Given
+        $manifestConfig = [
+            'name' => 'My app',
+            'edge_side_panel' => null,
+        ];
+
+        // When
+        $manifests = $this->compile('empty_object', $manifestConfig);
+
+        // Then
+        static::assertArrayHasKey('edge_side_panel', $manifests['/site.webmanifest']);
+    }
+
+    #[Test]
     public function theLocalesWithoutTranslationAreLeftOut(): void
     {
         // Given
