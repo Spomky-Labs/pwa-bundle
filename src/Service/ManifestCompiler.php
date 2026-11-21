@@ -134,7 +134,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
             $manifestPublicUrl,
             $callback,
             [
-                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Cache-Control' => 'no-cache',
                 'Content-Type' => 'application/manifest+json',
                 'X-Pwa-Dev' => true,
             ],

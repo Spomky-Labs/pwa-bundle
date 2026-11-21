@@ -78,7 +78,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
             $asset = $this->getFaviconAsset($sourceInfo['asset'], $theme->svgAttributes);
             $hash = hash('xxh128', $asset);
 
-            /** @var array<string, array{configuration: Configuration, mimetype: string, links: list<array{rel: string, media: null|string}>}> $icons */
+            /** @var array<string, array{configuration: Configuration, mimetype: string, fixedUrl: bool, links: list<array{rel: string, media: null|string}>}> $icons */
             $icons = [];
             foreach ($sizes as $size) {
                 // A fixed URL carries no content hash, so it cannot be declined per color scheme: the dark
@@ -111,6 +111,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                 $icons[$filename] ??= [
                     'configuration' => $configuration,
                     'mimetype' => $size['mimetype'],
+                    'fixedUrl' => $hasFixedUrl,
                     'links' => [],
                 ];
                 $icons[$filename]['links'][] = [
@@ -125,7 +126,8 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
                     $filename,
                     $icon['configuration'],
                     $icon['mimetype'],
-                    $icon['links']
+                    $icon['links'],
+                    $icon['fixedUrl']
                 );
             }
         }
@@ -183,6 +185,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         Configuration $configuration,
         string $mimeType,
         array $links = [],
+        bool $fixedUrl = false,
     ): Data {
         $this->logger->debug('Processing icon.', [
             'publicUrl' => $publicUrl,
@@ -208,7 +211,7 @@ final class FaviconsCompiler implements FileCompilerInterface, CanLogInterface
         $headers = [];
         if ($this->debug) {
             $headers = [
-                'Cache-Control' => 'public, max-age=604800, immutable',
+                'Cache-Control' => $fixedUrl ? 'no-cache' : 'public, max-age=604800, immutable',
                 'Content-Type' => $mimeType,
                 'X-Pwa-Dev' => true,
             ];
