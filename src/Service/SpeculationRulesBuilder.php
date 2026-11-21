@@ -30,13 +30,11 @@ final class SpeculationRulesBuilder
 
     public function create(): SpeculationRules
     {
-        if ($this->speculationRules === null) {
-            $this->speculationRules = $this->denormalizer->denormalize(
-                $this->config,
-                SpeculationRules::class,
-                'json'
-            );
-        }
+        $this->speculationRules ??= $this->denormalizer->denormalize(
+            $this->config,
+            SpeculationRules::class,
+            'json'
+        );
 
         return $this->speculationRules;
     }

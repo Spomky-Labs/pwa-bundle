@@ -1,5 +1,8 @@
 parameters:
 	level: max
+	phpVersion:
+		min: 80200
+		max: 80599
 	scanDirectories:
 		- %rootDir%/../../../../phpunit/vendor
 		- %currentWorkingDirectory%/vendor
