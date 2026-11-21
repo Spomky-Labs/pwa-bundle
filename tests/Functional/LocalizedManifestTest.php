@@ -8,9 +8,14 @@ use const JSON_THROW_ON_ERROR;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use SpomkyLabs\PwaBundle\Dto\Shortcut;
+use SpomkyLabs\PwaBundle\Event\PreManifestCompileEvent;
 use SpomkyLabs\PwaBundle\Service\ApplicationIconCompiler;
+use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Tests\LocalizedManifestKernel;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 /**
  * @internal
@@ -229,16 +234,110 @@ final class LocalizedManifestTest extends TestCase
         static::assertSame('Die SuperWurst-App', $french['name_localized']['de']);
     }
 
+    #[Test]
+    public function theTranslatableMembersUseTheConfiguredTranslationDomain(): void
+    {
+        // Given
+        $manifests = $this->compile('domain', [
+            'localization_strategy' => 'both',
+            'public_url' => '/site.{locale}.webmanifest',
+            'name' => 'app.name',
+            'shortcuts' => [
+                [
+                    'name' => 'app.shortcuts.agenda',
+                    'url' => '/agenda',
+                ],
+            ],
+        ], [
+            'translation_domain' => 'app',
+        ]);
+
+        // Then
+        $french = $manifests['/site.fr.webmanifest'];
+        static::assertSame("L'application de l'app", $french['name']);
+        static::assertSame('Die App', $french['name_localized']['de']);
+        static::assertSame("L'agenda de l'app", $french['shortcuts'][0]['name']);
+    }
+
+    #[Test]
+    public function theGettersUseTheConfiguredTranslationDomain(): void
+    {
+        // Given
+        $this->boot('getters', [
+            'name' => 'app.name',
+            'shortcuts' => [
+                [
+                    'name' => 'app.shortcuts.agenda',
+                    'url' => '/agenda',
+                ],
+            ],
+        ], [
+            'translation_domain' => 'app',
+        ]);
+        $builder = $this->manifestBuilder();
+
+        // When
+        $manifest = $builder->create();
+
+        // Then
+        static::assertEquals(new TranslatableMessage('app.name', [], 'app'), $manifest->getName());
+        static::assertEquals(
+            new TranslatableMessage('app.shortcuts.agenda', [], 'app'),
+            $manifest->shortcuts[0]->getName()
+        );
+    }
+
+    #[Test]
+    public function theMembersAddedByAListenerUseTheConfiguredTranslationDomain(): void
+    {
+        // Given
+        $this->boot('listener', [
+            'public_url' => '/site.{locale}.webmanifest',
+        ], [
+            'translation_domain' => 'app',
+        ]);
+        $this->eventDispatcher()
+            ->addListener(PreManifestCompileEvent::class, static function (PreManifestCompileEvent $event): void {
+                $shortcut = new Shortcut();
+                $shortcut->name = 'app.shortcuts.agenda';
+                $event->manifest->shortcuts[] = $shortcut;
+            });
+
+        // When
+        $manifests = $this->compiledManifests();
+
+        // Then
+        static::assertSame("L'agenda de l'app", $manifests['/site.fr.webmanifest']['shortcuts'][0]['name']);
+    }
+
     /**
      * @param array<string, mixed> $manifestConfig
+     * @param array<string, mixed> $bundleConfig
      *
      * @return array<string, array<string, mixed>> Public URL to decoded manifest
      */
-    private function compile(string $name, array $manifestConfig): array
+    private function compile(string $name, array $manifestConfig, array $bundleConfig = []): array
     {
-        $this->kernel = new LocalizedManifestKernel($name, $manifestConfig);
-        $this->kernel->boot();
+        $this->boot($name, $manifestConfig, $bundleConfig);
 
+        return $this->compiledManifests();
+    }
+
+    /**
+     * @param array<string, mixed> $manifestConfig
+     * @param array<string, mixed> $bundleConfig
+     */
+    private function boot(string $name, array $manifestConfig, array $bundleConfig = []): void
+    {
+        $this->kernel = new LocalizedManifestKernel($name, $manifestConfig, $bundleConfig);
+        $this->kernel->boot();
+    }
+
+    /**
+     * @return array<string, array<string, mixed>> Public URL to decoded manifest
+     */
+    private function compiledManifests(): array
+    {
         $compiler = $this->container()
             ->get(ManifestCompiler::class);
         static::assertInstanceOf(ManifestCompiler::class, $compiler);
@@ -249,6 +348,24 @@ final class LocalizedManifestTest extends TestCase
         }
 
         return $manifests;
+    }
+
+    private function manifestBuilder(): ManifestBuilder
+    {
+        $builder = $this->container()
+            ->get(ManifestBuilder::class);
+        static::assertInstanceOf(ManifestBuilder::class, $builder);
+
+        return $builder;
+    }
+
+    private function eventDispatcher(): EventDispatcherInterface
+    {
+        $dispatcher = $this->container()
+            ->get('event_dispatcher');
+        static::assertInstanceOf(EventDispatcherInterface::class, $dispatcher);
+
+        return $dispatcher;
     }
 
     private function container(): ContainerInterface

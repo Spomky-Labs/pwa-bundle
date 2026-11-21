@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -44,6 +45,15 @@ final class Widget
     public null|int $update = null;
 
     public bool $multiple = true;
+
+    #[Ignore]
+    public function setTranslationDomain(string $translationDomain): void
+    {
+        $this->translationDomain = $translationDomain;
+        foreach ($this->screenshots as $screenshot) {
+            $screenshot->setTranslationDomain($translationDomain);
+        }
+    }
 
     public function getName(): string|TranslatableInterface
     {

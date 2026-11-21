@@ -13,11 +13,13 @@ use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\SourceImageResolver;
 use SpomkyLabs\PwaBundle\Service\StartupImagesBuilder;
 use SpomkyLabs\PwaBundle\Service\StartupImagesCompiler;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
 use SpomkyLabs\PwaBundle\StartupImage\DeviceCatalog;
 use SpomkyLabs\PwaBundle\StartupImage\HtmlRendererInterface;
 use SpomkyLabs\PwaBundle\StartupImage\IconStartupImageRenderer;
 use SpomkyLabs\PwaBundle\StartupImage\TemplateStartupImageRenderer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Twig\Environment;
 
 /**
  * Builds a startup images compiler out of a hand-written configuration, which lets a test declare a dark
@@ -36,6 +38,8 @@ trait StartupImagesCompilerTrait
         null|HtmlRendererInterface $htmlRenderer = null,
         array $context = [],
         bool $withTwig = true,
+        null|Environment $twig = null,
+        string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ): StartupImagesCompiler {
         $default = new StartupImageTheme();
         $default->src = Asset::create('pwa/1920x1920.svg');
@@ -73,11 +77,12 @@ trait StartupImagesCompilerTrait
                 $builder
             ),
             new TemplateStartupImageRenderer(
-                $withTwig ? $container->get('twig') : null,
+                $withTwig ? $twig ?? $container->get('twig') : null,
                 $htmlRenderer,
                 $sourceImageResolver,
                 $container->get(ManifestBuilder::class),
-                $builder
+                $builder,
+                $translationDomain
             ),
             $container->get(BasePathResolver::class),
             false

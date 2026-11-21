@@ -25,6 +25,7 @@ use SpomkyLabs\PwaBundle\Service\ManifestBuilder;
 use SpomkyLabs\PwaBundle\Service\ManifestCompiler;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +40,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 
 /**
- * @phpstan-type ManifestData array{enabled: bool, data: Manifest, installable: array{status: bool, reasons: array<string, bool>}, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>, publicUrl: string, locales: array<string>, outputs?: array<string, string>}
+ * @phpstan-type ManifestData array{enabled: bool, data: Manifest, installable: array{status: bool, reasons: array<string, bool>}, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>, publicUrl: string, locales: array<string>, translationDomain: string, outputs?: array<string, string>}
  * @phpstan-type ServiceWorkerData array{enabled: bool, data: ServiceWorker, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>}
  * @phpstan-type FaviconsData array{enabled: bool, data: Favicons, files: array<array{url: string, html: string|null, headers: array<string, string|bool>}>}
  * @phpstan-type CollectedData array{cachingStrategies: array<CacheStrategyInterface>, manifest: ManifestData, serviceWorker: ServiceWorkerData, favicons: FaviconsData}
@@ -76,6 +77,8 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
         private readonly array $locales,
         #[Autowire(param: 'spomky_labs_pwa.manifest.localization_strategy')]
         string $localizationStrategy = LocalizationStrategy::FILES->value,
+        #[Autowire(param: 'spomky_labs_pwa.translation_domain')]
+        private readonly string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ) {
         $this->localizationStrategy = LocalizationStrategy::from($localizationStrategy);
         $this->favicons = $faviconsBuilder->create();
@@ -121,6 +124,7 @@ final class PwaCollector extends DataCollector implements LateDataCollectorInter
             'files' => $this->dataToFiles($manifestFiles),
             'publicUrl' => $this->manifestPublicUrl,
             'locales' => $this->locales,
+            'translationDomain' => $this->translationDomain,
         ];
         if ($this->locales === [] || ! $this->localizationStrategy->compilesOneFilePerLocale()) {
             // A single manifest is served to every locale, so there is only one output to show.

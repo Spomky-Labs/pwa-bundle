@@ -6,11 +6,12 @@ namespace SpomkyLabs\PwaBundle\Service;
 
 use function is_string;
 use SpomkyLabs\PwaBundle\Dto\LocalizationStrategy;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Builds the `*_localized` manifest members out of the enabled locales and the `pwa` translation domain.
+ * Builds the `*_localized` manifest members out of the enabled locales and the bundle translation domain.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/*_localized
  */
@@ -39,6 +40,8 @@ final readonly class LocalizedMembersBuilder
         private array $locales,
         private TextDirectionResolver $directionResolver,
         private null|TranslatorInterface $translator = null,
+        #[Autowire(param: 'spomky_labs_pwa.translation_domain')]
+        private string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ) {
         $this->strategy = LocalizationStrategy::from($strategy);
     }
@@ -91,7 +94,7 @@ final readonly class LocalizedMembersBuilder
         $baseDirection = $manifestDir ?? self::DEFAULT_DIRECTION;
         $localized = [];
         foreach ($this->locales as $locale) {
-            $translation = $this->translator->trans($translationKey, [], 'pwa', $locale);
+            $translation = $this->translator->trans($translationKey, [], $this->translationDomain, $locale);
             // Either the locale resolves to the value already carried by the non-localized member, or it has no
             // translation at all and the translator handed the key back. Both are dead weight in the manifest.
             if ($translation === $defaultValue || $translation === $translationKey) {

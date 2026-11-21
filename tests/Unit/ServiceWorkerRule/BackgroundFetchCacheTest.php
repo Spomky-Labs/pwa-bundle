@@ -15,6 +15,8 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\BackgroundFetchCache;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\Translator;
 
 /**
  * The rule calls registerBackgroundFetchTask(), openBackgroundFetchDatabase() and bgFetchMetadata, which only
@@ -121,6 +123,35 @@ final class BackgroundFetchCacheTest extends TestCase
         static::assertStringContainsString("registerBackgroundFetchTask('fail'", $result);
     }
 
+    #[Test]
+    public function itTranslatesTheMessagesWithTheConfiguredDomain(): void
+    {
+        // Given
+        $backgroundFetch = new BackgroundFetch();
+        $backgroundFetch->enabled = true;
+        $backgroundFetch->successMessage = 'app.background_fetch.success';
+        $backgroundFetch->failureMessage = 'app.background_fetch.failure';
+        $translator = new Translator('en');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', [
+            'app.background_fetch.success' => 'Download complete',
+            'app.background_fetch.failure' => 'Download failed',
+        ], 'en', 'app');
+        $rule = new BackgroundFetchCache(
+            $this->createBuilder($backgroundFetch),
+            static::createStub(RouterInterface::class),
+            $translator,
+            'app'
+        );
+
+        // When
+        $result = $rule->process();
+
+        // Then
+        static::assertStringContainsString('Download complete', $result);
+        static::assertStringContainsString('Download failed', $result);
+    }
+
     private function createBackgroundFetch(): BackgroundFetch
     {
         $backgroundFetch = new BackgroundFetch();
@@ -144,5 +175,21 @@ final class BackgroundFetchCacheTest extends TestCase
         $serviceWorkerBuilder = new ServiceWorkerBuilder($denormalizer, []);
 
         return new BackgroundFetchCache($serviceWorkerBuilder, static::createStub(RouterInterface::class));
+    }
+
+    private function createBuilder(BackgroundFetch $backgroundFetch): ServiceWorkerBuilder
+    {
+        $workbox = new Workbox();
+        $workbox->enabled = true;
+        $workbox->backgroundFetch = $backgroundFetch;
+        $serviceWorker = new ServiceWorker();
+        $serviceWorker->workbox = $workbox;
+
+        $denormalizer = static::createStub(DenormalizerInterface::class);
+        $denormalizer
+            ->method('denormalize')
+            ->willReturn($serviceWorker);
+
+        return new ServiceWorkerBuilder($denormalizer, []);
     }
 }
