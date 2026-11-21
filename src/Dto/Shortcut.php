@@ -26,7 +26,7 @@ final class Shortcut
     public array $icons = [];
 
     /**
-     * @var array<string, array<Icon>>
+     * @var array<string, array<int, Icon>>
      */
     #[SerializedName('icons_localized')]
     public array $iconsLocalized = [];
