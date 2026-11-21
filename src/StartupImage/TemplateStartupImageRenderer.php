@@ -167,14 +167,14 @@ final class TemplateStartupImageRenderer implements StartupImageRendererInterfac
             'background_color' => $definition->theme->backgroundColor,
             'theme_color' => $themeColor,
             /* The application, as the manifest declares it. Values are the raw configured ones: run them
-               through the "trans" filter with the "pwa" domain when they are translation keys. */
+             * through the "trans" filter with the "pwa" domain when they are translation keys. */
             'app_name' => $manifest->name,
             'short_name' => $manifest->shortName,
             'description' => $manifest->description,
             'lang' => $manifest->lang,
             'dir' => $manifest->dir,
             /* The source image, inlined: the browser paints the document from a temporary file, with no
-               application URL to resolve an asset against. */
+             * application URL to resolve an asset against. */
             'icon' => $source->getDataUri(),
             'icon_svg' => $source->isSvg() ? $source->content : null,
             /* Whatever the application chose to declare under "context". */
