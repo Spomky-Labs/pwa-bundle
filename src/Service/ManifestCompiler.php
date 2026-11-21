@@ -25,6 +25,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
 {
+    public const IGNORED_ATTRIBUTES = ['enabled', 'useCredentials'];
+
     private readonly EventDispatcherInterface $dispatcher;
 
     private readonly string $manifestPublicUrl;
@@ -58,7 +60,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         $options = [
             AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['useCredentials', 'locales'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => self::IGNORED_ATTRIBUTES,
             JsonEncode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ];
         if ($debug) {
