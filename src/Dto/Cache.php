@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
-use DateInterval;
+use function date_interval_create_from_date_string;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use function is_string;
+use function sprintf;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 abstract class Cache
@@ -28,9 +29,10 @@ abstract class Cache
         }
         if (is_string($this->maxAge)) {
             $now = new DateTimeImmutable();
-            $interval = DateInterval::createFromDateString($this->maxAge);
+            // The function returns false on every supported PHP version; the static method throws from PHP 8.3 on.
+            $interval = @date_interval_create_from_date_string($this->maxAge);
             if ($interval === false) {
-                throw new InvalidArgumentException('Invalid max age');
+                throw new InvalidArgumentException(sprintf('Invalid max age "%s".', $this->maxAge));
             }
             $future = $now->add($interval);
             return abs($future->getTimestamp() - $now->getTimestamp());
