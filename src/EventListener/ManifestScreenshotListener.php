@@ -69,7 +69,7 @@ final class ManifestScreenshotListener implements CanLogInterface
 
                 // Try to get asset from AssetMapper, fallback to filename
                 $asset = $this->assetMapper->getAssetFromSourcePath($filename);
-                $screenshot->src = new Asset(src: $asset === null ? $filename : $asset->logicalPath);
+                $screenshot->src = new Asset(src: $asset->logicalPath ?? $filename);
 
                 $screenshot->width = $width;
                 $screenshot->height = $height;

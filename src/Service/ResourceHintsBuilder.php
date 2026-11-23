@@ -36,9 +36,7 @@ final class ResourceHintsBuilder
 
     public function create(): ResourceHints
     {
-        if ($this->resourceHints === null) {
-            $this->resourceHints = $this->denormalizer->denormalize($this->config, ResourceHints::class, 'json');
-        }
+        $this->resourceHints ??= $this->denormalizer->denormalize($this->config, ResourceHints::class, 'json');
 
         return $this->resourceHints;
     }

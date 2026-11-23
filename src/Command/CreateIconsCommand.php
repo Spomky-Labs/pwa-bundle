@@ -150,7 +150,7 @@ final class CreateIconsCommand extends Command
             $this->filesystem->dumpFile($filePath, $tmp);
             $asset = $this->assetMapper->getAssetFromSourcePath($filePath);
             $config = [
-                'src' => $asset === null ? $filePath : $asset->logicalPath,
+                'src' => $asset->logicalPath ?? $filePath,
                 'sizes' => [$size],
             ];
             $destMimeType = MimeTypes::getDefault()->guessMimeType($filePath);

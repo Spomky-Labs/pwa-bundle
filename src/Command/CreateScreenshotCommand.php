@@ -164,7 +164,7 @@ final class CreateScreenshotCommand extends Command
         $outputMimeType = MimeTypes::getDefault()->guessMimeType($filename);
 
         $config = [
-            'src' => $asset === null ? $filename : $asset->logicalPath,
+            'src' => $asset->logicalPath ?? $filename,
             'width' => $width,
             'height' => $height,
             'reference' => $url,
