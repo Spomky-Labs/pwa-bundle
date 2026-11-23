@@ -5,8 +5,8 @@ We has adopted this security disclosure and response policy to ensure we respons
 
 ## Supported Versions
 
-This project maintains release branches for the three most recent minor releases.
-Applicable fixes, including security fixes, may be backported to those three release branches, depending on severity and feasibility. Please refer to [RELEASES.md](RELEASES.md) for details.
+The maintained branches and what each one receives are listed in a single place, [RELEASES.md](RELEASES.md#supported-versions),
+so that this file cannot drift away from it.
 
 ## Reporting a Vulnerability - Private Disclosure Process
 
