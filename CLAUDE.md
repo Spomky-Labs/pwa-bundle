@@ -25,11 +25,11 @@ castor phpunit --filter testMethod    # Run specific test method
 ### Code Quality
 ```bash
 castor ecs                   # Check coding standards (PSR-12)
-castor ecs_fix               # Fix coding standards
+castor ecs-fix               # Fix coding standards
 castor rector                # Run Rector (dry-run)
-castor rector_fix            # Apply Rector refactoring
+castor rector-fix            # Apply Rector refactoring
 castor phpstan               # Run static analysis
-castor phpstan_baseline      # Generate PHPStan baseline
+castor phpstan-baseline      # Generate PHPStan baseline
 castor deptrac               # Validate architecture layers
 castor lint                  # PHP syntax check
 castor infect                # Mutation testing
@@ -37,7 +37,7 @@ castor infect                # Mutation testing
 
 ### Pre-PR Workflow
 ```bash
-castor prepare_pr            # Runs: ecs_fix → rector_fix → phpstan_baseline → deptrac → lint
+castor prepare-pr            # Runs: ecs-fix → rector-fix → phpstan-baseline → deptrac → lint
 ```
 
 ## Architecture
