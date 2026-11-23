@@ -39,10 +39,7 @@ final readonly class IconResolver
             );
         }
         $asset = $this->getAsset($icon->src, $icon->svgAttributes);
-        $content = $asset->content;
-        if ($content === null) {
-            $content = file_get_contents($asset->sourcePath);
-        }
+        $content = $asset->content ?? file_get_contents($asset->sourcePath);
 
         $imageProcessor = fn (Configuration $configuration): string => $this->imageProcessor->process(
             $content,

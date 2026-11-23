@@ -8,6 +8,7 @@ use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -48,6 +49,10 @@ $builder->withSkip([
     // The $requests argument of RequestStack::__construct() only exists from Symfony 7.2 on, while
     // composer.json allows ^7.0. Applying this would break the --prefer-lowest test job.
     PushRequestToRequestStackConstructorRector::class,
+    // Rector sees the PHPUnit composer resolves, currently 13, while the test job runs the phpunit-11
+    // the phpqa image ships. Renaming an assertion to its later spelling — expectExceptionMessage() to
+    // expectExceptionMessageIsOrContains(), added in PHPUnit 12 — passes here and fails there.
+    RenameMethodRector::class => [__DIR__ . '/../tests'],
     // "PageCache" is an alias of a class it declares deprecated, so it has to name itself. Written as
     // a ::class constant, PHPStan reports the file for referencing the very class it deprecates.
     StringClassNameToClassConstantRector::class => [__DIR__ . '/../src/Dto/PageCache.php'],
