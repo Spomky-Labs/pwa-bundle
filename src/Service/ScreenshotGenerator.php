@@ -197,7 +197,7 @@ final readonly class ScreenshotGenerator
             $outputMimeType = MimeTypes::getDefault()->guessMimeType($filename);
 
             $resultConfig = [
-                'src' => $asset === null ? $filename : $asset->logicalPath,
+                'src' => $asset->logicalPath ?? $filename,
                 'width' => $width,
                 'height' => $height,
                 'reference' => $url,
