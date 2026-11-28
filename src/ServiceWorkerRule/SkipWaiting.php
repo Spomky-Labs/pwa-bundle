@@ -30,8 +30,7 @@ final class SkipWaiting implements ServiceWorkerRuleInterface, CanLogInterface
             return '';
         }
 
-        $skipWaiting = <<<'SKIP_WAITING'
-registerInstallTask(() => self.skipWaiting(), 5);
+        $skipWaiting = $this->installDeclaration() . <<<'SKIP_WAITING'
 self.addEventListener("activate", function (event) {
   event.waitUntil(self.clients.claim());
 });
@@ -53,5 +52,23 @@ SKIP_WAITING;
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * registerInstallTask() is declared by WorkboxHelpers, which emits nothing when Workbox is disabled. Without
+     * Workbox, skipWaiting() is therefore called from a plain install listener.
+     */
+    private function installDeclaration(): string
+    {
+        if ($this->serviceWorker->workbox->enabled) {
+            return "registerInstallTask(() => self.skipWaiting(), 5);\n";
+        }
+
+        return <<<'INSTALL'
+self.addEventListener("install", function (event) {
+  event.waitUntil(self.skipWaiting());
+});
+
+INSTALL;
     }
 }
