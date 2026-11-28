@@ -57,7 +57,7 @@ final class CreateConfigCommand extends Command
 
     private const SHORT_NAME_MAX_LENGTH = 12;
 
-    private const DOCUMENTATION_URL = 'https://pwa.spomky-labs.com/';
+    private const DOCUMENTATION_URL = 'https://docs.spomky-labs.com/pwa/';
 
     public function __construct(
         private readonly Filesystem $filesystem,
