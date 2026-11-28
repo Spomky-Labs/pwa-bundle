@@ -72,6 +72,31 @@ final class CompileCommandTest extends AbstractPwaTestCase
     }
 
     #[Test]
+    public static function theNoteTakingUrlCarriesTheMemberNameOfTheSpecification(): void
+    {
+        // Given
+        $command = self::$application->find('pwa:compile');
+        $commandTester = new CommandTester($command);
+        static::assertInstanceOf(KernelInterface::class, self::$kernel);
+
+        // When
+        $commandTester->execute([]);
+        $manifest = json_decode(
+            (string) file_get_contents(self::$kernel->getCacheDir() . '/output/site.webmanifest'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        // Then
+        $commandTester->assertCommandIsSuccessful();
+        static::assertIsArray($manifest);
+        static::assertSame([
+            'new_note_url' => '/notes',
+        ], $manifest['note_taking'] ?? null);
+    }
+
+    #[Test]
     public static function onlyTheManifestAndTheServiceWorkerAreCompiled(): void
     {
         // Given
