@@ -76,6 +76,40 @@ final class ManifestSerializationTest extends TestCase
         static::assertSame([], $manifest->shortcuts);
     }
 
+    #[Test]
+    #[DataProvider('provideOutputs')]
+    public function noLangIsWrittenWhenNothingProvidesIt(string $output): void
+    {
+        // Given
+        $manifestConfig = [
+            'name' => 'My app',
+        ];
+
+        // When
+        $manifest = $this->serialize($output, 'no_lang', $manifestConfig);
+
+        // Then
+        static::assertObjectNotHasProperty('lang', $manifest);
+    }
+
+    #[Test]
+    #[DataProvider('provideOutputs')]
+    public function theConfiguredLangIsWritten(string $output): void
+    {
+        // Given
+        $manifestConfig = [
+            'name' => 'My app',
+            'lang' => 'ar',
+        ];
+
+        // When
+        $manifest = $this->serialize($output, 'configured_lang', $manifestConfig);
+
+        // Then
+        static::assertObjectHasProperty('lang', $manifest);
+        static::assertSame('ar', $manifest->lang);
+    }
+
     /**
      * @param array<string, mixed> $manifestConfig
      */
