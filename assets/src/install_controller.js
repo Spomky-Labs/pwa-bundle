@@ -23,15 +23,14 @@ export default class extends AbstractController {
     connect() {
         window.addEventListener('beforeinstallprompt', this._handleBeforeInstallPrompt);
         window.addEventListener('appinstalled', this._handleAppInstalled, { once: true });
-        const displayModes = ['fullscreen', 'minimal-ui', 'window-controls-overlay'];
+        const displayModes = ['standalone', 'fullscreen', 'minimal-ui', 'window-controls-overlay'];
         const isStandaloneDisplay = displayModes.some(mode =>
             window.matchMedia(`(display-mode: ${mode})`).matches
         );
 
         const isStandalone =
             isStandaloneDisplay ||
-            window.navigator.standalone === true ||
-            window.self === window.top;
+            window.navigator.standalone === true;
 
         if (isStandalone) {
             this.isInstalled = true;
