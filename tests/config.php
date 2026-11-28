@@ -275,4 +275,29 @@ return static function (ContainerConfigurator $container) {
             ],
         ],
     ]);
+
+    // The same application with Workbox switched off, and every rule that has something to write turned on.
+    if ($container->env() === 'workbox_disabled') {
+        $container->extension('pwa', [
+            'serviceworker' => [
+                'skip_waiting' => true,
+                'workbox' => [
+                    'enabled' => false,
+                    'navigation_preload' => true,
+                    'clear_cache' => true,
+                    'background_fetch' => [
+                        'enabled' => true,
+                        'success_url' => '/downloads/done',
+                        'progress_url' => '/downloads/progress',
+                    ],
+                    'background_sync' => [
+                        [
+                            'queue_name' => 'api',
+                            'match_callback' => 'startsWith: /api/',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
 };
