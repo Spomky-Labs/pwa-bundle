@@ -64,7 +64,7 @@
     "symfony/panther": "^2.3",
     "symfony/translation": "^6.4|^7.0|^8.0",
     "symfony/twig-bundle": "^7.0|^8.0",
-    "symfony/ux-icons": "^2.29",
+    "symfony/ux-icons": "^2.29 || ^3.0",
     "symfony/yaml": "^6.4|^7.0|^8.0"
   },
   "config": {
