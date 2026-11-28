@@ -67,7 +67,6 @@ async function onWidgetInstall(widget) {
             minInterval: widget.definition.update
         });
     }
-    await updateWidget(widget);
 }
 
 self.addEventListener("widgetuninstall", event => {
