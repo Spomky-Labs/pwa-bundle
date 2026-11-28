@@ -6,6 +6,8 @@ namespace SpomkyLabs\PwaBundle\Service;
 
 use function assert;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class ManifestBuilder
@@ -18,6 +20,8 @@ final class ManifestBuilder
     public function __construct(
         private readonly DenormalizerInterface $denormalizer,
         private readonly array $config,
+        #[Autowire(param: 'spomky_labs_pwa.translation_domain')]
+        private readonly string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ) {
     }
 
@@ -26,6 +30,7 @@ final class ManifestBuilder
         if ($this->manifest === null) {
             $result = $this->denormalizer->denormalize($this->config, Manifest::class);
             assert($result instanceof Manifest);
+            $result->setTranslationDomain($this->translationDomain);
             $this->manifest = $result;
         }
 

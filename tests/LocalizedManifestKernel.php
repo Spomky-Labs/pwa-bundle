@@ -21,10 +21,12 @@ final class LocalizedManifestKernel extends Kernel
 {
     /**
      * @param array<string, mixed> $manifestConfig
+     * @param array<string, mixed> $bundleConfig
      */
     public function __construct(
         string $name,
         private readonly array $manifestConfig,
+        private readonly array $bundleConfig = [],
     ) {
         parent::__construct('test_localized_' . $name, false);
     }
@@ -40,7 +42,8 @@ final class LocalizedManifestKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $manifestConfig = $this->manifestConfig;
-        $loader->load(static function (ContainerBuilder $container) use ($manifestConfig): void {
+        $bundleConfig = $this->bundleConfig;
+        $loader->load(static function (ContainerBuilder $container) use ($manifestConfig, $bundleConfig): void {
             $container->register(DummyImageProcessor::class, DummyImageProcessor::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true);
@@ -74,6 +77,7 @@ final class LocalizedManifestKernel extends Kernel
             ]);
             $container->loadFromExtension('pwa', [
                 'image_processor' => DummyImageProcessor::class,
+                ...$bundleConfig,
                 'manifest' => [
                     'enabled' => true,
                     ...$manifestConfig,

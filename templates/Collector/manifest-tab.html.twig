@@ -46,15 +46,15 @@
     </tr>
     <tr>
         <td>Name</td>
-        <td>{{ collector.manifest.name|trans }}</td>
+        <td>{{ collector.manifest.name|trans({}, collector.data.manifest.translationDomain|default('pwa')) }}</td>
     </tr>
     <tr>
         <td>Short name</td>
-        <td>{{ collector.manifest.shortName|trans }}</td>
+        <td>{{ collector.manifest.shortName|trans({}, collector.data.manifest.translationDomain|default('pwa')) }}</td>
     </tr>
     <tr>
         <td>Description name</td>
-        <td>{{ collector.manifest.description|trans }}</td>
+        <td>{{ collector.manifest.description|trans({}, collector.data.manifest.translationDomain|default('pwa')) }}</td>
     </tr>
     <tr>
         <td>Theme color</td>

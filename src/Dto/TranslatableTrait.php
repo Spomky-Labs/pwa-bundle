@@ -6,11 +6,22 @@ namespace SpomkyLabs\PwaBundle\Dto;
 
 use function class_exists;
 use function is_array;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 trait TranslatableTrait
 {
+    #[Ignore]
+    private string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN;
+
+    #[Ignore]
+    public function setTranslationDomain(string $translationDomain): void
+    {
+        $this->translationDomain = $translationDomain;
+    }
+
     /**
      * @template T of null|string|array<string>
      *
@@ -28,11 +39,15 @@ trait TranslatableTrait
         }
         if (is_array($data)) {
             return array_map(
-                static fn (string $value): TranslatableInterface => new TranslatableMessage($value, [], 'pwa'),
+                fn (string $value): TranslatableInterface => new TranslatableMessage(
+                    $value,
+                    [],
+                    $this->translationDomain
+                ),
                 $data
             );
         }
 
-        return new TranslatableMessage($data, [], 'pwa');
+        return new TranslatableMessage($data, [], $this->translationDomain);
     }
 }

@@ -9,6 +9,8 @@ use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -22,6 +24,8 @@ final class BackgroundFetchCache implements ServiceWorkerRuleInterface, CanLogIn
         ServiceWorkerBuilder $serviceWorkerBuilder,
         private readonly RouterInterface $router,
         private readonly ?TranslatorInterface $translator = null,
+        #[Autowire(param: 'spomky_labs_pwa.translation_domain')]
+        private readonly string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ) {
         $this->workbox = $serviceWorkerBuilder->create()
             ->workbox;
@@ -85,7 +89,8 @@ BACKGROUND_FETCH_CACHE;
 
         $successMessage = $backgroundFetch->successMessage ?? '{title} ✅';
         if ($successMessage !== '') {
-            $successMessage = $this->translator?->trans($successMessage, [], 'pwa') ?? $successMessage;
+            $successMessage = $this->translator?->trans($successMessage, [], $this->translationDomain)
+                ?? $successMessage;
         }
         $declaration .= <<<BACKGROUND_FETCH_CACHE
 registerBackgroundFetchTask('success', async (event) => {
@@ -144,7 +149,8 @@ BACKGROUND_FETCH_CACHE;
 
         $failureMessage = $backgroundFetch->failureMessage ?? '{title} ❌';
         if ($failureMessage !== '') {
-            $failureMessage = $this->translator?->trans($failureMessage, [], 'pwa') ?? $failureMessage;
+            $failureMessage = $this->translator?->trans($failureMessage, [], $this->translationDomain)
+                ?? $failureMessage;
         }
 
         return $declaration . <<<BACKGROUND_FETCH_CACHE

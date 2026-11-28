@@ -37,6 +37,8 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         GDImageProcessor::class => 'gd',
     ];
 
+    public const DEFAULT_TRANSLATION_DOMAIN = 'pwa';
+
     protected string $extensionAlias = 'pwa';
 
     public function configure(DefinitionConfigurator $definition): void
@@ -93,6 +95,10 @@ final class SpomkyLabsPwaBundle extends AbstractBundle
         if ($logger !== null) {
             $builder->setAlias('spomky_labs_pwa.logger', $logger);
         }
+
+        /** @var string $translationDomain */
+        $translationDomain = $config['translation_domain'];
+        $builder->setParameter('spomky_labs_pwa.translation_domain', $translationDomain);
 
         /* Manifest */
         $builder->setParameter('spomky_labs_pwa.manifest.enabled', $manifestConfig['enabled']);

@@ -17,6 +17,7 @@ use SpomkyLabs\PwaBundle\Dto\Manifest;
 use SpomkyLabs\PwaBundle\Event\NullEventDispatcher;
 use SpomkyLabs\PwaBundle\Event\PostManifestCompileEvent;
 use SpomkyLabs\PwaBundle\Event\PreManifestCompileEvent;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -60,6 +61,8 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
         string $localizationStrategy = LocalizationStrategy::FILES->value,
         #[Autowire(param: 'kernel.default_locale')]
         private readonly string $defaultLocale = 'en',
+        #[Autowire(param: 'spomky_labs_pwa.translation_domain')]
+        private readonly string $translationDomain = SpomkyLabsPwaBundle::DEFAULT_TRANSLATION_DOMAIN,
     ) {
         $this->localizationStrategy = LocalizationStrategy::from($localizationStrategy);
         $this->manifest = $manifestBuilder->create();
@@ -139,6 +142,7 @@ final class ManifestCompiler implements FileCompilerInterface, CanLogInterface
             $preEvent = new PreManifestCompileEvent($manifest, $locale);
             $preEvent = $this->dispatcher->dispatch($preEvent);
             assert($preEvent instanceof PreManifestCompileEvent);
+            $preEvent->manifest->setTranslationDomain($this->translationDomain);
 
             $options = $this->jsonOptions;
             if ($locale !== null) {

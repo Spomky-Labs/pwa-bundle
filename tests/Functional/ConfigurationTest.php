@@ -37,6 +37,11 @@ final class ConfigurationTest extends KernelTestCase
         yield 'Empty configuration' => [[
             'pwa' => null,
         ]];
+        yield 'Translation domain is defined' => [[
+            'pwa' => [
+                'translation_domain' => 'messages',
+            ],
+        ]];
         yield 'Image processor is defined' => [[
             'pwa' => [
                 'image_processor' => ImagickImageProcessor::class,
@@ -395,6 +400,14 @@ final class ConfigurationTest extends KernelTestCase
                 ],
             ],
             'The value "right-to-left" is not allowed for path "pwa.manifest.locale_directions.ar"',
+        ];
+        yield 'Non-string translation domain' => [
+            [
+                'pwa' => [
+                    'translation_domain' => 123,
+                ],
+            ],
+            'Invalid configuration for path "pwa.translation_domain": The translation domain must be a string, 123 given.',
         ];
     }
 

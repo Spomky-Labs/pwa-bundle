@@ -11,6 +11,8 @@ use SpomkyLabs\PwaBundle\Service\StartupImagesCompiler;
 use SpomkyLabs\PwaBundle\Tests\DummyHtmlRenderer;
 use function sprintf;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 
 /**
  * @internal
@@ -73,6 +75,33 @@ final class StartupImageTemplateTest extends KernelTestCase
         static::assertStringContainsString('pwa.name', $html, 'the manifest name is not exposed');
         static::assertStringContainsString('data:image/svg+xml;base64,', $html, 'the source image is not inlined');
         static::assertStringContainsString('#ffffff', $html, 'the background color is not exposed');
+    }
+
+    #[Test]
+    public function theTemplateIsHandedTheTranslationDomain(): void
+    {
+        // Given
+        static::bootKernel();
+        $htmlRenderer = new DummyHtmlRenderer();
+        $twig = new Environment(new ArrayLoader([
+            'domain.html.twig' => '<p>{{ translation_domain }}</p>',
+        ]));
+        $compiler = $this->createStartupImagesCompiler(
+            template: 'domain.html.twig',
+            htmlRenderer: $htmlRenderer,
+            twig: $twig,
+            translationDomain: 'app'
+        );
+
+        // When
+        foreach ($compiler->getFiles() as $file) {
+            $file->getData();
+            break;
+        }
+
+        // Then
+        static::assertNotEmpty($htmlRenderer->captures);
+        static::assertSame('<p>app</p>', $htmlRenderer->captures[0]['html']);
     }
 
     #[Test]

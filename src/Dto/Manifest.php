@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\Dto;
 
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -131,6 +132,18 @@ final class Manifest
 
     #[SerializedName('serviceworker')]
     public null|ServiceWorker $serviceWorker = null;
+
+    #[Ignore]
+    public function setTranslationDomain(string $translationDomain): void
+    {
+        $this->translationDomain = $translationDomain;
+        foreach ([$this->shortcuts, $this->widgets, $this->screenshots] as $members) {
+            foreach ($members as $member) {
+                $member->setTranslationDomain($translationDomain);
+            }
+        }
+        $this->shareTarget?->params?->setTranslationDomain($translationDomain);
+    }
 
     /**
      * @return array<TranslatableInterface|string>
