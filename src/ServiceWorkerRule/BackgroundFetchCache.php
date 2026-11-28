@@ -37,7 +37,7 @@ final class BackgroundFetchCache implements ServiceWorkerRuleInterface, CanLogIn
     public function process(bool $debug = false): string
     {
         // registerBackgroundFetchTask(), openBackgroundFetchDatabase() and bgFetchMetadata are declared by
-        // WorkboxHelpers, which emits nothing when Workbox is disabled.
+        // WorkboxDeprecatedHelpers, which emits nothing when Workbox is disabled.
         if ($this->workbox->enabled === false) {
             $this->logger->debug('Workbox is disabled. The background fetch rule will not be applied.');
             return '';

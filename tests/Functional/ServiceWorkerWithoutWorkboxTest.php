@@ -10,13 +10,14 @@ use SpomkyLabs\PwaBundle\Dto\ServiceWorker;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerCompiler;
+use SpomkyLabs\PwaBundle\ServiceWorkerRule\WorkboxDeprecatedHelpers;
 use SpomkyLabs\PwaBundle\ServiceWorkerRule\WorkboxHelpers;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 /**
- * The functions and constants called by the rules are declared by WorkboxHelpers, which writes nothing when
- * Workbox is disabled. A rule calling one of them anyway produces a service worker that throws a ReferenceError
+ * The functions and constants called by the rules are declared by WorkboxHelpers and WorkboxDeprecatedHelpers,
+ * which write nothing when Workbox is disabled. A rule calling one of them anyway produces a service worker that throws a ReferenceError
  * when it is evaluated, and is never installed.
  *
  * The "workbox_disabled" environment of the test application turns Workbox off and every rule that has
@@ -94,7 +95,8 @@ final class ServiceWorkerWithoutWorkboxTest extends KernelTestCase
     }
 
     /**
-     * Every top-level function and constant that WorkboxHelpers declares when Workbox is enabled.
+     * Every top-level function and constant that WorkboxHelpers and WorkboxDeprecatedHelpers declare when Workbox is
+     * enabled.
      *
      * @return list<string>
      */
@@ -102,6 +104,7 @@ final class ServiceWorkerWithoutWorkboxTest extends KernelTestCase
     {
         $workbox = new Workbox();
         $workbox->enabled = true;
+        $workbox->keepDeprecatedHelpers = true;
         $serviceWorker = new ServiceWorker();
         $serviceWorker->workbox = $workbox;
 
@@ -110,7 +113,8 @@ final class ServiceWorkerWithoutWorkboxTest extends KernelTestCase
             ->method('denormalize')
             ->willReturn($serviceWorker);
 
-        $declarations = (new WorkboxHelpers(new ServiceWorkerBuilder($denormalizer, [])))->process();
+        $builder = new ServiceWorkerBuilder($denormalizer, []);
+        $declarations = (new WorkboxHelpers($builder))->process() . (new WorkboxDeprecatedHelpers($builder))->process();
         preg_match_all('/^(?:async\s+)?(?:function|const)\s+(\w+)/m', $declarations, $matches);
 
         return $matches[1];
