@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\PwaBundle\Tests\Functional;
 
 use Ergebnis\PHPUnit\SlowTestDetector\Attribute\MaximumDuration;
+use const JSON_THROW_ON_ERROR;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -44,6 +45,30 @@ final class CompileCommandTest extends AbstractPwaTestCase
     {
         yield ['pwa:compile'];
         yield ['asset-map:compile'];
+    }
+
+    #[Test]
+    public static function theManifestCarriesNoConfigurationFlag(): void
+    {
+        // Given
+        $command = self::$application->find('pwa:compile');
+        $commandTester = new CommandTester($command);
+        static::assertInstanceOf(KernelInterface::class, self::$kernel);
+
+        // When
+        $commandTester->execute([]);
+        $manifest = json_decode(
+            (string) file_get_contents(self::$kernel->getCacheDir() . '/output/site.webmanifest'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        // Then
+        $commandTester->assertCommandIsSuccessful();
+        static::assertIsArray($manifest);
+        static::assertArrayNotHasKey('enabled', $manifest);
+        static::assertArrayNotHasKey('use_credentials', $manifest);
     }
 
     #[Test]
