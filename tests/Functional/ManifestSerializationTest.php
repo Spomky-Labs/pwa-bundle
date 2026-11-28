@@ -61,7 +61,7 @@ final class ManifestSerializationTest extends TestCase
 
     #[Test]
     #[DataProvider('provideOutputs')]
-    public function anEmptyCollectionIsStillAnEmptyArray(string $output): void
+    public function anEmptyCollectionIsLeftOut(string $output): void
     {
         // Given
         $manifestConfig = [
@@ -72,8 +72,7 @@ final class ManifestSerializationTest extends TestCase
         $manifest = $this->serialize($output, 'empty_collection', $manifestConfig);
 
         // Then
-        static::assertObjectHasProperty('shortcuts', $manifest);
-        static::assertSame([], $manifest->shortcuts);
+        static::assertObjectNotHasProperty('shortcuts', $manifest);
     }
 
     #[Test]
