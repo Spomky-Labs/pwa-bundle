@@ -56,13 +56,47 @@ JS
           return;
         }
         if (!refreshing) {
-          window.location.reload();
-          refreshing = true;
+          const event = new CustomEvent('sw:controller-changed', { detail: { wb }, cancelable: true });
+          window.dispatchEvent(event);
+          if (!event.defaultPrevented) {
+            window.location.reload();
+            refreshing = true;
+          }
         }
       });
 JS
             , $output);
         static::assertSame(1, mb_substr_count($output, 'window.location.reload()'));
+    }
+
+    /**
+     * The application is told before the page is reloaded, the same way it is told an update is waiting. It may
+     * call preventDefault() to keep the page, e.g. while a form is being filled, and reload it later.
+     */
+    #[Test]
+    public function theApplicationCanPreventTheReload(): void
+    {
+        // Given
+        $output = $this->renderRegistrationScript();
+
+        // Then
+        static::assertStringContainsString(<<<'JS'
+          const event = new CustomEvent('sw:controller-changed', { detail: { wb }, cancelable: true });
+          window.dispatchEvent(event);
+          if (!event.defaultPrevented) {
+            window.location.reload();
+JS
+            , $output);
+
+        // The existing event and the global are left as they are.
+        static::assertStringContainsString(<<<'JS'
+      wb.addEventListener('waiting', () => {
+        const event = new CustomEvent('sw:update-available', { detail: { wb } });
+        window.dispatchEvent(event);
+      });
+JS
+            , $output);
+        static::assertStringContainsString('window.workbox = wb;', $output);
     }
 
     private function renderRegistrationScript(): string

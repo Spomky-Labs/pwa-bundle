@@ -163,6 +163,8 @@ final readonly class PwaRuntime
             // The page is reloaded only when a service worker replaces the one controlling it. controllerchange also
             // fires when clients.claim() takes control of a page no service worker controlled yet (first visit),
             // although nothing was updated.
+            // Before reloading, the cancelable "sw:controller-changed" event is dispatched on window. An application
+            // that calls preventDefault() on it keeps the page as it is and reloads it when it sees fit.
             $declaration = <<<SERVICE_WORKER
 <script{$scriptAttributes}>
 (async () => {
@@ -191,8 +193,12 @@ final readonly class PwaRuntime
           return;
         }
         if (!refreshing) {
-          window.location.reload();
-          refreshing = true;
+          const event = new CustomEvent('sw:controller-changed', { detail: { wb }, cancelable: true });
+          window.dispatchEvent(event);
+          if (!event.defaultPrevented) {
+            window.location.reload();
+            refreshing = true;
+          }
         }
       });
 
