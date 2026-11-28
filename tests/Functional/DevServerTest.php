@@ -25,6 +25,7 @@ final class DevServerTest extends WebTestCase
         // Then
         static::assertResponseIsSuccessful();
         static::assertResponseHeaderSame('Content-Type', 'application/manifest+json');
+        static::assertResponseHeaderSame('Cache-Control', 'no-cache, private');
     }
 
     #[Test]
@@ -39,5 +40,6 @@ final class DevServerTest extends WebTestCase
         // Then
         static::assertResponseIsSuccessful();
         static::assertResponseHeaderSame('Content-Type', 'application/javascript');
+        static::assertResponseHeaderSame('Cache-Control', 'no-cache, private');
     }
 }
