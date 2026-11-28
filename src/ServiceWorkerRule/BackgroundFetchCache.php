@@ -12,6 +12,12 @@ use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @deprecated since 1.6.0, will be removed in 2.0.0. It decides for the application that a
+ * click opens a given URL, that downloads are chunked into a fixed IndexedDB schema and that
+ * the notification title is rewritten. Handle the "backgroundfetchsuccess" event in your own
+ * service worker source instead.
+ */
 final class BackgroundFetchCache implements ServiceWorkerRuleInterface, CanLogInterface
 {
     private readonly Workbox $workbox;
@@ -31,7 +37,7 @@ final class BackgroundFetchCache implements ServiceWorkerRuleInterface, CanLogIn
     public function process(bool $debug = false): string
     {
         // registerBackgroundFetchTask(), openBackgroundFetchDatabase() and bgFetchMetadata are declared by
-        // WorkboxHelpers, which emits nothing when Workbox is disabled.
+        // WorkboxDeprecatedHelpers, which emits nothing when Workbox is disabled.
         if ($this->workbox->enabled === false) {
             $this->logger->debug('Workbox is disabled. The background fetch rule will not be applied.');
             return '';

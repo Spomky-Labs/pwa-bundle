@@ -87,6 +87,57 @@ final class WorkboxImportTest extends TestCase
         static::assertStringContainsString("workbox.setConfig({modulePathPrefix: '/workbox'});", $result);
     }
 
+    /**
+     * Only the deprecated helpers rely on self.idb, so the library is dead weight for an
+     * application that switched them off.
+     */
+    #[Test]
+    public function itSkipsTheIdbCdnImportWhenTheDeprecatedHelpersAreDisabled(): void
+    {
+        // Given
+        $workbox = new Workbox();
+        $workbox->enabled = true;
+        $workbox->keepDeprecatedHelpers = false;
+        $workbox->config = new WorkboxConfig();
+        $workbox->config->useCDN = true;
+        $workbox->config->version = '7.3.0';
+
+        $rule = $this->createWorkboxImportRule($workbox);
+
+        // When
+        $result = $rule->process();
+
+        // Then
+        static::assertStringContainsString(
+            "importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox-sw.js');",
+            $result
+        );
+        static::assertStringNotContainsString('idb', $result);
+    }
+
+    #[Test]
+    public function itSkipsTheLocalIdbImportWhenTheDeprecatedHelpersAreDisabled(): void
+    {
+        // Given
+        $workbox = new Workbox();
+        $workbox->enabled = true;
+        $workbox->keepDeprecatedHelpers = false;
+        $workbox->config = new WorkboxConfig();
+        $workbox->config->useCDN = false;
+        $workbox->config->workboxPublicUrl = '/workbox';
+        $workbox->indexDBPublicUrl = '/idb';
+
+        $rule = $this->createWorkboxImportRule($workbox);
+
+        // When
+        $result = $rule->process();
+
+        // Then
+        static::assertStringContainsString("importScripts('/workbox/workbox-sw.js');", $result);
+        static::assertStringNotContainsString("importScripts('/idb/umd.js');", $result);
+        static::assertStringContainsString("workbox.setConfig({modulePathPrefix: '/workbox'});", $result);
+    }
+
     #[Test]
     public function itAddsDebugConfigurationWhenDebugIsFalse(): void
     {
