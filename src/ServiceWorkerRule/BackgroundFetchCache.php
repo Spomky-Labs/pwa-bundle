@@ -4,28 +4,41 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\PwaBundle\ServiceWorkerRule;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SpomkyLabs\PwaBundle\Dto\Workbox;
+use SpomkyLabs\PwaBundle\Service\CanLogInterface;
 use SpomkyLabs\PwaBundle\Service\ServiceWorkerBuilder;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final readonly class BackgroundFetchCache implements ServiceWorkerRuleInterface
+final class BackgroundFetchCache implements ServiceWorkerRuleInterface, CanLogInterface
 {
-    private Workbox $workbox;
+    private readonly Workbox $workbox;
+
+    private LoggerInterface $logger;
 
     public function __construct(
         ServiceWorkerBuilder $serviceWorkerBuilder,
-        private RouterInterface $router,
-        private ?TranslatorInterface $translator = null,
+        private readonly RouterInterface $router,
+        private readonly ?TranslatorInterface $translator = null,
     ) {
         $this->workbox = $serviceWorkerBuilder->create()
             ->workbox;
+        $this->logger = new NullLogger();
     }
 
     public function process(bool $debug = false): string
     {
+        // registerBackgroundFetchTask(), openBackgroundFetchDatabase() and bgFetchMetadata are declared by
+        // WorkboxHelpers, which emits nothing when Workbox is disabled.
+        if ($this->workbox->enabled === false) {
+            $this->logger->debug('Workbox is disabled. The background fetch rule will not be applied.');
+            return '';
+        }
         $backgroundFetch = $this->workbox->backgroundFetch;
         if ($backgroundFetch === null || ! $backgroundFetch->enabled) {
+            $this->logger->debug('Background fetch is disabled. The rule will not be applied.');
             return '';
         }
 
@@ -157,5 +170,10 @@ registerBackgroundFetchTask('fail', async (event) => {
 });
 
 BACKGROUND_FETCH_CACHE;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }
