@@ -160,6 +160,9 @@ final readonly class PwaRuntime
             // CSP compatibility: dynamically loading workbox-window inside the inline script
             // because inline event handlers (onload) are blocked by CSP even with nonces,
             // and defer is ignored on inline scripts.
+            // The page is reloaded only when a service worker replaces the one controlling it. controllerchange also
+            // fires when clients.claim() takes control of a page no service worker controlled yet (first visit),
+            // although nothing was updated.
             $declaration = <<<SERVICE_WORKER
 <script{$scriptAttributes}>
 (async () => {
@@ -181,7 +184,12 @@ final readonly class PwaRuntime
       });
 
       let refreshing = false;
+      let controlled = navigator.serviceWorker.controller !== null;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!controlled) {
+          controlled = true;
+          return;
+        }
         if (!refreshing) {
           window.location.reload();
           refreshing = true;
