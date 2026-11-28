@@ -17,9 +17,12 @@ return static function (DefinitionConfigurator $definition): void {
         ->children()
         ->booleanNode('enabled')
         // Left undecided on purpose: the section then follows "favicons.use_start_image", which used to be
-        // the only way to ask for startup images.
+        // the only way to ask for startup images. Relying on that is deprecated: in 2.0.0, enabling the
+        // favicons no longer generates them (see SpomkyLabsPwaBundle::prepareStartupImagesConfig()).
         ->defaultNull()
-        ->info('Whether startup images are generated. Defaults to the value of "favicons.use_start_image".')
+        ->info(
+            'Whether startup images are generated. When omitted, they are generated whenever the favicons are enabled, unless "favicons.use_start_image" is false. Omitting it with the favicons enabled is deprecated since 1.6.0: the default becomes false in 2.0.0.'
+        )
         ->end()
         ->scalarNode('template')
         ->defaultNull()
