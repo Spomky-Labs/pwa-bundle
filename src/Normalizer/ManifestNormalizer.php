@@ -7,6 +7,7 @@ namespace SpomkyLabs\PwaBundle\Normalizer;
 use function array_key_exists;
 use function assert;
 use SpomkyLabs\PwaBundle\Dto\Manifest;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -22,6 +23,7 @@ final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareIn
     {
         assert($data instanceof Manifest);
         $context[self::CTX_SKIP] = true;
+        $context[AbstractObjectNormalizer::PRESERVE_EMPTY_OBJECTS] = true;
 
         /** @var array<string,mixed> $normalized */
         $normalized = $this->normalizer->normalize($data, $format, $context);
