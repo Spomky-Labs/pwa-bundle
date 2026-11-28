@@ -57,7 +57,7 @@ final class OfflineFallback implements ServiceWorkerRuleInterface, CanLogInterfa
 workbox.routing.setDefaultHandler(new workbox.strategies.NetworkOnly());
 registerInstallTask(() => {
   return openCache(registerCacheName('{$cacheName}')).then(cache =>
-    cache.addAll({$urls})
+    cache.addAll({$urls}.map(url => new Request(url, { cache: 'reload' })))
   );
 }, 10);
 workbox.routing.setCatchHandler(async ({ request }) => {
