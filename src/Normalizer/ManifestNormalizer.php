@@ -22,6 +22,10 @@ final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareIn
 
     private const CTX_SKIP = 'manifest_pre_normalization_skip';
 
+    private const SPEC_DEFAULTS = [
+        'prefer_related_applications' => false,
+    ];
+
     public function __construct(
         private readonly LocalizedMembersBuilder $localizedMembersBuilder,
     ) {
@@ -48,7 +52,9 @@ final class ManifestNormalizer implements NormalizerInterface, NormalizerAwareIn
 
         return array_filter(
             $normalized,
-            static fn (mixed $value, string $member): bool => $member !== 'lang' || $value !== null,
+            static fn (mixed $value, string $member): bool => $value !== null
+                && $value !== []
+                && (! array_key_exists($member, self::SPEC_DEFAULTS) || $value !== self::SPEC_DEFAULTS[$member]),
             ARRAY_FILTER_USE_BOTH
         );
     }
