@@ -74,6 +74,10 @@ return static function (ContainerConfigurator $container) {
             'enabled' => true,
             'src' => 'pwa/1920x1920.svg',
         ],
+        // Explicit, as relying on the favicons to enable them is deprecated.
+        'startup_images' => [
+            'enabled' => true,
+        ],
         'manifest' => [
             'enabled' => true,
             'background_color' => 'red',
