@@ -1,6 +1,6 @@
 {
     "name": "@spomky-labs/pwa-bundle",
-    "description": "Web APIs Stimulus Controllers for Progressive Web Applications",
+    "description": "DEPRECATED, removed in 2.0.0 - Web APIs Stimulus Controllers for Progressive Web Applications",
     "license": "MIT",
     "version": "0.0.0-development",
     "main": "src/index.js",
